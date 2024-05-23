@@ -12,8 +12,6 @@ target 'Lottery' do
   pod 'RxSwift'
   pod 'RxCocoa'
   
-  pod 'Alamofire'
-  
   pod 'SwiftyStoreKit'
 
   pod 'OtterScaleiOS', :git => "https://github.com/AgentChe/OtterScaleiOS.git"
@@ -38,4 +36,3 @@ post_install do |installer|
     end
   end
 end
-

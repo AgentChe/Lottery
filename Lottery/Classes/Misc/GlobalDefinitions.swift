@@ -9,6 +9,9 @@ import Foundation
 
 // TODO: заменить по готовности доки
 final class GlobalDefinitions {
+    static let domain = "https://circle.thinkaboutapps.com"
+    static let apiKey = "uadq2R32E6OOOkBrxyBH"
+    
     static let otterScaleHost = "https://api.korrekted.com"
     static let otterScaleApiKey = "i9upCYSnV2mW4aM3"
     

@@ -1,5 +1,4 @@
 PODS:
-  - Alamofire (5.9.0)
   - Amplitude-iOS (4.10.0)
   - Branch (1.45.2)
   - FBAEMKit (16.3.1):
@@ -124,9 +123,9 @@ PODS:
     - RxSwift (= 6.6.0)
   - RxSwift (6.6.0)
   - SwiftyStoreKit (0.16.1)
+  - Toast-Swift (5.1.0)
 
 DEPENDENCIES:
-  - Alamofire
   - Amplitude-iOS
   - Branch
   - FBSDKCoreKit
@@ -138,10 +137,10 @@ DEPENDENCIES:
   - RxCocoa
   - RxSwift
   - SwiftyStoreKit
+  - Toast-Swift
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - Alamofire
     - Amplitude-iOS
     - Branch
     - FBAEMKit
@@ -164,6 +163,7 @@ SPEC REPOS:
     - RxRelay
     - RxSwift
     - SwiftyStoreKit
+    - Toast-Swift
 
 EXTERNAL SOURCES:
   OtterScaleiOS:
@@ -175,7 +175,6 @@ CHECKOUT OPTIONS:
     :git: https://github.com/AgentChe/OtterScaleiOS.git
 
 SPEC CHECKSUMS:
-  Alamofire: 02b772c9910e8eba1a079227c32fbd9e46c90a24
   Amplitude-iOS: 7d8cdc3408ba35c2e68368fc7c692cd104606b94
   Branch: c1a7fa1811ef9203c01bc6c2588a229eb3ee1a84
   FBAEMKit: 6c7b5eb77c96861bb59e040842c6e55bf39512ce
@@ -199,7 +198,8 @@ SPEC CHECKSUMS:
   RxRelay: 45eaa5db8ee4fb50e5ebd57deec0159e97fa51e6
   RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
   SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
+  Toast-Swift: dd369e68ee529f542c65bd0d0c6c50cd743cf6f2
 
-PODFILE CHECKSUM: dbb698cdbc33dcccc8111f982bebcb8be85e4317
+PODFILE CHECKSUM: 5a85398845855f5fbdead460117b5f2e0182d680
 
 COCOAPODS: 1.15.2

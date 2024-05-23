@@ -6,11 +6,19 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class SplashViewController: UIViewController {
     private lazy var mainView = SplashView()
     
+    private lazy var viewModel = SplashViewModel()
+    
+    private lazy var disposeBag = DisposeBag()
+    
     private lazy var sdkInitialize = SplashReceiptValidationObserver()
+    
+    private lazy var didCompleteValidationTrigger = PublishRelay<Void>()
     
     override func loadView() {
         view = mainView
@@ -19,8 +27,26 @@ final class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewModel.tryAgain = { [weak self] error -> Observable<Void> in
+            guard let self = self else {
+                return .never()
+            }
+            
+            return self.open(error: error)
+        }
+        
+        let output = viewModel.configure(input: SplashViewModel.Input(
+            didCompleteValidation: didCompleteValidationTrigger.asSignal()
+        ))
+        
+        output.route
+            .drive(Binder(self) { base, route in
+                base.goNext(route: route)
+            })
+            .disposed(by: disposeBag)
+        
         sdkInitialize.observe { [weak self] in
-            self?.route()
+            self?.didCompleteValidationTrigger.accept(Void())
         }
     }
 }
@@ -34,28 +60,40 @@ extension SplashViewController {
 
 // MARK: Private
 private extension SplashViewController {
-    func route() {
+    func goNext(route: SplashViewModel.Route) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.goNext()
+            self?.route(route)
         }
     }
     
-    func goNext() {
-        guard OnboardingViewController.wasViewed() else {
+    func route(_ route: SplashViewModel.Route) {
+        switch route {
+        case .onboarding:
             UIApplication.shared.keyWindow?.rootViewController = OnboardingViewController.make()
-            return
-        }
-        
-        let nc = NavigationController(rootViewController: MainViewController.make())
-        nc.setNavigationBarHidden(true, animated: false)
-        
-        if SessionManager().hasActiveSubscriptions() {
-            UIApplication.shared.keyWindow?.rootViewController = nc
-        } else {
-            let vc = PaygateViewController.make {
-                UIApplication.shared.keyWindow?.rootViewController = nc
+        case .main:
+            let nc = NavigationController(rootViewController: MainViewController.make())
+            nc.setNavigationBarHidden(true, animated: false)
+        case .paygate:
+            let vc = PaygateViewController.make { [weak self] in
+                self?.route(.main)
             }
             present(vc, animated: true)
         }
+    }
+    
+    func open(error: Error) -> Observable<Void> {
+        Observable<Void>
+            .create { [weak self] observe in
+                guard let self = self else {
+                    return Disposables.create()
+                }
+                
+                let vc = TryAgainViewController.make(error: error) {
+                    observe.onNext(())
+                }
+                self.present(vc, animated: true)
+                
+                return Disposables.create()
+            }
     }
 }

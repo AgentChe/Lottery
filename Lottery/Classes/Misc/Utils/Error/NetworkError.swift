@@ -8,6 +8,7 @@
 struct NetworkError: Error {
     enum Code {
         case serverNotAvailable
+        case urlError
         case logical(String)
     }
 

@@ -34,9 +34,6 @@
 		DE42B19E2BFF3CB200FF61B0 /* UIEdgeInsets+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1362BFF3CB100FF61B0 /* UIEdgeInsets+Extension.swift */; };
 		DE42B19F2BFF3CB200FF61B0 /* UITapGestureRecognizer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1372BFF3CB100FF61B0 /* UITapGestureRecognizer+Extension.swift */; };
 		DE42B1A02BFF3CB200FF61B0 /* UIView+RxExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1382BFF3CB100FF61B0 /* UIView+RxExtension.swift */; };
-		DE42B1A12BFF3CB200FF61B0 /* DefaultRequestWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B13A2BFF3CB100FF61B0 /* DefaultRequestWrapper.swift */; };
-		DE42B1A22BFF3CB200FF61B0 /* APIRequestBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B13C2BFF3CB100FF61B0 /* APIRequestBody.swift */; };
-		DE42B1A32BFF3CB200FF61B0 /* RestAPITransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B13D2BFF3CB100FF61B0 /* RestAPITransport.swift */; };
 		DE42B1A42BFF3CB200FF61B0 /* PushNotificationsAuthorizationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B13F2BFF3CB100FF61B0 /* PushNotificationsAuthorizationStatus.swift */; };
 		DE42B1A52BFF3CB200FF61B0 /* PushNotificationsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1402BFF3CB100FF61B0 /* PushNotificationsModel.swift */; };
 		DE42B1A62BFF3CB200FF61B0 /* PushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1422BFF3CB100FF61B0 /* PushNotificationsManager.swift */; };
@@ -95,6 +92,20 @@
 		DE42B1F22BFF464300FF61B0 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1F12BFF464300FF61B0 /* TabView.swift */; };
 		DE42B1F42BFF467200FF61B0 /* MainViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1F32BFF467200FF61B0 /* MainViewCoordinator.swift */; };
 		DE42B1F62BFF4E0D00FF61B0 /* OWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1F52BFF4E0D00FF61B0 /* OWelcomeView.swift */; };
+		DE42B2002BFF50E300FF61B0 /* APIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1F72BFF50E300FF61B0 /* APIEnvironment.swift */; };
+		DE42B2012BFF50E300FF61B0 /* APIOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1F82BFF50E300FF61B0 /* APIOperation.swift */; };
+		DE42B2032BFF50E300FF61B0 /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1FA2BFF50E300FF61B0 /* EndPoint.swift */; };
+		DE42B2042BFF50E300FF61B0 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1FB2BFF50E300FF61B0 /* HTTPMethod.swift */; };
+		DE42B2052BFF50E300FF61B0 /* NetworkSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1FC2BFF50E300FF61B0 /* NetworkSession.swift */; };
+		DE42B2062BFF50E300FF61B0 /* RequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1FD2BFF50E300FF61B0 /* RequestDispatcher.swift */; };
+		DE42B2072BFF50E300FF61B0 /* URLRequest+EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1FE2BFF50E300FF61B0 /* URLRequest+EndPoint.swift */; };
+		DE42B20E2BFF577E00FF61B0 /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B20D2BFF577E00FF61B0 /* LoginRequest.swift */; };
+		DE42B2102BFF583A00FF61B0 /* SyncTokensRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B20F2BFF583A00FF61B0 /* SyncTokensRequest.swift */; };
+		DE42B2122BFF588F00FF61B0 /* ProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B2112BFF588F00FF61B0 /* ProfileManager.swift */; };
+		DE42B2142BFF5BEB00FF61B0 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B2132BFF5BEB00FF61B0 /* SplashViewModel.swift */; };
+		DE42B2172BFF665600FF61B0 /* TryAgainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B2162BFF665600FF61B0 /* TryAgainViewController.swift */; };
+		DE42B2192BFF666F00FF61B0 /* TryAgainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B2182BFF666F00FF61B0 /* TryAgainView.swift */; };
+		DE42B21C2BFF700B00FF61B0 /* LoginResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B21B2BFF700B00FF61B0 /* LoginResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,9 +140,6 @@
 		DE42B1362BFF3CB100FF61B0 /* UIEdgeInsets+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIEdgeInsets+Extension.swift"; sourceTree = "<group>"; };
 		DE42B1372BFF3CB100FF61B0 /* UITapGestureRecognizer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITapGestureRecognizer+Extension.swift"; sourceTree = "<group>"; };
 		DE42B1382BFF3CB100FF61B0 /* UIView+RxExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+RxExtension.swift"; sourceTree = "<group>"; };
-		DE42B13A2BFF3CB100FF61B0 /* DefaultRequestWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultRequestWrapper.swift; sourceTree = "<group>"; };
-		DE42B13C2BFF3CB100FF61B0 /* APIRequestBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIRequestBody.swift; sourceTree = "<group>"; };
-		DE42B13D2BFF3CB100FF61B0 /* RestAPITransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestAPITransport.swift; sourceTree = "<group>"; };
 		DE42B13F2BFF3CB100FF61B0 /* PushNotificationsAuthorizationStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsAuthorizationStatus.swift; sourceTree = "<group>"; };
 		DE42B1402BFF3CB100FF61B0 /* PushNotificationsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsModel.swift; sourceTree = "<group>"; };
 		DE42B1422BFF3CB100FF61B0 /* PushNotificationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsManager.swift; sourceTree = "<group>"; };
@@ -190,6 +198,20 @@
 		DE42B1F12BFF464300FF61B0 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		DE42B1F32BFF467200FF61B0 /* MainViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewCoordinator.swift; sourceTree = "<group>"; };
 		DE42B1F52BFF4E0D00FF61B0 /* OWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWelcomeView.swift; sourceTree = "<group>"; };
+		DE42B1F72BFF50E300FF61B0 /* APIEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIEnvironment.swift; sourceTree = "<group>"; };
+		DE42B1F82BFF50E300FF61B0 /* APIOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIOperation.swift; sourceTree = "<group>"; };
+		DE42B1FA2BFF50E300FF61B0 /* EndPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
+		DE42B1FB2BFF50E300FF61B0 /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		DE42B1FC2BFF50E300FF61B0 /* NetworkSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkSession.swift; sourceTree = "<group>"; };
+		DE42B1FD2BFF50E300FF61B0 /* RequestDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestDispatcher.swift; sourceTree = "<group>"; };
+		DE42B1FE2BFF50E300FF61B0 /* URLRequest+EndPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+EndPoint.swift"; sourceTree = "<group>"; };
+		DE42B20D2BFF577E00FF61B0 /* LoginRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRequest.swift; sourceTree = "<group>"; };
+		DE42B20F2BFF583A00FF61B0 /* SyncTokensRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTokensRequest.swift; sourceTree = "<group>"; };
+		DE42B2112BFF588F00FF61B0 /* ProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManager.swift; sourceTree = "<group>"; };
+		DE42B2132BFF5BEB00FF61B0 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
+		DE42B2162BFF665600FF61B0 /* TryAgainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TryAgainViewController.swift; sourceTree = "<group>"; };
+		DE42B2182BFF666F00FF61B0 /* TryAgainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TryAgainView.swift; sourceTree = "<group>"; };
+		DE42B21B2BFF700B00FF61B0 /* LoginResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,20 +342,16 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		DE42B13B2BFF3CB100FF61B0 /* Wrapper */ = {
-			isa = PBXGroup;
-			children = (
-				DE42B13A2BFF3CB100FF61B0 /* DefaultRequestWrapper.swift */,
-			);
-			path = Wrapper;
-			sourceTree = "<group>";
-		};
 		DE42B13E2BFF3CB100FF61B0 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				DE42B13B2BFF3CB100FF61B0 /* Wrapper */,
-				DE42B13C2BFF3CB100FF61B0 /* APIRequestBody.swift */,
-				DE42B13D2BFF3CB100FF61B0 /* RestAPITransport.swift */,
+				DE42B1F72BFF50E300FF61B0 /* APIEnvironment.swift */,
+				DE42B1F82BFF50E300FF61B0 /* APIOperation.swift */,
+				DE42B1FA2BFF50E300FF61B0 /* EndPoint.swift */,
+				DE42B1FB2BFF50E300FF61B0 /* HTTPMethod.swift */,
+				DE42B1FC2BFF50E300FF61B0 /* NetworkSession.swift */,
+				DE42B1FD2BFF50E300FF61B0 /* RequestDispatcher.swift */,
+				DE42B1FE2BFF50E300FF61B0 /* URLRequest+EndPoint.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -476,6 +494,7 @@
 			children = (
 				DE42B1712BFF3CB100FF61B0 /* Utils */,
 				DE42B1732BFF3CB100FF61B0 /* SplashViewController.swift */,
+				DE42B2132BFF5BEB00FF61B0 /* SplashViewModel.swift */,
 				DE42B1722BFF3CB100FF61B0 /* SplashView.swift */,
 			);
 			path = Splash;
@@ -484,6 +503,7 @@
 		DE42B1752BFF3CB100FF61B0 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				DE42B2152BFF664F00FF61B0 /* TryAgain */,
 				DE42B1582BFF3CB100FF61B0 /* Main */,
 				DE42B1632BFF3CB100FF61B0 /* Onboarding */,
 				DE42B16F2BFF3CB100FF61B0 /* Paygate */,
@@ -543,6 +563,7 @@
 		DE42B1872BFF3CB100FF61B0 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				DE42B20B2BFF576700FF61B0 /* Profile */,
 				DE42B1EA2BFF429200FF61B0 /* Session */,
 				DE42B17A2BFF3CB100FF61B0 /* Paygate */,
 				DE42B1842BFF3CB100FF61B0 /* Purchase */,
@@ -620,6 +641,42 @@
 				DE42B1F12BFF464300FF61B0 /* TabView.swift */,
 			);
 			path = Tab;
+			sourceTree = "<group>";
+		};
+		DE42B20B2BFF576700FF61B0 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				DE42B21A2BFF700100FF61B0 /* Model */,
+				DE42B20C2BFF576C00FF61B0 /* Request */,
+				DE42B2112BFF588F00FF61B0 /* ProfileManager.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		DE42B20C2BFF576C00FF61B0 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				DE42B20D2BFF577E00FF61B0 /* LoginRequest.swift */,
+				DE42B20F2BFF583A00FF61B0 /* SyncTokensRequest.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		DE42B2152BFF664F00FF61B0 /* TryAgain */ = {
+			isa = PBXGroup;
+			children = (
+				DE42B2162BFF665600FF61B0 /* TryAgainViewController.swift */,
+				DE42B2182BFF666F00FF61B0 /* TryAgainView.swift */,
+			);
+			path = TryAgain;
+			sourceTree = "<group>";
+		};
+		DE42B21A2BFF700100FF61B0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DE42B21B2BFF700B00FF61B0 /* LoginResult.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -746,36 +803,42 @@
 				DE42B1D12BFF3CB200FF61B0 /* IAPActionResult.swift in Sources */,
 				DE42B1CF2BFF3CB200FF61B0 /* IAPError.swift in Sources */,
 				DE42B1A82BFF3CB200FF61B0 /* NetworkError.swift in Sources */,
+				DE42B2122BFF588F00FF61B0 /* ProfileManager.swift in Sources */,
 				DE42B1F42BFF467200FF61B0 /* MainViewCoordinator.swift in Sources */,
 				DE42B1972BFF3CB200FF61B0 /* TapAreaButton.swift in Sources */,
 				DE42B1F02BFF463B00FF61B0 /* TabItemView.swift in Sources */,
 				DE42B1C62BFF3CB200FF61B0 /* PaygateView.swift in Sources */,
 				DE42B1A62BFF3CB200FF61B0 /* PushNotificationsManager.swift in Sources */,
 				DE42B1A52BFF3CB200FF61B0 /* PushNotificationsModel.swift in Sources */,
-				DE42B1A22BFF3CB200FF61B0 /* APIRequestBody.swift in Sources */,
+				DE42B2172BFF665600FF61B0 /* TryAgainViewController.swift in Sources */,
 				DE42B19D2BFF3CB200FF61B0 /* UIDevice+Extension.swift in Sources */,
 				DE42B1F22BFF464300FF61B0 /* TabView.swift in Sources */,
 				DE42B1BC2BFF3CB200FF61B0 /* OSlideView.swift in Sources */,
 				DE42B1C02BFF3CB200FF61B0 /* Currency.swift in Sources */,
+				DE42B2142BFF5BEB00FF61B0 /* SplashViewModel.swift in Sources */,
 				DE42B1AD2BFF3CB200FF61B0 /* Scalable.swift in Sources */,
 				DE42B1942BFF3CB200FF61B0 /* PaddingLabel.swift in Sources */,
 				DE42B1952BFF3CB200FF61B0 /* PaddingTextField.swift in Sources */,
 				DE42B1B72BFF3CB200FF61B0 /* MainViewController.swift in Sources */,
+				DE42B20E2BFF577E00FF61B0 /* LoginRequest.swift in Sources */,
 				DE42B1D02BFF3CB200FF61B0 /* IAPErrorHelper.swift in Sources */,
 				DE42B1D42BFF3CB200FF61B0 /* IAPManager.swift in Sources */,
-				DE42B1A32BFF3CB200FF61B0 /* RestAPITransport.swift in Sources */,
 				DE42B1A92BFF3CB200FF61B0 /* SignError.swift in Sources */,
 				DE42B1C32BFF3CB200FF61B0 /* PaygateInfoCell.swift in Sources */,
 				DE42B18C2BFF3CB200FF61B0 /* FirebaseManager.swift in Sources */,
+				DE42B2012BFF50E300FF61B0 /* APIOperation.swift in Sources */,
 				DE42B1A02BFF3CB200FF61B0 /* UIView+RxExtension.swift in Sources */,
+				DE42B2192BFF666F00FF61B0 /* TryAgainView.swift in Sources */,
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
-				DE42B1A12BFF3CB200FF61B0 /* DefaultRequestWrapper.swift in Sources */,
 				DE42B1B32BFF3CB200FF61B0 /* Appearance.swift in Sources */,
 				DE42B1BF2BFF3CB200FF61B0 /* OnboardingViewModel.swift in Sources */,
 				DE42B1C12BFF3CB200FF61B0 /* DefaultPaygate.swift in Sources */,
+				DE42B2102BFF583A00FF61B0 /* SyncTokensRequest.swift in Sources */,
+				DE42B2062BFF50E300FF61B0 /* RequestDispatcher.swift in Sources */,
 				DE42B1EB2BFF429200FF61B0 /* Session.swift in Sources */,
 				DE42B1902BFF3CB200FF61B0 /* NavigationController.swift in Sources */,
 				DE42B1932BFF3CB200FF61B0 /* GradientView.swift in Sources */,
+				DE42B2072BFF50E300FF61B0 /* URLRequest+EndPoint.swift in Sources */,
 				DE42B1B62BFF3CB200FF61B0 /* MainView.swift in Sources */,
 				DE42B1C52BFF3CB200FF61B0 /* PaygateInteractor.swift in Sources */,
 				DE42B1CD2BFF3CB200FF61B0 /* PaygateOptionConfig.swift in Sources */,
@@ -784,10 +847,12 @@
 				DE42B1AE2BFF3CB200FF61B0 /* ScreenSize.swift in Sources */,
 				DE42B1CB2BFF3CB200FF61B0 /* SplashViewController.swift in Sources */,
 				DE42B18E2BFF3CB200FF61B0 /* RequestReview.swift in Sources */,
+				DE42B2042BFF50E300FF61B0 /* HTTPMethod.swift in Sources */,
 				DE42B18B2BFF3CB200FF61B0 /* FacebookManager.swift in Sources */,
 				DE42B1982BFF3CB200FF61B0 /* Collection+Extension.swift in Sources */,
 				DE42B1CE2BFF3CB200FF61B0 /* PaygateOptionLineComponent.swift in Sources */,
 				DE42B1D32BFF3CB200FF61B0 /* ProductPrice.swift in Sources */,
+				DE42B2032BFF50E300FF61B0 /* EndPoint.swift in Sources */,
 				DE42B19A2BFF3CB200FF61B0 /* String+Extension.swift in Sources */,
 				DE42B1B12BFF3CB200FF61B0 /* XOREncryption.swift in Sources */,
 				DE42B18D2BFF3CB200FF61B0 /* ImagePicker.swift in Sources */,
@@ -811,6 +876,7 @@
 				DE42B1892BFF3CB200FF61B0 /* AmplitudeManager.swift in Sources */,
 				DE42B1D22BFF3CB200FF61B0 /* IAPProduct.swift in Sources */,
 				DE42B1CC2BFF3CB200FF61B0 /* Paygate.swift in Sources */,
+				DE42B21C2BFF700B00FF61B0 /* LoginResult.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,
@@ -819,7 +885,9 @@
 				DE42B1AF2BFF3CB200FF61B0 /* TextAttributes.swift in Sources */,
 				DE42B1D52BFF3CB200FF61B0 /* PurchaseValidationObserver.swift in Sources */,
 				DE42B1B42BFF3CB200FF61B0 /* GlobalDefinitions.swift in Sources */,
+				DE42B2052BFF50E300FF61B0 /* NetworkSession.swift in Sources */,
 				DE42B1C42BFF3CB200FF61B0 /* PaygateProductButton.swift in Sources */,
+				DE42B2002BFF50E300FF61B0 /* APIEnvironment.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
