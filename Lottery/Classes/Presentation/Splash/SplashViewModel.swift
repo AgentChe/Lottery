@@ -59,11 +59,21 @@ private extension SplashViewModel {
             .asDriver(onErrorDriveWith: .never())
     }
     
-    // TODO: сюда добавить предзагрузку данных, т.к. список штатов, лоттереи
     func makeSyncLibrary(didCompleteLogin: Signal<Void>) -> Signal<Void> {
         didCompleteLogin
             .flatMapLatest { void -> Signal<Void> in
-                .just(Void())
+                return Observable<Void>.create { observer in
+                    DataManager.shared.preloadData { error in
+                        if let error = error {
+                            observer.onError(error)
+                        } else {
+                            observer.onNext(())
+                            observer.onCompleted()
+                        }
+                    }
+                    return Disposables.create()
+                }
+                .asSignal(onErrorSignalWith: .never())
             }
     }
     
