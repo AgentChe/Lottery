@@ -4,11 +4,6 @@
 //
 //  Created by Андрей Чернышев on 05.07.2022.
 //
-
-import UIKit
-import RxSwift
-import RxCocoa
-
 import UIKit
 import RxSwift
 import RxCocoa
@@ -16,7 +11,14 @@ import RxCocoa
 final class SplashViewController: UIViewController {
     private lazy var mainView = SplashView()
     
-    private lazy var viewModel = SplashViewModel()
+    private lazy var viewModel: SplashViewModel = {
+        let dispatcher = RequestDispatcher()
+        let sessionManager = SessionManager()
+        let contentManager = ContentManager(dispatcher: dispatcher, sessionManager: sessionManager)
+        let gamesManager = GamesManager(dispatcher: dispatcher, sessionManager: sessionManager)
+        let ticketsManager = TicketsManager(dispatcher: dispatcher, sessionManager: sessionManager)
+        return SplashViewModel(contentManager: contentManager, gamesManager: gamesManager, ticketsManager: ticketsManager)
+    }()
     
     private lazy var disposeBag = DisposeBag()
     
@@ -35,7 +37,6 @@ final class SplashViewController: UIViewController {
             guard let self = self else {
                 return .never()
             }
-            
             return self.open(error: error)
         }
         
@@ -56,28 +57,28 @@ final class SplashViewController: UIViewController {
             .disposed(by: disposeBag)
         
         sdkInitialize.observe { [weak self] in
-            self?.didCompleteValidationTrigger.accept(Void())
+            self?.didCompleteValidationTrigger.accept(())
         }
     }
     
     private func handleError(_ error: Error) {
         let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         let retryAction = UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
-            self?.didCompleteValidationTrigger.accept(Void())
+            self?.didCompleteValidationTrigger.accept(())
         }
         alertController.addAction(retryAction)
         present(alertController, animated: true, completion: nil)
     }
 }
 
-// MARK: Make
+// MARK: - Factory Method
 extension SplashViewController {
     static func make() -> SplashViewController {
-        SplashViewController()
+        return SplashViewController()
     }
 }
 
-// MARK: Private
+// MARK: - Private Methods
 private extension SplashViewController {
     func goNext(route: SplashViewModel.Route) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -92,6 +93,7 @@ private extension SplashViewController {
         case .main:
             let nc = NavigationController(rootViewController: MainViewController.make())
             nc.setNavigationBarHidden(true, animated: false)
+            UIApplication.shared.keyWindow?.rootViewController = nc
         case .paygate:
             let vc = PaygateViewController.make { [weak self] in
                 self?.route(.main)
@@ -101,19 +103,18 @@ private extension SplashViewController {
     }
     
     func open(error: Error) -> Observable<Void> {
-        Observable<Void>
-            .create { [weak self] observe in
-                guard let self = self else {
-                    return Disposables.create()
-                }
-                
-                let vc = TryAgainViewController.make(error: error) {
-                    observe.onNext(())
-                    observe.onCompleted()
-                }
-                self.present(vc, animated: true)
-                
+        return Observable<Void>.create { [weak self] observer in
+            guard let self = self else {
                 return Disposables.create()
             }
+            
+            let vc = TryAgainViewController.make(error: error) {
+                observer.onNext(())
+                observer.onCompleted()
+            }
+            self.present(vc, animated: true)
+            
+            return Disposables.create()
+        }
     }
 }
