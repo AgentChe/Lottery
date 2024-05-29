@@ -30,15 +30,35 @@ extension SplashViewModel {
     
     struct Output {
         let route: Driver<Route>
+        let error: Driver<Error>
     }
     
     func configure(input: Input) -> Output {
         let didCompleteLogin = makeLogin(didCompleteValidation: input.didCompleteValidation)
         let didSyncLibrary = makeSyncLibrary(didCompleteLogin: didCompleteLogin)
         
-        return Output (
-            route: makeRoute(didSyncLibrary: didSyncLibrary)
-        )
+        let route = makeRoute(didSyncLibrary: didSyncLibrary)
+        let error = didSyncLibrary
+            .asObservable()
+            .materialize()
+            .filter { event in
+                if case .error = event {
+                    return true
+                }
+                return false
+            }
+            .map { event in
+                switch event {
+                case .error(let error):
+                    return error
+                default:
+                    return nil
+                }
+            }
+            .compactMap { $0 }
+            .asDriver(onErrorDriveWith: .empty())
+        
+        return Output(route: route, error: error)
     }
 }
 

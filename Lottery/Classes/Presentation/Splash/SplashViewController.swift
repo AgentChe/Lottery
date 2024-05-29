@@ -9,6 +9,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+import UIKit
+import RxSwift
+import RxCocoa
+
 final class SplashViewController: UIViewController {
     private lazy var mainView = SplashView()
     
@@ -45,9 +49,24 @@ final class SplashViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
+        output.error
+            .drive(onNext: { [weak self] error in
+                self?.handleError(error)
+            })
+            .disposed(by: disposeBag)
+        
         sdkInitialize.observe { [weak self] in
             self?.didCompleteValidationTrigger.accept(Void())
         }
+    }
+    
+    private func handleError(_ error: Error) {
+        let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        let retryAction = UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
+            self?.didCompleteValidationTrigger.accept(Void())
+        }
+        alertController.addAction(retryAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -90,6 +109,7 @@ private extension SplashViewController {
                 
                 let vc = TryAgainViewController.make(error: error) {
                     observe.onNext(())
+                    observe.onCompleted()
                 }
                 self.present(vc, animated: true)
                 
