@@ -15,6 +15,17 @@ protocol GamesManagerProtocol {
 final class GamesManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
+    private var operations: [UUID: any APIOperationProtocol] = [:]
+
+    private func storeOperation(_ operation: any APIOperationProtocol) -> UUID {
+        let id = UUID()
+        operations[id] = operation
+        return id
+    }
+
+    private func removeOperation(withId id: UUID) {
+        operations.removeValue(forKey: id)
+    }
 }
 
 // MARK: - GamesManagerProtocol
@@ -27,8 +38,14 @@ extension GamesManager: GamesManagerProtocol {
 
         let request = FetchNextGamesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
+
+        let operationId = storeOperation(operation)
         
-        operation.execute(dispatcher: dispatcher) { result, error in
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
+            defer {
+                self?.removeOperation(withId: operationId)
+            }
+
             if let error = error {
                 completion(.failure(error))
             } else if let gamesArray = result as? [[String: Any]] {
@@ -39,7 +56,7 @@ extension GamesManager: GamesManagerProtocol {
             }
         }
     }
-    
+
     func fetchPastGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
             completion(.failure(ContentError(.notContent)))
@@ -48,8 +65,14 @@ extension GamesManager: GamesManagerProtocol {
 
         let request = FetchPastGamesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
+
+        let operationId = storeOperation(operation)
         
-        operation.execute(dispatcher: dispatcher) { result, error in
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
+            defer {
+                self?.removeOperation(withId: operationId)
+            }
+
             if let error = error {
                 completion(.failure(error))
             } else if let gamesArray = result as? [[String: Any]] {
