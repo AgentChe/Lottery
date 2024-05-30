@@ -14,9 +14,9 @@ final class SplashViewController: UIViewController {
     private lazy var viewModel: SplashViewModel = {
         let dispatcher = RequestDispatcher()
         let sessionManager = SessionManager()
-        let contentManager = ContentManager(dispatcher: dispatcher, sessionManager: sessionManager)
-        let gamesManager = GamesManager(dispatcher: dispatcher, sessionManager: sessionManager)
-        let ticketsManager = TicketsManager(dispatcher: dispatcher, sessionManager: sessionManager)
+        let contentManager = ContentManager()
+        let gamesManager = GamesManager()
+        let ticketsManager = TicketsManager()
         return SplashViewModel(contentManager: contentManager, gamesManager: gamesManager, ticketsManager: ticketsManager)
     }()
     

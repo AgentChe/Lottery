@@ -6,12 +6,9 @@
 //
 
 import Foundation
-struct FetchStatesRequest: EndPoint {
-    private let sessionManager: SessionManagerProtocol
 
-       init(sessionManager: SessionManagerProtocol) {
-           self.sessionManager = sessionManager
-       }
+struct FetchStatesRequest: EndPoint {
+    let userToken: String
     
     var path: String {
         "/api/states"
@@ -24,7 +21,7 @@ struct FetchStatesRequest: EndPoint {
     var parameters: [String : Any] {
         [
             "_api_key": GlobalDefinitions.apiKey,
-            "_user_token":  sessionManager.getSession()?.userToken ?? ""
+            "_user_token": userToken
         ]
     }
     

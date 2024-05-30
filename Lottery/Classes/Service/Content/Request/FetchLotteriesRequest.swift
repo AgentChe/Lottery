@@ -5,17 +5,11 @@
 //  Created by Niiaz Khasanov on 5/30/24.
 //
 
-import RxCocoa
-import OtterScaleiOS
+import Foundation
 
 struct FetchLotteriesRequest: EndPoint {
-    private let sessionManager: SessionManagerProtocol
     let stateId: Int?
-    
-    init(stateId: Int?, sessionManager: SessionManagerProtocol) {
-        self.stateId = stateId
-        self.sessionManager = sessionManager
-    }
+    let userToken: String
     
     var path: String {
         "/api/lotteries"
@@ -28,10 +22,10 @@ struct FetchLotteriesRequest: EndPoint {
     var parameters: [String: Any] {
         var params: [String: Any] = [
             "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": sessionManager.getSession()?.userToken ?? ""
+            "_user_token": userToken
         ]
         if let stateId = stateId {
-            params["state_id"] = stateId
+            params["state_id"] = "\(stateId)"
         }
         return params
     }

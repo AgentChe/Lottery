@@ -9,7 +9,7 @@ import Foundation
 
 struct FetchPastGamesRequest: EndPoint {
     let stateId: Int?
-    let sessionManager: SessionManagerProtocol
+    let userToken: String
     
     var path: String {
         "/api/games/past"
@@ -22,7 +22,7 @@ struct FetchPastGamesRequest: EndPoint {
     var parameters: [String : Any] {
         var params = [
             "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": sessionManager.getSession()?.userToken ?? ""
+            "_user_token": userToken
         ]
         if let stateId = stateId {
             params["state_id"] = "\(stateId)"

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Foundation
 
 protocol GamesManagerProtocol {
     func fetchNextGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void)
@@ -14,25 +13,26 @@ protocol GamesManagerProtocol {
 }
 
 final class GamesManager {
-    private let dispatcher: RequestDispatcherProtocol
-    private let sessionManager: SessionManagerProtocol
-
-    init(dispatcher: RequestDispatcherProtocol, sessionManager: SessionManagerProtocol) {
-        self.dispatcher = dispatcher
-        self.sessionManager = sessionManager
-    }
+    private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
+    private let sessionManager: SessionManagerProtocol = SessionManager()
 }
 
 // MARK: - GamesManagerProtocol
 extension GamesManager: GamesManagerProtocol {
     func fetchNextGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void) {
-        let request = FetchNextGamesRequest(stateId: stateId, sessionManager: sessionManager)
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
+
+        let request = FetchNextGamesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
         
         operation.execute(dispatcher: dispatcher) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let games = result as? [Game] {
+            } else if let gamesArray = result as? [[String: Any]] {
+                let games = gamesArray.compactMap { Game(response: $0) }
                 completion(.success(games))
             } else {
                 completion(.failure(ContentError(.notContent)))
@@ -41,13 +41,19 @@ extension GamesManager: GamesManagerProtocol {
     }
     
     func fetchPastGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void) {
-        let request = FetchPastGamesRequest(stateId: stateId, sessionManager: sessionManager)
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
+
+        let request = FetchPastGamesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
         
         operation.execute(dispatcher: dispatcher) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let games = result as? [Game] {
+            } else if let gamesArray = result as? [[String: Any]] {
+                let games = gamesArray.compactMap { Game(response: $0) }
                 completion(.success(games))
             } else {
                 completion(.failure(ContentError(.notContent)))

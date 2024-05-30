@@ -9,31 +9,26 @@
 import Foundation
 
 protocol TicketsManagerProtocol {
-    func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
-    func editTicket(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
-    func listTickets(completion: @escaping (Result<[Ticket], Error>) -> Void)
+    func addTicket(userToken: String, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
+    func editTicket(userToken: String, id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
+    func listTickets(userToken: String, completion: @escaping (Result<[Ticket], Error>) -> Void)
 }
 
 final class TicketsManager {
-    private let dispatcher: RequestDispatcherProtocol
-    private let sessionManager: SessionManagerProtocol
-
-    init(dispatcher: RequestDispatcherProtocol, sessionManager: SessionManagerProtocol) {
-        self.dispatcher = dispatcher
-        self.sessionManager = sessionManager
-    }
+    private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
+    private let sessionManager: SessionManagerProtocol = SessionManager()
 }
 
 // MARK: - TicketsManagerProtocol
 extension TicketsManager: TicketsManagerProtocol {
-    func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
-        let request = AddTicketRequest(lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers, sessionManager: sessionManager)
+    func addTicket(userToken: String, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+        let request = AddTicketRequest(userToken: userToken, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
         
         operation.execute(dispatcher: dispatcher) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let ticket = result as? Ticket {
+            } else if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
                 completion(.success(ticket))
             } else {
                 completion(.failure(ContentError(.notContent)))
@@ -41,14 +36,14 @@ extension TicketsManager: TicketsManagerProtocol {
         }
     }
     
-    func editTicket(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
-        let request = EditTicketRequest(id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers, sessionManager: sessionManager)
+    func editTicket(userToken: String, id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+        let request = EditTicketRequest(userToken: userToken, id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
         
         operation.execute(dispatcher: dispatcher) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let ticket = result as? Ticket {
+            } else if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
                 completion(.success(ticket))
             } else {
                 completion(.failure(ContentError(.notContent)))
@@ -56,14 +51,15 @@ extension TicketsManager: TicketsManagerProtocol {
         }
     }
     
-    func listTickets(completion: @escaping (Result<[Ticket], Error>) -> Void) {
-        let request = ListTicketsRequest(sessionManager: sessionManager)
+    func listTickets(userToken: String, completion: @escaping (Result<[Ticket], Error>) -> Void) {
+        let request = ListTicketsRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
         
         operation.execute(dispatcher: dispatcher) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let tickets = result as? [Ticket] {
+            } else if let ticketsArray = result as? [[String: Any]] {
+                let tickets = ticketsArray.compactMap { Ticket(response: $0) }
                 completion(.success(tickets))
             } else {
                 completion(.failure(ContentError(.notContent)))

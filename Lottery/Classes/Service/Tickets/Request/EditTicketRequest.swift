@@ -7,12 +7,12 @@
 import Foundation
 
 struct EditTicketRequest: EndPoint {
+    let userToken: String
     let id: Int
     let lotteryId: Int
     let pictureUrl: URL?
     let date: TimeInterval
     let numbers: [[Int]]
-    let sessionManager: SessionManagerProtocol
     
     var path: String {
         "/api/tickets/edit"
@@ -25,7 +25,7 @@ struct EditTicketRequest: EndPoint {
     var parameters: [String : Any] {
         [
             "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": sessionManager.getSession()?.userToken ?? "",
+            "_user_token": userToken,
             "id": id,
             "lotteryId": lotteryId,
             "pictureUrl": pictureUrl?.absoluteString as Any,

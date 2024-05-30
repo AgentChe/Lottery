@@ -8,7 +8,7 @@
 import Foundation
 
 struct ListTicketsRequest: EndPoint {
-    let sessionManager: SessionManagerProtocol
+    let userToken: String
     
     var path: String {
         "/api/tickets/list"
@@ -21,7 +21,7 @@ struct ListTicketsRequest: EndPoint {
     var parameters: [String : Any] {
         [
             "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": sessionManager.getSession()?.userToken ?? ""
+            "_user_token": userToken
         ]
     }
     

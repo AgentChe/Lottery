@@ -15,4 +15,21 @@ struct Game: Codable {
     let cashValue: String?
     let winningNumbers: [[Int]]?
     let myLuckyNumbers: [[Int]]?
+
+    init?(response: Any) {
+        guard let dict = response as? [String: Any],
+              let id = dict["id"] as? Int,
+              let lotteryId = dict["lottery_id"] as? Int,
+              let date = dict["date"] as? TimeInterval,
+              let jackpot = dict["jackpot"] as? String else {
+            return nil
+        }
+        self.id = id
+        self.lotteryId = lotteryId
+        self.date = date
+        self.jackpot = jackpot
+        self.cashValue = dict["cash_value"] as? String
+        self.winningNumbers = dict["winning_numbers"] as? [[Int]]
+        self.myLuckyNumbers = dict["my_lucky_numbers"] as? [[Int]]
+    }
 }
