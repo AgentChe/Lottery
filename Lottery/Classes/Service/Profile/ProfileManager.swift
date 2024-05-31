@@ -24,17 +24,7 @@ final class ProfileManager {
 
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [UUID: any APIOperationProtocol] = [:]
-
-    private func storeOperation(_ operation: any APIOperationProtocol) -> UUID {
-        let id = UUID()
-        operations[id] = operation
-        return id
-    }
-
-    private func removeOperation(withId id: UUID) {
-        operations.removeValue(forKey: id)
-    }
+    private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: ProfileManagerProtocol
@@ -42,12 +32,13 @@ extension ProfileManager: ProfileManagerProtocol {
     func syncTokens(oldToken: String, newToken: String, complete: ((LoginResult) -> Void)? = nil) {
         let request = SyncTokensRequest(oldToken: oldToken, newToken: newToken)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self?.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             DispatchQueue.main.async {
@@ -59,12 +50,13 @@ extension ProfileManager: ProfileManagerProtocol {
     func login(userToken: String, complete: ((LoginResult) -> Void)? = nil) {
         let request = LoginRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self?.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             DispatchQueue.main.async {
@@ -82,11 +74,12 @@ extension ProfileManager: ProfileManagerProtocol {
         let request = GetProfileRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
 
-        let operationId = storeOperation(operation)
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self?.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             DispatchQueue.main.async {
@@ -110,11 +103,12 @@ extension ProfileManager: ProfileManagerProtocol {
         let request = SetProfileRequest(userToken: userToken, lotteries: lotteries, state: state)
         let operation = APIOperation(endPoint: request)
 
-        let operationId = storeOperation(operation)
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self?.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             DispatchQueue.main.async {

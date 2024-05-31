@@ -15,21 +15,11 @@ protocol ContentManagerProtocol {
 final class ContentManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [UUID: any APIOperationProtocol] = [:]
+    private var operations: [String: any APIOperationProtocol] = [:]
 
     private enum Constants {
         static let stateCacheKey = "states_cache"
         static let lotteryCacheKey = "lotteries_cache"
-    }
-
-    private func storeOperation(_ operation: any APIOperationProtocol) -> UUID {
-        let id = UUID()
-        operations[id] = operation
-        return id
-    }
-
-    private func removeOperation(withId id: UUID) {
-        operations.removeValue(forKey: id)
     }
 }
 
@@ -48,12 +38,13 @@ extension ContentManager: ContentManagerProtocol {
         
         let request = FetchStatesRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self?.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             if let error = error {
@@ -81,12 +72,13 @@ extension ContentManager: ContentManagerProtocol {
         
         let request = FetchLotteriesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self?.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             if let error = error {

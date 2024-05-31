@@ -16,17 +16,7 @@ protocol TicketsManagerProtocol {
 final class TicketsManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [UUID: any APIOperationProtocol] = [:]
-
-    private func storeOperation(_ operation: any APIOperationProtocol) -> UUID {
-        let id = UUID()
-        operations[id] = operation
-        return id
-    }
-
-    private func removeOperation(withId id: UUID) {
-        operations.removeValue(forKey: id)
-    }
+    private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: - TicketsManagerProtocol
@@ -34,12 +24,13 @@ extension TicketsManager: TicketsManagerProtocol {
     func addTicket(userToken: String, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
         let request = AddTicketRequest(userToken: userToken, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
-        operation.execute(dispatcher: dispatcher) { result, error in
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             if let error = error {
@@ -55,12 +46,13 @@ extension TicketsManager: TicketsManagerProtocol {
     func editTicket(userToken: String, id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
         let request = EditTicketRequest(userToken: userToken, id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
-        operation.execute(dispatcher: dispatcher) { result, error in
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             if let error = error {
@@ -76,12 +68,13 @@ extension TicketsManager: TicketsManagerProtocol {
     func listTickets(userToken: String, completion: @escaping (Result<[Ticket], Error>) -> Void) {
         let request = ListTicketsRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
-
-        let operationId = storeOperation(operation)
         
-        operation.execute(dispatcher: dispatcher) { result, error in
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             defer {
-                self.removeOperation(withId: operationId)
+                self?.operations.removeValue(forKey: operationId)
             }
 
             if let error = error {
