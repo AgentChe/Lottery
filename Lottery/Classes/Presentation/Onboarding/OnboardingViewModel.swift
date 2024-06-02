@@ -13,9 +13,21 @@ final class OnboardingViewModel {
     }
     
     private lazy var sessionManager = SessionManager()
+    private let profileManager: ProfileManagerProtocol = ProfileManager() // Inject ProfileManager
     
     // MARK: Public
     func whatNext() -> Step {
         sessionManager.hasActiveSubscriptions() ? .main : .paygate
+    }
+    
+    func setProfile(state: Int?, lotteries: [Int], completion: @escaping (Result<Void, Error>) -> Void) {
+        profileManager.setProfile(lotteries: lotteries, state: state) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 class SelectStateViewController: UIViewController {
-    var onContinue: (() -> Void)?
+    var onContinue: ((Int?) -> Void)?
     
     private let selectStateView = SelectStateView()
     
@@ -26,6 +26,7 @@ class SelectStateViewController: UIViewController {
     }
     
     @objc private func continueButtonTapped() {
-        onContinue?()
+        let selectedState = selectStateView.getSelectedState()
+        onContinue?(selectedState)
     }
 }

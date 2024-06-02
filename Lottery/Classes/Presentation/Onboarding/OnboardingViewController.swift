@@ -17,6 +17,9 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     private let progressView = UIProgressView(progressViewStyle: .default)
     private lazy var viewModel = OnboardingViewModel()
     private lazy var disposeBag = DisposeBag()
+    private let profileManager: ProfileManagerProtocol = ProfileManager()
+    private var selectedState: Int?
+    private var selectedGames: [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,24 +59,44 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func showSelectStateViewController() {
         let selectStateVC = SelectStateViewController()
-        selectStateVC.onContinue = { [weak self] in
-            self?.showSelectGameViewController()
+        selectStateVC.onContinue = { [weak self] selectedState in
+            guard let self = self else { return }
+            self.selectedState = selectedState
+            self.showSelectGameViewController()
         }
         pushViewController(selectStateVC, animated: true)
     }
     
     private func showSelectGameViewController() {
         let selectGameVC = SelectGameViewController()
-        selectGameVC.onContinue = { [weak self] in
-            self?.completeOnboarding()
+        selectGameVC.onContinue = { [weak self] selectedGames in
+            guard let self = self else { return }
+            self.selectedGames = selectedGames
+            self.completeOnboarding()
         }
         pushViewController(selectGameVC, animated: true)
     }
     
     private func completeOnboarding() {
         markAsViewed()
-        let nextStep = viewModel.whatNext()
-        goToNext(at: nextStep)
+        saveProfile()
+    }
+    
+    private func saveProfile() {
+        guard let stateId = selectedState else {
+            return
+        }
+        
+        profileManager.setProfile(lotteries: selectedGames, state: stateId) { [weak self] result in
+            switch result {
+            case .success:
+                let nextStep = self?.viewModel.whatNext() ?? .main
+                self?.goToNext(at: nextStep)
+            case .failure(let error):
+                print("Failed to set profile: \(error)")
+                // Handle error
+            }
+        }
     }
     
     private func updateProgress() {

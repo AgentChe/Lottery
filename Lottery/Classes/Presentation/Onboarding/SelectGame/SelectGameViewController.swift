@@ -8,8 +8,10 @@
 
 import UIKit
 
+import UIKit
+
 class SelectGameViewController: UIViewController {
-    var onContinue: (() -> Void)?
+    var onContinue: (([Int]) -> Void)?
     
     private let selectGameView = SelectGameView()
     
@@ -27,6 +29,7 @@ class SelectGameViewController: UIViewController {
     }
     
     @objc private func continueButtonTapped() {
-        onContinue?()
+        let selectedGames = selectGameView.getSelectedGames()
+        onContinue?(selectedGames)
     }
 }
