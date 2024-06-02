@@ -27,6 +27,12 @@
 		A3FF55812C08BFDB00E81771 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55802C08BFDB00E81771 /* Profile.swift */; };
 		A3FF55832C08C02100E81771 /* SetProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55822C08C02100E81771 /* SetProfileRequest.swift */; };
 		A3FF55852C08C03400E81771 /* GetProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55842C08C03400E81771 /* GetProfileRequest.swift */; };
+		A3FF55872C0CC37500E81771 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55862C0CC37500E81771 /* WelcomeViewController.swift */; };
+		A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55882C0CC38C00E81771 /* SelectStateViewController.swift */; };
+		A3FF558B2C0CC3AA00E81771 /* SelectGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */; };
+		A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */; };
+		A3FF558F2C0CC3EF00E81771 /* SelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */; };
+		A3FF55912C0CC40500E81771 /* SelectGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55902C0CC40500E81771 /* SelectGameView.swift */; };
 		DE42B1122BFF39C000FF61B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE42B1112BFF39C000FF61B0 /* Assets.xcassets */; };
 		DE42B1152BFF39C000FF61B0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = DE42B1142BFF39C000FF61B0 /* Base */; };
 		DE42B1892BFF3CB200FF61B0 /* AmplitudeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B11D2BFF3CB100FF61B0 /* AmplitudeManager.swift */; };
@@ -149,6 +155,12 @@
 		A3FF55802C08BFDB00E81771 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		A3FF55822C08C02100E81771 /* SetProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileRequest.swift; sourceTree = "<group>"; };
 		A3FF55842C08C03400E81771 /* GetProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileRequest.swift; sourceTree = "<group>"; };
+		A3FF55862C0CC37500E81771 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
+		A3FF55882C0CC38C00E81771 /* SelectStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStateViewController.swift; sourceTree = "<group>"; };
+		A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGameViewController.swift; sourceTree = "<group>"; };
+		A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStateView.swift; sourceTree = "<group>"; };
+		A3FF55902C0CC40500E81771 /* SelectGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGameView.swift; sourceTree = "<group>"; };
 		A7729D0A1077521A8B7DD161 /* Pods-Lottery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.debug.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.debug.xcconfig"; sourceTree = "<group>"; };
 		DE42B1052BFF39BE00FF61B0 /* Lottery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lottery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE42B1112BFF39C000FF61B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -567,6 +579,12 @@
 				DE42B15F2BFF3CB100FF61B0 /* Views */,
 				DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */,
 				DE42B1622BFF3CB100FF61B0 /* OnboardingViewModel.swift */,
+				A3FF55862C0CC37500E81771 /* WelcomeViewController.swift */,
+				A3FF55882C0CC38C00E81771 /* SelectStateViewController.swift */,
+				A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */,
+				A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */,
+				A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */,
+				A3FF55902C0CC40500E81771 /* SelectGameView.swift */,
 				DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */,
 			);
 			path = Onboarding;
@@ -994,6 +1012,7 @@
 				DE42B2032BFF50E300FF61B0 /* EndPoint.swift in Sources */,
 				DE42B19A2BFF3CB200FF61B0 /* String+Extension.swift in Sources */,
 				DE42B1B12BFF3CB200FF61B0 /* XOREncryption.swift in Sources */,
+				A3FF558F2C0CC3EF00E81771 /* SelectStateView.swift in Sources */,
 				DE42B18D2BFF3CB200FF61B0 /* ImagePicker.swift in Sources */,
 				DE42B1A72BFF3CB200FF61B0 /* ContentError.swift in Sources */,
 				DE42B1AC2BFF3CB200FF61B0 /* ObservableRetrySingle.swift in Sources */,
@@ -1026,9 +1045,13 @@
 				A3FF55732C07E5A300E81771 /* Ticket.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
+				A3FF558B2C0CC3AA00E81771 /* SelectGameViewController.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,
 				DE42B1B02BFF3CB200FF61B0 /* Weak.swift in Sources */,
+				A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */,
 				A3FF55792C07E62D00E81771 /* ListTicketsRequest.swift in Sources */,
+				A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */,
+				A3FF55872C0CC37500E81771 /* WelcomeViewController.swift in Sources */,
 				DE42B19C2BFF3CB200FF61B0 /* UIColor+Extension.swift in Sources */,
 				DE42B1AF2BFF3CB200FF61B0 /* TextAttributes.swift in Sources */,
 				DE42B1D52BFF3CB200FF61B0 /* PurchaseValidationObserver.swift in Sources */,
@@ -1037,6 +1060,7 @@
 				DE42B1C42BFF3CB200FF61B0 /* PaygateProductButton.swift in Sources */,
 				DE42B2002BFF50E300FF61B0 /* APIEnvironment.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
+				A3FF55912C0CC40500E81771 /* SelectGameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

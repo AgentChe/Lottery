@@ -7,35 +7,100 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
-final class OnboardingViewController: UIViewController {
+final class OnboardingViewController: UINavigationController, UINavigationControllerDelegate {
     struct Constants {
         static let wasViewedKey = "onboarding_view_controller_was_viewed_key"
     }
     
-    lazy var mainView = OnboardingView()
-    
-    private lazy var disposeBag = DisposeBag()
-    
+    private let progressView = UIProgressView(progressViewStyle: .default)
     private lazy var viewModel = OnboardingViewModel()
-    
-    override func loadView() {
-        view = mainView
-    }
+    private lazy var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.delegate = self
+        self.isNavigationBarHidden = true // Hide the navigation bar
+        setupProgressView()
+        setupInitialViewController()
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
+    
+    private func setupProgressView() {
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.progressTintColor = UIColor.red
+        progressView.trackTintColor = UIColor.lightGray
+        view.addSubview(progressView) // Add to view instead of navigationBar
         
-        mainView.didFinish = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.markAsViewed()
-            
-            let step = self.viewModel.whatNext()
-            self.goToNext(at: step)
+        NSLayoutConstraint.activate([
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 5)
+        ])
+        
+        updateProgress()
+    }
+    
+    private func setupInitialViewController() {
+        let welcomeVC = WelcomeViewController()
+        welcomeVC.onContinue = { [weak self] in
+            self?.showSelectStateViewController()
         }
+        setViewControllers([welcomeVC], animated: false)
+    }
+    
+    private func showSelectStateViewController() {
+        let selectStateVC = SelectStateViewController()
+        selectStateVC.onContinue = { [weak self] in
+            self?.showSelectGameViewController()
+        }
+        pushViewController(selectStateVC, animated: true)
+    }
+    
+    private func showSelectGameViewController() {
+        let selectGameVC = SelectGameViewController()
+        selectGameVC.onContinue = { [weak self] in
+            self?.completeOnboarding()
+        }
+        pushViewController(selectGameVC, animated: true)
+    }
+    
+    private func completeOnboarding() {
+        markAsViewed()
+        let nextStep = viewModel.whatNext()
+        goToNext(at: nextStep)
+    }
+    
+    private func updateProgress() {
+        let totalSteps = 3
+        let currentStep = viewControllers.count
+        let progress = Float(currentStep) / Float(totalSteps)
+        progressView.setProgress(progress, animated: true)
+    }
+    
+    private func markAsViewed() {
+        UserDefaults.standard.setValue(true, forKey: Constants.wasViewedKey)
+    }
+    
+    private func goToNext(at step: OnboardingViewModel.Step) {
+        switch step {
+        case .main:
+            UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController = NavigationController(rootViewController: MainViewController.make())
+        case .paygate:
+            let vc = PaygateViewController.make { [weak self] in
+                self?.goToNext(at: .main)
+            }
+            present(vc, animated: true)
+        }
+    }
+    
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        updateProgress()
     }
 }
 
@@ -50,24 +115,5 @@ extension OnboardingViewController {
 extension OnboardingViewController {
     static func wasViewed() -> Bool {
         UserDefaults.standard.bool(forKey: OnboardingViewController.Constants.wasViewedKey)
-    }
-}
-
-// MARK: Private
-private extension OnboardingViewController {
-    func markAsViewed() {
-        UserDefaults.standard.setValue(true, forKey: Constants.wasViewedKey)
-    }
-    
-    func goToNext(at step: OnboardingViewModel.Step) {
-        switch step {
-        case .main:
-            UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController = NavigationController(rootViewController: MainViewController.make()) 
-        case .paygate:
-            let vc = PaygateViewController.make { [weak self] in
-                self?.goToNext(at: .main)
-            }
-            present(vc, animated: true)
-        }
     }
 }

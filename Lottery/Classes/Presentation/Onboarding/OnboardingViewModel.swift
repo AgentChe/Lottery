@@ -5,8 +5,7 @@
 //  Created by Андрей Чернышев on 23.08.2022.
 //
 
-import RxSwift
-import RxCocoa
+import Foundation
 
 final class OnboardingViewModel {
     enum Step {
@@ -14,10 +13,8 @@ final class OnboardingViewModel {
     }
     
     private lazy var sessionManager = SessionManager()
-}
-
-// MARK: Public
-extension OnboardingViewModel {
+    
+    // MARK: Public
     func whatNext() -> Step {
         sessionManager.hasActiveSubscriptions() ? .main : .paygate
     }
