@@ -1,4 +1,3 @@
-
 //  WelcomeView.swift
 //  Lottery
 //
@@ -13,8 +12,14 @@ final class WelcomeView: UIView {
     
     let startButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("Welcome.StartButton", comment: "Start"), for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        
+        let attributedTitle = NSLocalizedString("Welcome.StartButton", comment: "Start").attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -22,21 +27,29 @@ final class WelcomeView: UIView {
     }()
     
     private let welcomeLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.bold(size: 19.scale))
+            .lineHeight(22.8.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("Welcome.Title", comment: "WELCOME TO LOTTERY SCANNER!")
-        label.font = Fonts.Inter.bold(size: 19.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("Welcome.Title", comment: "WELCOME TO LOTTERY SCANNER!").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let bulletPoint1Label: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 16.scale))
+            .lineHeight(19.2.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("Welcome.BulletPoint1", comment: "Monitor the main national lottery games")
-        label.font = Fonts.Inter.medium(size: 16.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("Welcome.BulletPoint1", comment: "Monitor the main national lottery games").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -49,11 +62,15 @@ final class WelcomeView: UIView {
     }()
     
     private let bulletPoint2Label: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 16.scale))
+            .lineHeight(19.2.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("Welcome.BulletPoint2", comment: "Scan and save your tickets")
-        label.font = Fonts.Inter.medium(size: 16.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("Welcome.BulletPoint2", comment: "Scan and save your tickets").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -66,11 +83,15 @@ final class WelcomeView: UIView {
     }()
     
     private let bulletPoint3Label: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 16.scale))
+            .lineHeight(19.2.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("Welcome.BulletPoint3", comment: "Get notified when drawings come out")
-        label.font = Fonts.Inter.medium(size: 16.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("Welcome.BulletPoint3", comment: "Get notified when drawings come out").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

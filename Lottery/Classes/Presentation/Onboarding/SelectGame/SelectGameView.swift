@@ -12,9 +12,14 @@ final class SelectGameView: UIView {
     
     let continueButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("SelectGame.Continue", comment: "Continue"), for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
+        
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        
+        let attributedTitle = NSLocalizedString("SelectGame.Continue", comment: "Continue").attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -25,9 +30,14 @@ final class SelectGameView: UIView {
     
     let addAnotherGameButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("SelectGame.AddAnotherGame", comment: "Add another game"), for: .normal)
-        button.setTitleColor(Appearance.mono200, for: .normal)
-        button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
+        
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        
+        let attributedTitle = NSLocalizedString("SelectGame.AddAnotherGame", comment: "Add another game").attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        
         button.backgroundColor = .white
         button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
         button.layer.borderWidth = 1.scale
@@ -37,31 +47,30 @@ final class SelectGameView: UIView {
     }()
     
     private let headerLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.bold(size: 19.scale))
+            .lineHeight(22.8.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("SelectGame.Header", comment: "SELECT THE GAME")
-        label.font = Fonts.Inter.bold(size: 19.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("SelectGame.Header", comment: "SELECT THE GAME").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let descriptionLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.main300)
+            .font(Fonts.Inter.medium(size: 15.scale))
+            .lineHeight(18.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("SelectGame.Description", comment: "Please choose the game to monitor. You can add another game if it is not on the list.")
-        label.font = Fonts.Inter.medium(size: 15.scale)
-        label.textColor = Appearance.main300
+        label.attributedText = NSLocalizedString("SelectGame.Description", comment: "Please choose the game to monitor. You can add another game if it is not on the list.").attributed(with: attrs)
         label.numberOfLines = 2
-        label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6.scale  // Adjust this value as needed
-        
-        let attributedString = NSMutableAttributedString(string: label.text ?? "")
-        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
-        label.attributedText = attributedString
-        
         return label
     }()
     
@@ -170,10 +179,13 @@ extension SelectGameView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath)
         
-        // Configure the text label
-        cell.textLabel?.text = games[indexPath.row].jackpot
-        cell.textLabel?.textColor = Appearance.mono200
-        cell.textLabel?.font = Fonts.Inter.medium(size: 15.scale)
+        let game = games[indexPath.row]
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 15.scale))
+            .lineHeight(18.scale)
+        
+        cell.textLabel?.attributedText = game.jackpot.attributed(with: attrs)
         
         // Configure the accessory view with additional space to the right
         let accessoryImageView = UIImageView(image: UIImage(named: selectedGames.contains(indexPath.row) ? "Game.Selected" : "Game.NotSelected"))

@@ -1,4 +1,3 @@
-//
 //  SuggestNewGameView.swift
 //  Lottery
 //
@@ -12,56 +11,58 @@ final class SuggestNewGameView: UIView {
     // MARK: - UI Components
     
     let headerLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.bold(size: 19.scale))
+            .lineHeight(22.8.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("SuggestNewGame.Header", comment: "Suggest a New Game")
-        label.font = Fonts.Inter.bold(size: 19.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("SuggestNewGame.Header", comment: "Suggest a New Game").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let descriptionLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.main300)
+            .font(Fonts.Inter.medium(size: 15.scale))
+            .lineHeight(18.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("SuggestNewGame.Description", comment: "Let us know which game you want to monitor. We will add it to shortly on the list.")
-        label.font = Fonts.Inter.medium(size: 15.scale)
-        label.textColor = Appearance.main300
+        label.attributedText = NSLocalizedString("SuggestNewGame.Description", comment: "Let us know which game you want to monitor. We will add it to shortly on the list.").attributed(with: attrs)
         label.numberOfLines = 2
-        label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6.scale
-        
-        let attributedString = NSMutableAttributedString(string: label.text ?? "")
-        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
-        label.attributedText = attributedString
-        
         return label
     }()
     
     let textField: InsetTextField = {
         let textField = InsetTextField()
-        textField.placeholder = NSLocalizedString("SuggestNewGame.TextField.Placeholder", comment: "  Type in the game title")
+        let attrs = TextAttributes()
+            .textColor(Appearance.main300)
+            .font(Fonts.Inter.medium(size: 15.scale))
+        
+        textField.attributedPlaceholder = NSLocalizedString("SuggestNewGame.TextField.Placeholder", comment: "  Type in the game title").attributed(with: attrs)
         textField.font = Fonts.Inter.medium(size: 15.scale)
         textField.textColor = Appearance.mono200
         textField.backgroundColor = .white
         textField.borderStyle = .roundedRect
         textField.translatesAutoresizingMaskIntoConstraints = false
-        
-        let placeholderAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: Appearance.main300
-        ]
-        textField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("SuggestNewGame.TextField.Placeholder", comment: "  Type in the game title"), attributes: placeholderAttributes)
-        
         return textField
     }()
     
     let saveButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("SuggestNewGame.Save", comment: "Save"), for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
+        
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        
+        let attributedTitle = NSLocalizedString("SuggestNewGame.Save", comment: "Save").attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -70,9 +71,14 @@ final class SuggestNewGameView: UIView {
     
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("SuggestNewGame.Cancel", comment: "Cancel"), for: .normal)
-        button.setTitleColor(Appearance.mono200, for: .normal)
-        button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
+        
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        
+        let attributedTitle = NSLocalizedString("SuggestNewGame.Cancel", comment: "Cancel").attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        
         button.backgroundColor = .white
         button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
         button.layer.borderWidth = 1.scale

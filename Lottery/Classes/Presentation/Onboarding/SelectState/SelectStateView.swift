@@ -12,10 +12,15 @@ final class SelectStateView: UIView {
     
     let continueButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("SelectState.Continue", comment: "Continue"), for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        
+        let attributedTitle = NSLocalizedString("SelectState.Continue", comment: "Continue").attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        
         button.backgroundColor = Appearance.main100
-        button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false // Initially disabled
@@ -24,31 +29,30 @@ final class SelectStateView: UIView {
     }()
     
     private let headerLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.bold(size: 19.scale))
+            .lineHeight(22.8.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("SelectState.Header", comment: "SELECT THE STATE")
-        label.font = Fonts.Inter.bold(size: 19.scale)
-        label.textColor = Appearance.mono200
-        label.textAlignment = .left
+        label.attributedText = NSLocalizedString("SelectState.Header", comment: "SELECT THE STATE").attributed(with: attrs)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let descriptionLabel: UILabel = {
+        let attrs = TextAttributes()
+            .textColor(Appearance.main300)
+            .font(Fonts.Inter.medium(size: 15.scale))
+            .lineHeight(18.scale)
+            .textAlignment(.left)
+        
         let label = UILabel()
-        label.text = NSLocalizedString("SelectState.Description", comment: "Please choose the state to monitor now. You can switch later.")
-        label.font = Fonts.Inter.medium(size: 15.scale)
-        label.textColor = Appearance.main300
+        label.attributedText = NSLocalizedString("SelectState.Description", comment: "Please choose the state to monitor now. You can switch later.").attributed(with: attrs)
         label.numberOfLines = 2
-        label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6.scale  // Adjust this value as needed
-        
-        let attributedString = NSMutableAttributedString(string: label.text ?? "")
-        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
-        label.attributedText = attributedString
-        
         return label
     }()
     
@@ -56,7 +60,7 @@ final class SelectStateView: UIView {
         let tableView = UITableView()
         tableView.backgroundColor = Appearance.main500
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20.scale, bottom: 0, right: 20.scale)
         tableView.separatorColor = .lightGray
         tableView.showsVerticalScrollIndicator = false
         return tableView
@@ -152,9 +156,12 @@ extension SelectStateView: UITableViewDataSource {
         
         // Configure the text label
         let state = states[indexPath.row]
-        cell.textLabel?.text = state.name
-        cell.textLabel?.textColor = Appearance.mono200
-        cell.textLabel?.font = Fonts.Inter.medium(size: 15.scale)
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 15.scale))
+            .lineHeight(18.scale)
+        
+        cell.textLabel?.attributedText = state.name.attributed(with: attrs)
         
         // Configure the accessory view with additional space to the right
         let accessoryImageView = UIImageView(image: UIImage(named: selectedState == state.id ? "State.Selected" : "State.NotSelected"))
