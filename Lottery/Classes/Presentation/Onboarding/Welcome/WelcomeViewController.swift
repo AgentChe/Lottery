@@ -10,6 +10,9 @@ import UIKit
 class WelcomeViewController: UIViewController {
     var onContinue: (() -> Void)?
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
     private let welcomeView = WelcomeView()
     
     override func loadView() {

@@ -35,8 +35,8 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func setupProgressView() {
         progressView.translatesAutoresizingMaskIntoConstraints = false
-        progressView.progressTintColor = UIColor.red
-        progressView.trackTintColor = UIColor.lightGray
+        progressView.progressTintColor = Appearance.main100
+        progressView.trackTintColor = Appearance.main500
         view.addSubview(progressView) // Add to view instead of navigationBar
         
         NSLayoutConstraint.activate([

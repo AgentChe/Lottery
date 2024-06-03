@@ -12,7 +12,9 @@ import UIKit
 
 class SelectGameViewController: UIViewController {
     var onContinue: (([Int]) -> Void)?
-    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
     private let selectGameView = SelectGameView()
     
     override func loadView() {

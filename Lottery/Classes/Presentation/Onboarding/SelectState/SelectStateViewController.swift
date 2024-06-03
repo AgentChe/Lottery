@@ -9,7 +9,9 @@ import UIKit
 
 class SelectStateViewController: UIViewController {
     var onContinue: ((Int?) -> Void)?
-    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
     private let selectStateView = SelectStateView()
     
     override func loadView() {
