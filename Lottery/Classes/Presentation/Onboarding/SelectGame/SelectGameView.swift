@@ -76,7 +76,7 @@ final class SelectGameView: UIView {
         return tableView
     }()
     
-    private let games = ["Powerball", "MegaMillion", "Lucky for Life", "Lotto America", "Cash4Life", "2by2", "Tri-State Lottery"]
+    private var games: [Game] = []
     private var selectedGames: Set<Int> = []
     
     // MARK: - Initializers
@@ -95,6 +95,11 @@ final class SelectGameView: UIView {
     
     func getSelectedGames() -> [Int] {
         return Array(selectedGames)
+    }
+    
+    func updateGames(_ games: [Game]) {
+        self.games = games
+        gameTableView.reloadData()
     }
 }
 
@@ -166,7 +171,7 @@ extension SelectGameView: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath)
         
         // Configure the text label
-        cell.textLabel?.text = games[indexPath.row]
+        cell.textLabel?.text = games[indexPath.row].jackpot
         cell.textLabel?.textColor = Appearance.mono200
         cell.textLabel?.font = Fonts.Inter.medium(size: 15.scale)
         

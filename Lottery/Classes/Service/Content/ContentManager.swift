@@ -1,4 +1,3 @@
-//
 //  ContentManager.swift
 //  Lottery
 //
@@ -19,16 +18,14 @@ final class ContentManager {
     }
     
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
-    
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    
     private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: - ContentManagerProtocol
 extension ContentManager: ContentManagerProtocol {
     func fetchStates(forceUpdate: Bool, completion: @escaping (Result<[State], Error>) -> Void) {
-        if !forceUpdate, let cachedStates = loadFromCache(forKey: Constants.stateCacheKey) as [State]? {
+        if !forceUpdate, let cachedStates: [State] = loadFromCache(forKey: Constants.stateCacheKey) {
             completion(.success(cachedStates))
             return
         }
@@ -40,13 +37,12 @@ extension ContentManager: ContentManagerProtocol {
         
         let request = FetchStatesRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
-        
         let operationId = UUID().uuidString
         operations[operationId] = operation
-
+        
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             self?.operations.removeValue(forKey: operationId)
-
+            
             DispatchQueue.main.async {
                 if let error = error {
                     completion(.failure(error))
@@ -62,8 +58,12 @@ extension ContentManager: ContentManagerProtocol {
     }
     
     func fetchLotteries(forceUpdate: Bool, stateId: Int? = nil, completion: @escaping (Result<[Lottery], Error>) -> Void) {
-        if !forceUpdate, let cachedLotteries = loadFromCache(forKey: Constants.lotteryCacheKey) as [Lottery]? {
-            completion(.success(cachedLotteries))
+        if !forceUpdate, let cachedLotteries: [Lottery] = loadFromCache(forKey: Constants.lotteryCacheKey) {
+            let filteredLotteries = cachedLotteries.filter { lottery in
+                guard let stateId = stateId else { return true }
+                return lottery.stateId == stateId
+            }
+            completion(.success(filteredLotteries))
             return
         }
         
@@ -74,13 +74,12 @@ extension ContentManager: ContentManagerProtocol {
         
         let request = FetchLotteriesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
-        
         let operationId = UUID().uuidString
         operations[operationId] = operation
-
+        
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             self?.operations.removeValue(forKey: operationId)
-
+            
             DispatchQueue.main.async {
                 if let error = error {
                     completion(.failure(error))
@@ -106,8 +105,8 @@ private extension ContentManager {
         return nil
     }
     
-    func saveToCache<T: Encodable>(data: T, forKey key: String?) {
-        if let key = key, let encodedData = try? JSONEncoder().encode(data) {
+    func saveToCache<T: Encodable>(data: T, forKey key: String) {
+        if let encodedData = try? JSONEncoder().encode(data) {
             UserDefaults.standard.set(encodedData, forKey: key)
         }
     }

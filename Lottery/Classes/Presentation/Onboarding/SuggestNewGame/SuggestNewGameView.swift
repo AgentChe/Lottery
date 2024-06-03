@@ -12,7 +12,7 @@ final class SuggestNewGameView: UIView {
     
     let headerLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("SuggestNewGame.Header", comment: "SELECT THE GAME")
+        label.text = NSLocalizedString("SuggestNewGame.Header", comment: "Suggest a New Game")
         label.font = Fonts.Inter.bold(size: 19.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -30,7 +30,7 @@ final class SuggestNewGameView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6.scale  // Adjust this value as needed
+        paragraphStyle.lineSpacing = 6.scale
         
         let attributedString = NSMutableAttributedString(string: label.text ?? "")
         attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
@@ -48,7 +48,6 @@ final class SuggestNewGameView: UIView {
         textField.borderStyle = .roundedRect
         textField.translatesAutoresizingMaskIntoConstraints = false
         
-        // Setting placeholder text color
         let placeholderAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Appearance.main300
         ]

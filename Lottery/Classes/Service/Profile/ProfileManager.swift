@@ -9,10 +9,8 @@ import Foundation
 protocol ProfileManagerProtocol {
     func syncTokens(oldToken: String, newToken: String, complete: ((LoginResult) -> Void)?)
     func login(userToken: String, complete: ((LoginResult) -> Void)?)
-    func getProfile(complete: @escaping (Result<Profile, Error>) -> Void)
-    func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void)
-    func cacheProfile(lotteries: [Int]?, state: Int?)
-    func loadCachedProfile() -> (lotteries: [Int], state: Int)?
+    func getProfile(forceUpdate: Bool, complete: @escaping (Result<Profile, Error>) -> Void)
+    func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool, complete: @escaping (Result<Bool, Error>) -> Void)
 }
 
 final class ProfileManager {
@@ -26,10 +24,25 @@ final class ProfileManager {
     }
 
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
-    
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    
     private var operations: [String: any APIOperationProtocol] = [:]
+
+    private func cacheProfile(lotteries: [Int]?, state: Int?) {
+        if let lotteries = lotteries {
+            UserDefaults.standard.set(lotteries, forKey: Constants.cachedLotteriesKey)
+        }
+        if let state = state {
+            UserDefaults.standard.set(state, forKey: Constants.cachedStateKey)
+        }
+    }
+
+    private func loadCachedProfile() -> (lotteries: [Int], state: Int)? {
+        guard let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int],
+              let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int else {
+            return nil
+        }
+        return (lotteries, state)
+    }
 }
 
 // MARK: ProfileManagerProtocol
@@ -42,10 +55,7 @@ extension ProfileManager: ProfileManagerProtocol {
         operations[operationId] = operation
 
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            self?.operations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 complete?(LoginResult(error: error))
             }
@@ -60,17 +70,19 @@ extension ProfileManager: ProfileManagerProtocol {
         operations[operationId] = operation
 
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            self?.operations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 complete?(LoginResult(error: error))
             }
         }
     }
 
-    func getProfile(complete: @escaping (Result<Profile, Error>) -> Void) {
+    func getProfile(forceUpdate: Bool = false, complete: @escaping (Result<Profile, Error>) -> Void) {
+        if !forceUpdate, let cachedProfile = loadCachedProfile() {
+            complete(.success(Profile(lotteries: cachedProfile.lotteries, state: cachedProfile.state)))
+            return
+        }
+        
         guard let userToken = sessionManager.getSession()?.userToken else {
             complete(.failure(SignError.tokenNotFound))
             return
@@ -83,14 +95,12 @@ extension ProfileManager: ProfileManagerProtocol {
         operations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            self?.operations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
                 } else if let profileData = result as? [String: Any], let profile = Profile(response: profileData) {
+                    self?.cacheProfile(lotteries: profile.lotteries, state: profile.state)
                     complete(.success(profile))
                 } else {
                     complete(.failure(ContentError(.notContent)))
@@ -99,7 +109,7 @@ extension ProfileManager: ProfileManagerProtocol {
         }
     }
 
-    func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void) {
+    func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool = false, complete: @escaping (Result<Bool, Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
             complete(.failure(SignError.tokenNotFound))
             return
@@ -112,36 +122,19 @@ extension ProfileManager: ProfileManagerProtocol {
         operations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            self?.operations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
                 } else if let result = result as? [String: Any], let success = result["result"] as? Bool {
+                    if success {
+                        self?.cacheProfile(lotteries: lotteries, state: state)
+                    }
                     complete(.success(success))
                 } else {
                     complete(.failure(ContentError(.notContent)))
                 }
             }
         }
-    }
-
-    func cacheProfile(lotteries: [Int]?, state: Int?) {
-        if let lotteries = lotteries {
-            UserDefaults.standard.set(lotteries, forKey: Constants.cachedLotteriesKey)
-        }
-        if let state = state {
-            UserDefaults.standard.set(state, forKey: Constants.cachedStateKey)
-        }
-    }
-    
-    func loadCachedProfile() -> (lotteries: [Int], state: Int)? {
-        guard let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int],
-              let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int else {
-            return nil
-        }
-        return (lotteries, state)
     }
 }

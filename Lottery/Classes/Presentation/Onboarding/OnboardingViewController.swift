@@ -1,4 +1,3 @@
-//
 //  OnboardingViewController.swift
 //  Soccer
 //
@@ -15,7 +14,6 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     }
     
     private let progressView = UIProgressView(progressViewStyle: .default)
-    private lazy var viewModel = OnboardingViewModel()
     private lazy var disposeBag = DisposeBag()
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     private var selectedState: Int?
@@ -79,19 +77,18 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func completeOnboarding() {
         markAsViewed()
-        cacheProfile()
-        saveProfile()
+        saveProfile(forceUpdate: true)
     }
     
-    private func saveProfile() {
+    private func saveProfile(forceUpdate: Bool = false) {
         guard let stateId = selectedState else {
             return
         }
         
-        profileManager.setProfile(lotteries: selectedGames, state: stateId) { [weak self] result in
+        profileManager.setProfile(lotteries: selectedGames, state: stateId, forceUpdate: forceUpdate) { [weak self] result in
             switch result {
             case .success:
-                let nextStep = self?.viewModel.whatNext() ?? .main
+                let nextStep = self?.determineNextStep() ?? .main
                 self?.goToNext(at: nextStep)
             case .failure(let error):
                 print("Failed to set profile: \(error)")
@@ -100,11 +97,9 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         }
     }
     
-    private func cacheProfile() {
-        guard let stateId = selectedState else {
-            return
-        }
-        profileManager.cacheProfile(lotteries: selectedGames, state: stateId)
+    private func determineNextStep() -> Step {
+        let sessionManager = SessionManager()
+        return sessionManager.hasActiveSubscriptions() ? .main : .paygate
     }
     
     private func updateProgress() {
@@ -118,7 +113,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         UserDefaults.standard.setValue(true, forKey: Constants.wasViewedKey)
     }
     
-    private func goToNext(at step: OnboardingViewModel.Step) {
+    private func goToNext(at step: Step) {
         switch step {
         case .main:
             UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController = NavigationController(rootViewController: MainViewController.make())
@@ -132,6 +127,13 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         updateProgress()
+    }
+}
+
+// MARK: - Step Enum
+extension OnboardingViewController {
+    enum Step {
+        case paygate, main
     }
 }
 

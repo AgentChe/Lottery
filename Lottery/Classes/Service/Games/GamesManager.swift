@@ -10,6 +10,7 @@ import Foundation
 protocol GamesManagerProtocol {
     func fetchNextGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void)
     func fetchPastGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void)
+    func suggestNewGame(gameTitle: String, completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
 final class GamesManager {
@@ -72,6 +73,31 @@ extension GamesManager: GamesManagerProtocol {
                 completion(.success(games))
             } else {
                 completion(.failure(ContentError(.notContent)))
+            }
+        }
+    }
+
+    func suggestNewGame(gameTitle: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
+
+        let request = SuggestNewGameRequest(gameTitle: gameTitle, userToken: userToken)
+        let operation = APIOperation(endPoint: request)
+        
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
+            defer {
+                self?.operations.removeValue(forKey: operationId)
+            }
+
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(true))
             }
         }
     }

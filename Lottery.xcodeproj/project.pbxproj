@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
+		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
 		A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295C2C0D607C00DF735A /* InsetTextField.swift */; };
@@ -85,7 +86,6 @@
 		DE42B1BC2BFF3CB200FF61B0 /* OSlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B15E2BFF3CB100FF61B0 /* OSlideView.swift */; };
 		DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */; };
 		DE42B1BE2BFF3CB200FF61B0 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */; };
-		DE42B1BF2BFF3CB200FF61B0 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1622BFF3CB100FF61B0 /* OnboardingViewModel.swift */; };
 		DE42B1C02BFF3CB200FF61B0 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1642BFF3CB100FF61B0 /* Currency.swift */; };
 		DE42B1C12BFF3CB200FF61B0 /* DefaultPaygate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1652BFF3CB100FF61B0 /* DefaultPaygate.swift */; };
 		DE42B1C22BFF3CB200FF61B0 /* PaygateOptionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B1662BFF3CB100FF61B0 /* PaygateOptionInfo.swift */; };
@@ -139,6 +139,7 @@
 /* Begin PBXFileReference section */
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
 		A3CF295C2C0D607C00DF735A /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
@@ -219,7 +220,6 @@
 		DE42B15E2BFF3CB100FF61B0 /* OSlideView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSlideView.swift; sourceTree = "<group>"; };
 		DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
-		DE42B1622BFF3CB100FF61B0 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		DE42B1642BFF3CB100FF61B0 /* Currency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		DE42B1652BFF3CB100FF61B0 /* DefaultPaygate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultPaygate.swift; sourceTree = "<group>"; };
 		DE42B1662BFF3CB100FF61B0 /* PaygateOptionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaygateOptionInfo.swift; sourceTree = "<group>"; };
@@ -372,6 +372,7 @@
 				A3FF55682C07E4CF00E81771 /* FetchNextGamesRequest.swift */,
 				A3FF557E2C08B8C400E81771 /* AddLuckyNumbersRequest.swift */,
 				A3FF556A2C07E4E700E81771 /* FetchPastGamesRequest.swift */,
+				A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -622,7 +623,6 @@
 				DE42B15F2BFF3CB100FF61B0 /* Views */,
 				DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */,
 				DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */,
-				DE42B1622BFF3CB100FF61B0 /* OnboardingViewModel.swift */,
 				A3C5CEBE2C0CD7CD00C43681 /* Welcome */,
 				A3C5CEBF2C0CD7E100C43681 /* SelectState */,
 				A3C5CEC02C0CD80600C43681 /* SelectGame */,
@@ -996,6 +996,7 @@
 				DE42B1F42BFF467200FF61B0 /* MainViewCoordinator.swift in Sources */,
 				A3FF557F2C08B8C400E81771 /* AddLuckyNumbersRequest.swift in Sources */,
 				DE42B1972BFF3CB200FF61B0 /* TapAreaButton.swift in Sources */,
+				A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */,
 				DE42B1F02BFF463B00FF61B0 /* TabItemView.swift in Sources */,
 				DE42B1C62BFF3CB200FF61B0 /* PaygateView.swift in Sources */,
 				DE42B1A62BFF3CB200FF61B0 /* PushNotificationsManager.swift in Sources */,
@@ -1025,7 +1026,6 @@
 				A3FF55662C07E42D00E81771 /* Game.swift in Sources */,
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
 				DE42B1B32BFF3CB200FF61B0 /* Appearance.swift in Sources */,
-				DE42B1BF2BFF3CB200FF61B0 /* OnboardingViewModel.swift in Sources */,
 				DE42B1C12BFF3CB200FF61B0 /* DefaultPaygate.swift in Sources */,
 				DE42B2102BFF583A00FF61B0 /* SyncTokensRequest.swift in Sources */,
 				A3FF555D2C07E11200E81771 /* FetchStatesRequest.swift in Sources */,

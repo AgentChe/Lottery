@@ -10,7 +10,8 @@ import Toast_Swift
 
 final class SuggestNewGameViewController: UIViewController {
     private let suggestNewGameView = SuggestNewGameView()
-    
+    private let gamesManager: GamesManagerProtocol = GamesManager()
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
@@ -37,15 +38,35 @@ final class SuggestNewGameViewController: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
-        // Show the toast message
+        guard let gameTitle = suggestNewGameView.textField.text, !gameTitle.isEmpty else {
+            showToast(message: "Please enter a game title.")
+            return
+        }
+        suggestNewGame(gameTitle: gameTitle)
+    }
+    
+    private func suggestNewGame(gameTitle: String) {
+        gamesManager.suggestNewGame(gameTitle: gameTitle) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.")
+                case .failure(let error):
+                    self?.showToast(message: "Failed to suggest a new game: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func showToast(message: String) {
         var style = ToastStyle()
         style.backgroundColor = Appearance.mono200
         style.messageColor = .white
         style.messageAlignment = .center
-        style.horizontalPadding = 24.0.scale // Horizontal padding
-        style.verticalPadding = 24.0.scale // Vertical padding
+        style.horizontalPadding = 24.0.scale
+        style.verticalPadding = 24.0.scale
         style.titleFont = Fonts.Inter.medium(size: 16.scale)
-        self.view.makeToast("Thanks for adding a new game! We will consider adding it to the list.", duration: 3.0, position: .top, style: style)
+        self.view.makeToast(message, duration: 3.0, position: .top, style: style)
     }
     
     @objc private func cancelButtonTapped() {

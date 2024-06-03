@@ -19,4 +19,9 @@ struct Profile: Codable {
         self.lotteries = response["lotteries"] as? [Int]
         self.state = response["state"] as? Int
     }
+    
+    init(lotteries: [Int]?, state: Int?) {
+        self.lotteries = lotteries
+        self.state = state
+    }
 }

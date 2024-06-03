@@ -32,4 +32,5 @@ struct Game: Codable {
         self.winningNumbers = dict["winning_numbers"] as? [[Int]]
         self.myLuckyNumbers = dict["my_lucky_numbers"] as? [[Int]]
     }
+    
 }

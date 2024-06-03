@@ -62,7 +62,7 @@ final class SelectStateView: UIView {
         return tableView
     }()
     
-    private let states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
+    private var states: [State] = []
     private var selectedState: Int?
     
     // MARK: - Initializers
@@ -81,6 +81,11 @@ final class SelectStateView: UIView {
     
     func getSelectedState() -> Int? {
         return selectedState
+    }
+    
+    func updateStates(_ states: [State]) {
+        self.states = states
+        stateTableView.reloadData()
     }
 }
 
@@ -146,12 +151,13 @@ extension SelectStateView: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StateCell", for: indexPath)
         
         // Configure the text label
-        cell.textLabel?.text = states[indexPath.row]
+        let state = states[indexPath.row]
+        cell.textLabel?.text = state.name
         cell.textLabel?.textColor = Appearance.mono200
         cell.textLabel?.font = Fonts.Inter.medium(size: 15.scale)
         
         // Configure the accessory view with additional space to the right
-        let accessoryImageView = UIImageView(image: UIImage(named: selectedState == indexPath.row ? "State.Selected" : "State.NotSelected"))
+        let accessoryImageView = UIImageView(image: UIImage(named: selectedState == state.id ? "State.Selected" : "State.NotSelected"))
         accessoryImageView.contentMode = .scaleAspectFit
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 34.scale, height: 24.scale)) // Adjust width to provide additional space
         accessoryImageView.frame = CGRect(x: -10.scale, y: 0, width: 24.scale, height: 24.scale) // Move left by 10 points
@@ -173,7 +179,7 @@ extension SelectStateView: UITableViewDataSource {
 
 extension SelectStateView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedState = indexPath.row
+        selectedState = states[indexPath.row].id
         updateContinueButtonState()
         tableView.reloadData()
     }
