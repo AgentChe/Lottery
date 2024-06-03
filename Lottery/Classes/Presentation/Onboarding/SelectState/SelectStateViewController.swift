@@ -2,8 +2,6 @@
 //  Lottery
 //
 //  Created by Niiaz Khasanov on 6/2/24.
-//
-
 
 import UIKit
 
@@ -11,11 +9,11 @@ class SelectStateViewController: UIViewController {
     var onContinue: ((Int?) -> Void)?
     private let contentManager: ContentManagerProtocol = ContentManager()
     private var states: [State] = []
-
+    private let selectStateView = SelectStateView()
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
-    private let selectStateView = SelectStateView()
     
     override func loadView() {
         view = selectStateView
@@ -26,12 +24,16 @@ class SelectStateViewController: UIViewController {
         setupButton()
         fetchStates()
     }
-    
-    private func setupButton() {
+}
+
+// MARK: - Private Methods
+
+private extension SelectStateViewController {
+    func setupButton() {
         selectStateView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
     }
     
-    private func fetchStates() {
+    func fetchStates() {
         contentManager.fetchStates(forceUpdate: true) { [weak self] result in
             switch result {
             case .success(let states):
@@ -39,22 +41,23 @@ class SelectStateViewController: UIViewController {
                 self?.selectStateView.updateStates(states)
             case .failure(let error):
                 print("Failed to fetch states: \(error)")
-                self?.showError(message: "Failed to load states. Please try again.")
+                self?.presentTryAgainViewController(with: error)
             }
         }
     }
     
-    @objc private func continueButtonTapped() {
+    @objc func continueButtonTapped() {
         guard let selectedState = selectStateView.getSelectedState() else {
-            showError(message: "Please select a state.")
+            presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
         onContinue?(selectedState)
     }
     
-    private func showError(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+    func presentTryAgainViewController(with error: Error) {
+        let vc = TryAgainViewController.make(error: error) { [weak self] in
+            self?.fetchStates()
+        }
+        self.present(vc, animated: true)
     }
 }

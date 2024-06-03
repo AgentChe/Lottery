@@ -1,4 +1,3 @@
-//
 //  WelcomeViewController.swift
 //  Lottery
 //
@@ -9,11 +8,11 @@ import UIKit
 
 class WelcomeViewController: UIViewController {
     var onContinue: (() -> Void)?
+    private let welcomeView = WelcomeView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
-    private let welcomeView = WelcomeView()
     
     override func loadView() {
         view = welcomeView
@@ -23,12 +22,16 @@ class WelcomeViewController: UIViewController {
         super.viewDidLoad()
         setupButton()
     }
-    
-    private func setupButton() {
+}
+
+// MARK: - Private Methods
+
+private extension WelcomeViewController {
+    func setupButton() {
         welcomeView.startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
-    @objc private func startButtonTapped() {
+    @objc func startButtonTapped() {
         onContinue?()
     }
 }

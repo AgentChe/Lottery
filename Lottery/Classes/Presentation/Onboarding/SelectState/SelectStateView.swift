@@ -12,14 +12,12 @@ final class SelectStateView: UIView {
     
     let continueButton: UIButton = {
         let button = UIButton()
-        
         let attrs = TextAttributes()
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
         
         let attributedTitle = NSLocalizedString("SelectState.Continue", comment: "Continue").attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
-        
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -153,8 +151,6 @@ extension SelectStateView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StateCell", for: indexPath)
-        
-        // Configure the text label
         let state = states[indexPath.row]
         let attrs = TextAttributes()
             .textColor(Appearance.mono200)
@@ -163,19 +159,15 @@ extension SelectStateView: UITableViewDataSource {
         
         cell.textLabel?.attributedText = state.name.attributed(with: attrs)
         
-        // Configure the accessory view with additional space to the right
         let accessoryImageView = UIImageView(image: UIImage(named: selectedState == state.id ? "State.Selected" : "State.NotSelected"))
         accessoryImageView.contentMode = .scaleAspectFit
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 34.scale, height: 24.scale)) // Adjust width to provide additional space
-        accessoryImageView.frame = CGRect(x: -10.scale, y: 0, width: 24.scale, height: 24.scale) // Move left by 10 points
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 34.scale, height: 24.scale))
+        accessoryImageView.frame = CGRect(x: -10.scale, y: 0, width: 24.scale, height: 24.scale)
         containerView.addSubview(accessoryImageView)
         cell.accessoryView = containerView
         
-        // Set cell selection style and background color
         cell.selectionStyle = .none
         cell.backgroundColor = Appearance.main500
-        
-        // Adjust separator inset
         cell.separatorInset = UIEdgeInsets(top: 0, left: 20.scale, bottom: 0, right: 20.scale)
         
         return cell

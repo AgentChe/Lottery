@@ -1,3 +1,4 @@
+//
 //  SuggestNewGameView.swift
 //  Lottery
 //

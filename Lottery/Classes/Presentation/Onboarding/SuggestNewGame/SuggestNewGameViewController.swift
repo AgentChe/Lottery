@@ -9,9 +9,14 @@ import UIKit
 import Toast_Swift
 
 final class SuggestNewGameViewController: UIViewController {
+    
+    // MARK: - UI Components
+    
     private let suggestNewGameView = SuggestNewGameView()
     private let gamesManager: GamesManagerProtocol = GamesManager()
-
+    
+    // MARK: - Lifecycle
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
@@ -24,14 +29,18 @@ final class SuggestNewGameViewController: UIViewController {
         super.viewDidLoad()
         setupButtonActions()
     }
-    
-    private func setupButtonActions() {
+}
+
+// MARK: - Private Methods
+
+private extension SuggestNewGameViewController {
+    func setupButtonActions() {
         suggestNewGameView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         suggestNewGameView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         suggestNewGameView.dismissButton.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
     }
     
-    @objc private func saveButtonTapped() {
+    @objc func saveButtonTapped() {
         guard let gameTitle = suggestNewGameView.textField.text, !gameTitle.isEmpty else {
             showToast(message: "Please enter a game title.")
             return
@@ -39,7 +48,7 @@ final class SuggestNewGameViewController: UIViewController {
         suggestNewGame(gameTitle: gameTitle)
     }
     
-    private func suggestNewGame(gameTitle: String) {
+    func suggestNewGame(gameTitle: String) {
         gamesManager.suggestNewGame(gameTitle: gameTitle) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -47,18 +56,13 @@ final class SuggestNewGameViewController: UIViewController {
                     self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.")
                 case .failure(let error):
                     print("Failed to suggest a new game: \(error)")
-                    self?.showAlert(message: "Failed to suggest a new game. Please try again.")
+                    self?.presentTryAgainViewController(with: error)
                 }
             }
         }
     }
-  
-    private func showAlert(message: String, isError: Bool = true) {
-         let alert = UIAlertController(title: isError ? "Error" : "Success", message: message, preferredStyle: .alert)
-         alert.addAction(UIAlertAction(title: "OK", style: .default))
-         present(alert, animated: true)
-    }
-    private func showToast(message: String) {
+    
+    func showToast(message: String) {
         var style = ToastStyle()
         style.backgroundColor = Appearance.mono200
         style.messageColor = .white
@@ -69,11 +73,16 @@ final class SuggestNewGameViewController: UIViewController {
         self.view.makeToast(message, duration: 3.0, position: .top, style: style)
     }
     
-    @objc private func cancelButtonTapped() {
+    func presentTryAgainViewController(with error: Error) {
+        let vc = TryAgainViewController.make(error: error)
+        self.present(vc, animated: true)
+    }
+    
+    @objc func cancelButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc private func dismissButtonTapped() {
+    @objc func dismissButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
 }

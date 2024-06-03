@@ -82,7 +82,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func saveProfile(forceUpdate: Bool = false) {
         guard let stateId = selectedState else {
-            showError(message: "State selection is required.")
+            presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
         
@@ -93,7 +93,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
                 self?.goToNext(at: nextStep)
             case .failure(let error):
                 print("Failed to set profile: \(error)")
-                self?.showError(message: "Failed to save profile. Please try again.")
+                self?.presentTryAgainViewController(with: error)
             }
         }
     }
@@ -126,10 +126,11 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         }
     }
     
-    private func showError(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+    private func presentTryAgainViewController(with error: Error) {
+        let vc = TryAgainViewController.make(error: error) { [weak self] in
+            self?.saveProfile(forceUpdate: true)
+        }
+        self.present(vc, animated: true)
     }
     
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {

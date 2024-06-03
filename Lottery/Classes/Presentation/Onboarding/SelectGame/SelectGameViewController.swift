@@ -1,4 +1,3 @@
-//
 //  SelectGameViewController.swift
 //  Lottery
 //
@@ -12,11 +11,11 @@ class SelectGameViewController: UIViewController {
     private let gamesManager: GamesManagerProtocol = GamesManager()
     private var games: [Game] = []
 
+    private let selectGameView = SelectGameView()
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
-    
-    private let selectGameView = SelectGameView()
     
     override func loadView() {
         view = selectGameView
@@ -27,43 +26,47 @@ class SelectGameViewController: UIViewController {
         setupButtons()
         fetchGames()
     }
-    
-    private func setupButtons() {
+}
+
+// MARK: - Private Methods
+
+private extension SelectGameViewController {
+    func setupButtons() {
         selectGameView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         selectGameView.addAnotherGameButton.addTarget(self, action: #selector(addAnotherGameButtonTapped), for: .touchUpInside)
     }
     
-    private func fetchGames() {
+    func fetchGames() {
         gamesManager.fetchNextGames(stateId: nil) { [weak self] result in
             switch result {
             case .success(let games):
                 self?.games = games
                 self?.selectGameView.updateGames(games)
             case .failure(let error):
-                print("Failed to fetch games: \(error)")
-                self?.showError(message: "Failed to load games. Please try again.")
+                self?.presentTryAgainViewController(with: error)
             }
         }
     }
     
-    @objc private func continueButtonTapped() {
+    @objc func continueButtonTapped() {
         let selectedGames = selectGameView.getSelectedGames()
         if selectedGames.isEmpty {
-            showError(message: "Please select at least one game.")
+            presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
             return
         }
         onContinue?(selectedGames)
     }
     
-    @objc private func addAnotherGameButtonTapped() {
+    @objc func addAnotherGameButtonTapped() {
         let suggestNewGameVC = SuggestNewGameViewController()
         suggestNewGameVC.modalPresentationStyle = .fullScreen
         present(suggestNewGameVC, animated: true, completion: nil)
     }
     
-    private func showError(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+    func presentTryAgainViewController(with error: Error) {
+        let vc = TryAgainViewController.make(error: error) { [weak self] in
+            self?.fetchGames()
+        }
+        present(vc, animated: true)
     }
 }
