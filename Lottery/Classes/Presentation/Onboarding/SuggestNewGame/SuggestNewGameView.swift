@@ -1,3 +1,4 @@
+//
 //  SuggestNewGameView.swift
 //  Lottery
 //
@@ -115,7 +116,7 @@ private extension SuggestNewGameView {
         addSubview(cancelButton)
         addSubview(dismissButton)
         
-        bottomConstraint = saveButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -50.scale)
+        bottomConstraint = saveButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale)
         
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
