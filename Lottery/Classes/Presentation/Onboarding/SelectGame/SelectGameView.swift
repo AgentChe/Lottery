@@ -1,9 +1,3 @@
-//
-//  SelectGameView.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/2/24.
-//
 //  SelectGameView.swift
 //  Lottery
 //
@@ -12,10 +6,13 @@
 
 import UIKit
 
-final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
+final class SelectGameView: UIView {
+    
+    // MARK: - UI Components
+    
     let continueButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Continue", for: .normal)
+        button.setTitle(NSLocalizedString("SelectGame.Continue", comment: "Continue"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
         button.backgroundColor = Appearance.main100
@@ -28,7 +25,7 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     let addAnotherGameButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Add another game", for: .normal)
+        button.setTitle(NSLocalizedString("SelectGame.AddAnotherGame", comment: "Add another game"), for: .normal)
         button.setTitleColor(Appearance.mono200, for: .normal)
         button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
         button.backgroundColor = .white
@@ -41,7 +38,7 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     private let headerLabel: UILabel = {
         let label = UILabel()
-        label.text = "SELECT THE GAME"
+        label.text = NSLocalizedString("SelectGame.Header", comment: "SELECT THE GAME")
         label.font = Fonts.Inter.bold(size: 19.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -51,7 +48,7 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Please choose the game to monitor. You can add another game if it is not on the list."
+        label.text = NSLocalizedString("SelectGame.Description", comment: "Please choose the game to monitor. You can add another game if it is not on the list.")
         label.font = Fonts.Inter.medium(size: 15.scale)
         label.textColor = Appearance.main300
         label.numberOfLines = 2
@@ -82,31 +79,39 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
     private let games = ["Powerball", "MegaMillion", "Lucky for Life", "Lotto America", "Cash4Life", "2by2", "Tri-State Lottery"]
     private var selectedGames: Set<Int> = []
     
+    // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        gameTableView.dataSource = self
-        gameTableView.delegate = self
-        gameTableView.register(UITableViewCell.self, forCellReuseIdentifier: "GameCell")
+        setupTableView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupView() {
+    // MARK: - Helper Methods
+    
+    func getSelectedGames() -> [Int] {
+        return Array(selectedGames)
+    }
+}
+
+// MARK: - Private Methods
+
+private extension SelectGameView {
+    func setupView() {
         backgroundColor = Appearance.main500
-        
         addSubview(headerLabel)
         addSubview(descriptionLabel)
         addSubview(gameTableView)
         addSubview(continueButton)
         addSubview(addAnotherGameButton)
-        
         setupConstraints()
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
@@ -133,11 +138,13 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
         ])
     }
     
-    func getSelectedGames() -> [Int] {
-        return Array(selectedGames)
+    func setupTableView() {
+        gameTableView.dataSource = self
+        gameTableView.delegate = self
+        gameTableView.register(UITableViewCell.self, forCellReuseIdentifier: "GameCell")
     }
     
-    private func updateContinueButtonState() {
+    func updateContinueButtonState() {
         if selectedGames.isEmpty {
             continueButton.isEnabled = false
             continueButton.alpha = 0.5
@@ -146,8 +153,11 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
             continueButton.alpha = 1.0
         }
     }
-    
-    // UITableViewDataSource and UITableViewDelegate methods
+}
+
+// MARK: - UITableViewDataSource
+
+extension SelectGameView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return games.count
     }
@@ -177,7 +187,11 @@ final class SelectGameView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         return cell
     }
-    
+}
+
+// MARK: - UITableViewDelegate
+
+extension SelectGameView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if selectedGames.contains(indexPath.row) {
             selectedGames.remove(indexPath.row)

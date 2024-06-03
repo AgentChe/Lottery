@@ -10,6 +10,7 @@
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
+		A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295C2C0D607C00DF735A /* InsetTextField.swift */; };
 		A3FF55572C07E0B600E81771 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55562C07E0B600E81771 /* State.swift */; };
 		A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55582C07E0CA00E81771 /* Lottery.swift */; };
 		A3FF555D2C07E11200E81771 /* FetchStatesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */; };
@@ -140,6 +141,7 @@
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
+		A3CF295C2C0D607C00DF735A /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		A3FF55562C07E0B600E81771 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		A3FF55582C07E0CA00E81771 /* Lottery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lottery.swift; sourceTree = "<group>"; };
 		A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchStatesRequest.swift; sourceTree = "<group>"; };
@@ -570,6 +572,7 @@
 				DE42B14C2BFF3CB100FF61B0 /* ScreenSize.swift */,
 				DE42B14D2BFF3CB100FF61B0 /* TextAttributes.swift */,
 				DE42B14E2BFF3CB100FF61B0 /* Weak.swift */,
+				A3CF295C2C0D607C00DF735A /* InsetTextField.swift */,
 				DE42B14F2BFF3CB100FF61B0 /* XOREncryption.swift */,
 			);
 			path = Utils;
@@ -1075,6 +1078,7 @@
 				DE42B19F2BFF3CB200FF61B0 /* UITapGestureRecognizer+Extension.swift in Sources */,
 				DE42B1922BFF3CB200FF61B0 /* CircleView.swift in Sources */,
 				DE42B1912BFF3CB200FF61B0 /* NavigationControllerSettings.swift in Sources */,
+				A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */,
 				DE42B1992BFF3CB200FF61B0 /* ObservableAndSingle+Extension.swift in Sources */,
 				DE42B1892BFF3CB200FF61B0 /* AmplitudeManager.swift in Sources */,
 				DE42B1D22BFF3CB200FF61B0 /* IAPProduct.swift in Sources */,

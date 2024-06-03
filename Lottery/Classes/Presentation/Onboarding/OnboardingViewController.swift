@@ -79,6 +79,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func completeOnboarding() {
         markAsViewed()
+        cacheProfile()
         saveProfile()
     }
     
@@ -97,6 +98,13 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
                 // Handle error
             }
         }
+    }
+    
+    private func cacheProfile() {
+        guard let stateId = selectedState else {
+            return
+        }
+        profileManager.cacheProfile(lotteries: selectedGames, state: stateId)
     }
     
     private func updateProgress() {

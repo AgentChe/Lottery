@@ -6,10 +6,13 @@
 
 import UIKit
 
-final class SelectStateView: UIView, UITableViewDataSource, UITableViewDelegate {
+final class SelectStateView: UIView {
+    
+    // MARK: - UI Components
+    
     let continueButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Continue", for: .normal)
+        button.setTitle(NSLocalizedString("SelectState.Continue", comment: "Continue"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = Appearance.main100
         button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
@@ -22,7 +25,7 @@ final class SelectStateView: UIView, UITableViewDataSource, UITableViewDelegate 
     
     private let headerLabel: UILabel = {
         let label = UILabel()
-        label.text = "SELECT THE STATE"
+        label.text = NSLocalizedString("SelectState.Header", comment: "SELECT THE STATE")
         label.font = Fonts.Inter.bold(size: 19.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -32,7 +35,7 @@ final class SelectStateView: UIView, UITableViewDataSource, UITableViewDelegate 
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Please choose the state to monitor now. You can switch later."
+        label.text = NSLocalizedString("SelectState.Description", comment: "Please choose the state to monitor now. You can switch later.")
         label.font = Fonts.Inter.medium(size: 15.scale)
         label.textColor = Appearance.main300
         label.numberOfLines = 2
@@ -62,30 +65,38 @@ final class SelectStateView: UIView, UITableViewDataSource, UITableViewDelegate 
     private let states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
     private var selectedState: Int?
     
+    // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        stateTableView.dataSource = self
-        stateTableView.delegate = self
-        stateTableView.register(UITableViewCell.self, forCellReuseIdentifier: "StateCell")
+        setupTableView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupView() {
+    // MARK: - Helper Methods
+    
+    func getSelectedState() -> Int? {
+        return selectedState
+    }
+}
+
+// MARK: - Private Methods
+
+private extension SelectStateView {
+    func setupView() {
         backgroundColor = Appearance.main500
-        
         addSubview(headerLabel)
         addSubview(descriptionLabel)
         addSubview(stateTableView)
         addSubview(continueButton)
-        
         setupConstraints()
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
@@ -107,11 +118,26 @@ final class SelectStateView: UIView, UITableViewDataSource, UITableViewDelegate 
         ])
     }
     
-    func getSelectedState() -> Int? {
-        return selectedState
+    func setupTableView() {
+        stateTableView.dataSource = self
+        stateTableView.delegate = self
+        stateTableView.register(UITableViewCell.self, forCellReuseIdentifier: "StateCell")
     }
     
-    // UITableViewDataSource and UITableViewDelegate methods
+    func updateContinueButtonState() {
+        if selectedState != nil {
+            continueButton.isEnabled = true
+            continueButton.alpha = 1.0
+        } else {
+            continueButton.isEnabled = false
+            continueButton.alpha = 0.5
+        }
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension SelectStateView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return states.count
     }
@@ -141,23 +167,17 @@ final class SelectStateView: UIView, UITableViewDataSource, UITableViewDelegate 
         
         return cell
     }
+}
 
+// MARK: - UITableViewDelegate
+
+extension SelectStateView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedState = indexPath.row
         updateContinueButtonState()
         tableView.reloadData()
     }
     
-    private func updateContinueButtonState() {
-        if selectedState != nil {
-            continueButton.isEnabled = true
-            continueButton.alpha = 1.0
-        } else {
-            continueButton.isEnabled = false
-            continueButton.alpha = 0.5
-        }
-    }
-
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 56.scale
     }

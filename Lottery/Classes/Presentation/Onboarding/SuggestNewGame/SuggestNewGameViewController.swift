@@ -1,3 +1,4 @@
+
 //  SuggestNewGameViewController.swift
 //  Lottery
 //
@@ -5,6 +6,7 @@
 //
 
 import UIKit
+import Toast_Swift
 
 final class SuggestNewGameViewController: UIViewController {
     private let suggestNewGameView = SuggestNewGameView()
@@ -35,8 +37,15 @@ final class SuggestNewGameViewController: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
-        // Handle saving the new game
-       // dismiss(animated: true, completion: nil)
+        // Show the toast message
+        var style = ToastStyle()
+        style.backgroundColor = Appearance.mono200
+        style.messageColor = .white
+        style.messageAlignment = .center
+        style.horizontalPadding = 24.0.scale // Horizontal padding
+        style.verticalPadding = 24.0.scale // Vertical padding
+        style.titleFont = Fonts.Inter.medium(size: 16.scale)
+        self.view.makeToast("Thanks for adding a new game! We will consider adding it to the list.", duration: 3.0, position: .top, style: style)
     }
     
     @objc private func cancelButtonTapped() {

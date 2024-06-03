@@ -1,8 +1,8 @@
-/* 
+/*
   Localizable.strings
-  Soccer
+  Lottery
 
-  Created by Андрей Чернышев on 01.02.2023.
+  Created by Niiaz Khasanov on 6/2/24.
   
 */
 
@@ -10,6 +10,7 @@
 "Cancel" = "Cancel";
 "Continue" = "Continue";
 "Next" = "Next";
+"Save" = "Save";
 
 // MARK: ImagePicker
 "ImagePicker.TakePhoto" = "Take a photo";
@@ -24,14 +25,6 @@
 
 // MARK: Splash
 "Splash.Loading" = "Loading...";
-
-// MARK: Onboarding
-"Onboarding.Connect.Title" = "Connect to Any Printers";
-"Onboarding.Connect.SubTitle" = "Effortlessly connect to all compatible\nprinters";
-"Onboarding.Scan.Title" = "Scan and Print Documents";
-"Onboarding.Scan.SubTitle" = "Scan any file with your phone, edit or save\nas PDF and print";
-"Onboarding.Print.Title" = "Print files from anywhere";
-"Onboarding.Print.SubTitle" = "Easily print files from iCloud, Google Drive,\nDropbox or email ";
 
 // MARK: Main
 "Main.Draws" = "Draws";
@@ -60,3 +53,28 @@
 "Paygate.Error.Title" = "Error";
 "Paygate.Error.Text" = "An error occurred during execution. Try later.";
 "Paygate.Error.Button" = "OK";
+
+// MARK: SuggestNewGame
+"SuggestNewGame.Header" = "SELECT THE GAME";
+"SuggestNewGame.Description" = "Let us know which game you want to monitor. We will add it to shortly on the list.";
+"SuggestNewGame.TextField.Placeholder" = "  Type in the game title";
+"SuggestNewGame.Save" = "Save";
+"SuggestNewGame.Cancel" = "Cancel";
+
+// MARK: SelectGame
+"SelectGame.Header" = "SELECT THE GAME";
+"SelectGame.Description" = "Please choose the game to monitor. You can add another game if it is not on the list.";
+"SelectGame.Continue" = "Continue";
+"SelectGame.AddAnotherGame" = "Add another game";
+
+// MARK: SelectState
+"SelectState.Header" = "SELECT THE STATE";
+"SelectState.Description" = "Please choose the state to monitor now. You can switch later.";
+"SelectState.Continue" = "Continue";
+
+// MARK: Welcome
+"Welcome.StartButton" = "Start";
+"Welcome.Title" = "WELCOME TO LOTTERY SCANNER!";
+"Welcome.BulletPoint1" = "Monitor the main national lottery games";
+"Welcome.BulletPoint2" = "Scan and save your tickets";
+"Welcome.BulletPoint3" = "Get notified when drawings come out";

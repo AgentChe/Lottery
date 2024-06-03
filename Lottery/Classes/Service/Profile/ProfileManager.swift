@@ -1,4 +1,3 @@
-//
 //  ProfileManager.swift
 //  Lottery
 //
@@ -12,6 +11,8 @@ protocol ProfileManagerProtocol {
     func login(userToken: String, complete: ((LoginResult) -> Void)?)
     func getProfile(complete: @escaping (Result<Profile, Error>) -> Void)
     func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void)
+    func cacheProfile(lotteries: [Int]?, state: Int?)
+    func loadCachedProfile() -> (lotteries: [Int], state: Int)?
 }
 
 final class ProfileManager {
@@ -20,6 +21,8 @@ final class ProfileManager {
         static let loginOperationKey = "login_operation_key"
         static let getProfileOperationKey = "get_profile_operation_key"
         static let setProfileOperationKey = "set_profile_operation_key"
+        static let cachedLotteriesKey = "cached_lotteries_key"
+        static let cachedStateKey = "cached_state_key"
     }
 
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
@@ -121,5 +124,22 @@ extension ProfileManager: ProfileManagerProtocol {
                 }
             }
         }
+    }
+
+    func cacheProfile(lotteries: [Int]?, state: Int?) {
+        if let lotteries = lotteries {
+            UserDefaults.standard.set(lotteries, forKey: Constants.cachedLotteriesKey)
+        }
+        if let state = state {
+            UserDefaults.standard.set(state, forKey: Constants.cachedStateKey)
+        }
+    }
+    
+    func loadCachedProfile() -> (lotteries: [Int], state: Int)? {
+        guard let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int],
+              let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int else {
+            return nil
+        }
+        return (lotteries, state)
     }
 }

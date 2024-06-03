@@ -7,9 +7,12 @@
 import UIKit
 
 final class SuggestNewGameView: UIView {
+    
+    // MARK: - UI Components
+    
     let headerLabel: UILabel = {
         let label = UILabel()
-        label.text = "SELECT THE GAME"
+        label.text = NSLocalizedString("SuggestNewGame.Header", comment: "SELECT THE GAME")
         label.font = Fonts.Inter.bold(size: 19.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -19,7 +22,7 @@ final class SuggestNewGameView: UIView {
     
     let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Let us know which game you want to monitor. We will add it to shortly on the list."
+        label.text = NSLocalizedString("SuggestNewGame.Description", comment: "Let us know which game you want to monitor. We will add it to shortly on the list.")
         label.font = Fonts.Inter.medium(size: 15.scale)
         label.textColor = Appearance.main300
         label.numberOfLines = 2
@@ -36,9 +39,9 @@ final class SuggestNewGameView: UIView {
         return label
     }()
     
-    let textField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "  Type in the game title"
+    let textField: InsetTextField = {
+        let textField = InsetTextField()
+        textField.placeholder = NSLocalizedString("SuggestNewGame.TextField.Placeholder", comment: "  Type in the game title")
         textField.font = Fonts.Inter.medium(size: 15.scale)
         textField.textColor = Appearance.mono200
         textField.backgroundColor = .white
@@ -49,14 +52,14 @@ final class SuggestNewGameView: UIView {
         let placeholderAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Appearance.main300
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "  Type in the game title", attributes: placeholderAttributes)
+        textField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("SuggestNewGame.TextField.Placeholder", comment: "  Type in the game title"), attributes: placeholderAttributes)
         
         return textField
     }()
     
     let saveButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save", for: .normal)
+        button.setTitle(NSLocalizedString("SuggestNewGame.Save", comment: "Save"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
         button.backgroundColor = Appearance.main100
@@ -67,7 +70,7 @@ final class SuggestNewGameView: UIView {
     
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Cancel", for: .normal)
+        button.setTitle(NSLocalizedString("SuggestNewGame.Cancel", comment: "Cancel"), for: .normal)
         button.setTitleColor(Appearance.mono200, for: .normal)
         button.titleLabel?.font = Fonts.Inter.medium(size: 17.scale)
         button.backgroundColor = .white
@@ -79,13 +82,15 @@ final class SuggestNewGameView: UIView {
     }()
     
     let dismissButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "SuggestNewGame.Close"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     var bottomConstraint: NSLayoutConstraint!
+    
+    // MARK: - Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -96,34 +101,38 @@ final class SuggestNewGameView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setupView() {
+}
+
+// MARK: - Private Methods
+
+private extension SuggestNewGameView {
+    func setupView() {
         backgroundColor = Appearance.main500
         
         addSubview(headerLabel)
-        addSubview(dismissButton)
         addSubview(descriptionLabel)
         addSubview(textField)
         addSubview(saveButton)
         addSubview(cancelButton)
+        addSubview(dismissButton)
         
         bottomConstraint = saveButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -50.scale)
         
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 63.scale),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
-            headerLabel.trailingAnchor.constraint(equalTo: dismissButton.leadingAnchor, constant: -10.scale),
+            headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50.scale),
             
             dismissButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
             dismissButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             dismissButton.widthAnchor.constraint(equalToConstant: 24.scale),
             dismissButton.heightAnchor.constraint(equalToConstant: 24.scale),
             
-            descriptionLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 14.scale),
+            descriptionLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10.scale),
             descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             
-            textField.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 25.scale),
+            textField.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
             textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
             textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.scale),
             textField.heightAnchor.constraint(equalToConstant: 44.scale),
@@ -140,12 +149,12 @@ final class SuggestNewGameView: UIView {
         ])
     }
     
-    private func setupTapGesture() {
+    func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         addGestureRecognizer(tapGesture)
     }
     
-    @objc private func handleTap() {
+    @objc func handleTap() {
         endEditing(true)
     }
 }

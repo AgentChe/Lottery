@@ -1,4 +1,3 @@
-//
 //  WelcomeView.swift
 //  Lottery
 //
@@ -8,9 +7,12 @@
 import UIKit
 
 final class WelcomeView: UIView {
+    
+    // MARK: - UI Components
+    
     let startButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Start", for: .normal)
+        button.setTitle(NSLocalizedString("Welcome.StartButton", comment: "Start"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
@@ -20,7 +22,7 @@ final class WelcomeView: UIView {
     
     private let welcomeLabel: UILabel = {
         let label = UILabel()
-        label.text = "WELCOME TO LOTTERY SCANNER!"
+        label.text = NSLocalizedString("Welcome.Title", comment: "WELCOME TO LOTTERY SCANNER!")
         label.font = Fonts.Inter.bold(size: 19.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -30,7 +32,7 @@ final class WelcomeView: UIView {
     
     private let bulletPoint1Label: UILabel = {
         let label = UILabel()
-        label.text = "Monitor the main national lottery games"
+        label.text = NSLocalizedString("Welcome.BulletPoint1", comment: "Monitor the main national lottery games")
         label.font = Fonts.Inter.medium(size: 16.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -47,7 +49,7 @@ final class WelcomeView: UIView {
     
     private let bulletPoint2Label: UILabel = {
         let label = UILabel()
-        label.text = "Scan and save your tickets"
+        label.text = NSLocalizedString("Welcome.BulletPoint2", comment: "Scan and save your tickets")
         label.font = Fonts.Inter.medium(size: 16.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -64,7 +66,7 @@ final class WelcomeView: UIView {
     
     private let bulletPoint3Label: UILabel = {
         let label = UILabel()
-        label.text = "Get notified when drawings come out"
+        label.text = NSLocalizedString("Welcome.BulletPoint3", comment: "Get notified when drawings come out")
         label.font = Fonts.Inter.medium(size: 16.scale)
         label.textColor = Appearance.mono200
         label.textAlignment = .left
@@ -86,6 +88,8 @@ final class WelcomeView: UIView {
         return imageView
     }()
     
+    // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -94,8 +98,12 @@ final class WelcomeView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setupView() {
+}
+
+// MARK: - Private Methods
+
+private extension WelcomeView {
+    func setupView() {
         backgroundColor = Appearance.main400
         
         addSubview(welcomeLabel)
@@ -111,7 +119,7 @@ final class WelcomeView: UIView {
         setupConstraints()
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         NSLayoutConstraint.activate([
             welcomeLabel.topAnchor.constraint(equalTo: topAnchor, constant: 84.scale),
             welcomeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
