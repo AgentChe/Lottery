@@ -13,14 +13,16 @@ protocol ContentManagerProtocol {
 }
 
 final class ContentManager {
-    private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
-    private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [String: any APIOperationProtocol] = [:]
-
-    private enum Constants {
+    enum Constants {
         static let stateCacheKey = "states_cache"
         static let lotteryCacheKey = "lotteries_cache"
     }
+    
+    private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
+    
+    private let sessionManager: SessionManagerProtocol = SessionManager()
+    
+    private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: - ContentManagerProtocol
@@ -43,23 +45,23 @@ extension ContentManager: ContentManagerProtocol {
         operations[operationId] = operation
 
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
+            self?.operations.removeValue(forKey: operationId)
 
-            if let error = error {
-                completion(.failure(error))
-            } else if let statesArray = result as? [[String: Any]] {
-                let states = statesArray.compactMap { State(response: $0) }
-                self?.saveToCache(data: states, forKey: Constants.stateCacheKey)
-                completion(.success(states))
-            } else {
-                completion(.failure(ContentError(.notContent)))
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let statesArray = result as? [[String: Any]] {
+                    let states = statesArray.compactMap { State(response: $0) }
+                    self?.saveToCache(data: states, forKey: Constants.stateCacheKey)
+                    completion(.success(states))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
+                }
             }
         }
     }
     
-    func fetchLotteries(forceUpdate: Bool, stateId: Int?, completion: @escaping (Result<[Lottery], Error>) -> Void) {
+    func fetchLotteries(forceUpdate: Bool, stateId: Int? = nil, completion: @escaping (Result<[Lottery], Error>) -> Void) {
         if !forceUpdate, let cachedLotteries = loadFromCache(forKey: Constants.lotteryCacheKey) as [Lottery]? {
             completion(.success(cachedLotteries))
             return
@@ -77,18 +79,18 @@ extension ContentManager: ContentManagerProtocol {
         operations[operationId] = operation
 
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
+            self?.operations.removeValue(forKey: operationId)
 
-            if let error = error {
-                completion(.failure(error))
-            } else if let lotteriesArray = result as? [[String: Any]] {
-                let lotteries = lotteriesArray.compactMap { Lottery(response: $0) }
-                self?.saveToCache(data: lotteries, forKey: Constants.lotteryCacheKey)
-                completion(.success(lotteries))
-            } else {
-                completion(.failure(ContentError(.notContent)))
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let lotteriesArray = result as? [[String: Any]] {
+                    let lotteries = lotteriesArray.compactMap { Lottery(response: $0) }
+                    self?.saveToCache(data: lotteries, forKey: Constants.lotteryCacheKey)
+                    completion(.success(lotteries))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
+                }
             }
         }
     }

@@ -23,8 +23,8 @@ struct AddTicketRequest: EndPoint {
     
     var parameters: [String : Any] {
         [
-            "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": userToken,
+            "api_key": GlobalDefinitions.apiKey,
+            "user_token": userToken,
             "lotteryId": lotteryId,
             "pictureUrl": pictureUrl?.absoluteString as Any,
             "date": date,

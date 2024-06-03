@@ -22,8 +22,8 @@ struct AddLuckyNumbersRequest: EndPoint {
     
     var parameters: [String : Any] {
         [
-            "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": userToken,
+            "api_key": GlobalDefinitions.apiKey,
+            "user_token": userToken,
             "numbers": numbers,
             "game_id": gameId
         ]

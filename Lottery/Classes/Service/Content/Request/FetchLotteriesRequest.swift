@@ -21,8 +21,8 @@ struct FetchLotteriesRequest: EndPoint {
     
     var parameters: [String: Any] {
         var params: [String: Any] = [
-            "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": userToken
+            "api_key": GlobalDefinitions.apiKey,
+            "user_token": userToken
         ]
         if let stateId = stateId {
             params["state_id"] = "\(stateId)"

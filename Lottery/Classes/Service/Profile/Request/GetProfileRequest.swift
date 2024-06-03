@@ -20,7 +20,7 @@ struct GetProfileRequest: EndPoint {
     
     var parameters: [String : Any] {
         [
-            "_api_key": GlobalDefinitions.apiKey,
+            "api_key": GlobalDefinitions.apiKey,
             "user_token": userToken
         ]
     }

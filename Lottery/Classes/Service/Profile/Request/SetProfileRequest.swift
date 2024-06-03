@@ -22,7 +22,7 @@ struct SetProfileRequest: EndPoint {
     
     var parameters: [String : Any] {
         var params: [String: Any] = [
-            "_api_key": GlobalDefinitions.apiKey,
+            "api_key": GlobalDefinitions.apiKey,
             "user_token": userToken
         ]
         if let lotteries = lotteries {

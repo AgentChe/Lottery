@@ -29,10 +29,13 @@ final class RequestDispatcher: RequestDispatcherProtocol {
 // MARK: Internal
 extension RequestDispatcher {
     func execute(endPoint: EndPoint, completion: @escaping (Any?, Error?) -> Void) -> URLSessionDataTask? {
-        guard let request = URLRequest(domain: environment.host, endPoint: endPoint) else {
+        guard var request = URLRequest(domain: environment.host, endPoint: endPoint) else {
             completion(nil, NetworkError(.urlError))
             return nil
         }
+        
+        request.httpMethod = endPoint.method.rawValue
+        request.httpBody = try? JSONSerialization.data(withJSONObject: endPoint.parameters)
         
         let task = networkSession.dataTask(request: request) { [weak self] data, response, error in
             let result = self?.parse(data: data)

@@ -4,6 +4,7 @@
 //
 //  Created by Андрей Чернышев on 23.05.2024.
 //
+
 import RxSwift
 import RxCocoa
 import OtterScaleiOS
@@ -15,18 +16,11 @@ final class SplashViewModel {
     
     var tryAgain: ((Error) -> (Observable<Void>))?
     
-    private let contentManager: ContentManager
-    private let gamesManager: GamesManager
-    private let ticketsManager: TicketsManager
-    private let sessionManager = SessionManager()
-    private let profileManager = ProfileManager()
-    private let observableRetrySingle = ObservableRetrySingle()
-
-    init(contentManager: ContentManager, gamesManager: GamesManager, ticketsManager: TicketsManager) {
-        self.contentManager = contentManager
-        self.gamesManager = gamesManager
-        self.ticketsManager = ticketsManager
-    }
+    private lazy var contentManager = ContentManager()
+    private lazy var sessionManager = SessionManager()
+    private lazy var profileManager = ProfileManager()
+    
+    private lazy var observableRetrySingle = ObservableRetrySingle()
 }
 
 // MARK: Public
@@ -37,7 +31,6 @@ extension SplashViewModel {
     
     struct Output {
         let route: Driver<Route>
-        let error: Driver<Error>
     }
     
     func configure(input: Input) -> Output {
@@ -45,27 +38,8 @@ extension SplashViewModel {
         let didSyncLibrary = makeSyncLibrary(didCompleteLogin: didCompleteLogin)
         
         let route = makeRoute(didSyncLibrary: didSyncLibrary)
-        let error = didSyncLibrary
-            .asObservable()
-            .materialize()
-            .filter { event in
-                if case .error = event {
-                    return true
-                }
-                return false
-            }
-            .map { event in
-                switch event {
-                case .error(let error):
-                    return error
-                default:
-                    return nil
-                }
-            }
-            .compactMap { $0 }
-            .asDriver(onErrorDriveWith: .empty())
         
-        return Output(route: route, error: error)
+        return Output(route: route)
     }
 }
 
@@ -90,27 +64,28 @@ private extension SplashViewModel {
         didCompleteLogin
             .flatMapLatest { [weak self] _ -> Signal<Void> in
                 guard let self = self else { return .never() }
-
-                return Observable<Void>.create { observer in
-                    self.contentManager.fetchStates(forceUpdate: true) { result in
-                        switch result {
-                        case .success:
-                            self.contentManager.fetchLotteries(forceUpdate: true, stateId: nil) { result in
-                                switch result {
-                                case .success:
-                                    observer.onNext(())
-                                    observer.onCompleted()
-                                case .failure(let error):
-                                    observer.onError(error)
-                                }
-                            }
-                        case .failure(let error):
-                            observer.onError(error)
-                        }
-                    }
-                    return Disposables.create()
+                
+                func source() -> Single<Void> {
+                    Single.zip([
+                        self.makeStates(),
+                        self.makeLotteries()
+                    ])
+                    .mapToVoid()
                 }
-                .asSignal(onErrorSignalWith: .never())
+                
+                func trigger(error: Error) -> Observable<Void> {
+                    guard let tryAgain = self.tryAgain?(error) else {
+                        return .empty()
+                    }
+                    return tryAgain
+                }
+                
+                return self.observableRetrySingle
+                    .retry(
+                        source: { source() },
+                        trigger: { trigger(error: $0) }
+                    )
+                    .asSignal(onErrorSignalWith: .never())
             }
     }
     
@@ -164,6 +139,42 @@ private extension SplashViewModel {
                     )
                     .asSignal(onErrorSignalWith: .never())
             }
+    }
+    
+    func makeStates() -> Single<Void> {
+        Single<Void>.create { [weak self] single in
+            guard let self else { return Disposables.create() }
+            
+            self.contentManager
+                .fetchStates(forceUpdate: true) { result in
+                    switch result {
+                    case .success:
+                        single(.success(Void()))
+                    case .failure(let error):
+                        single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func makeLotteries() -> Single<Void> {
+        Single<Void>.create { [weak self] single in
+            guard let self else { return Disposables.create() }
+            
+            self.contentManager
+                .fetchLotteries(forceUpdate: true) { result in
+                    switch result {
+                    case .success:
+                        single(.success(Void()))
+                    case .failure(let error):
+                        single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create()
+        }
     }
 }
 

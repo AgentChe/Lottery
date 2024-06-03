@@ -22,8 +22,8 @@ struct AddLotteryRequest: EndPoint {
     
     var parameters: [String : Any] {
         [
-            "_api_key": GlobalDefinitions.apiKey,
-            "_user_token": userToken,
+            "api_key": GlobalDefinitions.apiKey,
+            "user_token": userToken,
             "name": name,
             "state_id": stateId
         ]

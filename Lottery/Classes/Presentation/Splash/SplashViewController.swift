@@ -4,6 +4,7 @@
 //
 //  Created by Андрей Чернышев on 05.07.2022.
 //
+
 import UIKit
 import RxSwift
 import RxCocoa
@@ -11,14 +12,7 @@ import RxCocoa
 final class SplashViewController: UIViewController {
     private lazy var mainView = SplashView()
     
-    private lazy var viewModel: SplashViewModel = {
-        let dispatcher = RequestDispatcher()
-        let sessionManager = SessionManager()
-        let contentManager = ContentManager()
-        let gamesManager = GamesManager()
-        let ticketsManager = TicketsManager()
-        return SplashViewModel(contentManager: contentManager, gamesManager: gamesManager, ticketsManager: ticketsManager)
-    }()
+    private lazy var viewModel = SplashViewModel()
     
     private lazy var disposeBag = DisposeBag()
     
@@ -37,6 +31,7 @@ final class SplashViewController: UIViewController {
             guard let self = self else {
                 return .never()
             }
+            
             return self.open(error: error)
         }
         
@@ -50,24 +45,9 @@ final class SplashViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        output.error
-            .drive(onNext: { [weak self] error in
-                self?.handleError(error)
-            })
-            .disposed(by: disposeBag)
-        
         sdkInitialize.observe { [weak self] in
             self?.didCompleteValidationTrigger.accept(())
         }
-    }
-    
-    private func handleError(_ error: Error) {
-        let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        let retryAction = UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
-            self?.didCompleteValidationTrigger.accept(())
-        }
-        alertController.addAction(retryAction)
-        present(alertController, animated: true, completion: nil)
     }
 }
 

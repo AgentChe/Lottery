@@ -19,9 +19,9 @@ struct SyncTokensRequest: EndPoint {
     
     var parameters: [String : Any] {
         [
-            "_api_key": GlobalDefinitions.apiKey,
-            "user_token": newToken,
-            "_user_token": oldToken
+            "api_key": GlobalDefinitions.apiKey,
+            "newToken": newToken,
+            "oldToken": oldToken
         ]
     }
     

@@ -26,7 +26,9 @@ final class ProfileManager {
     }
 
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
+    
     private let sessionManager: SessionManagerProtocol = SessionManager()
+    
     private var operations: [String: any APIOperationProtocol] = [:]
 }
 
