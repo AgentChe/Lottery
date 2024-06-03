@@ -4,6 +4,7 @@
 //  Created by Niiaz Khasanov on 6/2/24.
 //
 
+
 import UIKit
 
 class SelectStateViewController: UIViewController {
@@ -38,13 +39,22 @@ class SelectStateViewController: UIViewController {
                 self?.selectStateView.updateStates(states)
             case .failure(let error):
                 print("Failed to fetch states: \(error)")
+                self?.showError(message: "Failed to load states. Please try again.")
             }
         }
     }
     
     @objc private func continueButtonTapped() {
-        let selectedState = selectStateView.getSelectedState()
+        guard let selectedState = selectStateView.getSelectedState() else {
+            showError(message: "Please select a state.")
+            return
+        }
         onContinue?(selectedState)
     }
+    
+    private func showError(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
 }
-

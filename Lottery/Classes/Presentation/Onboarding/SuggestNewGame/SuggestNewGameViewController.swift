@@ -46,12 +46,18 @@ final class SuggestNewGameViewController: UIViewController {
                 case .success:
                     self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.")
                 case .failure(let error):
-                    self?.showToast(message: "Failed to suggest a new game: \(error.localizedDescription)")
+                    print("Failed to suggest a new game: \(error)")
+                    self?.showAlert(message: "Failed to suggest a new game. Please try again.")
                 }
             }
         }
     }
-    
+  
+    private func showAlert(message: String, isError: Bool = true) {
+         let alert = UIAlertController(title: isError ? "Error" : "Success", message: message, preferredStyle: .alert)
+         alert.addAction(UIAlertAction(title: "OK", style: .default))
+         present(alert, animated: true)
+    }
     private func showToast(message: String) {
         var style = ToastStyle()
         style.backgroundColor = Appearance.mono200

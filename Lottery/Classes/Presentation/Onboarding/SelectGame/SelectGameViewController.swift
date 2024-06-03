@@ -41,12 +41,17 @@ class SelectGameViewController: UIViewController {
                 self?.selectGameView.updateGames(games)
             case .failure(let error):
                 print("Failed to fetch games: \(error)")
+                self?.showError(message: "Failed to load games. Please try again.")
             }
         }
     }
     
     @objc private func continueButtonTapped() {
         let selectedGames = selectGameView.getSelectedGames()
+        if selectedGames.isEmpty {
+            showError(message: "Please select at least one game.")
+            return
+        }
         onContinue?(selectedGames)
     }
     
@@ -54,5 +59,11 @@ class SelectGameViewController: UIViewController {
         let suggestNewGameVC = SuggestNewGameViewController()
         suggestNewGameVC.modalPresentationStyle = .fullScreen
         present(suggestNewGameVC, animated: true, completion: nil)
+    }
+    
+    private func showError(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
