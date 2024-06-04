@@ -15,7 +15,7 @@ final class SelectStateView: UIView {
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
         
-        let attributedTitle = NSLocalizedString("SelectState.Continue", comment: "Continue").attributed(with: attrs)
+        let attributedTitle = "Continue".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
@@ -40,7 +40,7 @@ final class SelectStateView: UIView {
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = NSLocalizedString("SelectState.Header", comment: "SELECT THE STATE").attributed(with: attrs)
+        label.attributedText = "SELECT THE STATE".localized.attributed(with: attrs)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -54,7 +54,7 @@ final class SelectStateView: UIView {
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = NSLocalizedString("SelectState.Description", comment: "Please choose the state to monitor now. You can switch later.").attributed(with: attrs)
+        label.attributedText = "Please choose the state to monitor now. You can switch later.".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

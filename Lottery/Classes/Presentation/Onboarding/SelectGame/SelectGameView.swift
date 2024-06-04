@@ -15,7 +15,7 @@ final class SelectGameView: UIView {
         let attrs = TextAttributes()
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
-        let attributedTitle = NSLocalizedString("SelectGame.Continue", comment: "Continue").attributed(with: attrs)
+        let attributedTitle = "Continue".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
@@ -37,7 +37,7 @@ final class SelectGameView: UIView {
         let attrs = TextAttributes()
             .textColor(Appearance.mono200)
             .font(Fonts.Inter.medium(size: 17.scale))
-        let attributedTitle = NSLocalizedString("SelectGame.AddAnotherGame", comment: "Add another game").attributed(with: attrs)
+        let attributedTitle = "Add another game".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = .white
         button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
@@ -54,7 +54,7 @@ final class SelectGameView: UIView {
             .lineHeight(22.8.scale)
             .textAlignment(.left)
         let label = UILabel()
-        label.attributedText = NSLocalizedString("SelectGame.Header", comment: "SELECT THE GAME").attributed(with: attrs)
+        label.attributedText = "SELECT THE GAME".localized.attributed(with: attrs)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -67,7 +67,7 @@ final class SelectGameView: UIView {
             .lineHeight(18.scale)
             .textAlignment(.left)
         let label = UILabel()
-        label.attributedText = NSLocalizedString("SelectGame.Description", comment: "Please choose the game to monitor. You can add another game if it is not on the list.").attributed(with: attrs)
+        label.attributedText = "Please choose the game to monitor. You can add another game if it is not on the list.".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -86,7 +86,7 @@ final class SelectGameView: UIView {
     
     private var games: [Game] = []
     private var selectedGames: Set<Int> = []
-
+    
     // MARK: - Initializers
     
     override init(frame: CGRect) {

@@ -5,8 +5,7 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+
 
 final class OnboardingViewController: UINavigationController, UINavigationControllerDelegate {
     struct Constants {
@@ -14,7 +13,6 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     }
     
     private let progressView = UIProgressView(progressViewStyle: .default)
-    private lazy var disposeBag = DisposeBag()
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     private var selectedState: Int?
     private var selectedGames: [Int] = []

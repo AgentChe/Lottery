@@ -27,6 +27,8 @@ final class SuggestNewGameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupButtonActions()
+        suggestNewGameView.textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        updateSaveButtonState()
     }
 }
 
@@ -35,16 +37,27 @@ final class SuggestNewGameViewController: UIViewController {
 private extension SuggestNewGameViewController {
     func setupButtonActions() {
         suggestNewGameView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
-        suggestNewGameView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        suggestNewGameView.dismissButton.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
+        suggestNewGameView.cancelButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
+        suggestNewGameView.dismissButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
     }
     
     @objc func saveButtonTapped() {
+        guard suggestNewGameView.saveButton.isEnabled else { return }
         guard let gameTitle = suggestNewGameView.textField.text, !gameTitle.isEmpty else {
-            showToast(message: "Please enter a game title.")
+            showToast(message: "SuggestNewGameViewController.EnterGameTitle".localized)
             return
         }
         suggestNewGame(gameTitle: gameTitle)
+    }
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        updateSaveButtonState()
+    }
+    
+    func updateSaveButtonState() {
+        let isTextEmpty = suggestNewGameView.textField.text?.isEmpty ?? true
+        suggestNewGameView.saveButton.isEnabled = !isTextEmpty
+        suggestNewGameView.saveButton.backgroundColor = isTextEmpty ? Appearance.main100.withAlphaComponent(0.5) : Appearance.main100
     }
     
     func suggestNewGame(gameTitle: String) {
@@ -52,9 +65,9 @@ private extension SuggestNewGameViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.")
+                    self?.showToast(message: "SuggestNewGameViewController.ThanksForSuggestion".localized)
                 case .failure(let error):
-                    self?.presentTryAgainViewController(with: error)
+                    self?.presentTryAgainViewController(with: error, gameTitle: gameTitle)
                 }
             }
         }
@@ -71,16 +84,15 @@ private extension SuggestNewGameViewController {
         self.view.makeToast(message, duration: 3.0, position: .top, style: style)
     }
     
-    func presentTryAgainViewController(with error: Error) {
-        let vc = TryAgainViewController.make(error: error)
+    func presentTryAgainViewController(with error: Error, gameTitle: String) {
+        let retryHandler: () -> Void = { [weak self] in
+            self?.suggestNewGame(gameTitle: gameTitle)
+        }
+        let vc = TryAgainViewController.make(error: error, tryAgain: retryHandler)
         self.present(vc, animated: true)
     }
     
-    @objc func cancelButtonTapped() {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @objc func dismissButtonTapped() {
+    @objc func dismissViewController() {
         dismiss(animated: true, completion: nil)
     }
 }

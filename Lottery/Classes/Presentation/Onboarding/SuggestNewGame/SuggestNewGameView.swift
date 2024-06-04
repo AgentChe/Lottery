@@ -18,7 +18,7 @@ final class SuggestNewGameView: UIView {
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = NSLocalizedString("SuggestNewGame.Header", comment: "Suggest a New Game").attributed(with: attrs)
+        label.attributedText = "Suggest a New Game".localized.attributed(with: attrs)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -32,7 +32,7 @@ final class SuggestNewGameView: UIView {
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = NSLocalizedString("SuggestNewGame.Description", comment: "Let us know which game you want to monitor. We will add it to shortly on the list.").attributed(with: attrs)
+        label.attributedText = "Let us know which game you want to monitor. We will add it to shortly on the list.".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -44,7 +44,7 @@ final class SuggestNewGameView: UIView {
             .textColor(Appearance.main300)
             .font(Fonts.Inter.medium(size: 15.scale))
         
-        textField.attributedPlaceholder = NSLocalizedString("SuggestNewGame.TextField.Placeholder", comment: "  Type in the game title").attributed(with: attrs)
+        textField.attributedPlaceholder = "  Type in the game title".localized.attributed(with: attrs)
         textField.font = Fonts.Inter.medium(size: 15.scale)
         textField.textColor = Appearance.mono200
         textField.backgroundColor = .white
@@ -60,7 +60,7 @@ final class SuggestNewGameView: UIView {
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
         
-        let attributedTitle = NSLocalizedString("SuggestNewGame.Save", comment: "Save").attributed(with: attrs)
+        let attributedTitle = "Save".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         
         button.backgroundColor = Appearance.main100
@@ -76,7 +76,7 @@ final class SuggestNewGameView: UIView {
             .textColor(Appearance.mono200)
             .font(Fonts.Inter.medium(size: 17.scale))
         
-        let attributedTitle = NSLocalizedString("SuggestNewGame.Cancel", comment: "Cancel").attributed(with: attrs)
+        let attributedTitle = "Cancel".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         
         button.backgroundColor = .white
@@ -94,7 +94,6 @@ final class SuggestNewGameView: UIView {
         return button
     }()
     
-    private var bottomConstraint: NSLayoutConstraint!
     
     // MARK: - Initializers
     
@@ -122,7 +121,6 @@ private extension SuggestNewGameView {
         addSubview(cancelButton)
         addSubview(dismissButton)
         
-        bottomConstraint = saveButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale)
         
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
@@ -146,7 +144,7 @@ private extension SuggestNewGameView {
             saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             saveButton.heightAnchor.constraint(equalToConstant: 50.scale),
-            bottomConstraint,
+            saveButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale),
             
             cancelButton.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 10.scale),
             cancelButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
