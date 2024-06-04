@@ -75,7 +75,7 @@ private extension OnboardingView {
                 view.delegate = self
                 
                 if index == 0 {
-                    view.frame.origin = CGPoint(x: 0, y: 0)
+                    view.frame.origin = CGPoint(x: 0.scale, y: 0.scale)
                     self?.addSubview(view)
                     
                     view.moveToThis()
@@ -98,12 +98,12 @@ private extension OnboardingView {
         let currentView = contentViews[currentIndex]
         let scrollToView = contentViews[scrollToIndex]
         
-        scrollToView.frame.origin = CGPoint(x: 375.scale * CGFloat(direction), y: 0)
+        scrollToView.frame.origin = CGPoint(x: 375.scale * CGFloat(direction), y: 0.scale)
         addSubview(scrollToView)
         
         UIView.animate(withDuration: 0.3, animations: {
-            currentView.frame.origin = CGPoint(x: 375.scale * CGFloat(-direction), y: 0)
-            scrollToView.frame.origin = CGPoint(x: 0, y: 0)
+            currentView.frame.origin = CGPoint(x: 375.scale * CGFloat(-direction), y: 0.scale)
+            scrollToView.frame.origin = CGPoint(x: 0.scale, y: 0.scale)
         }, completion: { [weak self] result in
             guard let self = self else {
                 return

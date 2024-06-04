@@ -70,7 +70,7 @@ final class SelectGameView: UIView {
         let tableView = UITableView()
         tableView.allowsMultipleSelection = true
         tableView.backgroundColor = Appearance.main500
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20.scale, bottom: 0, right: 20.scale)
+        tableView.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
         tableView.separatorColor = .lightGray
         tableView.showsVerticalScrollIndicator = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -175,8 +175,8 @@ extension SelectGameView: UITableViewDataSource {
         // Configure the accessory view with additional space to the right
         let accessoryImageView = UIImageView(image: UIImage(named: selectedGames.contains(indexPath.row) ? "Game.Selected" : "Game.NotSelected"))
         accessoryImageView.contentMode = .scaleAspectFit
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 34.scale, height: 24.scale)) // Adjust width to provide additional space
-        accessoryImageView.frame = CGRect(x: -10.scale, y: 0, width: 24.scale, height: 24.scale) // Move left by 10 points
+        let containerView = UIView(frame: CGRect(x: 0.scale, y: 0.scale, width: 34.scale, height: 24.scale)) // Adjust width to provide additional space
+        accessoryImageView.frame = CGRect(x: -10.scale, y: 0.scale, width: 24.scale, height: 24.scale) // Move left by 10 points
         containerView.addSubview(accessoryImageView)
         cell.accessoryView = containerView
         
@@ -185,7 +185,7 @@ extension SelectGameView: UITableViewDataSource {
         cell.backgroundColor = Appearance.main500
         
         // Adjust separator inset
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 20.scale, bottom: 0, right: 20.scale)
+        cell.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
         
         return cell
     }

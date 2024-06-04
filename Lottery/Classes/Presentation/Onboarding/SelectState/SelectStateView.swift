@@ -58,7 +58,7 @@ final class SelectStateView: UIView {
         let tableView = UITableView()
         tableView.backgroundColor = Appearance.main500
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20.scale, bottom: 0, right: 20.scale)
+        tableView.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
         tableView.separatorColor = .lightGray
         tableView.showsVerticalScrollIndicator = false
         return tableView
@@ -161,14 +161,14 @@ extension SelectStateView: UITableViewDataSource {
         
         let accessoryImageView = UIImageView(image: UIImage(named: selectedState == state.id ? "State.Selected" : "State.NotSelected"))
         accessoryImageView.contentMode = .scaleAspectFit
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 34.scale, height: 24.scale))
-        accessoryImageView.frame = CGRect(x: -10.scale, y: 0, width: 24.scale, height: 24.scale)
+        let containerView = UIView(frame: CGRect(x: 0.scale, y: 0.scale, width: 34.scale, height: 24.scale))
+        accessoryImageView.frame = CGRect(x: -10.scale, y: 0.scale, width: 24.scale, height: 24.scale)
         containerView.addSubview(accessoryImageView)
         cell.accessoryView = containerView
         
         cell.selectionStyle = .none
         cell.backgroundColor = Appearance.main500
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 20.scale, bottom: 0, right: 20.scale)
+        cell.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
         
         return cell
     }
