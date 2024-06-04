@@ -40,7 +40,6 @@ private extension SelectStateViewController {
                 self?.states = states
                 self?.selectStateView.updateStates(states)
             case .failure(let error):
-                print("Failed to fetch states: \(error)")
                 self?.presentTryAgainViewController(with: error)
             }
         }

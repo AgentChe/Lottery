@@ -55,7 +55,6 @@ private extension SuggestNewGameViewController {
                 case .success:
                     self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.")
                 case .failure(let error):
-                    print("Failed to suggest a new game: \(error)")
                     self?.presentTryAgainViewController(with: error)
                 }
             }

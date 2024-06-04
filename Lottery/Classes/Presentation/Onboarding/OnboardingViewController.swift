@@ -92,7 +92,6 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
                 let nextStep = self?.determineNextStep() ?? .main
                 self?.goToNext(at: nextStep)
             case .failure(let error):
-                print("Failed to set profile: \(error)")
                 self?.presentTryAgainViewController(with: error)
             }
         }
