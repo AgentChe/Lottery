@@ -161,7 +161,7 @@ private extension SelectGameView {
     func setupTableView() {
         gameTableView.dataSource = self
         gameTableView.delegate = self
-        gameTableView.register(UITableViewCell.self, forCellReuseIdentifier: "GameCell")
+        gameTableView.register(GameCell.self, forCellReuseIdentifier: "GameCell")
     }
     
     func updateContinueButtonState() {
@@ -178,28 +178,12 @@ extension SelectGameView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath) as? GameCell else {
+            return UITableViewCell()
+        }
         let game = games[indexPath.row]
-        let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
-            .font(Fonts.Inter.medium(size: 15.scale))
-            .lineHeight(18.scale)
-        cell.textLabel?.attributedText = game.jackpot.attributed(with: attrs)
-        
-        // Configure the accessory view with additional space to the right
-        let accessoryImageView = UIImageView(image: UIImage(named: selectedGames.contains(indexPath.row) ? "Game.Selected" : "Game.NotSelected"))
-        accessoryImageView.contentMode = .scaleAspectFit
-        let containerView = UIView(frame: CGRect(x: 0.scale, y: 0.scale, width: 34.scale, height: 24.scale)) // Adjust width to provide additional space
-        accessoryImageView.frame = CGRect(x: -10.scale, y: 0.scale, width: 24.scale, height: 24.scale) // Move left by 10 points
-        containerView.addSubview(accessoryImageView)
-        cell.accessoryView = containerView
-        
-        // Set cell selection style and background color
-        cell.selectionStyle = .none
-        cell.backgroundColor = Appearance.main500
-        
-        // Adjust separator inset
-        cell.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
+        let isSelected = selectedGames.contains(indexPath.row)
+        cell.configure(with: game, isSelected: isSelected)
         
         return cell
     }

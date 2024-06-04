@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
+		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
+		A39B2B3A2C0F5B880024FC9F /* GameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* GameCell.swift */; };
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
 		A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295C2C0D607C00DF735A /* InsetTextField.swift */; };
@@ -140,6 +142,8 @@
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
+		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
+		A39B2B392C0F5B880024FC9F /* GameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCell.swift; sourceTree = "<group>"; };
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
 		A3CF295C2C0D607C00DF735A /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
@@ -291,6 +295,22 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A39B2B372C0F5B1A0024FC9F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A39B2B322C0F5A880024FC9F /* StateCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A39B2B382C0F5B7B0024FC9F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A39B2B392C0F5B880024FC9F /* GameCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		A3C5CEBE2C0CD7CD00C43681 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -303,6 +323,7 @@
 		A3C5CEBF2C0CD7E100C43681 /* SelectState */ = {
 			isa = PBXGroup;
 			children = (
+				A39B2B372C0F5B1A0024FC9F /* Views */,
 				A3FF55882C0CC38C00E81771 /* SelectStateViewController.swift */,
 				A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */,
 			);
@@ -312,6 +333,7 @@
 		A3C5CEC02C0CD80600C43681 /* SelectGame */ = {
 			isa = PBXGroup;
 			children = (
+				A39B2B382C0F5B7B0024FC9F /* Views */,
 				A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */,
 				A3FF55902C0CC40500E81771 /* SelectGameView.swift */,
 			);
@@ -1022,6 +1044,7 @@
 				DE42B18C2BFF3CB200FF61B0 /* FirebaseManager.swift in Sources */,
 				DE42B2012BFF50E300FF61B0 /* APIOperation.swift in Sources */,
 				DE42B1A02BFF3CB200FF61B0 /* UIView+RxExtension.swift in Sources */,
+				A39B2B3A2C0F5B880024FC9F /* GameCell.swift in Sources */,
 				DE42B2192BFF666F00FF61B0 /* TryAgainView.swift in Sources */,
 				A3FF55662C07E42D00E81771 /* Game.swift in Sources */,
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
@@ -1091,6 +1114,7 @@
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
 				A3FF558B2C0CC3AA00E81771 /* SelectGameViewController.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,
+				A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */,
 				DE42B1B02BFF3CB200FF61B0 /* Weak.swift in Sources */,
 				A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */,
 				A3FF55792C07E62D00E81771 /* ListTicketsRequest.swift in Sources */,

@@ -141,7 +141,7 @@ private extension SelectStateView {
     func setupTableView() {
         stateTableView.dataSource = self
         stateTableView.delegate = self
-        stateTableView.register(UITableViewCell.self, forCellReuseIdentifier: "StateCell")
+        stateTableView.register(StateCell.self, forCellReuseIdentifier: "StateCell")
     }
     
     func updateContinueButtonState() {
@@ -163,25 +163,12 @@ extension SelectStateView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "StateCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "StateCell", for: indexPath) as? StateCell else {
+            return UITableViewCell()
+        }
         let state = states[indexPath.row]
-        let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
-            .font(Fonts.Inter.medium(size: 15.scale))
-            .lineHeight(18.scale)
-        
-        cell.textLabel?.attributedText = state.name.attributed(with: attrs)
-        
-        let accessoryImageView = UIImageView(image: UIImage(named: selectedState == state.id ? "State.Selected" : "State.NotSelected"))
-        accessoryImageView.contentMode = .scaleAspectFit
-        let containerView = UIView(frame: CGRect(x: 0.scale, y: 0.scale, width: 34.scale, height: 24.scale))
-        accessoryImageView.frame = CGRect(x: -10.scale, y: 0.scale, width: 24.scale, height: 24.scale)
-        containerView.addSubview(accessoryImageView)
-        cell.accessoryView = containerView
-        
-        cell.selectionStyle = .none
-        cell.backgroundColor = Appearance.main500
-        cell.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
+        let isSelected = selectedState == state.id
+        cell.configure(with: state, isSelected: isSelected)
         
         return cell
     }
