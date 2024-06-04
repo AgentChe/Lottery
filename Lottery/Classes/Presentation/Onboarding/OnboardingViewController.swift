@@ -77,16 +77,16 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func completeOnboarding() {
         markAsViewed()
-        saveProfile(forceUpdate: true)
+        saveProfile()
     }
     
-    private func saveProfile(forceUpdate: Bool = false) {
+    private func saveProfile() {
         guard let stateId = selectedState else {
             presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
-        
-        profileManager.setProfile(lotteries: selectedGames, state: stateId, forceUpdate: forceUpdate) { [weak self] result in
+
+        profileManager.setProfile(lotteries: selectedGames, state: stateId, forceUpdate: true) { [weak self] result in
             switch result {
             case .success:
                 let nextStep = self?.determineNextStep() ?? .main
@@ -127,7 +127,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func presentTryAgainViewController(with error: Error) {
         let vc = TryAgainViewController.make(error: error) { [weak self] in
-            self?.saveProfile(forceUpdate: true)
+            self?.saveProfile()
         }
         self.present(vc, animated: true)
     }
