@@ -2,7 +2,6 @@
 //  Lottery
 //
 //  Created by Niiaz Khasanov on 6/2/24.
-//
 
 import UIKit
 
@@ -24,6 +23,13 @@ final class SelectStateView: UIView {
         button.isEnabled = false // Initially disabled
         button.alpha = 0.5 // Initially pale
         return button
+    }()
+    
+    let preloader: UIActivityIndicatorView = {
+        let preloader = UIActivityIndicatorView(style: .medium)
+        preloader.translatesAutoresizingMaskIntoConstraints = false
+        preloader.hidesWhenStopped = true
+        return preloader
     }()
     
     private let headerLabel: UILabel = {
@@ -102,6 +108,7 @@ private extension SelectStateView {
         addSubview(descriptionLabel)
         addSubview(stateTableView)
         addSubview(continueButton)
+        addSubview(preloader) // Add preloader to the view
         setupConstraints()
     }
     
@@ -123,7 +130,11 @@ private extension SelectStateView {
             continueButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -35.scale),
             continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            continueButton.heightAnchor.constraint(equalToConstant: 50.scale)
+            continueButton.heightAnchor.constraint(equalToConstant: 50.scale),
+            
+            // Constraints for preloader
+            preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
+            preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor)
         ])
     }
     

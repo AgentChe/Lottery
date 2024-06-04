@@ -25,6 +25,13 @@ final class SelectGameView: UIView {
         return button
     }()
     
+    let preloader: UIActivityIndicatorView = {
+        let preloader = UIActivityIndicatorView(style: .medium)
+        preloader.translatesAutoresizingMaskIntoConstraints = false
+        preloader.hidesWhenStopped = true
+        return preloader
+    }()
+    
     let addAnotherGameButton: UIButton = {
         let button = UIButton()
         let attrs = TextAttributes()
@@ -115,6 +122,7 @@ private extension SelectGameView {
         addSubview(descriptionLabel)
         addSubview(gameTableView)
         addSubview(continueButton)
+        addSubview(preloader) // Add preloader to the view
         addSubview(addAnotherGameButton)
         setupConstraints()
     }
@@ -138,6 +146,10 @@ private extension SelectGameView {
             continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             continueButton.heightAnchor.constraint(equalToConstant: 50.scale),
+            
+            // Constraints for preloader
+            preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
+            preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
             
             addAnotherGameButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
             addAnotherGameButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),

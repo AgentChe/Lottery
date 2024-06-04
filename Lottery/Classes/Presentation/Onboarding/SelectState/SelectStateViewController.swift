@@ -50,6 +50,11 @@ private extension SelectStateViewController {
             presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
+        
+        // Show preloader and hide button
+        selectStateView.continueButton.isHidden = true
+        selectStateView.preloader.startAnimating()
+        
         onContinue?(selectedState)
     }
     

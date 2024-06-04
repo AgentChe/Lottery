@@ -54,6 +54,11 @@ private extension SelectGameViewController {
             presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
             return
         }
+        
+        // Show preloader and hide button
+        selectGameView.continueButton.isHidden = true
+        selectGameView.preloader.startAnimating()
+        
         onContinue?(selectedGames)
     }
     
@@ -70,3 +75,4 @@ private extension SelectGameViewController {
         present(vc, animated: true)
     }
 }
+
