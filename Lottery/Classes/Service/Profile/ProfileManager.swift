@@ -36,13 +36,11 @@ final class ProfileManager {
         }
     }
 
-    private func loadCachedProfile() -> (lotteries: [Int], state: Int)? {
-        guard let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int],
-              let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int else {
-            return nil
-        }
-        return (lotteries, state)
-    }
+    private func loadCachedProfile() -> Profile? {
+           let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int]
+           let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int
+           return Profile(lotteries: lotteries, state: state)
+       }
 }
 
 // MARK: ProfileManagerProtocol
@@ -79,7 +77,7 @@ extension ProfileManager: ProfileManagerProtocol {
 
     func getProfile(forceUpdate: Bool = false, complete: @escaping (Result<Profile, Error>) -> Void) {
         if !forceUpdate, let cachedProfile = loadCachedProfile() {
-            complete(.success(Profile(lotteries: cachedProfile.lotteries, state: cachedProfile.state)))
+            complete(.success(cachedProfile))
             return
         }
         
@@ -99,7 +97,7 @@ extension ProfileManager: ProfileManagerProtocol {
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
-                } else if let profileData = result as? [String: Any], let profile = Profile(response: profileData) {
+                } else if let profile = ResponseMapper.mapGetProfileResponse(result: result) {
                     self?.cacheProfile(lotteries: profile.lotteries, state: profile.state)
                     complete(.success(profile))
                 } else {
@@ -126,7 +124,7 @@ extension ProfileManager: ProfileManagerProtocol {
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
-                } else if let result = result as? [String: Any], let success = result["result"] as? Bool {
+                } else if let success = ResponseMapper.mapSetProfileResponse(result: result) {
                     if success {
                         self?.cacheProfile(lotteries: lotteries, state: state)
                     }
@@ -136,5 +134,22 @@ extension ProfileManager: ProfileManagerProtocol {
                 }
             }
         }
+    }
+
+}
+
+final class ResponseMapper {
+    static func mapSetProfileResponse(result: Any) -> Bool? {
+        guard let result = result as? [String: Any] else {
+            return nil
+        }
+        return result["result"] as? Bool
+    }
+    
+    static func mapGetProfileResponse(result: Any) -> Profile? {
+        guard let result = result as? [String: Any] else {
+            return nil
+        }
+        return Profile(response: result)
     }
 }

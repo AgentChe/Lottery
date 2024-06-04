@@ -27,12 +27,12 @@ extension TicketsManager: TicketsManagerProtocol {
         
         let operationId = UUID().uuidString
         operations[operationId] = operation
-
+        
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            
+            self?.operations.removeValue(forKey: operationId)
+            
+            
             if let error = error {
                 completion(.failure(error))
             } else if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
@@ -49,12 +49,11 @@ extension TicketsManager: TicketsManagerProtocol {
         
         let operationId = UUID().uuidString
         operations[operationId] = operation
-
+        
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            
+            self?.operations.removeValue(forKey: operationId)
+            
             if let error = error {
                 completion(.failure(error))
             } else if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
@@ -71,12 +70,11 @@ extension TicketsManager: TicketsManagerProtocol {
         
         let operationId = UUID().uuidString
         operations[operationId] = operation
-
+        
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            defer {
-                self?.operations.removeValue(forKey: operationId)
-            }
-
+            
+            self?.operations.removeValue(forKey: operationId)            
+            
             if let error = error {
                 completion(.failure(error))
             } else if let ticketsArray = result as? [[String: Any]] {
