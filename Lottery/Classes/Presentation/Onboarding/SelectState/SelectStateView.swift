@@ -78,9 +78,11 @@ final class SelectStateView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Helper Methods
-    
+}
+
+// MARK: - Public Methods
+
+extension SelectStateView {
     func getSelectedState() -> Int? {
         return selectedState
     }

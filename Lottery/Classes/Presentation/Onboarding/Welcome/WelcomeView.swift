@@ -12,14 +12,11 @@ final class WelcomeView: UIView {
     
     let startButton: UIButton = {
         let button = UIButton()
-        
         let attrs = TextAttributes()
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
-        
         let attributedTitle = NSLocalizedString("Welcome.StartButton", comment: "Start").attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
-        
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -32,7 +29,6 @@ final class WelcomeView: UIView {
             .font(Fonts.Inter.bold(size: 19.scale))
             .lineHeight(22.8.scale)
             .textAlignment(.left)
-        
         let label = UILabel()
         label.attributedText = NSLocalizedString("Welcome.Title", comment: "WELCOME TO LOTTERY SCANNER!").attributed(with: attrs)
         label.numberOfLines = 0
@@ -46,7 +42,6 @@ final class WelcomeView: UIView {
             .font(Fonts.Inter.medium(size: 16.scale))
             .lineHeight(19.2.scale)
             .textAlignment(.left)
-        
         let label = UILabel()
         label.attributedText = NSLocalizedString("Welcome.BulletPoint1", comment: "Monitor the main national lottery games").attributed(with: attrs)
         label.numberOfLines = 0
@@ -67,7 +62,6 @@ final class WelcomeView: UIView {
             .font(Fonts.Inter.medium(size: 16.scale))
             .lineHeight(19.2.scale)
             .textAlignment(.left)
-        
         let label = UILabel()
         label.attributedText = NSLocalizedString("Welcome.BulletPoint2", comment: "Scan and save your tickets").attributed(with: attrs)
         label.numberOfLines = 0
@@ -88,7 +82,6 @@ final class WelcomeView: UIView {
             .font(Fonts.Inter.medium(size: 16.scale))
             .lineHeight(19.2.scale)
             .textAlignment(.left)
-        
         let label = UILabel()
         label.attributedText = NSLocalizedString("Welcome.BulletPoint3", comment: "Get notified when drawings come out").attributed(with: attrs)
         label.numberOfLines = 0

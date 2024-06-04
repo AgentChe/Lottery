@@ -94,7 +94,7 @@ final class SuggestNewGameView: UIView {
         return button
     }()
     
-    var bottomConstraint: NSLayoutConstraint!
+    private var bottomConstraint: NSLayoutConstraint!
     
     // MARK: - Initializers
     
