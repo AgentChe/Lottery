@@ -30,7 +30,9 @@ struct FetchLotteriesRequest: EndPoint {
         return params
     }
     
-    var headers: [String: String] {
-        [:]
+    var headers: [String : String] {
+        [
+            "Content-Type": "application/json"
+        ]
     }
 }

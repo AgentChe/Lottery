@@ -108,8 +108,10 @@ extension SelectGameView {
     }
     
     func updateGames(_ games: [Game]) {
-        self.games = games
-        gameTableView.reloadData()
+        DispatchQueue.main.async {
+            self.games = games
+            self.gameTableView.reloadData()
+        }
     }
 }
 

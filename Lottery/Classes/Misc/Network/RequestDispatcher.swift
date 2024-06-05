@@ -36,6 +36,7 @@ extension RequestDispatcher {
         
         request.httpMethod = endPoint.method.rawValue
         request.httpBody = try? JSONSerialization.data(withJSONObject: endPoint.parameters)
+
         
         let task = networkSession.dataTask(request: request) { [weak self] data, response, error in
             let result = self?.parse(data: data)

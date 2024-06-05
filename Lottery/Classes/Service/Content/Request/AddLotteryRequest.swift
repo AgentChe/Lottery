@@ -28,8 +28,10 @@ struct AddLotteryRequest: EndPoint {
             "state_id": stateId
         ]
     }
-    
+
     var headers: [String : String] {
-        [:]
+        [
+            "Content-Type": "application/json"
+        ]
     }
 }

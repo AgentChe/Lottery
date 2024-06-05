@@ -19,7 +19,7 @@ struct Game: Codable {
     init?(response: Any) {
         guard let dict = response as? [String: Any],
               let id = dict["id"] as? Int,
-              let lotteryId = dict["lottery_id"] as? Int,
+              let lotteryId = dict["lotteryId"] as? Int,
               let date = dict["date"] as? TimeInterval,
               let jackpot = dict["jackpot"] as? String else {
             return nil

@@ -26,6 +26,8 @@ struct SyncTokensRequest: EndPoint {
     }
     
     var headers: [String : String] {
-        [:]
+        [
+            "Content-Type": "application/json"
+        ]
     }
 }
