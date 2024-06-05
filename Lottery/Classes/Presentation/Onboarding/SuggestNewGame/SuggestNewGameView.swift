@@ -18,7 +18,7 @@ final class SuggestNewGameView: UIView {
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = "Suggest a New Game".localized.attributed(with: attrs)
+        label.attributedText = "SELECT THE GAME".localized.attributed(with: attrs)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -93,7 +93,7 @@ final class SuggestNewGameView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
+    var cancelButtonBottomConstraint: NSLayoutConstraint!
     
     // MARK: - Initializers
     
@@ -107,7 +107,15 @@ final class SuggestNewGameView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
+// MARK: - Public Methods
+extension SuggestNewGameView {
+    func resetCancelButtonBottomConstraint() {
+          cancelButtonBottomConstraint.isActive = false
+          cancelButtonBottomConstraint = cancelButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale)
+          cancelButtonBottomConstraint.isActive = true
+          layoutIfNeeded()
+      }
+}
 // MARK: - Private Methods
 
 private extension SuggestNewGameView {
@@ -121,9 +129,9 @@ private extension SuggestNewGameView {
         addSubview(cancelButton)
         addSubview(dismissButton)
         
-        
+        cancelButtonBottomConstraint = cancelButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale)
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 73.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
             headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50.scale),
             
@@ -145,8 +153,7 @@ private extension SuggestNewGameView {
             saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             saveButton.heightAnchor.constraint(equalToConstant: 50.scale),
             saveButton.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -10.scale),
-            
-            cancelButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale),
+            cancelButtonBottomConstraint,
             cancelButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             cancelButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             cancelButton.heightAnchor.constraint(equalToConstant: 50.scale)

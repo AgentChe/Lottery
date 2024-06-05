@@ -65,7 +65,7 @@ private extension SuggestNewGameViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self?.showToast(message: "SuggestNewGameViewController.ThanksForSuggestion".localized)
+                    self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.".localized)
                 case .failure(let error):
                     self?.presentTryAgainViewController(with: error, gameTitle: gameTitle)
                 }
@@ -93,6 +93,7 @@ private extension SuggestNewGameViewController {
     }
     
     @objc func dismissViewController() {
+        suggestNewGameView.resetCancelButtonBottomConstraint()
         dismiss(animated: true, completion: nil)
     }
 }

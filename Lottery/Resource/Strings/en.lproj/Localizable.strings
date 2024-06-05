@@ -66,6 +66,7 @@
 "SelectGame.Description" = "Please choose the game to monitor. You can add another game if it is not on the list.";
 "SelectGame.Continue" = "Continue";
 "SelectGame.AddAnotherGame" = "Add another game";
+"SelectGame.ThanksForSuggestion" = "Thanks for adding a new game! We will consider adding it to the list.";
 
 // MARK: SelectState
 "SelectState.Header" = "SELECT THE STATE";
@@ -78,7 +79,3 @@
 "Welcome.BulletPoint1" = "Monitor the main national lottery games";
 "Welcome.BulletPoint2" = "Scan and save your tickets";
 "Welcome.BulletPoint3" = "Get notified when drawings come out";
-
-// MARK: SuggestNewGameViewController**
-"SuggestNewGameViewController.EnterGameTitle" = "Please enter a game title.";
-"SuggestNewGameViewController.ThanksForSuggestion" = "Thanks for adding a new game! We will consider adding it to the list.";
