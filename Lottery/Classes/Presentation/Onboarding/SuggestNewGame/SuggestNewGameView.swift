@@ -144,9 +144,9 @@ private extension SuggestNewGameView {
             saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             saveButton.heightAnchor.constraint(equalToConstant: 50.scale),
-            saveButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale),
+            saveButton.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -10.scale),
             
-            cancelButton.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 10.scale),
+            cancelButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -20.scale),
             cancelButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             cancelButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             cancelButton.heightAnchor.constraint(equalToConstant: 50.scale)
