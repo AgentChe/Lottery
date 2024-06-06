@@ -5,23 +5,25 @@
 //  Created by Niiaz Khasanov on 6/6/24.
 //
 import UIKit
-
+ 
 class DrawsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    private var segmentedControl: SSSegmentedControl!
+    private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var nextDrawsCollectionView: UICollectionView!
     private var pastDrawsCollectionView: UICollectionView!
     
-    private var nextDraws: [Game] = []
+    private var nextDraws: [Game] = [] {
+        didSet {
+            
+        }
+    }
     private var pastDraws: [Game] = []
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = Appearance.main600
-        
         setupSegmentedControl()
         setupCollectionViews()
         setupLayoutConstraints()
@@ -34,7 +36,6 @@ class DrawsViewController: UIViewController, UICollectionViewDelegate, UICollect
 // MARK: - UI Setup
 private extension DrawsViewController {
     func setupSegmentedControl() {
-        segmentedControl = SSSegmentedControl()
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = UIColor(red: 0.9, green: 0.9, blue: 1, alpha: 1)
@@ -60,7 +61,7 @@ private extension DrawsViewController {
         layout.minimumLineSpacing = 20
         
         nextDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        nextDrawsCollectionView.backgroundColor = .clear
+        nextDrawsCollectionView.backgroundColor = .white
         nextDrawsCollectionView.delegate = self
         nextDrawsCollectionView.dataSource = self
         nextDrawsCollectionView.register(NextGameCell.self, forCellWithReuseIdentifier: "NextGameCell")
@@ -141,7 +142,9 @@ private extension DrawsViewController {
                 switch result {
                 case .success(let games):
                     self?.nextDraws = games
-                    self?.nextDrawsCollectionView.reloadData()
+                    delay(0.05) {
+                        self?.nextDrawsCollectionView.reloadData()
+                    }
                 case .failure(let error):
                     print("Failed to fetch next games: \(error)")
                 }

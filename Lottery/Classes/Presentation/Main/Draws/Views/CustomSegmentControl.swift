@@ -103,7 +103,7 @@ class SSSegmentedControl: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setCurrentIndex()
+        setCurrentIndex(animated: false)
     }
 }
 
