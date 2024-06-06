@@ -14,6 +14,10 @@
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
 		A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295C2C0D607C00DF735A /* InsetTextField.swift */; };
+		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
+		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
+		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
+		A3FD9EAA2C11EDBE000FAD68 /* CustomSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */; };
 		A3FF55572C07E0B600E81771 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55562C07E0B600E81771 /* State.swift */; };
 		A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55582C07E0CA00E81771 /* Lottery.swift */; };
 		A3FF555D2C07E11200E81771 /* FetchStatesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */; };
@@ -147,6 +151,10 @@
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
 		A3CF295C2C0D607C00DF735A /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
+		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
+		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
+		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
+		A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentControl.swift; sourceTree = "<group>"; };
 		A3FF55562C07E0B600E81771 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		A3FF55582C07E0CA00E81771 /* Lottery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lottery.swift; sourceTree = "<group>"; };
 		A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchStatesRequest.swift; sourceTree = "<group>"; };
@@ -347,6 +355,25 @@
 				A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */,
 			);
 			path = SuggestNewGame;
+			sourceTree = "<group>";
+		};
+		A3FD9EA02C11C984000FAD68 /* Draws */ = {
+			isa = PBXGroup;
+			children = (
+				A3FD9EA42C11C9EE000FAD68 /* Views */,
+				A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */,
+			);
+			path = Draws;
+			sourceTree = "<group>";
+		};
+		A3FD9EA42C11C9EE000FAD68 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */,
+				A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */,
+				A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A3FF55552C07E09D00E81771 /* Content */ = {
@@ -626,6 +653,7 @@
 				DE42B1572BFF3CB100FF61B0 /* MainViewController.swift */,
 				DE42B1562BFF3CB100FF61B0 /* MainView.swift */,
 				DE42B1F32BFF467200FF61B0 /* MainViewCoordinator.swift */,
+				A3FD9EA02C11C984000FAD68 /* Draws */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1064,6 +1092,7 @@
 				DE42B1CD2BFF3CB200FF61B0 /* PaygateOptionConfig.swift in Sources */,
 				DE42B1B22BFF3CB200FF61B0 /* AppDelegate.swift in Sources */,
 				DE42B1B52BFF3CB200FF61B0 /* SceneDelegate.swift in Sources */,
+				A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */,
 				A3FF55852C08C03400E81771 /* GetProfileRequest.swift in Sources */,
 				DE42B1AE2BFF3CB200FF61B0 /* ScreenSize.swift in Sources */,
 				DE42B1CB2BFF3CB200FF61B0 /* SplashViewController.swift in Sources */,
@@ -1100,6 +1129,7 @@
 				A3FF556D2C07E51E00E81771 /* GamesManager.swift in Sources */,
 				DE42B19F2BFF3CB200FF61B0 /* UITapGestureRecognizer+Extension.swift in Sources */,
 				DE42B1922BFF3CB200FF61B0 /* CircleView.swift in Sources */,
+				A3FD9EAA2C11EDBE000FAD68 /* CustomSegmentControl.swift in Sources */,
 				DE42B1912BFF3CB200FF61B0 /* NavigationControllerSettings.swift in Sources */,
 				A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */,
 				DE42B1992BFF3CB200FF61B0 /* ObservableAndSingle+Extension.swift in Sources */,
@@ -1111,6 +1141,7 @@
 				DE42B21C2BFF700B00FF61B0 /* LoginResult.swift in Sources */,
 				A3FF55732C07E5A300E81771 /* Ticket.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
+				A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */,
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
 				A3FF558B2C0CC3AA00E81771 /* SelectGameViewController.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,
@@ -1121,6 +1152,7 @@
 				A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */,
 				A3FF55872C0CC37500E81771 /* WelcomeViewController.swift in Sources */,
 				DE42B19C2BFF3CB200FF61B0 /* UIColor+Extension.swift in Sources */,
+				A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */,
 				DE42B1AF2BFF3CB200FF61B0 /* TextAttributes.swift in Sources */,
 				DE42B1D52BFF3CB200FF61B0 /* PurchaseValidationObserver.swift in Sources */,
 				DE42B1B42BFF3CB200FF61B0 /* GlobalDefinitions.swift in Sources */,

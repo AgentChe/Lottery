@@ -33,4 +33,15 @@ struct Game: Codable {
         self.myLuckyNumbers = dict["my_lucky_numbers"] as? [[Int]]
     }
     
+    // Convenience initializer
+       init(id: Int, lotteryId: Int, date: TimeInterval, jackpot: String, cashValue: String?, winningNumbers: [[Int]]?, myLuckyNumbers: [[Int]]?) {
+           self.id = id
+           self.lotteryId = lotteryId
+           self.date = date
+           self.jackpot = jackpot
+           self.cashValue = cashValue
+           self.winningNumbers = winningNumbers
+           self.myLuckyNumbers = myLuckyNumbers
+       }
+    
 }
