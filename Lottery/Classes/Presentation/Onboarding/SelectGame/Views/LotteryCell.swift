@@ -8,9 +8,9 @@
 
 import UIKit
 
-class GameCell: UITableViewCell {
+class LotteryCell: UITableViewCell {
     
-    let gameLabel: UILabel = {
+    let lotteryLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -33,12 +33,12 @@ class GameCell: UITableViewCell {
     }
     
     private func setupView() {
-        contentView.addSubview(gameLabel)
+        contentView.addSubview(lotteryLabel)
         contentView.addSubview(accessoryImageView)
         
         NSLayoutConstraint.activate([
-            gameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.scale),
-            gameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            lotteryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.scale),
+            lotteryLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
             accessoryImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.scale),
             accessoryImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -47,12 +47,12 @@ class GameCell: UITableViewCell {
         ])
     }
     
-    func configure(with game: Game, isSelected: Bool) {
+    func configure(with lottery: Lottery, isSelected: Bool) {
         let attrs = TextAttributes()
             .textColor(Appearance.mono200)
             .font(Fonts.Inter.medium(size: 15.scale))
             .lineHeight(18.scale)
-        gameLabel.attributedText = game.jackpot.attributed(with: attrs)
+        lotteryLabel.attributedText = lottery.name.attributed(with: attrs)
         
         accessoryImageView.image = UIImage(named: isSelected ? "Game.Selected" : "Game.NotSelected")
         

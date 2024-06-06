@@ -10,7 +10,7 @@
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
-		A39B2B3A2C0F5B880024FC9F /* GameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* GameCell.swift */; };
+		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
 		A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295C2C0D607C00DF735A /* InsetTextField.swift */; };
@@ -19,6 +19,7 @@
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
 		A3FD9EAA2C11EDBE000FAD68 /* CustomSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */; };
 		A3FD9EAC2C11F98C000FAD68 /* Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EAB2C11F98C000FAD68 /* Delay.swift */; };
+		A3FD9EAF2C120A62000FAD68 /* SelectLotteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EAE2C120A62000FAD68 /* SelectLotteryView.swift */; };
 		A3FF55572C07E0B600E81771 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55562C07E0B600E81771 /* State.swift */; };
 		A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55582C07E0CA00E81771 /* Lottery.swift */; };
 		A3FF555D2C07E11200E81771 /* FetchStatesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */; };
@@ -40,10 +41,9 @@
 		A3FF55852C08C03400E81771 /* GetProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55842C08C03400E81771 /* GetProfileRequest.swift */; };
 		A3FF55872C0CC37500E81771 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55862C0CC37500E81771 /* WelcomeViewController.swift */; };
 		A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55882C0CC38C00E81771 /* SelectStateViewController.swift */; };
-		A3FF558B2C0CC3AA00E81771 /* SelectGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */; };
+		A3FF558B2C0CC3AA00E81771 /* SelectLotteriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558A2C0CC3AA00E81771 /* SelectLotteriesViewController.swift */; };
 		A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */; };
 		A3FF558F2C0CC3EF00E81771 /* SelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */; };
-		A3FF55912C0CC40500E81771 /* SelectGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55902C0CC40500E81771 /* SelectGameView.swift */; };
 		DE42B1122BFF39C000FF61B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE42B1112BFF39C000FF61B0 /* Assets.xcassets */; };
 		DE42B1152BFF39C000FF61B0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = DE42B1142BFF39C000FF61B0 /* Base */; };
 		DE42B1892BFF3CB200FF61B0 /* AmplitudeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B11D2BFF3CB100FF61B0 /* AmplitudeManager.swift */; };
@@ -148,7 +148,7 @@
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
-		A39B2B392C0F5B880024FC9F /* GameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCell.swift; sourceTree = "<group>"; };
+		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
 		A3CF295C2C0D607C00DF735A /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
@@ -157,6 +157,7 @@
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentControl.swift; sourceTree = "<group>"; };
 		A3FD9EAB2C11F98C000FAD68 /* Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delay.swift; sourceTree = "<group>"; };
+		A3FD9EAE2C120A62000FAD68 /* SelectLotteryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLotteryView.swift; sourceTree = "<group>"; };
 		A3FF55562C07E0B600E81771 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		A3FF55582C07E0CA00E81771 /* Lottery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lottery.swift; sourceTree = "<group>"; };
 		A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchStatesRequest.swift; sourceTree = "<group>"; };
@@ -178,10 +179,9 @@
 		A3FF55842C08C03400E81771 /* GetProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileRequest.swift; sourceTree = "<group>"; };
 		A3FF55862C0CC37500E81771 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		A3FF55882C0CC38C00E81771 /* SelectStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStateViewController.swift; sourceTree = "<group>"; };
-		A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGameViewController.swift; sourceTree = "<group>"; };
+		A3FF558A2C0CC3AA00E81771 /* SelectLotteriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLotteriesViewController.swift; sourceTree = "<group>"; };
 		A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStateView.swift; sourceTree = "<group>"; };
-		A3FF55902C0CC40500E81771 /* SelectGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGameView.swift; sourceTree = "<group>"; };
 		A7729D0A1077521A8B7DD161 /* Pods-Lottery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.debug.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.debug.xcconfig"; sourceTree = "<group>"; };
 		DE42B1052BFF39BE00FF61B0 /* Lottery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lottery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE42B1112BFF39C000FF61B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -316,7 +316,7 @@
 		A39B2B382C0F5B7B0024FC9F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A39B2B392C0F5B880024FC9F /* GameCell.swift */,
+				A39B2B392C0F5B880024FC9F /* LotteryCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -344,8 +344,8 @@
 			isa = PBXGroup;
 			children = (
 				A39B2B382C0F5B7B0024FC9F /* Views */,
-				A3FF558A2C0CC3AA00E81771 /* SelectGameViewController.swift */,
-				A3FF55902C0CC40500E81771 /* SelectGameView.swift */,
+				A3FF558A2C0CC3AA00E81771 /* SelectLotteriesViewController.swift */,
+				A3FD9EAE2C120A62000FAD68 /* SelectLotteryView.swift */,
 			);
 			path = SelectGame;
 			sourceTree = "<group>";
@@ -1083,9 +1083,10 @@
 				DE42B18C2BFF3CB200FF61B0 /* FirebaseManager.swift in Sources */,
 				DE42B2012BFF50E300FF61B0 /* APIOperation.swift in Sources */,
 				DE42B1A02BFF3CB200FF61B0 /* UIView+RxExtension.swift in Sources */,
-				A39B2B3A2C0F5B880024FC9F /* GameCell.swift in Sources */,
+				A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */,
 				DE42B2192BFF666F00FF61B0 /* TryAgainView.swift in Sources */,
 				A3FF55662C07E42D00E81771 /* Game.swift in Sources */,
+				A3FD9EAF2C120A62000FAD68 /* SelectLotteryView.swift in Sources */,
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
 				A3FD9EAC2C11F98C000FAD68 /* Delay.swift in Sources */,
 				DE42B1B32BFF3CB200FF61B0 /* Appearance.swift in Sources */,
@@ -1155,7 +1156,7 @@
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
 				A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */,
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
-				A3FF558B2C0CC3AA00E81771 /* SelectGameViewController.swift in Sources */,
+				A3FF558B2C0CC3AA00E81771 /* SelectLotteriesViewController.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,
 				A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */,
 				DE42B1B02BFF3CB200FF61B0 /* Weak.swift in Sources */,
@@ -1172,7 +1173,6 @@
 				DE42B1C42BFF3CB200FF61B0 /* PaygateProductButton.swift in Sources */,
 				DE42B2002BFF50E300FF61B0 /* APIEnvironment.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
-				A3FF55912C0CC40500E81771 /* SelectGameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

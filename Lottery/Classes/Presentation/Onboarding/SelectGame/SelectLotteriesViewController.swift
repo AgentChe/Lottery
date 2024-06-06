@@ -6,19 +6,19 @@
 
 import UIKit
 
-class SelectGameViewController: UIViewController {
+class SelectLotteriesViewController: UIViewController {
     var onContinue: (([Int]) -> Void)?
-    private let gamesManager: GamesManagerProtocol = GamesManager()
-    private var games: [Game] = []
+    private let contentManager: ContentManagerProtocol = ContentManager()
+    private var lotteries: [Lottery] = []
 
-    private let selectGameView = SelectGameView()
+    private let selectLotteryView = SelectLotteryView()
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
     
     override func loadView() {
-        view = selectGameView
+        view = selectLotteryView
     }
     
     override func viewDidLoad() {
@@ -30,18 +30,18 @@ class SelectGameViewController: UIViewController {
 
 // MARK: - Private Methods
 
-private extension SelectGameViewController {
+private extension SelectLotteriesViewController {
     func setupButtons() {
-        selectGameView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
-        selectGameView.addAnotherGameButton.addTarget(self, action: #selector(addAnotherGameButtonTapped), for: .touchUpInside)
+        selectLotteryView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
+        selectLotteryView.addAnotherGameButton.addTarget(self, action: #selector(addAnotherGameButtonTapped), for: .touchUpInside)
     }
     
     func fetchGames() {
-        gamesManager.fetchNextGames(stateId: nil) { [weak self] result in
+        contentManager.fetchLotteries(forceUpdate: true, stateId: nil) { [weak self] result in
             switch result {
-            case .success(let games):
-                self?.games = games
-                self?.selectGameView.updateGames(games)
+            case .success(let lotteries):
+                self?.lotteries = lotteries
+                self?.selectLotteryView.updateGames(lotteries)
             case .failure(let error):
                 self?.presentTryAgainViewController(with: error)
             }
@@ -49,17 +49,17 @@ private extension SelectGameViewController {
     }
     
     @objc func continueButtonTapped() {
-        let selectedGames = selectGameView.getSelectedGames()
-        if selectedGames.isEmpty {
+        let selectedLotteries = selectLotteryView.getSelectedLotteries()
+        if selectedLotteries.isEmpty {
             presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
             return
         }
         
         // Show preloader and hide button
-        selectGameView.continueButton.isHidden = true
-        selectGameView.preloader.startAnimating()
+        selectLotteryView.continueButton.isHidden = true
+        selectLotteryView.preloader.startAnimating()
         
-        onContinue?(selectedGames)
+        onContinue?(selectedLotteries)
     }
     
     @objc func addAnotherGameButtonTapped() {

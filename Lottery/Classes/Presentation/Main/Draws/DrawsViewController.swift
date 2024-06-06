@@ -158,7 +158,9 @@ private extension DrawsViewController {
                 switch result {
                 case .success(let games):
                     self?.pastDraws = games
-                    self?.pastDrawsCollectionView.reloadData()
+                    delay(0.05) {
+                        self?.pastDrawsCollectionView.reloadData()
+                    }
                 case .failure(let error):
                     print("Failed to fetch past games: \(error)")
                 }

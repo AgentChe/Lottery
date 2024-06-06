@@ -1,4 +1,4 @@
-//  SelectGameView.swift
+//  SelectLotteryView.swift
 //  Lottery
 //
 //  Created by Niiaz Khasanov on 6/2/24.
@@ -6,7 +6,7 @@
 
 import UIKit
 
-final class SelectGameView: UIView {
+final class SelectLotteryView: UIView {
     
     // MARK: - UI Components
     
@@ -84,8 +84,8 @@ final class SelectGameView: UIView {
         return tableView
     }()
     
-    private var games: [Game] = []
-    private var selectedGames: Set<Int> = []
+    private var lotteries: [Lottery] = []
+    private var selectedLotteries: Set<Int> = []
     
     // MARK: - Initializers
     
@@ -102,14 +102,14 @@ final class SelectGameView: UIView {
 
 // MARK: - Public Methods
 
-extension SelectGameView {
-    func getSelectedGames() -> [Int] {
-        return Array(selectedGames)
+extension SelectLotteryView {
+    func getSelectedLotteries() -> [Int] {
+        return Array(selectedLotteries)
     }
     
-    func updateGames(_ games: [Game]) {
+    func updateGames(_ lotteries: [Lottery]) {
         DispatchQueue.main.async {
-            self.games = games
+            self.lotteries = lotteries
             self.gameTableView.reloadData()
         }
     }
@@ -117,7 +117,7 @@ extension SelectGameView {
 
 // MARK: - Private Methods
 
-private extension SelectGameView {
+private extension SelectLotteryView {
     func setupView() {
         backgroundColor = Appearance.main500
         addSubview(headerLabel)
@@ -163,29 +163,29 @@ private extension SelectGameView {
     func setupTableView() {
         gameTableView.dataSource = self
         gameTableView.delegate = self
-        gameTableView.register(GameCell.self, forCellReuseIdentifier: "GameCell")
+        gameTableView.register(LotteryCell.self, forCellReuseIdentifier: "LotteryCell")
     }
     
     func updateContinueButtonState() {
-        continueButton.isEnabled = !selectedGames.isEmpty
-        continueButton.alpha = selectedGames.isEmpty ? 0.5 : 1.0
+        continueButton.isEnabled = !selectedLotteries.isEmpty
+        continueButton.alpha = selectedLotteries.isEmpty ? 0.5 : 1.0
     }
 }
 
 // MARK: - UITableViewDataSource
 
-extension SelectGameView: UITableViewDataSource {
+extension SelectLotteryView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return games.count
+        return lotteries.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "GameCell", for: indexPath) as? GameCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LotteryCell", for: indexPath) as? LotteryCell else {
             return UITableViewCell()
         }
-        let game = games[indexPath.row]
-        let isSelected = selectedGames.contains(indexPath.row)
-        cell.configure(with: game, isSelected: isSelected)
+        let lottery = lotteries[indexPath.row]
+        let isSelected = selectedLotteries.contains(indexPath.row)
+        cell.configure(with: lottery, isSelected: isSelected)
         
         return cell
     }
@@ -193,22 +193,22 @@ extension SelectGameView: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension SelectGameView: UITableViewDelegate {
+extension SelectLotteryView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if selectedGames.contains(indexPath.row) {
-            selectedGames.remove(indexPath.row)
+        if selectedLotteries.contains(indexPath.row) {
+            selectedLotteries.remove(indexPath.row)
         } else {
-            selectedGames.insert(indexPath.row)
+            selectedLotteries.insert(indexPath.row)
         }
         updateContinueButtonState()
         tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if selectedGames.contains(indexPath.row) {
-            selectedGames.remove(indexPath.row)
+        if selectedLotteries.contains(indexPath.row) {
+            selectedLotteries.remove(indexPath.row)
         } else {
-            selectedGames.insert(indexPath.row)
+            selectedLotteries.insert(indexPath.row)
         }
         updateContinueButtonState()
         tableView.reloadData()

@@ -58,13 +58,13 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
             self.selectedState = selectedState
-            self.showSelectGameViewController()
+            self.showSelectLotteriesViewController()
         }
         pushViewController(selectStateVC, animated: true)
     }
     
-    private func showSelectGameViewController() {
-        let selectGameVC = SelectGameViewController()
+    private func showSelectLotteriesViewController() {
+        let selectGameVC = SelectLotteriesViewController()
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedGames = selectedGames
