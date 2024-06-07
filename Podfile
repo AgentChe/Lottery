@@ -13,7 +13,6 @@ target 'Lottery' do
   pod 'RxCocoa'
   
   pod 'SwiftyStoreKit'
-
   pod 'OtterScaleiOS', :git => "https://github.com/AgentChe/OtterScaleiOS.git"
   
   pod 'FBSDKCoreKit'

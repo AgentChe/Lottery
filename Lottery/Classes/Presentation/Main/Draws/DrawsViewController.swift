@@ -4,20 +4,21 @@
 //
 //  Created by Niiaz Khasanov on 6/6/24.
 //
+
+
 import UIKit
- 
-class DrawsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+
+class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
+    private var profileManager: ProfileManagerProtocol = ProfileManager()
+    private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDrawsCollectionView: UICollectionView!
     private var pastDrawsCollectionView: UICollectionView!
     
-    private var nextDraws: [Game] = [] {
-        didSet {
-            
-        }
-    }
+    private var nextDraws: [Game] = []
     private var pastDraws: [Game] = []
+    private var lotteries: [Lottery] = []
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
     
@@ -28,8 +29,7 @@ class DrawsViewController: UIViewController, UICollectionViewDelegate, UICollect
         setupCollectionViews()
         setupLayoutConstraints()
         
-        fetchNextGames()
-        fetchPastGames()
+        fetchStateAndGames()
     }
 }
 
@@ -56,19 +56,17 @@ private extension DrawsViewController {
     }
     
     func setupCollectionViews() {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width - 40, height: 200)
-        layout.minimumLineSpacing = 20
-        
-        nextDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        nextDrawsCollectionView.backgroundColor = .white
+        let nextDrawsCollectionViewLayout = UICollectionViewFlowLayout()
+        nextDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: nextDrawsCollectionViewLayout)
+        nextDrawsCollectionView.backgroundColor = .clear
         nextDrawsCollectionView.delegate = self
         nextDrawsCollectionView.dataSource = self
         nextDrawsCollectionView.register(NextGameCell.self, forCellWithReuseIdentifier: "NextGameCell")
         nextDrawsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nextDrawsCollectionView)
-        
-        pastDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+     
+        let pastDrawsCollectionViewLayout = UICollectionViewFlowLayout()
+        pastDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: pastDrawsCollectionViewLayout)
         pastDrawsCollectionView.backgroundColor = .clear
         pastDrawsCollectionView.delegate = self
         pastDrawsCollectionView.dataSource = self
@@ -98,7 +96,33 @@ private extension DrawsViewController {
         ])
     }
 }
-
+// MARK: - CollectionView Delegate FlowLayout
+extension DrawsViewController {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellWidth: CGFloat = 343 // Width is fixed to the collection view width with padding
+        
+        var cellHeight: CGFloat
+        
+        if collectionView == nextDrawsCollectionView {
+            return CGSize(width: 343, height: 147)
+        } else {
+            print("CV: \(collectionView)")
+            // For Past Draws
+            let game = pastDraws[indexPath.item]
+            cellHeight = 176  // Default height
+            if let myLuckyNumbers = game.myLuckyNumbers {
+                if myLuckyNumbers.isEmpty {
+                    cellHeight = 154
+                } else {
+                    cellHeight = 200 + CGFloat(max(0, myLuckyNumbers.count - 1) * 30)
+                }
+            }
+        }
+        
+        return CGSize(width: cellWidth, height: cellHeight)
+    }
+}
 // MARK: - Public Extension
 extension DrawsViewController {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -113,12 +137,12 @@ extension DrawsViewController {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             let game = nextDraws[indexPath.item]
-            cell.configure(game: game)
+            cell.configure(game: game, lotteries: lotteries)
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
-            cell.configure(game: game)
+            cell.configure(game: game, lotteries: lotteries)
             return cell
         }
     }
@@ -136,8 +160,26 @@ private extension DrawsViewController {
         }
     }
     
-    func fetchNextGames() {
-        gamesManager.fetchNextGames(stateId: nil) { [weak self] result in
+    func fetchStateAndGames() {
+        profileManager.getProfile(forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    if let stateId = profile.state {
+                        self?.fetchLotteries(for: stateId)
+                        
+                    } else {
+                        print("State ID is not available in profile")
+                    }
+                case .failure(let error):
+                    print("Failed to fetch profile: \(error)")
+                }
+            }
+        }
+    }
+    
+    func fetchNextGames(for stateId: Int) {
+        gamesManager.fetchNextGames(stateId: stateId) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
@@ -152,8 +194,8 @@ private extension DrawsViewController {
         }
     }
     
-    func fetchPastGames() {
-        gamesManager.fetchPastGames(stateId: nil) { [weak self] result in
+    func fetchPastGames(for stateId: Int) {
+        gamesManager.fetchPastGames(stateId: stateId) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
@@ -163,6 +205,21 @@ private extension DrawsViewController {
                     }
                 case .failure(let error):
                     print("Failed to fetch past games: \(error)")
+                }
+            }
+        }
+    }
+    
+    func fetchLotteries(for stateId: Int) {
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    self?.fetchNextGames(for: stateId)
+                    self?.fetchPastGames(for: stateId)
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
                 }
             }
         }

@@ -28,3 +28,4 @@ struct Lottery: Codable {
         self.stateId = stateId
     }
 }
+

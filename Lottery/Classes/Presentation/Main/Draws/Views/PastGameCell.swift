@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class PastGameCell: UICollectionViewCell {
     
@@ -29,11 +30,24 @@ class PastGameCell: UICollectionViewCell {
     }
 }
 
-//MARK: - Public Methods
+// MARK: - Public Methods
 extension PastGameCell {
-    func configure(game: Game) {
-        // Assuming the logo is provided based on the lotteryId
-        logoImageView.image = UIImage(named: "lottery_logo_\(game.lotteryId)") // Replace with actual image name logic
+    func configure(game: Game, lotteries: [Lottery]) {
+        if let lottery = lotteries.first(where: { $0.id == game.lotteryId }) {
+            // Use the URL directly from the Lottery struct
+            logoImageView.kf.setImage(
+                with: lottery.logoUrl,
+                placeholder: UIImage(named: "placeholderImage"),
+                options: [
+                    .transition(.fade(0.25)),
+                    .cacheOriginalImage
+                ]
+            )
+        } else {
+            // If no lottery matches, use a placeholder image
+            logoImageView.image = UIImage(named: "placeholderImage")
+        }
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
@@ -148,8 +162,6 @@ private extension PastGameCell {
         ])
     }
     
-    
-    
     func createNumberLabel(number: Int) -> UILabel {
         let label = UILabel()
         label.text = "\(number)"
@@ -163,4 +175,3 @@ private extension PastGameCell {
         return label
     }
 }
- 

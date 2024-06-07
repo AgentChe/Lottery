@@ -4,14 +4,6 @@
 //
 //  Created by Niiaz Khasanov on 6/6/24.
 //
-
-//
-//  NextGameCell.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/6/24.
-//
-
 import UIKit
 
 class NextGameCell: UICollectionViewCell {
@@ -33,11 +25,25 @@ class NextGameCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
 //MARK: - Public Methods
 extension NextGameCell {
-    func configure(game: Game) {
-        // Assuming the logo is provided based on the lotteryId
-        logoImageView.image = UIImage(named: "lottery_logo_\(game.lotteryId)") // Replace with actual image name logic
+    func configure(game: Game, lotteries: [Lottery]) {
+        if let lottery = lotteries.first(where: { $0.id == game.lotteryId }) {
+            // Use the URL directly from the Lottery struct
+            logoImageView.kf.setImage(
+                with: lottery.logoUrl,
+                placeholder: UIImage(named: "placeholderImage"),
+                options: [
+                    .transition(.fade(0.25)),
+                    .cacheOriginalImage
+                ]
+            )
+        } else {
+            // If no lottery matches, use a placeholder image
+            logoImageView.image = UIImage(named: "placeholderImage")
+        }
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
@@ -45,6 +51,7 @@ extension NextGameCell {
         cashValueLabel.text = game.cashValue
     }
 }
+
 // MARK: - Setup Methods
 private extension NextGameCell {
     func setupUI() {
@@ -118,5 +125,6 @@ private extension NextGameCell {
             cashValueTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
         ])
     }
- 
+    
+    
 }
