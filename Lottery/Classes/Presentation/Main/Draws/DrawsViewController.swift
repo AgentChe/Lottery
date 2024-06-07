@@ -39,8 +39,9 @@ private extension DrawsViewController {
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = UIColor(red: 0.9, green: 0.9, blue: 1, alpha: 1)
-        segmentedControl.cornerRadius = 30
+        segmentedControl.cornerRadius = 38
         segmentedControl.buttonPadding = 10
+        segmentedControl.buttonCornerRadius = 32
         segmentedControl.numberOfSegments = 2
         segmentedControl.segmentsTitle = "Next Draws,Past Draws"
         segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
@@ -57,14 +58,16 @@ private extension DrawsViewController {
     
     func setupCollectionViews() {
         let nextDrawsCollectionViewLayout = UICollectionViewFlowLayout()
+        nextDrawsCollectionViewLayout.scrollDirection = .vertical
         nextDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: nextDrawsCollectionViewLayout)
         nextDrawsCollectionView.backgroundColor = .clear
         nextDrawsCollectionView.delegate = self
         nextDrawsCollectionView.dataSource = self
         nextDrawsCollectionView.register(NextGameCell.self, forCellWithReuseIdentifier: "NextGameCell")
+        nextDrawsCollectionView.showsVerticalScrollIndicator = false
         nextDrawsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nextDrawsCollectionView)
-     
+        
         let pastDrawsCollectionViewLayout = UICollectionViewFlowLayout()
         pastDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: pastDrawsCollectionViewLayout)
         pastDrawsCollectionView.backgroundColor = .clear
@@ -82,17 +85,17 @@ private extension DrawsViewController {
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             segmentedControl.widthAnchor.constraint(equalToConstant: view.frame.width - 40),
-            segmentedControl.heightAnchor.constraint(equalToConstant: 50),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 80),
             
-            nextDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20),
+            nextDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 0),
             nextDrawsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             nextDrawsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             
-            pastDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20),
+            pastDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 0),
             pastDrawsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             pastDrawsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
         ])
     }
 }
@@ -122,6 +125,21 @@ extension DrawsViewController {
         
         return CGSize(width: cellWidth, height: cellHeight)
     }
+    
+    // Set the minimum line spacing (vertical spacing between rows)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 40 // Adjust as needed for spacing between rows
+    }
+    
+    // Set the minimum interitem spacing (horizontal spacing between items in the same row)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 40 // Adjust as needed for spacing between columns (usually for multiple columns per row)
+    }
+    
+    // Set the section insets (padding around the section)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 40, left: 0, bottom: 10, right: 0) // Adjust insets as needed
+    }
 }
 // MARK: - Public Extension
 extension DrawsViewController {
@@ -138,6 +156,7 @@ extension DrawsViewController {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             let game = nextDraws[indexPath.item]
             cell.configure(game: game, lotteries: lotteries)
+            cell.layer.cornerRadius = 30
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell

@@ -60,7 +60,7 @@ class SSSegmentedControl: UIView {
         }
     }
     
-    var buttonCornerRadius: CGFloat = 10 {
+    var buttonCornerRadius: CGFloat = 25 {
         didSet {
             setButtonCornerRadius()
         }
@@ -212,7 +212,7 @@ private extension SSSegmentedControl {
                 button.setTitle("<Segment>", for: .normal)
             }
             
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+            button.titleLabel?.font = Fonts.Inter.bold(size: 17.scale)
             button.addTarget(self, action: #selector(segmentTapped(_:)), for: .touchUpInside)
             
             stackView.addArrangedSubview(button)
@@ -239,9 +239,9 @@ private extension SSSegmentedControl {
     
     func setButtonCornerRadius() {
         stackView.subviews.forEach { view in
-            (view as? UIButton)?.layer.cornerRadius = cornerRadius
+            (view as? UIButton)?.layer.cornerRadius = buttonCornerRadius
         }
-        currentIndexView.layer.cornerRadius = cornerRadius
+        currentIndexView.layer.cornerRadius = buttonCornerRadius
     }
     
     func setBorderColor() {

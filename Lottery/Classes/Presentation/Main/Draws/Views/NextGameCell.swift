@@ -6,6 +6,7 @@
 //
 import UIKit
 
+
 class NextGameCell: UICollectionViewCell {
     
     private let logoImageView = UIImageView()
@@ -29,26 +30,39 @@ class NextGameCell: UICollectionViewCell {
 //MARK: - Public Methods
 extension NextGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
-        if let lottery = lotteries.first(where: { $0.id == game.lotteryId }) {
-            // Use the URL directly from the Lottery struct
-            logoImageView.kf.setImage(
-                with: lottery.logoUrl,
-                placeholder: UIImage(named: "placeholderImage"),
-                options: [
-                    .transition(.fade(0.25)),
-                    .cacheOriginalImage
-                ]
-            )
-        } else {
+//        if let lottery = lotteries.first(where: { $0.id == game.lotteryId }) {
+//            // Use the URL directly from the Lottery struct
+//            logoImageView.kf.setImage(
+//                with: lottery.logoUrl,
+//                placeholder: UIImage(named: "placeholderImage"),
+//                options: [
+//                    .transition(.fade(0.25)),
+//                    .cacheOriginalImage
+//                ]
+//            )
+//        } else {
             // If no lottery matches, use a placeholder image
             logoImageView.image = UIImage(named: "placeholderImage")
-        }
+       // }
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
-        jackpotLabel.text = game.jackpot
-        cashValueLabel.text = game.cashValue
+        
+        // Directly use the non-optional strings and format them
+        jackpotLabel.text = formatToMillions(game.jackpot)
+        cashValueLabel.text = formatToMillions(game.cashValue ?? "$0 M.")
+    }
+    
+    // Helper method to format large numbers
+    private func formatToMillions(_ value: String) -> String {
+        // Filter out non-numeric characters except the decimal point
+        guard let number = Double(value.filter { "0123456789.".contains($0) }) else {
+            return value // Return the original value if conversion fails
+        }
+        
+        let million = number / 1_000_000
+        return String(format: "$%.0f M.", million)
     }
 }
 
@@ -56,11 +70,8 @@ extension NextGameCell {
 private extension NextGameCell {
     func setupUI() {
         backgroundColor = .white
-        layer.cornerRadius = 10
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 4
+      
+       
         
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -102,29 +113,35 @@ private extension NextGameCell {
     
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            logoImageView.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -10),
-            logoImageView.heightAnchor.constraint(equalToConstant: 40),
+            // Position logoImageView in the top-left corner
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -26),
+            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5),
+            logoImageView.widthAnchor.constraint(equalToConstant: 188),
+            logoImageView.heightAnchor.constraint(equalToConstant: 58),
             
-            dateLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            // Position dateLabel to the right of logoImageView
+            dateLabel.topAnchor.constraint(equalTo: topAnchor, constant: -20),
+            dateLabel.leadingAnchor.constraint(equalTo: logoImageView.trailingAnchor, constant: 10),
             dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
+            // Position jackpotLabel below logoImageView
             jackpotLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
-            jackpotLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            jackpotLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -100),
             
+            // Position cashValueLabel below logoImageView
             cashValueLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
-            cashValueLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            cashValueLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 100),
             
+            // Position jackpotTitleLabel below jackpotLabel
             jackpotTitleLabel.topAnchor.constraint(equalTo: jackpotLabel.bottomAnchor, constant: 5),
             jackpotTitleLabel.centerXAnchor.constraint(equalTo: jackpotLabel.centerXAnchor),
             
+            // Position cashValueTitleLabel below cashValueLabel
             cashValueTitleLabel.topAnchor.constraint(equalTo: cashValueLabel.bottomAnchor, constant: 5),
             cashValueTitleLabel.centerXAnchor.constraint(equalTo: cashValueLabel.centerXAnchor),
             
+            // Position cashValueTitleLabel's bottom to the bottom of the cell
             cashValueTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
         ])
     }
-    
-    
 }
