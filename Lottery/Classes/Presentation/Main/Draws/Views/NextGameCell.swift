@@ -125,19 +125,20 @@ private extension NextGameCell {
             dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor),
             dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
             
-            jackpotLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale), // Apply scale to top constraint
-            jackpotLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -100.scale), // Apply scale to centerX constraint
+            jackpotLabel.topAnchor.constraint(equalTo: topAnchor, constant: 59.scale), // Apply scale to top constraint
+            jackpotLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 42.5.scale), // Apply scale to centerX constraint
             
-            cashValueLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale), // Apply scale to top constraint
-            cashValueLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 100.scale), // Apply scale to centerX constraint
             
             jackpotTitleLabel.topAnchor.constraint(equalTo: jackpotLabel.bottomAnchor, constant: 5.scale), // Apply scale to top constraint
             jackpotTitleLabel.centerXAnchor.constraint(equalTo: jackpotLabel.centerXAnchor),
+      
+            cashValueLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale), // Apply scale to top constraint
+            cashValueLabel.centerXAnchor.constraint(equalTo: cashValueTitleLabel.centerXAnchor, constant: 0.scale), // Apply scale to centerX constraint
             
             cashValueTitleLabel.topAnchor.constraint(equalTo: cashValueLabel.bottomAnchor, constant: 5.scale), // Apply scale to top constraint
-            cashValueTitleLabel.centerXAnchor.constraint(equalTo: cashValueLabel.centerXAnchor),
+            cashValueTitleLabel.centerYAnchor.constraint(equalTo: jackpotTitleLabel.centerYAnchor),
             
-            cashValueTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale) // Apply scale to bottom constraint
+            cashValueTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale) // Apply scale to bottom constraint
         ])
     }
 }
