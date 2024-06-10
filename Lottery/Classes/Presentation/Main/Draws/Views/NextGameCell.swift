@@ -43,6 +43,12 @@ extension NextGameCell {
 
         jackpotLabel.text = formatToMillions(game.jackpot)
         cashValueLabel.text = formatToMillions(game.cashValue ?? "$0 M.")
+        
+        if game.cashValue == nil {
+            cashValueLabel.alpha = 0
+            cashValueTitleLabel.alpha = 0
+        }
+        
     }
     
     private func formatToMillions(_ value: String) -> String {
@@ -69,11 +75,11 @@ private extension NextGameCell {
         dateLabelContainer.layer.shadowRadius = 3.scale // Apply scale to shadow radius
         dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale) // Apply scale to shadow offset
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.scale) // Apply scale to font size
+        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale) // Apply scale to font size
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100
-        dateLabel.layer.cornerRadius = 14.scale // Apply scale to corner radius
+        dateLabel.layer.cornerRadius = 17.scale  // Apply scale to corner radius
         dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -114,11 +120,11 @@ private extension NextGameCell {
             logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale), // Apply scale to leading constraint
             logoImageView.widthAnchor.constraint(equalToConstant: 188.scale), // Apply scale to width
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale), // Apply scale to height
-            
-            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -14.scale), // Apply scale to top constraint
+        
+            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale), // Apply scale to top constraint
             dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale), // Apply scale to trailing constraint
-            dateLabelContainer.widthAnchor.constraint(equalToConstant: 102.scale), // Apply scale to width
-            dateLabelContainer.heightAnchor.constraint(equalToConstant: 28.scale), // Apply scale to height
+            dateLabelContainer.widthAnchor.constraint(equalToConstant: 112.scale), // Apply scale to width
+            dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale), // Apply scale to height
             
             dateLabel.centerXAnchor.constraint(equalTo: dateLabelContainer.centerXAnchor),
             dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),

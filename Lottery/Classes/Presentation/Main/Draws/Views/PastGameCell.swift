@@ -7,20 +7,91 @@
 
 import UIKit
 import Kingfisher
-
 class PastGameCell: UICollectionViewCell {
     
     private let logoImageView = UIImageView()
+    private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
-    private let winningNumbersLabel = UILabel()
-    private let winningNumbersStackView = UIStackView()
-    private let luckyNumbersLabel = UILabel()
-    private let luckyNumbersStackView = UIStackView()
-    private let separatorLine = UIView()
-
+    
+    private let winningNumbersTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "WINNING NUMBERS"
+        label.font = Fonts.Inter.regular(size: 12.5.scale)
+        label.textAlignment = .center
+        label.textColor = Appearance.mono200
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Create an attributed string with increased kerning
+        let attributedText = NSMutableAttributedString(string: "WINNING NUMBERS")
+        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
+        
+        label.attributedText = attributedText
+        return label
+    }()
+    
+    private let myLuckyNumbersTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "MY LUCKY NUMBERS"
+        label.font = Fonts.Inter.regular(size: 12.5.scale)
+        label.textAlignment = .center
+        label.textColor = Appearance.mono200
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Create an attributed string with increased kerning
+        let attributedText = NSMutableAttributedString(string: "MY LUCKY NUMBERS")
+        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
+        
+        label.attributedText = attributedText
+        
+        return label
+    }()
+    
+    private let dashedLineImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "PastDraws.DashedLine")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var winningNumbersCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10.scale
+        layout.minimumLineSpacing = 14.scale
+        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+        return collectionView
+    }()
+    
+    private lazy var myLuckyNumbersCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10.scale
+        layout.minimumLineSpacing = 14.scale
+        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+        return collectionView
+    }()
+    
+    // Arrays to hold the nested numbers
+    private var winningNumbers: [[Int]] = []
+    private var myLuckyNumbers: [[Int]] = []
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+        backgroundColor = .white
         setupUI()
         setupLayoutConstraints()
     }
@@ -33,49 +104,33 @@ class PastGameCell: UICollectionViewCell {
 // MARK: - Public Methods
 extension PastGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
-        if let lottery = lotteries.first(where: { $0.id == game.lotteryId }) {
-            // Use the URL directly from the Lottery struct
-            logoImageView.kf.setImage(
-                with: lottery.logoUrl,
-                placeholder: UIImage(named: "placeholderImage"),
-                options: [
-                    .transition(.fade(0.25)),
-                    .cacheOriginalImage
-                ]
-            )
-        } else {
-            // If no lottery matches, use a placeholder image
-            logoImageView.image = UIImage(named: "placeholderImage")
-        }
-
+        logoImageView.image = UIImage(named: "placeholderImage")
+        
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
+        dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
+        dateLabel.text = formattedDate.uppercased()
         
-        // Configure winning numbers
-        winningNumbersStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        if let winningNumbers = game.winningNumbers?.first {
-            for number in winningNumbers {
-                let label = createNumberLabel(number: number)
-                winningNumbersStackView.addArrangedSubview(label)
-            }
+        // Assign data to arrays (use the full double array)
+        winningNumbers = game.winningNumbers ?? []
+        myLuckyNumbers = game.myLuckyNumbers ?? []
+        
+        // Reload collection views with new data
+        winningNumbersCollectionView.reloadData()
+        myLuckyNumbersCollectionView.reloadData()
+        
+        
+    }
+    
+    private func formatToMillions(_ value: String) -> String {
+        guard let number = Double(value.filter { "0123456789.".contains($0) }) else {
+            return value
         }
         
-        // Configure lucky numbers if available
-        luckyNumbersStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        if let luckyNumbers = game.myLuckyNumbers?.first {
-            separatorLine.isHidden = false
-            luckyNumbersLabel.isHidden = false
-            luckyNumbersStackView.isHidden = false
-            for number in luckyNumbers {
-                let label = createNumberLabel(number: number)
-                luckyNumbersStackView.addArrangedSubview(label)
-            }
-        } else {
-            separatorLine.isHidden = true
-            luckyNumbersLabel.isHidden = true
-            luckyNumbersStackView.isHidden = true
-        }
+        let million = number / 1_000_000
+        return String(format: "$%.0f M.", million)
     }
 }
 
@@ -83,95 +138,138 @@ extension PastGameCell {
 private extension PastGameCell {
     func setupUI() {
         backgroundColor = .white
-        layer.cornerRadius = 10
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 4
         
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        dateLabel.font = UIFont.systemFont(ofSize: 14)
-        dateLabel.textAlignment = .right
-        dateLabel.textColor = Appearance.mono200
+        dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
+        dateLabelContainer.layer.shadowOpacity = 0.5
+        dateLabelContainer.layer.shadowRadius = 3.scale
+        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
+        
+        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
+        dateLabel.textAlignment = .center
+        dateLabel.textColor = Appearance.main300
+        dateLabel.backgroundColor = Appearance.mono100
+        dateLabel.layer.cornerRadius = 17.scale
+        dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        winningNumbersLabel.text = "WINNING NUMBERS"
-        winningNumbersLabel.font = UIFont.systemFont(ofSize: 14)
-        winningNumbersLabel.textColor = Appearance.mono200
-        winningNumbersLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        winningNumbersStackView.axis = .horizontal
-        winningNumbersStackView.distribution = .fillEqually
-        winningNumbersStackView.spacing = 5
-        winningNumbersStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        luckyNumbersLabel.text = "MY LUCKY NUMBERS"
-        luckyNumbersLabel.font = UIFont.systemFont(ofSize: 14)
-        luckyNumbersLabel.textColor = Appearance.mono200
-        luckyNumbersLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        luckyNumbersStackView.axis = .horizontal
-        luckyNumbersStackView.distribution = .fillEqually
-        luckyNumbersStackView.spacing = 5
-        luckyNumbersStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        separatorLine.backgroundColor = .lightGray
-        separatorLine.translatesAutoresizingMaskIntoConstraints = false
-        
         addSubview(logoImageView)
-        addSubview(dateLabel)
-        addSubview(winningNumbersLabel)
-        addSubview(winningNumbersStackView)
-        addSubview(separatorLine)
-        addSubview(luckyNumbersLabel)
-        addSubview(luckyNumbersStackView)
+        addSubview(dateLabelContainer)
+        dateLabelContainer.addSubview(dateLabel)
+        addSubview(winningNumbersCollectionView)
+        addSubview(winningNumbersTitleLabel)
+        addSubview(dashedLineImageView)
+        addSubview(myLuckyNumbersCollectionView)
+        addSubview(myLuckyNumbersTitleLabel)
     }
     
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            logoImageView.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -10),
-            logoImageView.heightAnchor.constraint(equalToConstant: 40),
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
+            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
+            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale),
+            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
-            dateLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
+            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale),
+            dateLabelContainer.widthAnchor.constraint(equalToConstant: 112.scale),
+            dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale),
             
-            winningNumbersLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
-            winningNumbersLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            dateLabel.centerXAnchor.constraint(equalTo: dateLabelContainer.centerXAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
+            dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor),
+            dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
             
-            winningNumbersStackView.topAnchor.constraint(equalTo: winningNumbersLabel.bottomAnchor, constant: 5),
-            winningNumbersStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            winningNumbersStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            // Winning Numbers CollectionView
+            winningNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale),
+            winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            separatorLine.topAnchor.constraint(equalTo: winningNumbersStackView.bottomAnchor, constant: 20),
-            separatorLine.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            separatorLine.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            separatorLine.heightAnchor.constraint(equalToConstant: 1),
+            // Winning Numbers Title Label
+            winningNumbersTitleLabel.topAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 20.scale),
+            winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             
-            luckyNumbersLabel.topAnchor.constraint(equalTo: separatorLine.bottomAnchor, constant: 20),
-            luckyNumbersLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            // Dashed Line View
+            dashedLineImageView.topAnchor.constraint(equalTo: winningNumbersTitleLabel.bottomAnchor, constant: 25.scale),
+            dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
+            dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
+            dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
             
-            luckyNumbersStackView.topAnchor.constraint(equalTo: luckyNumbersLabel.bottomAnchor, constant: 5),
-            luckyNumbersStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            luckyNumbersStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            // My Lucky Numbers CollectionView
+            myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
+            myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            luckyNumbersStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
+            // My Lucky Numbers Title Label
+            myLuckyNumbersTitleLabel.topAnchor.constraint(equalTo: myLuckyNumbersCollectionView.bottomAnchor, constant: 25.scale),
+            myLuckyNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            myLuckyNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
         ])
     }
+}
+
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegate
+extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegate {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        if collectionView == winningNumbersCollectionView {
+            return winningNumbers.count ?? 0 // Using the first set of numbers for simplicity
+        } else {
+            return myLuckyNumbers.count ?? 0 // Using the first set of numbers for simplicity
+        }
+    }
     
-    func createNumberLabel(number: Int) -> UILabel {
-        let label = UILabel()
-        label.text = "\(number)"
-        label.textAlignment = .center
-        label.backgroundColor = number == 19 || number == 32 ? .systemRed : .systemBlue // Customize this condition as needed
-        label.textColor = .white
-        label.layer.cornerRadius = 20
-        label.layer.masksToBounds = true
-        label.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        label.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        return label
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView == winningNumbersCollectionView {
+            return winningNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
+        } else {
+            return myLuckyNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
+        }
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
+            fatalError("Could not dequeue cell with identifier: NumberCell")
+        }
+        
+        if collectionView == winningNumbersCollectionView {
+            configureCellForWinningNumbers(cell, at: indexPath)
+        } else {
+            configureCellForLuckyNumbers(cell, at: indexPath)
+        }
+        
+        return cell
+    }
+
+    private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
+        let number = winningNumbers[indexPath.section][indexPath.item]
+        configureCell(cell, withNumber: number, comparisonArray: myLuckyNumbers, indexPath: indexPath)
+    }
+
+    private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
+        let number = myLuckyNumbers[indexPath.section][indexPath.item]
+        configureCell(cell, withNumber: number, comparisonArray: winningNumbers, indexPath: indexPath)
+    }
+
+    private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
+        let allNumbers = Set(comparisonArray.flatMap({ $0 }))
+        let isHighlight = allNumbers.contains(number)
+        cell.configure(with: String(number))
+        cell.backgroundColor = isHighlight ? Appearance.main600 : .white
+        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : UIColor.white.cgColor
+        
+        let lastIndex = comparisonArray[indexPath.section].count - 1
+        if indexPath.item == lastIndex {
+            cell.backgroundColor = Appearance.main100
+            cell.setNumberLabelColor(Appearance.mono100)
+        } else {
+            cell.setNumberLabelColor(Appearance.mono200)
+        }
     }
 }

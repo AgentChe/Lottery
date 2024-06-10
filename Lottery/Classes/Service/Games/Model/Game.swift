@@ -28,8 +28,8 @@ struct Game: Codable {
         self.lotteryId = lotteryId
         self.date = date
         self.jackpot = jackpot
-        self.cashValue = dict["cash_value"] as? String
-        self.winningNumbers = dict["winning_numbers"] as? [[Int]]
-        self.myLuckyNumbers = dict["my_lucky_numbers"] as? [[Int]]
+        self.cashValue = dict["cashValue"] as? String
+        self.winningNumbers = dict["winningNumbers"] as? [[Int]]
+        self.myLuckyNumbers = dict["myLuckyNumbers"] as? [[Int]]
     }
 }
