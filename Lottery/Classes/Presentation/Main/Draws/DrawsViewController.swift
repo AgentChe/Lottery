@@ -24,7 +24,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Appearance.main600
+        view.backgroundColor = Appearance.main400
         setupSegmentedControl()
         setupCollectionViews()
         setupLayoutConstraints()
@@ -38,7 +38,7 @@ private extension DrawsViewController {
     func setupSegmentedControl() {
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
-        segmentedControl.currentIndexBackgroundColor = UIColor(red: 0.9, green: 0.9, blue: 1, alpha: 1)
+        segmentedControl.currentIndexBackgroundColor = Appearance.main400
         segmentedControl.cornerRadius = 38
         segmentedControl.buttonPadding = 10
         segmentedControl.buttonCornerRadius = 32

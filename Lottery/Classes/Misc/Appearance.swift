@@ -16,4 +16,5 @@ struct Appearance {
     static let main600 = UIColor(integralRed: 217, green: 226, blue: 250)
     static let mono100 = UIColor.white
     static let mono200 = UIColor(integralRed: 14, green: 21, blue: 59)
+    static let dropShadowColor = UIColor(hex: "#CEDAFC")
 }

@@ -42,7 +42,7 @@ class SSSegmentedControl: UIView {
         }
     }
     
-    var currentIndexBackgroundColor: UIColor = .systemTeal {
+    var currentIndexBackgroundColor: UIColor = Appearance.main400 {
         didSet {
             setCurrentViewBackgroundColor()
         }

@@ -4,12 +4,14 @@
 //
 //  Created by Niiaz Khasanov on 6/6/24.
 //
-import UIKit
 
+
+import UIKit
 
 class NextGameCell: UICollectionViewCell {
     
     private let logoImageView = UIImageView()
+    private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
     private let jackpotLabel = UILabel()
     private let cashValueLabel = UILabel()
@@ -27,38 +29,25 @@ class NextGameCell: UICollectionViewCell {
     }
 }
 
-//MARK: - Public Methods
+// MARK: - Public Methods
 extension NextGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
-//        if let lottery = lotteries.first(where: { $0.id == game.lotteryId }) {
-//            // Use the URL directly from the Lottery struct
-//            logoImageView.kf.setImage(
-//                with: lottery.logoUrl,
-//                placeholder: UIImage(named: "placeholderImage"),
-//                options: [
-//                    .transition(.fade(0.25)),
-//                    .cacheOriginalImage
-//                ]
-//            )
-//        } else {
-            // If no lottery matches, use a placeholder image
-            logoImageView.image = UIImage(named: "placeholderImage")
-       // }
+        logoImageView.image = UIImage(named: "placeholderImage")
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
-        
-        // Directly use the non-optional strings and format them
+        dateFormatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Set timezone if needed
+        let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
+        dateLabel.text = formattedDate.uppercased() // Convert to uppercase
+
         jackpotLabel.text = formatToMillions(game.jackpot)
         cashValueLabel.text = formatToMillions(game.cashValue ?? "$0 M.")
     }
     
-    // Helper method to format large numbers
     private func formatToMillions(_ value: String) -> String {
-        // Filter out non-numeric characters except the decimal point
         guard let number = Double(value.filter { "0123456789.".contains($0) }) else {
-            return value // Return the original value if conversion fails
+            return value
         }
         
         let million = number / 1_000_000
@@ -70,41 +59,49 @@ extension NextGameCell {
 private extension NextGameCell {
     func setupUI() {
         backgroundColor = .white
-      
-       
         
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        dateLabel.font = UIFont.systemFont(ofSize: 14)
-        dateLabel.textAlignment = .right
-        dateLabel.textColor = Appearance.mono200
+        dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
+        dateLabelContainer.layer.shadowOpacity = 0.5
+        dateLabelContainer.layer.shadowRadius = 3.scale // Apply scale to shadow radius
+        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale) // Apply scale to shadow offset
+        
+        dateLabel.font = Fonts.Inter.medium(size: 12.scale) // Apply scale to font size
+        dateLabel.textAlignment = .center
+        dateLabel.textColor = Appearance.main300
+        dateLabel.backgroundColor = Appearance.mono100
+        dateLabel.layer.cornerRadius = 14.scale // Apply scale to corner radius
+        dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        jackpotLabel.font = UIFont.boldSystemFont(ofSize: 28)
+        jackpotLabel.font = UIFont.boldSystemFont(ofSize: 28.scale) // Apply scale to font size
         jackpotLabel.textAlignment = .center
         jackpotLabel.textColor = Appearance.mono200
         jackpotLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        cashValueLabel.font = UIFont.boldSystemFont(ofSize: 28)
+        cashValueLabel.font = UIFont.boldSystemFont(ofSize: 28.scale) // Apply scale to font size
         cashValueLabel.textAlignment = .center
         cashValueLabel.textColor = Appearance.mono200
         cashValueLabel.translatesAutoresizingMaskIntoConstraints = false
         
         jackpotTitleLabel.text = "JACKPOT"
-        jackpotTitleLabel.font = UIFont.systemFont(ofSize: 14)
+        jackpotTitleLabel.font = UIFont.systemFont(ofSize: 14.scale) // Apply scale to font size
         jackpotTitleLabel.textAlignment = .center
         jackpotTitleLabel.textColor = Appearance.mono200
         jackpotTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         cashValueTitleLabel.text = "CASH VALUE"
-        cashValueTitleLabel.font = UIFont.systemFont(ofSize: 14)
+        cashValueTitleLabel.font = UIFont.systemFont(ofSize: 14.scale) // Apply scale to font size
         cashValueTitleLabel.textAlignment = .center
         cashValueTitleLabel.textColor = Appearance.mono200
         cashValueTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(logoImageView)
-        addSubview(dateLabel)
+        addSubview(dateLabelContainer)
+        dateLabelContainer.addSubview(dateLabel)
         addSubview(jackpotLabel)
         addSubview(cashValueLabel)
         addSubview(jackpotTitleLabel)
@@ -113,35 +110,34 @@ private extension NextGameCell {
     
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
-            // Position logoImageView in the top-left corner
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -26),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5),
-            logoImageView.widthAnchor.constraint(equalToConstant: 188),
-            logoImageView.heightAnchor.constraint(equalToConstant: 58),
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
+            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale), // Apply scale to leading constraint
+            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale), // Apply scale to width
+            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale), // Apply scale to height
             
-            // Position dateLabel to the right of logoImageView
-            dateLabel.topAnchor.constraint(equalTo: topAnchor, constant: -20),
-            dateLabel.leadingAnchor.constraint(equalTo: logoImageView.trailingAnchor, constant: 10),
-            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -14.scale), // Apply scale to top constraint
+            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale), // Apply scale to trailing constraint
+            dateLabelContainer.widthAnchor.constraint(equalToConstant: 102.scale), // Apply scale to width
+            dateLabelContainer.heightAnchor.constraint(equalToConstant: 28.scale), // Apply scale to height
             
-            // Position jackpotLabel below logoImageView
-            jackpotLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
-            jackpotLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -100),
+            dateLabel.centerXAnchor.constraint(equalTo: dateLabelContainer.centerXAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
+            dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor),
+            dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
             
-            // Position cashValueLabel below logoImageView
-            cashValueLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
-            cashValueLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 100),
+            jackpotLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale), // Apply scale to top constraint
+            jackpotLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -100.scale), // Apply scale to centerX constraint
             
-            // Position jackpotTitleLabel below jackpotLabel
-            jackpotTitleLabel.topAnchor.constraint(equalTo: jackpotLabel.bottomAnchor, constant: 5),
+            cashValueLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale), // Apply scale to top constraint
+            cashValueLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 100.scale), // Apply scale to centerX constraint
+            
+            jackpotTitleLabel.topAnchor.constraint(equalTo: jackpotLabel.bottomAnchor, constant: 5.scale), // Apply scale to top constraint
             jackpotTitleLabel.centerXAnchor.constraint(equalTo: jackpotLabel.centerXAnchor),
             
-            // Position cashValueTitleLabel below cashValueLabel
-            cashValueTitleLabel.topAnchor.constraint(equalTo: cashValueLabel.bottomAnchor, constant: 5),
+            cashValueTitleLabel.topAnchor.constraint(equalTo: cashValueLabel.bottomAnchor, constant: 5.scale), // Apply scale to top constraint
             cashValueTitleLabel.centerXAnchor.constraint(equalTo: cashValueLabel.centerXAnchor),
             
-            // Position cashValueTitleLabel's bottom to the bottom of the cell
-            cashValueTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
+            cashValueTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale) // Apply scale to bottom constraint
         ])
     }
 }
