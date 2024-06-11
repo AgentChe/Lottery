@@ -6,7 +6,6 @@
 
 import UIKit
 
-
 final class OnboardingViewController: UINavigationController, UINavigationControllerDelegate {
     struct Constants {
         static let wasViewedKey = "onboarding_view_controller_was_viewed_key"
@@ -64,7 +63,8 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     }
     
     private func showSelectLotteriesViewController() {
-        let selectGameVC = SelectLotteriesViewController()
+        guard let selectedState = selectedState else { return } // Ensure we have a stateId
+        let selectGameVC = SelectLotteriesViewController(stateId: selectedState)
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedGames = selectedGames

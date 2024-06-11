@@ -15,6 +15,11 @@
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
 		A3CF295D2C0D607C00DF735A /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295C2C0D607C00DF735A /* InsetTextField.swift */; };
 		A3EF37232C174E1D00753C41 /* NumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37222C174E1D00753C41 /* NumberCell.swift */; };
+		A3EF37282C17B3C800753C41 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37272C17B3C800753C41 /* MenuViewController.swift */; };
+		A3EF372B2C17B9DE00753C41 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF372A2C17B9DE00753C41 /* MenuCell.swift */; };
+		A3EF372D2C17BC8D00753C41 /* SettingsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */; };
+		A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37302C184DD600753C41 /* TicketsViewController.swift */; };
+		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -154,6 +159,11 @@
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
 		A3CF295C2C0D607C00DF735A /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		A3EF37222C174E1D00753C41 /* NumberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberCell.swift; sourceTree = "<group>"; };
+		A3EF37272C17B3C800753C41 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
+		A3EF372A2C17B9DE00753C41 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
+		A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWebViewController.swift; sourceTree = "<group>"; };
+		A3EF37302C184DD600753C41 /* TicketsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsViewController.swift; sourceTree = "<group>"; };
+		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -359,6 +369,41 @@
 				A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */,
 			);
 			path = SuggestNewGame;
+			sourceTree = "<group>";
+		};
+		A3EF37262C17B1E400753C41 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				A3EF37292C17B9C900753C41 /* Views */,
+				A3EF37272C17B3C800753C41 /* MenuViewController.swift */,
+				A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		A3EF37292C17B9C900753C41 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A3EF372A2C17B9DE00753C41 /* MenuCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A3EF372E2C184DB500753C41 /* Tickets */ = {
+			isa = PBXGroup;
+			children = (
+				A3EF372F2C184DCA00753C41 /* Views */,
+				A3EF37302C184DD600753C41 /* TicketsViewController.swift */,
+			);
+			path = Tickets;
+			sourceTree = "<group>";
+		};
+		A3EF372F2C184DCA00753C41 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A3EF37322C185D3500753C41 /* TicketCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A3FD9EA02C11C984000FAD68 /* Draws */ = {
@@ -667,7 +712,9 @@
 				DE42B1572BFF3CB100FF61B0 /* MainViewController.swift */,
 				DE42B1562BFF3CB100FF61B0 /* MainView.swift */,
 				DE42B1F32BFF467200FF61B0 /* MainViewCoordinator.swift */,
+				A3EF37262C17B1E400753C41 /* Menu */,
 				A3FD9EA02C11C984000FAD68 /* Draws */,
+				A3EF372E2C184DB500753C41 /* Tickets */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1054,6 +1101,7 @@
 				DE42B19E2BFF3CB200FF61B0 /* UIEdgeInsets+Extension.swift in Sources */,
 				A3FF557B2C07E65000E81771 /* TicketsManager.swift in Sources */,
 				DE42B1D12BFF3CB200FF61B0 /* IAPActionResult.swift in Sources */,
+				A3EF372D2C17BC8D00753C41 /* SettingsWebViewController.swift in Sources */,
 				DE42B1CF2BFF3CB200FF61B0 /* IAPError.swift in Sources */,
 				DE42B1A82BFF3CB200FF61B0 /* NetworkError.swift in Sources */,
 				DE42B2122BFF588F00FF61B0 /* ProfileManager.swift in Sources */,
@@ -1106,6 +1154,7 @@
 				DE42B1B62BFF3CB200FF61B0 /* MainView.swift in Sources */,
 				DE42B1C52BFF3CB200FF61B0 /* PaygateInteractor.swift in Sources */,
 				DE42B1CD2BFF3CB200FF61B0 /* PaygateOptionConfig.swift in Sources */,
+				A3EF37282C17B3C800753C41 /* MenuViewController.swift in Sources */,
 				DE42B1B22BFF3CB200FF61B0 /* AppDelegate.swift in Sources */,
 				DE42B1B52BFF3CB200FF61B0 /* SceneDelegate.swift in Sources */,
 				A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */,
@@ -1127,6 +1176,7 @@
 				DE42B18D2BFF3CB200FF61B0 /* ImagePicker.swift in Sources */,
 				DE42B1A72BFF3CB200FF61B0 /* ContentError.swift in Sources */,
 				DE42B1AC2BFF3CB200FF61B0 /* ObservableRetrySingle.swift in Sources */,
+				A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */,
 				A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */,
 				DE42B1C72BFF3CB200FF61B0 /* PaygateViewController.swift in Sources */,
 				DE42B18F2BFF3CB200FF61B0 /* RxActivityIndicator.swift in Sources */,
@@ -1165,6 +1215,7 @@
 				A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */,
 				DE42B1B02BFF3CB200FF61B0 /* Weak.swift in Sources */,
 				A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */,
+				A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */,
 				A3FF55792C07E62D00E81771 /* ListTicketsRequest.swift in Sources */,
 				A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */,
 				A3FF55872C0CC37500E81771 /* WelcomeViewController.swift in Sources */,
@@ -1176,6 +1227,7 @@
 				DE42B2052BFF50E300FF61B0 /* NetworkSession.swift in Sources */,
 				DE42B1C42BFF3CB200FF61B0 /* PaygateProductButton.swift in Sources */,
 				DE42B2002BFF50E300FF61B0 /* APIEnvironment.swift in Sources */,
+				A3EF372B2C17B9DE00753C41 /* MenuCell.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

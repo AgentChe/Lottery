@@ -8,9 +8,9 @@
 import Foundation
 
 protocol TicketsManagerProtocol {
-    func addTicket(userToken: String, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
-    func editTicket(userToken: String, id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
-    func listTickets(userToken: String, completion: @escaping (Result<[Ticket], Error>) -> Void)
+    func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
+    func editTicket(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
+    func listTickets( completion: @escaping (Result<[Ticket], Error>) -> Void)
 }
 
 final class TicketsManager {
@@ -21,7 +21,11 @@ final class TicketsManager {
 
 // MARK: - TicketsManagerProtocol
 extension TicketsManager: TicketsManagerProtocol {
-    func addTicket(userToken: String, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+    func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
         let request = AddTicketRequest(userToken: userToken, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
         
@@ -43,7 +47,11 @@ extension TicketsManager: TicketsManagerProtocol {
         }
     }
     
-    func editTicket(userToken: String, id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+    func editTicket(  id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
         let request = EditTicketRequest(userToken: userToken, id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
         
@@ -64,7 +72,11 @@ extension TicketsManager: TicketsManagerProtocol {
         }
     }
     
-    func listTickets(userToken: String, completion: @escaping (Result<[Ticket], Error>) -> Void) {
+    func listTickets( completion: @escaping (Result<[Ticket], Error>) -> Void) {
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
         let request = ListTicketsRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
         

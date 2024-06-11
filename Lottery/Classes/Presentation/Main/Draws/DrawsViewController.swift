@@ -6,9 +6,19 @@
 //
 
 
+//
+//  DrawsViewController.swift
+//  Lottery
+//
+//  Created by Niiaz Khasanov on 6/6/24.
+//
+
 import UIKit
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
@@ -28,8 +38,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupSegmentedControl()
         setupCollectionViews()
         setupLayoutConstraints()
-        
         fetchStateAndGames()
+        setupNavigationBarTitle()
     }
 }
 
@@ -39,9 +49,9 @@ private extension DrawsViewController {
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = Appearance.main400
-        segmentedControl.cornerRadius = 38
-        segmentedControl.buttonPadding = 10
-        segmentedControl.buttonCornerRadius = 32
+        segmentedControl.cornerRadius = 38.scale
+        segmentedControl.buttonPadding = 10.scale
+        segmentedControl.buttonCornerRadius = 32.scale
         segmentedControl.numberOfSegments = 2
         segmentedControl.segmentsTitle = "Next Draws,Past Draws"
         segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
@@ -83,42 +93,43 @@ private extension DrawsViewController {
     
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            segmentedControl.widthAnchor.constraint(equalToConstant: 343),
-            segmentedControl.heightAnchor.constraint(equalToConstant: 80),
+            segmentedControl.widthAnchor.constraint(equalToConstant: 343.scale),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 80.scale),
             
             nextDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 0),
-            nextDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343),
+            nextDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             nextDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
             
             pastDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 0),
-            pastDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343),
+            pastDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             pastDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
         ])
     }
 }
+
 // MARK: - CollectionView Delegate FlowLayout
 extension DrawsViewController {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth: CGFloat = 343 // Width is fixed to the collection view width with padding
+        let cellWidth: CGFloat = 343.scale // Width is fixed to the collection view width with padding
         
         var cellHeight: CGFloat
         
         if collectionView == nextDrawsCollectionView {
-            return CGSize(width: 343, height: 147)
+            return CGSize(width: cellWidth, height: 147.scale)
         } else {
             // For Past Draws
             let game = pastDraws[indexPath.item]
-            cellHeight = 176  // Default height
+            cellHeight = 176.scale  // Default height
             if let myLuckyNumbers = game.myLuckyNumbers {
                 if myLuckyNumbers.isEmpty {
-                    cellHeight = 150
+                    cellHeight = 150.scale
                 } else {
-                    cellHeight = 280.scale + CGFloat(max(0, myLuckyNumbers.count - 1) * 55)
+                    cellHeight = 280.scale + CGFloat(max(0, myLuckyNumbers.count - 1)) * CGFloat(55.scale)
                 }
             }
         }
@@ -128,14 +139,15 @@ extension DrawsViewController {
     
     // Set the minimum line spacing (vertical spacing between rows)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 40 // Adjust as needed for spacing between rows
+        return 40.scale // Adjust as needed for spacing between rows
     }
-
+    
     // Set the section insets (padding around the section)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 50, left: 0, bottom: 10, right: 0) // Adjust insets as needed
+        return UIEdgeInsets(top: 50.scale, left: 0, bottom: 10.scale, right: 0) // Adjust insets as needed
     }
 }
+
 // MARK: - Public Extension
 extension DrawsViewController {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -151,13 +163,13 @@ extension DrawsViewController {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             let game = nextDraws[indexPath.item]
             cell.configure(game: game, lotteries: lotteries)
-            cell.layer.cornerRadius = 20
+            cell.layer.cornerRadius = 20.scale
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
             cell.configure(game: game, lotteries: lotteries)
-            cell.layer.cornerRadius = 20
+            cell.layer.cornerRadius = 20.scale
             return cell
         }
     }
@@ -165,6 +177,55 @@ extension DrawsViewController {
 
 // MARK: - Private Extension
 private extension DrawsViewController {
+    func setupNavigationBarTitle() {
+        // Create the title label
+        let titleLabel = UILabel()
+        titleLabel.text = "ALL GAMES"
+        titleLabel.textColor = Appearance.mono200
+        titleLabel.font = Fonts.Inter.bold(size: 20.scale)
+        
+        // Set intrinsic size for proper layout
+        titleLabel.sizeToFit()
+        
+        // Create a UIBarButtonItem with the custom label
+        let leftBarItem = UIBarButtonItem(customView: titleLabel)
+        
+        navigationItem.leftBarButtonItem = leftBarItem
+        
+        // Create a right bar button item for the menu
+        if let menuImage = UIImage(named: "Menu") {
+            // Create the UIImageView with aspect fit
+            let menuImageView = UIImageView(image: menuImage)
+            menuImageView.contentMode = .scaleAspectFit
+            
+            // Set the height of the image view to match the title label's height
+            let titleHeight = titleLabel.intrinsicContentSize.height
+            menuImageView.frame = CGRect(x: 0, y: 0, width: titleHeight, height: titleHeight)
+            
+            // Wrap the image view in a UIView to manage its layout
+            let menuContainerView = UIView(frame: menuImageView.frame)
+            menuContainerView.addSubview(menuImageView)
+            
+            // Create the UIBarButtonItem with the custom view
+            let rightBarItem = UIBarButtonItem(customView: menuContainerView)
+            navigationItem.rightBarButtonItem = rightBarItem
+            
+            // Add tap gesture to the image view for menu action
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMenuTap))
+            menuContainerView.isUserInteractionEnabled = true
+            menuContainerView.addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    @objc func handleMenuTap() {
+        let menuVC = MenuViewController()
+        let navController = NavigationController(rootViewController: menuVC)
+        navController.modalPresentationStyle = .fullScreen
+        
+        // Present the navigation controller
+        present(navController, animated: true, completion: nil)
+    }
+    
     func segmentedControlChanged(index: Int) {
         if index == 0 {
             nextDrawsCollectionView.isHidden = false
@@ -182,7 +243,6 @@ private extension DrawsViewController {
                 case .success(let profile):
                     if let stateId = profile.state {
                         self?.fetchLotteries(for: stateId)
-                        
                     } else {
                         print("State ID is not available in profile")
                     }
@@ -240,3 +300,4 @@ private extension DrawsViewController {
         }
     }
 }
+

@@ -10,8 +10,20 @@ class SelectLotteriesViewController: UIViewController {
     var onContinue: (([Int]) -> Void)?
     private let contentManager: ContentManagerProtocol = ContentManager()
     private var lotteries: [Lottery] = []
+    private let stateId: Int?
 
     private let selectLotteryView = SelectLotteryView()
+
+    // Custom initializer to accept stateId
+    init(stateId: Int?) {
+        self.stateId = stateId
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        self.stateId = nil
+        super.init(coder: coder)
+    }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
@@ -75,4 +87,3 @@ private extension SelectLotteriesViewController {
         present(vc, animated: true)
     }
 }
-
