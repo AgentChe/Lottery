@@ -16,9 +16,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = "Tickets"
-        view.backgroundColor = .red
+        view.backgroundColor = .clear
         setupNavigationBarTitle()
         setupCollectionView()
         fetchTickets()
@@ -36,7 +34,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         collectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
         
         view.addSubview(collectionView)
@@ -118,14 +116,27 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
         cell.configure(with: tickets[indexPath.item])
+        
         return cell
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout Methods
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 20, height: 150) // Adjust the height based on your design
+        let ticket = tickets[indexPath.item]
+        let ticketDate = Date(timeIntervalSince1970: ticket.date)
+        let now = Date()
+        let numbersCount = ticket.numbers.count
+        
+        let isNextDraw = ticketDate > now
+        let baseHeight: CGFloat = isNextDraw ? 256 : 222
+        let additionalHeight: CGFloat = 58 * CGFloat(max(0, numbersCount - 1))
+        
+        let cellHeight = baseHeight + additionalHeight
+        
+        return CGSize(width: view.frame.width - 20, height: cellHeight)
     }
+
     
     private func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)

@@ -17,4 +17,6 @@ struct Appearance {
     static let mono100 = UIColor.white
     static let mono200 = UIColor(integralRed: 14, green: 21, blue: 59)
     static let dropShadowColor = UIColor(hex: "#CEDAFC")
+    static let lightGrayTextColor = UIColor(hex: "#808B96")
+    static let lightGrayBorderTicket = UIColor(red: 219/255, green: 223/255, blue: 230/255, alpha: 1)
 }
