@@ -17,18 +17,37 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         super.viewDidLoad()
         view.backgroundColor = .clear
         setupNavigationBarTitle()
+        setupNavigationBarAppearance() // Call to set up the navigation bar appearance
         setupCollectionView()
         fetchTickets()
+    }
+
+    private func setupNavigationBarAppearance() {
+        // Set the navigation bar to a solid color
+        navigationController?.navigationBar.barTintColor = Appearance.main400// Set to your desired color
+        
+        // Disable translucency
+        navigationController?.navigationBar.isTranslucent = false
+        
+        // Optionally remove the shadow image for a cleaner look
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        // Set the navigation bar title color to ensure visibility
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        
+        // Ensure the custom navigation items like title and right bar button appear as intended
+        setupNavigationBarTitle()
     }
 
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10.scale // Apply .scale to the spacing
-        layout.minimumInteritemSpacing = 10.scale // Apply .scale to the spacing
+        layout.minimumLineSpacing = 18.scale // Apply .scale to the spacing
+        layout.minimumInteritemSpacing = 18.scale // Apply .scale to the spacing
         layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale) // Apply .scale to the dimensions
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.contentInset = UIEdgeInsets(top: 25.scale, left: 0, bottom: 30.scale, right: 0) // Apply .scale to top and bottom insets
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -90,7 +109,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             DispatchQueue.main.async {
                 switch result {
                 case .success(let tickets):
-                    self?.tickets = tickets
+                    self?.tickets = tickets.sorted(by: { $0.date > $1.date })
                     self?.collectionView.reloadData()
                 case .failure(let error):
                     self?.showError(error)
