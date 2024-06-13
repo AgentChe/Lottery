@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     private let calendar = Calendar.current
@@ -32,7 +31,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         layout.minimumLineSpacing = 0
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Appearance.mono100
         
         super.init(frame: frame)
         
@@ -50,23 +49,26 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     }
     
     private func setupUI() {
-        backgroundColor = .white
-        layer.cornerRadius = 10
+        backgroundColor = Appearance.mono100
+        layer.cornerRadius = 20
         layer.masksToBounds = true
         
-        headerLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        headerLabel.font = Fonts.Inter.bold(size: 20)
         headerLabel.textAlignment = .center
+        headerLabel.textColor = Appearance.mono200
         addSubview(headerLabel)
         
         let previousButton = UIButton(type: .system)
         previousButton.setTitle("<", for: .normal)
-        previousButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        previousButton.titleLabel?.font = Fonts.Inter.medium(size: 16)
+        previousButton.setTitleColor(Appearance.mono200, for: .normal)
         previousButton.addTarget(self, action: #selector(previousMonth), for: .touchUpInside)
         addSubview(previousButton)
         
         let nextButton = UIButton(type: .system)
         nextButton.setTitle(">", for: .normal)
-        nextButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        nextButton.titleLabel?.font = Fonts.Inter.medium(size: 16)
+        nextButton.setTitleColor(Appearance.mono200, for: .normal)
         nextButton.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
         addSubview(nextButton)
         
@@ -75,9 +77,9 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         for day in days {
             let label = UILabel()
             label.text = day
-            label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+            label.font = Fonts.Inter.semiBold(size: 14)
             label.textAlignment = .center
-            label.textColor = UIColor(red: 0.12, green: 0.12, blue: 0.27, alpha: 1.0) // Dark color for day labels
+            label.textColor = Appearance.mono200 // Dark color for day labels
             daysOfWeekStackView.addArrangedSubview(label)
         }
         
@@ -90,22 +92,22 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         
         // Setup buttons
         saveButton.setTitle("Save", for: .normal)
-        saveButton.backgroundColor = UIColor(red: 0.89, green: 0.3, blue: 0.27, alpha: 1.0) // Custom red color
+        saveButton.backgroundColor = Appearance.main100 // Custom red color
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.layer.cornerRadius = 22 // Half the height for rounded effect
         saveButton.layer.masksToBounds = true
-        saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        saveButton.titleLabel?.font = Fonts.Inter.bold(size: 16)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         addSubview(saveButton)
         
         closeButton.setTitle("Close", for: .normal)
         closeButton.backgroundColor = .clear
-        closeButton.setTitleColor(UIColor(red: 0.12, green: 0.12, blue: 0.27, alpha: 1.0), for: .normal) // Dark color for close button text
+        closeButton.setTitleColor(Appearance.mono200, for: .normal) // Dark color for close button text
         closeButton.layer.borderWidth = 1
-        closeButton.layer.borderColor = UIColor(red: 0.12, green: 0.12, blue: 0.27, alpha: 1.0).cgColor // Border matching the text color
+        closeButton.layer.borderColor = Appearance.main300.cgColor // Border matching the text color
         closeButton.layer.cornerRadius = 22 // Half the height for rounded effect
         closeButton.layer.masksToBounds = true
-        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        closeButton.titleLabel?.font = Fonts.Inter.bold(size: 16)
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         addSubview(closeButton)
     }
@@ -209,7 +211,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             
             // Highlight the selected date
             if calendar.isDate(selectedDate, inSameDayAs: calendar.date(byAdding: .day, value: day-1, to: startOfMonth(for: currentMonth))!) {
-                cell.backgroundColor = UIColor(red: 0.89, green: 0.3, blue: 0.27, alpha: 1.0) // Highlight color
+                cell.backgroundColor = Appearance.main100 // Highlight color
                 cell.dateLabel.textColor = .white
             } else {
                 cell.backgroundColor = .clear
@@ -252,7 +254,7 @@ class DateCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        dateLabel.font = UIFont.systemFont(ofSize: 16)
+        dateLabel.font = Fonts.Inter.regular(size: 16)
         dateLabel.textAlignment = .center
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dateLabel)
