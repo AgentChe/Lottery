@@ -5,6 +5,12 @@
 //  Created by Niiaz Khasanov on 6/12/24.
 //
 
+//
+//  EditTicketVIewController.swift
+//  Lottery
+//
+//  Created by Niiaz Khasanov on 6/12/24.
+//
 
 import UIKit
 
@@ -14,15 +20,6 @@ class EditTicketViewController: UIViewController {
     var ticket: Ticket?
     
     // UI Elements
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "EDIT TICKET"
-        label.font = Fonts.Inter.bold(size: 20.scale)
-        label.textColor = Appearance.mono200
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private let ticketImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -73,14 +70,53 @@ class EditTicketViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Appearance.main400
         setupUI()
         setupConstraints()
+        setupNavigationBarTitle() // Set the custom title
         loadTicketData()
+        setupNavigationBar()
+        setupNavigationBarTitle()
     }
+    private func setupNavigationBarTitle() {
+        // Load the custom back button image
+        guard let backButtonImage = UIImage(named: "EditBackButtonImage") else { return }
+        // Create a UIButton with specific dimensions and set it as the custom view
+        let backButton = UIButton(type: .custom)
+        backButton.setImage(backButtonImage, for: .normal)
+        backButton.imageView?.contentMode = .scaleAspectFit 
+        backButton.backgroundColor = .clear
+        backButton.frame = CGRect(x: 0, y: 0, width: 140.scale, height: 26.scale)
+        backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
+
+        // Create a UIBarButtonItem using the custom UIButton
+        let barButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Set the custom back button as the left bar button item
+        self.navigationItem.leftBarButtonItem = barButtonItem
+    }
+
+    @objc func handleBackButton() {
+        // Code to execute when the back button is tapped
+        navigationController?.popViewController(animated: true)
+    }
+
     
+    private func setupNavigationBar() {
+        // Ensure the navigation bar does not obscure the view
+        navigationController?.navigationBar.isTranslucent = true
+        
+        // Set navigation bar background and shadow images to empty, making it transparent
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        // Optional: Set navigation bar elements to a specific color to ensure they are visible
+        navigationController?.navigationBar.tintColor = Appearance.mono200
+        
+        // Setting the title with custom attributes if needed
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
+    }
     private func setupUI() {
-        view.addSubview(titleLabel)
         view.addSubview(ticketImageView)
         view.addSubview(dateTextField)
         view.addSubview(numbersCollectionView)
@@ -94,10 +130,7 @@ class EditTicketViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            
-            ticketImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20.scale),
+            ticketImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
             ticketImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             ticketImageView.widthAnchor.constraint(equalToConstant: 200.scale),
             ticketImageView.heightAnchor.constraint(equalToConstant: 50.scale),
@@ -147,6 +180,12 @@ class EditTicketViewController: UIViewController {
             }
         }
     }
+    
+    
+    @objc private func handleMenuTap() {
+        // Handle the tap on the menu button here
+        print("Menu button tapped")
+    }
 }
 
 extension EditTicketViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -156,7 +195,7 @@ extension EditTicketViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-       // cell.configure(with: numbers[indexPath.item])
+        // cell.configure(with: numbers[indexPath.item])
         return cell
     }
     
