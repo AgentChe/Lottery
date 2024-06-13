@@ -1,0 +1,269 @@
+//
+//  CustomCalendarView.swift
+//  Lottery
+//
+//  Created by Niiaz Khasanov on 6/13/24.
+//
+
+import UIKit
+
+
+class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    private let calendar = Calendar.current
+    private let dateFormatter = DateFormatter()
+    private var selectedDate = Date()
+    private var currentMonth: Date
+    
+    private let headerLabel = UILabel()
+    private let daysOfWeekStackView = UIStackView()
+    private let collectionView: UICollectionView
+    private let saveButton = UIButton(type: .system)
+    private let closeButton = UIButton(type: .system)
+    
+    var onDateSelected: ((Date) -> Void)?
+    var onClose: (() -> Void)?
+    
+    override init(frame: CGRect) {
+        self.currentMonth = Date()
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        
+        super.init(frame: frame)
+        
+        setupUI()
+        setupConstraints()
+        updateHeader()
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(DateCell.self, forCellWithReuseIdentifier: "DateCell")
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI() {
+        backgroundColor = .white
+        layer.cornerRadius = 10
+        layer.masksToBounds = true
+        
+        headerLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        headerLabel.textAlignment = .center
+        addSubview(headerLabel)
+        
+        let previousButton = UIButton(type: .system)
+        previousButton.setTitle("<", for: .normal)
+        previousButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        previousButton.addTarget(self, action: #selector(previousMonth), for: .touchUpInside)
+        addSubview(previousButton)
+        
+        let nextButton = UIButton(type: .system)
+        nextButton.setTitle(">", for: .normal)
+        nextButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        nextButton.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
+        addSubview(nextButton)
+        
+        // Setup days of the week
+        let days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+        for day in days {
+            let label = UILabel()
+            label.text = day
+            label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+            label.textAlignment = .center
+            label.textColor = UIColor(red: 0.12, green: 0.12, blue: 0.27, alpha: 1.0) // Dark color for day labels
+            daysOfWeekStackView.addArrangedSubview(label)
+        }
+        
+        daysOfWeekStackView.axis = .horizontal
+        daysOfWeekStackView.distribution = .fillEqually
+        daysOfWeekStackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(daysOfWeekStackView)
+        
+        addSubview(collectionView)
+        
+        // Setup buttons
+        saveButton.setTitle("Save", for: .normal)
+        saveButton.backgroundColor = UIColor(red: 0.89, green: 0.3, blue: 0.27, alpha: 1.0) // Custom red color
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.layer.cornerRadius = 22 // Half the height for rounded effect
+        saveButton.layer.masksToBounds = true
+        saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
+        addSubview(saveButton)
+        
+        closeButton.setTitle("Close", for: .normal)
+        closeButton.backgroundColor = .clear
+        closeButton.setTitleColor(UIColor(red: 0.12, green: 0.12, blue: 0.27, alpha: 1.0), for: .normal) // Dark color for close button text
+        closeButton.layer.borderWidth = 1
+        closeButton.layer.borderColor = UIColor(red: 0.12, green: 0.12, blue: 0.27, alpha: 1.0).cgColor // Border matching the text color
+        closeButton.layer.cornerRadius = 22 // Half the height for rounded effect
+        closeButton.layer.masksToBounds = true
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        addSubview(closeButton)
+    }
+    
+    private func setupConstraints() {
+        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        let previousButton = subviews.first(where: { $0 is UIButton && ($0 as! UIButton).currentTitle == "<" })!
+        let nextButton = subviews.first(where: { $0 is UIButton && ($0 as! UIButton).currentTitle == ">" })!
+        
+        previousButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            headerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            previousButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
+            previousButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            
+            nextButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
+            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            
+            daysOfWeekStackView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 8),
+            daysOfWeekStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            daysOfWeekStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            daysOfWeekStackView.heightAnchor.constraint(equalToConstant: 20),
+            
+            collectionView.topAnchor.constraint(equalTo: daysOfWeekStackView.bottomAnchor, constant: 8),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            collectionView.heightAnchor.constraint(equalToConstant: 270),
+            
+            saveButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 16),
+            saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            saveButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            closeButton.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 8),
+            closeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            closeButton.heightAnchor.constraint(equalToConstant: 44),
+            closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+        ])
+    }
+    
+    private func updateHeader() {
+        dateFormatter.dateFormat = "MMMM yyyy"
+        headerLabel.text = dateFormatter.string(from: currentMonth)
+    }
+    
+    @objc private func previousMonth() {
+        currentMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth)!
+        updateHeader()
+        collectionView.reloadData()
+    }
+    
+    @objc private func nextMonth() {
+        currentMonth = calendar.date(byAdding: .month, value: 1, to: currentMonth)!
+        updateHeader()
+        collectionView.reloadData()
+    }
+    
+    @objc private func saveTapped() {
+        onDateSelected?(selectedDate)
+    }
+    
+    @objc private func closeTapped() {
+        onClose?()
+    }
+    
+    private func startOfMonth(for date: Date) -> Date {
+        return calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
+    }
+    
+    private func firstWeekdayOfMonth() -> Int {
+        let components = calendar.dateComponents([.year, .month], from: currentMonth)
+        let firstDay = calendar.date(from: components)!
+        return calendar.component(.weekday, from: firstDay)
+    }
+    
+    // MARK: - UICollectionViewDataSource
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let range = calendar.range(of: .day, in: .month, for: currentMonth)!
+        let numDays = range.count
+        let firstWeekday = firstWeekdayOfMonth() - 1 // To make it zero-indexed
+        return numDays + firstWeekday
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCell", for: indexPath) as! DateCell
+        let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
+        
+        if indexPath.item >= firstWeekday {
+            let day = indexPath.item - firstWeekday + 1
+            cell.dateLabel.text = "\(day)"
+            
+            // Highlight the selected date
+            if calendar.isDate(selectedDate, inSameDayAs: calendar.date(byAdding: .day, value: day-1, to: startOfMonth(for: currentMonth))!) {
+                cell.backgroundColor = UIColor(red: 0.89, green: 0.3, blue: 0.27, alpha: 1.0) // Highlight color
+                cell.dateLabel.textColor = .white
+            } else {
+                cell.backgroundColor = .clear
+                cell.dateLabel.textColor = .black
+            }
+            
+        } else {
+            cell.dateLabel.text = ""
+            cell.backgroundColor = .clear
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
+        if indexPath.item >= firstWeekday {
+            let day = indexPath.item - firstWeekday + 1
+            var dateComponents = calendar.dateComponents([.year, .month], from: currentMonth)
+            dateComponents.day = day
+            if let date = calendar.date(from: dateComponents) {
+                selectedDate = date
+                // Do not dismiss the calendar here
+                collectionView.reloadData() // Update the selection
+            }
+        }
+    }
+    
+    // MARK: - UICollectionViewDelegateFlowLayout
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width / 7
+        return CGSize(width: width, height: width)
+    }
+}
+
+class DateCell: UICollectionViewCell {
+    let dateLabel = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        dateLabel.font = UIFont.systemFont(ofSize: 16)
+        dateLabel.textAlignment = .center
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(dateLabel)
+        
+        NSLayoutConstraint.activate([
+            dateLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

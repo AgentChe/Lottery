@@ -5,88 +5,59 @@
 //  Created by Niiaz Khasanov on 6/12/24.
 //
 
-//
-//  EditTicketVIewController.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/12/24.
-//
-
 import UIKit
 
-class EditTicketViewController: UIViewController {
+class EditTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // Properties to hold ticket data
     var ticket: Ticket?
-    
-    // UI Elements
-    private let ticketImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    private let dateTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "MM/DD/YYYY"
-        textField.font = Fonts.Inter.medium(size: 16.scale)
-        textField.borderStyle = .roundedRect
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
-    
-    private let numbersCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 12.scale
-        layout.minimumInteritemSpacing = 12.scale
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .clear
-        return collectionView
-    }()
-    
-    private let addButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private let saveButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Save ticket", for: .normal)
-        button.backgroundColor = Appearance.main100
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 22.scale
-        button.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private var numbers: [Int] = []
+    var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Appearance.main400
-        setupUI()
-        setupConstraints()
-        setupNavigationBarTitle() // Set the custom title
-        loadTicketData()
+        
+        // Set up navigation bar
         setupNavigationBar()
         setupNavigationBarTitle()
+        
+        // Set up the collection view layout
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical // or .horizontal based on your design
+        
+        // Initialize the collection view
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = Appearance.main400
+        // Register the custom cell class
+        collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
+        
+        collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
+        
+        // Add collection view to the view hierarchy
+        view.addSubview(collectionView)
+        
+        // Set constraints for the collection view
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
+    
+    // Setup navigation bar title with a custom back button
     private func setupNavigationBarTitle() {
         // Load the custom back button image
         guard let backButtonImage = UIImage(named: "EditBackButtonImage") else { return }
+        
         // Create a UIButton with specific dimensions and set it as the custom view
         let backButton = UIButton(type: .custom)
         backButton.setImage(backButtonImage, for: .normal)
-        backButton.imageView?.contentMode = .scaleAspectFit 
+        backButton.imageView?.contentMode = .scaleAspectFit
         backButton.backgroundColor = .clear
-        backButton.frame = CGRect(x: 0, y: 0, width: 140.scale, height: 26.scale)
+        backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
         backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
 
         // Create a UIBarButtonItem using the custom UIButton
@@ -101,7 +72,7 @@ class EditTicketViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    
+    // Setup the navigation bar's appearance
     private func setupNavigationBar() {
         // Ensure the navigation bar does not obscure the view
         navigationController?.navigationBar.isTranslucent = true
@@ -116,90 +87,28 @@ class EditTicketViewController: UIViewController {
         // Setting the title with custom attributes if needed
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
-    private func setupUI() {
-        view.addSubview(ticketImageView)
-        view.addSubview(dateTextField)
-        view.addSubview(numbersCollectionView)
-        view.addSubview(addButton)
-        view.addSubview(saveButton)
-        
-        numbersCollectionView.dataSource = self
-        numbersCollectionView.delegate = self
-        numbersCollectionView.register(NumberTicketCell.self, forCellWithReuseIdentifier: NumberTicketCell.reuseIdentifier)
-    }
-    
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            ticketImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
-            ticketImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            ticketImageView.widthAnchor.constraint(equalToConstant: 200.scale),
-            ticketImageView.heightAnchor.constraint(equalToConstant: 50.scale),
-            
-            dateTextField.centerYAnchor.constraint(equalTo: ticketImageView.centerYAnchor),
-            dateTextField.leadingAnchor.constraint(equalTo: ticketImageView.trailingAnchor, constant: 20.scale),
-            dateTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            dateTextField.heightAnchor.constraint(equalToConstant: 40.scale),
-            
-            numbersCollectionView.topAnchor.constraint(equalTo: ticketImageView.bottomAnchor, constant: 20.scale),
-            numbersCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            numbersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            numbersCollectionView.heightAnchor.constraint(equalToConstant: 50.scale),
-            
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addButton.topAnchor.constraint(equalTo: numbersCollectionView.bottomAnchor, constant: 20.scale),
-            addButton.widthAnchor.constraint(equalToConstant: 40.scale),
-            addButton.heightAnchor.constraint(equalToConstant: 40.scale),
-            
-            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale),
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            saveButton.heightAnchor.constraint(equalToConstant: 50.scale)
-        ])
-    }
-    
-    private func loadTicketData() {
-        guard let ticket = ticket else { return }
-        // Load the ticket data into the UI elements
-        if let url = ticket.pictureUrl {
-            loadImage(from: url)
-        }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        let ticketDate = Date(timeIntervalSince1970: ticket.date)
-        dateTextField.text = formatter.string(from: ticketDate)
-        numbers = ticket.numbers.flatMap { $0 }
-        numbersCollectionView.reloadData()
-    }
-    
-    private func loadImage(from url: URL) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.ticketImageView.image = image
-                }
-            }
-        }
-    }
-    
-    
-    @objc private func handleMenuTap() {
-        // Handle the tap on the menu button here
-        print("Menu button tapped")
-    }
-}
 
-extension EditTicketViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    // UICollectionViewDataSource methods
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return numbers.count
+        return 1 // Only one cell
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        // cell.configure(with: numbers[indexPath.item])
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
+        if let ticket = self.ticket {
+            cell.configure(ticket: ticket)
+        }
+        cell.layer.cornerRadius = 20.scale
         return cell
     }
     
+    // UICollectionViewDelegateFlowLayout method
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 40.scale, height: 40.scale)
+        // Calculate the cell size
+        let width = collectionView.frame.width
+        let height = collectionView.frame.height
+        return CGSize(width: 343.scale, height: 300.scale) // Full size of the collection view
     }
 }

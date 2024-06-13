@@ -64,7 +64,7 @@ extension NextGameCell {
 // MARK: - Setup Methods
 private extension NextGameCell {
     func setupUI() {
-        backgroundColor = .white
+        backgroundColor = Appearance.mono100
         
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
