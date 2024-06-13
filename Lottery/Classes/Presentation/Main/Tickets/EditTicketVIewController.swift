@@ -156,7 +156,7 @@ extension EditTicketViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        cell.configure(with: numbers[indexPath.item])
+       // cell.configure(with: numbers[indexPath.item])
         return cell
     }
     

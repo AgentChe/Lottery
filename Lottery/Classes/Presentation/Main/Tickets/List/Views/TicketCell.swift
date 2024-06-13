@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TicketCellDelegate: AnyObject {
+    func editButtonTapped(for cell: TicketCell)
+}
+
 class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     static let reuseIdentifier = "TicketCell"
@@ -68,10 +72,12 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return collectionView
     }()
     
-    private var numbers: [Int] = []
+    private var numbers: [[Int]] = []
+
     @objc private func editButtonTapped() {
         delegate?.editButtonTapped(for: self)
     }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -111,13 +117,13 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     private func createCustomShapeLayer() -> CAShapeLayer {
         let layer = CAShapeLayer()
         
-        // Create a Bezier path resembling the ticket shape with more accurate arcs
+        // Create a Bezier path resembling the ticket shape with 32.scale circular cutouts
         let path = UIBezierPath()
         
         // Define the shape based on the cell's bounds
         let bounds = self.bounds
         let cornerRadius: CGFloat = 20.scale // Radius for the corners
-        let cutoutRadius: CGFloat = 25.scale // Radius of each circular cutout (50x50, hence radius is 25)
+        let cutoutRadius: CGFloat = 16.scale // Radius for 32.scale diameter cutouts
         
         // Start at the top-left corner
         path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
@@ -127,8 +133,8 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
         
         // Right edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: 110.scale - cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 110.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
         
@@ -137,8 +143,8 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
         
         // Left edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.minX, y: 110.scale + cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 110.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
         
@@ -161,7 +167,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         // Define the shape based on the cell's bounds
         let bounds = self.bounds
         let cornerRadius: CGFloat = 20.scale // Radius for the corners
-        let cutoutRadius: CGFloat = 25.scale // Radius of each circular cutout (50x50, hence radius is 25)
+        let cutoutRadius: CGFloat = 16.scale // Radius of each circular cutout (50x50, hence radius is 25)
         
         // Start at the top-left corner
         path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
@@ -171,8 +177,8 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
         
         // Right edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: 110.scale - cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 110.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
         
@@ -181,8 +187,8 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
         
         // Left edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.minX, y: 110.scale + cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 110.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
         
@@ -191,7 +197,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         
         // Assign the path to the layer
         layer.path = path.cgPath
-        layer.strokeColor = Appearance.lightGrayBorderTicket.cgColor// Customize the border color
+        layer.strokeColor = Appearance.lightGrayBorderTicket.cgColor // Customize the border color
         layer.lineWidth = 2.0 // Customize the border width
         layer.fillColor = UIColor.clear.cgColor // Ensure the fill color is clear
         
@@ -213,7 +219,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             dateLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: -10.scale),
             
-            dashedLineImageView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 45.scale),
+            dashedLineImageView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 35.scale),
             dashedLineImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             dashedLineImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
@@ -241,7 +247,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         dateLabel.text = formatter.string(from: ticketDate)
         
         // Update numbers array for the collection view
-        numbers = ticket.numbers.flatMap { $0 }
+        numbers = ticket.numbers
         numbersCollectionView.reloadData()
         
         // Load ticket image asynchronously
@@ -271,13 +277,22 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     
     // MARK: - UICollectionViewDataSource Methods
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return numbers.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return numbers[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        cell.configure(with: numbers[indexPath.item])
+        let number = numbers[indexPath.section][indexPath.item]
+        
+        // Determine if this is the last item in the section
+        let isLastItemInSection = indexPath.item == numbers[indexPath.section].count - 1
+        cell.configure(with: number, isLastInSection: isLastItemInSection)
+        
         return cell
     }
     
@@ -289,8 +304,9 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let totalCellWidth = CGFloat(40 * numbers.count).scale
-        let totalSpacingWidth = CGFloat(10 * (numbers.count - 1)).scale
+        let itemCount = numbers[section].count
+        let totalCellWidth = CGFloat(40 * itemCount).scale
+        let totalSpacingWidth = CGFloat(10 * (itemCount - 1)).scale
         
         let totalWidth = totalCellWidth + totalSpacingWidth
         let inset: CGFloat

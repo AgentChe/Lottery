@@ -11,7 +11,7 @@ class NumberTicketCell: UICollectionViewCell {
     
     static let reuseIdentifier = "NumberTicketCell"
     
-    private let numberLabel = UILabel()
+    let numberLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,10 +28,10 @@ class NumberTicketCell: UICollectionViewCell {
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.textAlignment = .center
         numberLabel.font = Fonts.Inter.medium(size: 14.scale)
-        numberLabel.textColor = .black
-        numberLabel.layer.cornerRadius = 20
+        numberLabel.textColor = Appearance.mono200
+        numberLabel.layer.cornerRadius = 20.scale
         numberLabel.layer.masksToBounds = true
-        numberLabel.layer.borderWidth = 1
+        numberLabel.layer.borderWidth = 1.scale
         numberLabel.layer.borderColor = Appearance.lightGrayBorderTicket.cgColor
         
         self.addSubview(numberLabel)
@@ -44,8 +44,16 @@ class NumberTicketCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with number: Int) {
+    func configure(with number: Int, isLastInSection: Bool) {
         numberLabel.text = "\(number)"
+        
+        if isLastInSection {
+            numberLabel.backgroundColor = Appearance.main100
+            numberLabel.textColor = Appearance.mono100
+            numberLabel.layer.borderWidth = 0
+        } else {
+            numberLabel.backgroundColor = .clear
+            numberLabel.textColor = Appearance.mono200
+        }
     }
 }
-

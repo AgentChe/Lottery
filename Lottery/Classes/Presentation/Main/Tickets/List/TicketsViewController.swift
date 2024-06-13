@@ -7,9 +7,6 @@
 
 import UIKit
 
-protocol TicketCellDelegate: AnyObject {
-    func editButtonTapped(for cell: TicketCell)
-}
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
     private var tickets = [Ticket]()
@@ -138,7 +135,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let numbersCount = ticket.numbers.count
 
         let isNextDraw = ticketDate > now
-        let baseHeight: CGFloat = isNextDraw ? 266.scale : 206.scale
+        let baseHeight: CGFloat = isNextDraw ? 256.scale : 196.scale
         let additionalHeight: CGFloat = 58.scale * CGFloat(max(0, numbersCount - 1))
 
         let cellHeight = baseHeight + additionalHeight
