@@ -1,3 +1,9 @@
+// CustomCalendarView.swift
+// Lottery
+// Created by Niiaz Khasanov on 6/13/24.
+
+import UIKit
+
 //
 //  CustomCalendarView.swift
 //  Lottery
@@ -192,35 +198,54 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         return calendar.component(.weekday, from: firstDay)
     }
     
+    private func lastWeekdayOfMonth() -> Int {
+        let range = calendar.range(of: .day, in: .month, for: currentMonth)!
+        let lastDay = calendar.date(byAdding: .day, value: range.count - 1, to: startOfMonth(for: currentMonth))!
+        return calendar.component(.weekday, from: lastDay) - 1
+    }
+    
     // MARK: - UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let range = calendar.range(of: .day, in: .month, for: currentMonth)!
         let numDays = range.count
         let firstWeekday = firstWeekdayOfMonth() - 1 // To make it zero-indexed
-        return numDays + firstWeekday
+        let lastWeekday = lastWeekdayOfMonth() // Adjusted for zero-indexing
+        let totalDays = numDays + firstWeekday + (6 - lastWeekday)
+        return totalDays
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCell", for: indexPath) as! DateCell
         let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
+        let range = calendar.range(of: .day, in: .month, for: currentMonth)!
+        let numDays = range.count
+        let lastWeekday = lastWeekdayOfMonth() // Adjusted for zero-indexing
         
-        if indexPath.item >= firstWeekday {
+        if indexPath.item < firstWeekday {
+            // Dates from the previous month
+            let previousMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth)!
+            let previousMonthRange = calendar.range(of: .day, in: .month, for: previousMonth)!
+            let day = previousMonthRange.count - firstWeekday + indexPath.item + 1
+            cell.dateLabel.text = "\(day)"
+            cell.dateLabel.textColor = Appearance.main300 // Gray color for non-current month dates
+        } else if indexPath.item >= firstWeekday && indexPath.item < numDays + firstWeekday {
+            // Dates from the current month
             let day = indexPath.item - firstWeekday + 1
             cell.dateLabel.text = "\(day)"
             
-            // Highlight the selected date
-            if calendar.isDate(selectedDate, inSameDayAs: calendar.date(byAdding: .day, value: day-1, to: startOfMonth(for: currentMonth))!) {
+            if calendar.isDate(selectedDate, inSameDayAs: calendar.date(byAdding: .day, value: day - 1, to: startOfMonth(for: currentMonth))!) {
                 cell.backgroundColor = Appearance.main100 // Highlight color
                 cell.dateLabel.textColor = .white
             } else {
                 cell.backgroundColor = .clear
-                cell.dateLabel.textColor = .black
+                cell.dateLabel.textColor = Appearance.mono200
             }
-            
         } else {
-            cell.dateLabel.text = ""
-            cell.backgroundColor = .clear
+            // Dates from the next month
+            let day = indexPath.item - numDays - firstWeekday + 1
+            cell.dateLabel.text = "\(day)"
+            cell.dateLabel.textColor = Appearance.main300 // Gray color for non-current month dates
         }
         
         return cell
@@ -228,13 +253,15 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
-        if indexPath.item >= firstWeekday {
+        let range = calendar.range(of: .day, in: .month, for: currentMonth)!
+        let numDays = range.count
+        
+        if indexPath.item >= firstWeekday && indexPath.item < numDays + firstWeekday {
             let day = indexPath.item - firstWeekday + 1
             var dateComponents = calendar.dateComponents([.year, .month], from: currentMonth)
             dateComponents.day = day
             if let date = calendar.date(from: dateComponents) {
                 selectedDate = date
-                // Do not dismiss the calendar here
                 collectionView.reloadData() // Update the selection
             }
         }
@@ -253,6 +280,7 @@ class DateCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+         
         
         dateLabel.font = Fonts.Inter.regular(size: 16)
         dateLabel.textAlignment = .center
