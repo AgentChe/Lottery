@@ -10,6 +10,7 @@
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
 		A3668DAD2C19BFCF00754446 /* NotchedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */; };
+		A3668DB22C1A1C9300754446 /* EditTicketVIewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -156,6 +157,7 @@
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
 		A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedBackgroundView.swift; sourceTree = "<group>"; };
+		A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketVIewController.swift; sourceTree = "<group>"; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -321,6 +323,30 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A3668DAE2C1A1C7300754446 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				A3EF372F2C184DCA00753C41 /* Views */,
+				A3EF37302C184DD600753C41 /* TicketsViewController.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		A3668DAF2C1A1C7D00754446 /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				A3668DB02C1A1C8600754446 /* Views */,
+			);
+			path = Edit;
+			sourceTree = "<group>";
+		};
+		A3668DB02C1A1C8600754446 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		A39B2B372C0F5B1A0024FC9F /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -396,8 +422,9 @@
 		A3EF372E2C184DB500753C41 /* Tickets */ = {
 			isa = PBXGroup;
 			children = (
-				A3EF372F2C184DCA00753C41 /* Views */,
-				A3EF37302C184DD600753C41 /* TicketsViewController.swift */,
+				A3668DAE2C1A1C7300754446 /* List */,
+				A3668DAF2C1A1C7D00754446 /* Edit */,
+				A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */,
 			);
 			path = Tickets;
 			sourceTree = "<group>";
@@ -1210,6 +1237,7 @@
 				DE42B1892BFF3CB200FF61B0 /* AmplitudeManager.swift in Sources */,
 				DE42B1D22BFF3CB200FF61B0 /* IAPProduct.swift in Sources */,
 				DE42B1CC2BFF3CB200FF61B0 /* Paygate.swift in Sources */,
+				A3668DB22C1A1C9300754446 /* EditTicketVIewController.swift in Sources */,
 				A3FF55612C07E31300E81771 /* ContentManager.swift in Sources */,
 				A3FF55692C07E4CF00E81771 /* FetchNextGamesRequest.swift in Sources */,
 				DE42B21C2BFF700B00FF61B0 /* LoginResult.swift in Sources */,

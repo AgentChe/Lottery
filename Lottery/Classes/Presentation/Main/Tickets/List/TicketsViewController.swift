@@ -7,7 +7,10 @@
 
 import UIKit
 
-class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+protocol TicketCellDelegate: AnyObject {
+    func editButtonTapped(for cell: TicketCell)
+}
+class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
     private var tickets = [Ticket]()
     private var collectionView: UICollectionView!
@@ -17,42 +20,42 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         super.viewDidLoad()
         view.backgroundColor = .clear
         setupNavigationBarTitle()
-        setupNavigationBarAppearance() // Call to set up the navigation bar appearance
+        setupNavigationBarAppearance()
         setupCollectionView()
         fetchTickets()
     }
-
     private func setupNavigationBarAppearance() {
-        // Set the navigation bar to a solid color
-        navigationController?.navigationBar.barTintColor = Appearance.main400// Set to your desired color
-        
-        // Disable translucency
-        navigationController?.navigationBar.isTranslucent = false
-        
-        // Optionally remove the shadow image for a cleaner look
-        navigationController?.navigationBar.shadowImage = UIImage()
-        
-        // Set the navigation bar title color to ensure visibility
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-        
-        // Ensure the custom navigation items like title and right bar button appear as intended
-        setupNavigationBarTitle()
-    }
+          // Set the navigation bar to a solid color
+        navigationController?.navigationBar.barTintColor = Appearance.main400 // Set to your desired color
+          
+          // Disable translucency
+          navigationController?.navigationBar.isTranslucent = false
+          
+          // Optionally remove the shadow image for a cleaner look
+          navigationController?.navigationBar.shadowImage = UIImage()
+          
+          // Set the navigation bar title color to ensure visibility
+          navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+          
+          // Ensure the custom navigation items like title and right bar button appear as intended
+          setupNavigationBarTitle()
+      }
 
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 18.scale // Apply .scale to the spacing
-        layout.minimumInteritemSpacing = 18.scale // Apply .scale to the spacing
-        layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale) // Apply .scale to the dimensions
+        layout.minimumLineSpacing = 20.scale
+        layout.minimumInteritemSpacing = 20.scale
+        layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale)
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.contentInset = UIEdgeInsets(top: 25.scale, left: 0, bottom: 30.scale, right: 0) // Apply .scale to top and bottom insets
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .clear
         collectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
+
+        collectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
 
         view.addSubview(collectionView)
 
@@ -65,39 +68,30 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     private func setupNavigationBarTitle() {
-        // Create the title label
         let titleLabel = UILabel()
         titleLabel.text = "MY TICKETS"
         titleLabel.textColor = Appearance.mono200
-        titleLabel.font = Fonts.Inter.bold(size: 20.scale) // Apply .scale to the font size
+        titleLabel.font = Fonts.Inter.bold(size: 20.scale)
         
-        // Set intrinsic size for proper layout
         titleLabel.sizeToFit()
         
-        // Create a UIBarButtonItem with the custom label
         let leftBarItem = UIBarButtonItem(customView: titleLabel)
         
         navigationItem.leftBarButtonItem = leftBarItem
         
-        // Create a right bar button item for the menu
         if let menuImage = UIImage(named: "Menu") {
-            // Create the UIImageView with aspect fit
             let menuImageView = UIImageView(image: menuImage)
             menuImageView.contentMode = .scaleAspectFit
             
-            // Set the height of the image view to match the title label's height
             let titleHeight = titleLabel.intrinsicContentSize.height
             menuImageView.frame = CGRect(x: 0, y: 0, width: titleHeight, height: titleHeight)
             
-            // Wrap the image view in a UIView to manage its layout
             let menuContainerView = UIView(frame: menuImageView.frame)
             menuContainerView.addSubview(menuImageView)
             
-            // Create the UIBarButtonItem with the custom view
             let rightBarItem = UIBarButtonItem(customView: menuContainerView)
             navigationItem.rightBarButtonItem = rightBarItem
             
-            // Add tap gesture to the image view for menu action
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMenuTap))
             menuContainerView.isUserInteractionEnabled = true
             menuContainerView.addGestureRecognizer(tapGesture)
@@ -123,11 +117,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let navController = NavigationController(rootViewController: menuVC)
         navController.modalPresentationStyle = .fullScreen
         
-        // Present the navigation controller
         present(navController, animated: true, completion: nil)
     }
-
-    // MARK: - UICollectionViewDataSource Methods
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return tickets.count
@@ -136,11 +127,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
         cell.configure(with: tickets[indexPath.item])
-        
+        cell.delegate = self
         return cell
     }
-
-    // MARK: - UICollectionViewDelegateFlowLayout Methods
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let ticket = tickets[indexPath.item]
@@ -149,17 +138,29 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let numbersCount = ticket.numbers.count
 
         let isNextDraw = ticketDate > now
-        let baseHeight: CGFloat = isNextDraw ? 256.scale : 196.scale // Apply .scale to base heights
-        let additionalHeight: CGFloat = 58.scale * CGFloat(max(0, numbersCount - 1)) // Apply .scale to the additional height calculation
+        let baseHeight: CGFloat = isNextDraw ? 266.scale : 206.scale
+        let additionalHeight: CGFloat = 58.scale * CGFloat(max(0, numbersCount - 1))
 
         let cellHeight = baseHeight + additionalHeight
 
-        return CGSize(width: view.frame.width - 20.scale, height: cellHeight) // Apply .scale to the width
+        return CGSize(width: view.frame.width - 20.scale, height: cellHeight)
     }
 
-    private func showError(_ error: Error) {
+    func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - TicketCellDelegate Method
+
+    func editButtonTapped(for cell: TicketCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        let ticket = tickets[indexPath.item]
+        
+        let editVC = EditTicketViewController()
+        editVC.ticket = ticket
+        
+        navigationController?.pushViewController(editVC, animated: true)
     }
 }
