@@ -5,6 +5,13 @@
 //  Created by Niiaz Khasanov on 6/12/24.
 //
 
+//
+//  EditTicketViewController.swift
+//  Lottery
+//
+//  Created by Niiaz Khasanov on 6/12/24.
+//
+
 import UIKit
 
 class EditTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -13,9 +20,22 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     var ticket: Ticket?
     var collectionView: UICollectionView!
     
+    // Save Ticket Button
+    private let saveTicketButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Save ticket", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 20.scale // Half of the height for rounded corners
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(saveTicketButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = Appearance.main400
         // Set up navigation bar
         setupNavigationBar()
         setupNavigationBarTitle()
@@ -38,13 +58,29 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         // Add collection view to the view hierarchy
         view.addSubview(collectionView)
         
+        // Add Save Ticket Button to the view hierarchy
+        view.addSubview(saveTicketButton)
+        
         // Set constraints for the collection view
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale), // Make space for the button
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            // Set constraints for the Save Ticket Button
+            saveTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
+            saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            saveTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale),
+            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale) // Adjust height as needed
         ])
+    }
+    
+    // Action for Save Ticket Button
+    @objc func saveTicketButtonTapped() {
+        // Code to save the ticket
+        // This can include any logic to save or submit the ticket data
+        print("Save ticket button tapped")
     }
     
     // Setup navigation bar title with a custom back button

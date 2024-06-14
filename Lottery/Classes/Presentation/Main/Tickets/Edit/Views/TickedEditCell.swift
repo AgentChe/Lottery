@@ -1,12 +1,11 @@
 //
-//  TickedEditCell.swift
+//  TicketEditCell.swift
 //  Lottery
 //
 //  Created by Niiaz Khasanov on 6/13/24.
 //
 
 import UIKit
-
 
 class TicketEditCell: UICollectionViewCell {
     
@@ -27,16 +26,17 @@ class TicketEditCell: UICollectionViewCell {
     // CollectionView Declaration with Inline Configuration
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal // Set to horizontal scrolling
-        layout.itemSize = CGSize(width: 50.scale, height: 50.scale) // Adjust item size as needed
-        layout.minimumLineSpacing = 10.scale // Adjust spacing between cells
-        layout.minimumInteritemSpacing = 10.scale // Adjust spacing between items if needed
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
+        layout.minimumLineSpacing = 10.scale
+        layout.minimumInteritemSpacing = 10.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear // Set clear background to integrate with cell
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.showsHorizontalScrollIndicator = false // Hide horizontal scroll indicator if desired
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
+        collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         
         return collectionView
     }()
@@ -47,7 +47,6 @@ class TicketEditCell: UICollectionViewCell {
         setupLayoutConstraints()
         addDateLabelTapGesture()
         
-        // Set the data source and delegate
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -58,26 +57,25 @@ class TicketEditCell: UICollectionViewCell {
         setupLayoutConstraints()
         addDateLabelTapGesture()
         
-        // Set the data source and delegate
         collectionView.dataSource = self
         collectionView.delegate = self
     }
     
     func configure(ticket: Ticket) {
-        self.ticket = ticket // Update the ticket property
+        self.ticket = ticket
         
         logoImageView.image = UIImage(named: "placeholderImage")
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Set timezone if needed
+        dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
-        dateLabel.text = formattedDate.uppercased() // Convert to uppercase
+        dateLabel.text = formattedDate.uppercased()
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
         
-        collectionView.reloadData() // Reload the collection view with new ticket data
+        collectionView.reloadData()
     }
 }
 
@@ -90,28 +88,26 @@ private extension TicketEditCell {
         dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
         dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
         dateLabelContainer.layer.shadowOpacity = 0.5
-        dateLabelContainer.layer.shadowRadius = 3.scale // Apply scale to shadow radius
-        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale) // Apply scale to shadow offset
+        dateLabelContainer.layer.shadowRadius = 3.scale
+        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale) // Apply scale to font size
+        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100
-        dateLabel.layer.cornerRadius = 17.scale  // Apply scale to corner radius
+        dateLabel.layer.cornerRadius = 17.scale
         dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
         pencilEditImageView.contentMode = .scaleAspectFit
         pencilEditImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        // Add subviews to the cell
         addSubview(logoImageView)
         addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
         dateLabelContainer.addSubview(pencilEditImageView)
-        addSubview(collectionView) // Add the collection view to the cell
+        addSubview(collectionView)
         
-        // Set up custom date picker
         customDatePicker.onDateSelected = { [weak self] selectedDate in
             self?.updateDateLabel(with: selectedDate)
             self?.dismissDatePicker()
@@ -125,18 +121,18 @@ private extension TicketEditCell {
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale), // Apply scale to leading constraint
-            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale), // Apply scale to width
-            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale), // Apply scale to height
+            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
+            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale),
+            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
-            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale), // Apply scale to top constraint
-            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.scale), // Apply scale to trailing constraint
-            dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale), // Apply scale to width
-            dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale), // Apply scale to height
+            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
+            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.scale),
+            dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale),
+            dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale),
             
-            dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -10.scale), // Snap to left border with -10.scale
+            dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -10.scale),
             dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
-            dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor, constant: 10.scale), // Adjust width to account for the negative leading margin
+            dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor, constant: 10.scale),
             dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
             
             pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -33.scale),
@@ -144,11 +140,10 @@ private extension TicketEditCell {
             pencilEditImageView.widthAnchor.constraint(equalToConstant: 24.scale),
             pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale),
             
-            // Add constraints for the collection view
-            collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 10.scale), // Position below the logo
+            collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 10.scale),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
-            collectionView.heightAnchor.constraint(equalToConstant: 60.scale) // Adjust the height as needed
+            collectionView.heightAnchor.constraint(equalToConstant: 60.scale)
         ])
     }
     
@@ -191,36 +186,60 @@ private extension TicketEditCell {
     }
 }
 
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
+
 extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1 // Assuming all numbers are in one section for horizontal scrolling
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Flatten the numbers array into a single dimension for horizontal scrolling
-        return ticket?.numbers.flatMap { $0 }.count ?? 0
+        // Add 1 to the count to include the RemoveCell
+        return (ticket?.numbers.flatMap { $0 }.count ?? 0) + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
-            return UICollectionViewCell()
+        if indexPath.item == (ticket?.numbers.flatMap { $0 }.count ?? 0) {
+            // If the index is the last one, return a RemoveCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RemoveCell", for: indexPath) as? RemoveCell else {
+                return UICollectionViewCell()
+            }
+            cell.layer.cornerRadius = 20.scale
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
+                return UICollectionViewCell()
+            }
+            
+            // Flatten the numbers array and get the appropriate number for this index
+            if let numbers = ticket?.numbers.flatMap({ $0 }), indexPath.item < numbers.count {
+                let number = numbers[indexPath.item]
+                let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
+                cell.configure(number: number, isLastInRow: isLastInRow)
+            }
+            return cell
         }
-        
-        // Flatten the numbers array and get the appropriate number for this index
-        if let numbers = ticket?.numbers.flatMap({ $0 }), indexPath.item < numbers.count {
-            let number = numbers[indexPath.item]
-            cell.configure(number: number)
-        }
-        
-        return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // Handle selection if needed
+        // Check if the selected cell is a RemoveCell
+        if indexPath.item == (ticket?.numbers.flatMap { $0 }.count ?? 0) {
+            // Handle the removal of the item
+            removeItem(at: indexPath)
+        } else {
+            // Handle selection for EditNumberCell if needed
+        }
     }
     
-    // Optional: Implement this method if you need custom size for cells
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 50.scale, height: 50.scale) // Adjust size as needed
+    private func removeItem(at indexPath: IndexPath) {
+        // Perform removal logic. For example, you might update the ticket's numbers and reload the data.
+        // You would typically update your data model and then call collectionView.reloadData() or perform a batch update
+        // Here's a simple example assuming you want to remove the last item from the numbers array
+        if var numbers = ticket?.numbers.flatMap({ $0 }) {
+            numbers.removeLast()
+           // ticket?.numbers = [numbers]
+            collectionView.reloadData()
+        }
     }
 }
