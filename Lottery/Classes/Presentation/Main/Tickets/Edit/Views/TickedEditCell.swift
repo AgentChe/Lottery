@@ -5,12 +5,17 @@
 //  Created by Niiaz Khasanov on 6/13/24.
 //
 
-
 import UIKit
+
 
 class TicketEditCell: UICollectionViewCell {
     
-    var ticket: Ticket?
+    var ticket: Ticket? {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -19,18 +24,48 @@ class TicketEditCell: UICollectionViewCell {
     private var datePickerContainer: UIView?
     private let customDatePicker = CustomCalendarView()
     
+    // CollectionView Declaration with Inline Configuration
+    private let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal // Set to horizontal scrolling
+        layout.itemSize = CGSize(width: 50.scale, height: 50.scale) // Adjust item size as needed
+        layout.minimumLineSpacing = 10.scale // Adjust spacing between cells
+        layout.minimumInteritemSpacing = 10.scale // Adjust spacing between items if needed
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear // Set clear background to integrate with cell
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.showsHorizontalScrollIndicator = false // Hide horizontal scroll indicator if desired
+        collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
+        
+        return collectionView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
         setupLayoutConstraints()
         addDateLabelTapGesture()
+        
+        // Set the data source and delegate
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setupUI()
+        setupLayoutConstraints()
+        addDateLabelTapGesture()
+        
+        // Set the data source and delegate
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     func configure(ticket: Ticket) {
+        self.ticket = ticket // Update the ticket property
+        
         logoImageView.image = UIImage(named: "placeholderImage")
         
         let dateFormatter = DateFormatter()
@@ -41,6 +76,8 @@ class TicketEditCell: UICollectionViewCell {
         dateLabel.text = formattedDate.uppercased() // Convert to uppercase
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
+        
+        collectionView.reloadData() // Reload the collection view with new ticket data
     }
 }
 
@@ -67,10 +104,12 @@ private extension TicketEditCell {
         pencilEditImageView.contentMode = .scaleAspectFit
         pencilEditImageView.translatesAutoresizingMaskIntoConstraints = false
         
+        // Add subviews to the cell
         addSubview(logoImageView)
         addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
         dateLabelContainer.addSubview(pencilEditImageView)
+        addSubview(collectionView) // Add the collection view to the cell
         
         // Set up custom date picker
         customDatePicker.onDateSelected = { [weak self] selectedDate in
@@ -103,7 +142,13 @@ private extension TicketEditCell {
             pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -33.scale),
             pencilEditImageView.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
             pencilEditImageView.widthAnchor.constraint(equalToConstant: 24.scale),
-            pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale)
+            pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale),
+            
+            // Add constraints for the collection view
+            collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 10.scale), // Position below the logo
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
+            collectionView.heightAnchor.constraint(equalToConstant: 60.scale) // Adjust the height as needed
         ])
     }
     
@@ -143,5 +188,39 @@ private extension TicketEditCell {
         dateFormatter.dateFormat = "MMM d, yyyy"
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
+    }
+}
+
+extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1 // Assuming all numbers are in one section for horizontal scrolling
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // Flatten the numbers array into a single dimension for horizontal scrolling
+        return ticket?.numbers.flatMap { $0 }.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
+            return UICollectionViewCell()
+        }
+        
+        // Flatten the numbers array and get the appropriate number for this index
+        if let numbers = ticket?.numbers.flatMap({ $0 }), indexPath.item < numbers.count {
+            let number = numbers[indexPath.item]
+            cell.configure(number: number)
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Handle selection if needed
+    }
+    
+    // Optional: Implement this method if you need custom size for cells
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 50.scale, height: 50.scale) // Adjust size as needed
     }
 }
