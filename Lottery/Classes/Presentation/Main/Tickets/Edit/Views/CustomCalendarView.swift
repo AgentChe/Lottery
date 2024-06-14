@@ -203,12 +203,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     // MARK: - UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let range = calendar.range(of: .day, in: .month, for: currentMonth)!
-        let numDays = range.count
-        let firstWeekday = firstWeekdayOfMonth() - 1 // To make it zero-indexed
-        let lastWeekday = lastWeekdayOfMonth() // Adjusted for zero-indexing
-        let totalDays = numDays + firstWeekday + (6 - lastWeekday)
-        return totalDays
+        return 42 // Always show 6 rows * 7 columns = 42 items
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -216,7 +211,6 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
         let range = calendar.range(of: .day, in: .month, for: currentMonth)!
         let numDays = range.count
-        let lastWeekday = lastWeekdayOfMonth() // Adjusted for zero-indexing
 
         if indexPath.item < firstWeekday {
             // Dates from the previous month
@@ -275,4 +269,3 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         return CGSize(width: width, height: width)
     }
 }
-
