@@ -29,12 +29,12 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         self.latestMonth = Date() // Initialize the latest month to the current date
         
         let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0.scale
+        layout.minimumLineSpacing = 0.scale
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = Appearance.mono100
-        collectionView.layer.borderWidth = 1
+        collectionView.layer.borderWidth = 1.scale
         collectionView.layer.borderColor = Appearance.main300Calendar.cgColor
 
         super.init(frame: frame)
@@ -54,10 +54,10 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     private func setupUI() {
         backgroundColor = Appearance.mono100
-        layer.cornerRadius = 20
+        layer.cornerRadius = 20.scale
         layer.masksToBounds = true
 
-        headerLabel.font = Fonts.Inter.bold(size: 20)
+        headerLabel.font = Fonts.Inter.bold(size: 20.scale)
         headerLabel.textAlignment = .center
         headerLabel.textColor = Appearance.mono200
         addSubview(headerLabel)
@@ -85,7 +85,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         for day in days {
             let label = UILabel()
             label.text = day
-            label.font = Fonts.Inter.semiBold(size: 14)
+            label.font = Fonts.Inter.semiBold(size: 14.scale)
             label.textAlignment = .center
             label.textColor = Appearance.mono200 // Dark color for day labels
             daysOfWeekStackView.addArrangedSubview(label)
@@ -102,20 +102,20 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         saveButton.setTitle("Save", for: .normal)
         saveButton.backgroundColor = Appearance.main100 // Custom red color
         saveButton.setTitleColor(.white, for: .normal)
-        saveButton.layer.cornerRadius = 22 // Half the height for rounded effect
+        saveButton.layer.cornerRadius = 22.scale // Half the height for rounded effect
         saveButton.layer.masksToBounds = true
-        saveButton.titleLabel?.font = Fonts.Inter.bold(size: 16)
+        saveButton.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         addSubview(saveButton)
 
         closeButton.setTitle("Close", for: .normal)
         closeButton.backgroundColor = .clear
         closeButton.setTitleColor(Appearance.mono200, for: .normal) // Dark color for close button text
-        closeButton.layer.borderWidth = 1
-        closeButton.layer.borderColor = Appearance.main300.cgColor // Border matching the text color
-        closeButton.layer.cornerRadius = 22 // Half the height for rounded effect
+        closeButton.layer.borderWidth = 1.scale
+        closeButton.layer.borderColor = Appearance.main300Calendar.cgColor // Border matching the text color
+        closeButton.layer.cornerRadius = 22.scale // Half the height for rounded effect
         closeButton.layer.masksToBounds = true
-        closeButton.titleLabel?.font = Fonts.Inter.bold(size: 16)
+        closeButton.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         addSubview(closeButton)
     }
@@ -134,36 +134,36 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         nextButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            headerLabel.widthAnchor.constraint(equalToConstant: 100.scale),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.scale),
+            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            headerLabel.widthAnchor.constraint(equalToConstant: 150.scale),
             
             previousButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
-            previousButton.trailingAnchor.constraint(equalTo: nextButton.leadingAnchor, constant: -20), // Adjust spacing as needed
+            previousButton.trailingAnchor.constraint(equalTo: nextButton.leadingAnchor, constant: -20.scale), // Adjust spacing as needed
             
             nextButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
-            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20), // Adjust if needed
+            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale), // Adjust if needed
 
-            daysOfWeekStackView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 8),
-            daysOfWeekStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            daysOfWeekStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            daysOfWeekStackView.heightAnchor.constraint(equalToConstant: 20),
+            daysOfWeekStackView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 8.scale),
+            daysOfWeekStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            daysOfWeekStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            daysOfWeekStackView.heightAnchor.constraint(equalToConstant: 20.scale),
             
-            collectionView.topAnchor.constraint(equalTo: daysOfWeekStackView.bottomAnchor, constant: 8),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            collectionView.heightAnchor.constraint(equalToConstant: 268),
+            collectionView.topAnchor.constraint(equalTo: daysOfWeekStackView.bottomAnchor, constant: 8.scale),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            collectionView.heightAnchor.constraint(equalToConstant: 308.scale - 44.scale),
             
-            saveButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 16),
-            saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            saveButton.heightAnchor.constraint(equalToConstant: 44),
+            saveButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 16.scale),
+            saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            saveButton.heightAnchor.constraint(equalToConstant: 44.scale),
             
-            closeButton.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 8),
-            closeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            closeButton.heightAnchor.constraint(equalToConstant: 44),
-            closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            closeButton.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 8.scale),
+            closeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            closeButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16.scale)
         ])
     }
 
@@ -285,7 +285,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     // MARK: - UICollectionViewDelegateFlowLayout
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width / 7
-        return CGSize(width: width, height: width)
+        
+        return CGSize(width: 44.5.scale, height: 44.scale)
     }
 }

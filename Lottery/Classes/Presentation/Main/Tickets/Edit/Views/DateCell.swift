@@ -23,7 +23,7 @@ class DateCell: UICollectionViewCell {
     }
 
     private func setupDateLabel() {
-        dateLabel.font = Fonts.Inter.regular(size: 16)
+        dateLabel.font = Fonts.Inter.regular(size: 16.scale)
         dateLabel.textAlignment = .center
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dateLabel)

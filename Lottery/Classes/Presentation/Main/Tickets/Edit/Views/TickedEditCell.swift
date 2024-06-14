@@ -126,10 +126,10 @@ private extension TicketEditCell {
         self.superview?.addSubview(datePickerContainer!)
         
         NSLayoutConstraint.activate([
-            customDatePicker.centerYAnchor.constraint(equalTo: datePickerContainer!.centerYAnchor),
+            customDatePicker.centerYAnchor.constraint(equalTo: datePickerContainer!.centerYAnchor, constant: 50.scale),
             customDatePicker.centerXAnchor.constraint(equalTo: datePickerContainer!.centerXAnchor),
-            customDatePicker.widthAnchor.constraint(equalTo: datePickerContainer!.widthAnchor, multiplier: 0.8),
-            customDatePicker.heightAnchor.constraint(equalToConstant: 440.scale)
+            customDatePicker.widthAnchor.constraint(equalTo: datePickerContainer!.widthAnchor, multiplier: 0.8.scale),
+            customDatePicker.heightAnchor.constraint(equalToConstant: 485.scale)
         ])
     }
     
