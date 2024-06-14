@@ -18,7 +18,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     private let headerLabel = UILabel()
     private let daysOfWeekStackView = UIStackView()
-    private let collectionView: UICollectionView
+    private let collectionView: BorderedCollectionView
     private let saveButton = UIButton(type: .system)
     private let closeButton = UIButton(type: .system)
 
@@ -32,7 +32,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
 
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = BorderedCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = Appearance.mono100
 
         super.init(frame: frame)
@@ -276,24 +276,3 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     }
 }
 
-class DateCell: UICollectionViewCell {
-    let dateLabel = UILabel()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-         
-        dateLabel.font = Fonts.Inter.regular(size: 16)
-        dateLabel.textAlignment = .center
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(dateLabel)
-        
-        NSLayoutConstraint.activate([
-            dateLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-        ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
