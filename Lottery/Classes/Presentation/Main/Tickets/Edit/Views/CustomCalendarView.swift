@@ -1,5 +1,3 @@
- 
-
 //
 //  CustomCalendarView.swift
 //  Lottery
@@ -15,6 +13,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     private let dateFormatter = DateFormatter()
     private var selectedDate = Date()
     private var currentMonth: Date
+    private var latestMonth: Date // Add this property
 
     private let headerLabel = UILabel()
     private let daysOfWeekStackView = UIStackView()
@@ -27,7 +26,8 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     override init(frame: CGRect) {
         self.currentMonth = Date()
-
+        self.latestMonth = Date() // Initialize the latest month to the current date
+        
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
@@ -63,17 +63,21 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         addSubview(headerLabel)
 
         let previousButton = UIButton(type: .system)
-        previousButton.setTitle("<", for: .normal)
-        previousButton.titleLabel?.font = Fonts.Inter.medium(size: 16)
-        previousButton.setTitleColor(Appearance.mono200, for: .normal)
+        if let chevronBackward = UIImage(systemName: "chevron.backward") {
+            previousButton.setImage(chevronBackward, for: .normal)
+        }
+        previousButton.tintColor = Appearance.mono200 // Set the color of the icon
         previousButton.addTarget(self, action: #selector(previousMonth), for: .touchUpInside)
+        previousButton.tag = 1 // Assign a tag to identify the button later
         addSubview(previousButton)
 
         let nextButton = UIButton(type: .system)
-        nextButton.setTitle(">", for: .normal)
-        nextButton.titleLabel?.font = Fonts.Inter.medium(size: 16)
-        nextButton.setTitleColor(Appearance.mono200, for: .normal)
+        if let chevronForward = UIImage(systemName: "chevron.forward") {
+            nextButton.setImage(chevronForward, for: .normal)
+        }
+        nextButton.tintColor = Appearance.mono200 // Set the color of the icon
         nextButton.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
+        nextButton.tag = 2 // Assign a tag to identify the button later
         addSubview(nextButton)
 
         // Setup days of the week
@@ -116,28 +120,30 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         addSubview(closeButton)
     }
 
+
     private func setupConstraints() {
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.translatesAutoresizingMaskIntoConstraints = false
 
-        let previousButton = subviews.first(where: { $0 is UIButton && ($0 as! UIButton).currentTitle == "<" })!
-        let nextButton = subviews.first(where: { $0 is UIButton && ($0 as! UIButton).currentTitle == ">" })!
+        let previousButton = viewWithTag(1) as! UIButton
+        let nextButton = viewWithTag(2) as! UIButton
 
         previousButton.translatesAutoresizingMaskIntoConstraints = false
         nextButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            headerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            headerLabel.widthAnchor.constraint(equalToConstant: 100.scale),
             
             previousButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
-            previousButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            previousButton.trailingAnchor.constraint(equalTo: nextButton.leadingAnchor, constant: -20), // Adjust spacing as needed
             
             nextButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
-            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            
+            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20), // Adjust if needed
+
             daysOfWeekStackView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 8),
             daysOfWeekStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             daysOfWeekStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
@@ -161,9 +167,21 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         ])
     }
 
+
     private func updateHeader() {
         dateFormatter.dateFormat = "MMMM yyyy"
         headerLabel.text = dateFormatter.string(from: currentMonth)
+        
+        let nextButton = viewWithTag(2) as! UIButton
+        
+        if calendar.isDate(currentMonth, equalTo: latestMonth, toGranularity: .month) &&
+           calendar.isDate(currentMonth, equalTo: latestMonth, toGranularity: .year) {
+            nextButton.tintColor = Appearance.main300
+            nextButton.isUserInteractionEnabled = false
+        } else {
+            nextButton.tintColor = Appearance.mono200
+            nextButton.isUserInteractionEnabled = true
+        }
     }
 
     @objc private func previousMonth() {
