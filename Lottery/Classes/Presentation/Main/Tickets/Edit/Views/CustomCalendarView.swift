@@ -18,7 +18,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     private let headerLabel = UILabel()
     private let daysOfWeekStackView = UIStackView()
-    private let collectionView: BorderedCollectionView
+    private let collectionView: UICollectionView
     private let saveButton = UIButton(type: .system)
     private let closeButton = UIButton(type: .system)
 
@@ -32,8 +32,10 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
 
-        collectionView = BorderedCollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = Appearance.mono100
+        collectionView.layer.borderWidth = 1
+        collectionView.layer.borderColor = Appearance.main300Calendar.cgColor
 
         super.init(frame: frame)
 
@@ -144,7 +146,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             collectionView.topAnchor.constraint(equalTo: daysOfWeekStackView.bottomAnchor, constant: 8),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            collectionView.heightAnchor.constraint(equalToConstant: 270),
+            collectionView.heightAnchor.constraint(equalToConstant: 268),
             
             saveButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 16),
             saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
@@ -219,7 +221,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             let day = previousMonthRange.count - firstWeekday + indexPath.item + 1
             cell.dateLabel.text = "\(day)"
             cell.dateLabel.textColor = Appearance.main300 // Gray color for non-current month dates
-            cell.backgroundColor = Appearance.mono100
+            cell.backgroundColor = Appearance.main600
             cell.isUserInteractionEnabled = false // Disable interaction for non-current month dates
         } else if indexPath.item >= firstWeekday && indexPath.item < numDays + firstWeekday {
             // Dates from the current month
@@ -239,7 +241,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             let day = indexPath.item - numDays - firstWeekday + 1
             cell.dateLabel.text = "\(day)"
             cell.dateLabel.textColor = Appearance.main300 // Gray color for non-current month dates
-            cell.backgroundColor = Appearance.mono100
+            cell.backgroundColor = Appearance.main600
             cell.isUserInteractionEnabled = false // Disable interaction for non-current month dates
         }
 

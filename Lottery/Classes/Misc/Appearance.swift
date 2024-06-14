@@ -19,4 +19,5 @@ struct Appearance {
     static let dropShadowColor = UIColor(hex: "#CEDAFC")
     static let lightGrayTextColor = UIColor(hex: "#808B96")
     static let lightGrayBorderTicket = UIColor(red: 219/255, green: 223/255, blue: 230/255, alpha: 1)
+    static let main300Calendar = UIColor(integralRed: 128, green: 139, blue: 150, alpha: 0.35)
 }
