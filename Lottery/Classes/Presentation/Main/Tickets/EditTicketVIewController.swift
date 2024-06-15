@@ -145,6 +145,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         // Calculate the cell size
         let width = collectionView.frame.width
         let height = collectionView.frame.height
-        return CGSize(width: 343.scale, height: 300.scale) // Full size of the collection view
+        return CGSize(width: 343.scale,
+                      height:  CGFloat(ticket?.numbers.count ?? 0) * (40 + 20).scale + 41.scale + 15.scale + 50.scale + 30.scale + 100.scale)
     }
 }

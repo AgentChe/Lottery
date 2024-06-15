@@ -1,3 +1,4 @@
+
 //
 //  TicketEditCell.swift
 //  Lottery
@@ -8,7 +9,7 @@
 import UIKit
 
 class TicketEditCell: UICollectionViewCell {
-    
+
     var ticket: Ticket? {
         didSet {
             collectionView.reloadData()
@@ -23,16 +24,25 @@ class TicketEditCell: UICollectionViewCell {
     private var datePickerContainer: UIView?
     private let customDatePicker = CustomCalendarView()
     
+    // Plus Button Declaration
+    private let plusButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "EditTickets.PlusButtonImage"), for: .normal) // Replace with your image asset name
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 25.scale // Half the height and width for a circular button
+        button.layer.masksToBounds = true
+        return button
+    }()
+    
     // CollectionView Declaration with Inline Configuration
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
-        layout.minimumLineSpacing = 10.scale
-        layout.minimumInteritemSpacing = 10.scale
-        
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 12.scale
+        layout.minimumInteritemSpacing = 12.scale
+        layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 10.scale, bottom: 0.scale, right: 10.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
@@ -40,6 +50,7 @@ class TicketEditCell: UICollectionViewCell {
         
         return collectionView
     }()
+    var collectionViewHeightConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,12 +85,29 @@ class TicketEditCell: UICollectionViewCell {
         dateLabel.text = formattedDate.uppercased()
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
-        
+        collectionViewHeightConstraint.isActive = false
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(ticket.numbers.count) * (40 + 10 + 10).scale)
+        collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
     }
 }
 
 private extension TicketEditCell {
+    @objc private func plusButtonTapped() {
+        guard var ticket = self.ticket else { return }
+        
+        // Add a new empty section (or initialize with default values)
+        ticket.numbers.append([0, 0, 0, 0, 0]) // Appending an empty section for demonstration
+        
+        // Update the cell's ticket property and UI
+        self.ticket = ticket
+        collectionViewHeightConstraint.isActive = false
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(ticket.numbers.count) * (40 + 10).scale)
+        collectionViewHeightConstraint.isActive = true
+        
+        collectionView.reloadData()
+    }
+
     func setupUI() {
         backgroundColor = Appearance.mono100
         logoImageView.contentMode = .scaleAspectFit
@@ -107,6 +135,7 @@ private extension TicketEditCell {
         dateLabelContainer.addSubview(dateLabel)
         dateLabelContainer.addSubview(pencilEditImageView)
         addSubview(collectionView)
+        addSubview(plusButton) // Add Plus Button to the view hierarchy
         
         customDatePicker.onDateSelected = { [weak self] selectedDate in
             self?.updateDateLabel(with: selectedDate)
@@ -116,9 +145,11 @@ private extension TicketEditCell {
         customDatePicker.onClose = { [weak self] in
             self?.dismissDatePicker()
         }
+        plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
     
     func setupLayoutConstraints() {
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 10 + 10).scale)
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
             logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
@@ -143,7 +174,13 @@ private extension TicketEditCell {
             collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 10.scale),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
-            collectionView.heightAnchor.constraint(equalToConstant: 60.scale)
+            collectionViewHeightConstraint,
+            
+            // Set constraints for the Plus Button
+            plusButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            plusButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 15.scale),
+            plusButton.widthAnchor.constraint(equalToConstant: 50.scale),
+            plusButton.heightAnchor.constraint(equalToConstant: 50.scale)
         ])
     }
     
@@ -191,16 +228,21 @@ private extension TicketEditCell {
 extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1 // Assuming all numbers are in one section for horizontal scrolling
+        print("@ ticket?.numbers.count: \(ticket?.numbers.count)")
+        return ticket?.numbers.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Add 1 to the count to include the RemoveCell
-        return (ticket?.numbers.flatMap { $0 }.count ?? 0) + 1
+        if let numbersCount = ticket?.numbers[section].count {
+            return numbersCount + 1
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == (ticket?.numbers.flatMap { $0 }.count ?? 0) {
+        if indexPath.item == (ticket!.numbers[indexPath.section].count) {
             // If the index is the last one, return a RemoveCell
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RemoveCell", for: indexPath) as? RemoveCell else {
                 return UICollectionViewCell()
@@ -212,8 +254,8 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
                 return UICollectionViewCell()
             }
             
-            // Flatten the numbers array and get the appropriate number for this index
-            if let numbers = ticket?.numbers.flatMap({ $0 }), indexPath.item < numbers.count {
+            // Get the appropriate number for this index
+            if let numbers = ticket?.numbers[indexPath.section] {
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow)
@@ -224,7 +266,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Check if the selected cell is a RemoveCell
-        if indexPath.item == (ticket?.numbers.flatMap { $0 }.count ?? 0) {
+        if indexPath.item == (ticket?.numbers[indexPath.section].count ?? 0) {
             // Handle the removal of the item
             removeItem(at: indexPath)
         } else {
@@ -234,12 +276,21 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     
     private func removeItem(at indexPath: IndexPath) {
         // Perform removal logic. For example, you might update the ticket's numbers and reload the data.
-        // You would typically update your data model and then call collectionView.reloadData() or perform a batch update
-        // Here's a simple example assuming you want to remove the last item from the numbers array
-        if var numbers = ticket?.numbers.flatMap({ $0 }) {
+        if var numbers = ticket?.numbers[indexPath.section] {
             numbers.removeLast()
-           // ticket?.numbers = [numbers]
+            ticket?.numbers[indexPath.section] = numbers
             collectionView.reloadData()
+        }
+    }
+    
+    // Implementing sizeForItemAt to dynamically set item size
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.item == (ticket?.numbers[indexPath.section].count ?? 0) {
+            // Size for the RemoveCell
+            return CGSize(width: 40.scale, height: 40.scale) // Example size, adjust as needed
+        } else {
+            // Size for the EditNumberCell
+            return CGSize(width: 40.scale, height: 40.scale) // Example size, adjust as needed
         }
     }
 }

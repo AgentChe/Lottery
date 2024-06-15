@@ -11,7 +11,7 @@ struct Ticket: Codable {
     let lotteryId: Int
     let pictureUrl: URL?
     let date: TimeInterval
-    let numbers: [[Int]]
+    var numbers: [[Int]]
 
     init?(response: Any) {
         guard let dict = response as? [String: Any],
