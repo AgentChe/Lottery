@@ -10,12 +10,12 @@ import UIKit
 
 class TicketEditCell: UICollectionViewCell {
 
-    var ticket: Ticket? {
+    var ticket: Ticket?
+    var numbersStringArray: [[String]] = [] {
         didSet {
             collectionView.reloadData()
         }
     }
-    
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -31,6 +31,7 @@ class TicketEditCell: UICollectionViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 25.scale // Half the height and width for a circular button
         button.layer.masksToBounds = true
+        button.backgroundColor = .blue
         return button
     }()
     
@@ -74,6 +75,7 @@ class TicketEditCell: UICollectionViewCell {
     
     func configure(ticket: Ticket) {
         self.ticket = ticket
+        numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
         
         logoImageView.image = UIImage(named: "placeholderImage")
         
@@ -86,7 +88,7 @@ class TicketEditCell: UICollectionViewCell {
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
         collectionViewHeightConstraint.isActive = false
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(ticket.numbers.count) * (40 + 10 + 10).scale)
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
     }
@@ -97,12 +99,12 @@ private extension TicketEditCell {
         guard var ticket = self.ticket else { return }
         
         // Add a new empty section (or initialize with default values)
-        ticket.numbers.append([0, 0, 0, 0, 0]) // Appending an empty section for demonstration
+        numbersStringArray.append(["", "", "", "", ""]) // Appending an empty section for demonstration
         
         // Update the cell's ticket property and UI
         self.ticket = ticket
         collectionViewHeightConstraint.isActive = false
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(ticket.numbers.count) * (40 + 10).scale)
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
         collectionViewHeightConstraint.isActive = true
         
         collectionView.reloadData()
@@ -228,13 +230,13 @@ private extension TicketEditCell {
 extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        print("@ ticket?.numbers.count: \(ticket?.numbers.count)")
-        return ticket?.numbers.count ?? 0
+        print("@ numbersStringArray.count: \(numbersStringArray.count)")
+        return numbersStringArray.count
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Add 1 to the count to include the RemoveCell
-        if let numbersCount = ticket?.numbers[section].count {
+        if let numbersCount = numbersStringArray[safe: section]?.count {
             return numbersCount + 1
         } else {
             return 0
@@ -242,7 +244,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == (ticket!.numbers[indexPath.section].count) {
+        if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
             // If the index is the last one, return a RemoveCell
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RemoveCell", for: indexPath) as? RemoveCell else {
                 return UICollectionViewCell()
@@ -255,7 +257,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             }
             
             // Get the appropriate number for this index
-            if let numbers = ticket?.numbers[indexPath.section] {
+            if let numbers = numbersStringArray[safe: indexPath.section] {
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow)
@@ -266,7 +268,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Check if the selected cell is a RemoveCell
-        if indexPath.item == (ticket?.numbers[indexPath.section].count ?? 0) {
+        if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
             // Handle the removal of the item
             removeItem(at: indexPath)
         } else {
@@ -275,17 +277,17 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     private func removeItem(at indexPath: IndexPath) {
-        // Perform removal logic. For example, you might update the ticket's numbers and reload the data.
-        if var numbers = ticket?.numbers[indexPath.section] {
+        // Perform removal logic. For example, you might update the numbersStringArray and reload the data.
+        if var numbers = numbersStringArray[safe: indexPath.section] {
             numbers.removeLast()
-            ticket?.numbers[indexPath.section] = numbers
+            numbersStringArray[indexPath.section] = numbers
             collectionView.reloadData()
         }
     }
     
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.item == (ticket?.numbers[indexPath.section].count ?? 0) {
+        if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
             // Size for the RemoveCell
             return CGSize(width: 40.scale, height: 40.scale) // Example size, adjust as needed
         } else {

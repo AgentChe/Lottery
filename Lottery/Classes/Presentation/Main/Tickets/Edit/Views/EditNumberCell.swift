@@ -32,7 +32,6 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         return textField
     }()
 
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -75,9 +74,9 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         numberTextField.resignFirstResponder()
     }
     
-    func configure(number: Int, isLastInRow: Bool) {
-        // Check if number is provided, otherwise show "_"
-        let displayText = number == 0 ? "_" : "\(number)"
+    func configure(number: String, isLastInRow: Bool) {
+        // Show "_" if the number is an empty string
+        let displayText = number.isEmpty ? "_" : number
         
         // Underline the text using NSAttributedString
         let underlineAttribute: [NSAttributedString.Key: Any] = [
