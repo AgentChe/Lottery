@@ -8,14 +8,20 @@
 
 import UIKit
 
+protocol EditNumberCellDelegate: AnyObject {
+    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
+}
+
 class TicketEditCell: UICollectionViewCell {
 
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
-            collectionView.reloadData()
+            print("numbersStringArray: \(numbersStringArray)")
         }
     }
+    
+    
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -230,7 +236,6 @@ private extension TicketEditCell {
 extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        print("@ numbersStringArray.count: \(numbersStringArray.count)")
         return numbersStringArray.count
     }
 
@@ -260,7 +265,8 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             if let numbers = numbersStringArray[safe: indexPath.section] {
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
-                cell.configure(number: number, isLastInRow: isLastInRow)
+                cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
+                cell.delegate = self // Set the delegate
             }
             return cell
         }
@@ -294,5 +300,19 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             // Size for the EditNumberCell
             return CGSize(width: 40.scale, height: 40.scale) // Example size, adjust as needed
         }
+    }
+}
+
+extension TicketEditCell: EditNumberCellDelegate {
+    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
+        guard indexPath.section < numbersStringArray.count,
+              indexPath.item < numbersStringArray[indexPath.section].count else { return }
+        
+        numbersStringArray[indexPath.section][indexPath.item] = number
+        
+        // Optionally reload the collection view or update the specific cell
+        // collectionView.reloadData()
+        // or
+        // collectionView.reloadItems(at: [indexPath])
     }
 }

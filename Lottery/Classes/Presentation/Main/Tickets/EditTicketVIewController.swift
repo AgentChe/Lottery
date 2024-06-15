@@ -146,6 +146,6 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         let width = collectionView.frame.width
         let height = collectionView.frame.height
         return CGSize(width: 343.scale,
-                      height:  CGFloat(ticket?.numbers.count ?? 0) * (40 + 20).scale + 41.scale + 15.scale + 50.scale + 30.scale + 100.scale)
+                      height:  CGFloat(ticket?.numbers.count ?? 0) * (40 + 20).scale + 41.scale + 15.scale + 50.scale + 30.scale)
     }
 }

@@ -9,23 +9,26 @@ import UIKit
 
 class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
+    weak var delegate: EditNumberCellDelegate?
+    var indexPath: IndexPath?
+    
     // Replace UILabel with UITextField
     private let numberTextField: UITextField = {
         let textField = UITextField()
         textField.textAlignment = .center
         textField.font = UIFont.systemFont(ofSize: 18.scale)
-        textField.keyboardType = .numberPad // Set the keyboard type to number pad for numeric input
+        textField.keyboardType = .numberPad
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.borderStyle = .none // Remove the default border style
+        textField.borderStyle = .none
         textField.adjustsFontSizeToFitWidth = true
         textField.minimumFontSize = 10.scale
         
         // Set the placeholder with an underscore and change its color
         let placeholderText = "_"
-        let placeholderColor = Appearance.mono200 // Change this to your desired color
+        let placeholderColor = Appearance.mono200
         let attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: placeholderColor,
-            .font: UIFont.systemFont(ofSize: 18.scale) // Ensure the font size matches the text field's font
+            .font: UIFont.systemFont(ofSize: 18.scale)
         ]
         textField.attributedPlaceholder = NSAttributedString(string: placeholderText, attributes: attributes)
         
@@ -74,9 +77,10 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         numberTextField.resignFirstResponder()
     }
     
-    func configure(number: String, isLastInRow: Bool) {
+    func configure(number: String, isLastInRow: Bool, indexPath: IndexPath) {
+        self.indexPath = indexPath
         // Show "_" if the number is an empty string
-        let displayText = number.isEmpty ? "_" : number
+        let displayText = number.isEmpty ? "" : number
         
         // Underline the text using NSAttributedString
         let underlineAttribute: [NSAttributedString.Key: Any] = [
@@ -95,7 +99,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         } else {
             // Reset to default appearance if not the last cell in the row
             backgroundColor = Appearance.mono100
-            numberTextField.textColor = Appearance.mono200 // Or your default text color
+            numberTextField.textColor = Appearance.mono200
             layer.borderWidth = 1.scale
         }
     }
@@ -112,10 +116,15 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         // Apply the underline to the new text
         let underlineAttribute: [NSAttributedString.Key: Any] = [
             .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .foregroundColor: Appearance.mono200 // Use the appropriate text color
+            .foregroundColor: Appearance.mono200
         ]
         let attributedText = NSAttributedString(string: currentText, attributes: underlineAttribute)
         textField.attributedText = attributedText
+        
+        // Notify delegate of the text change
+        if let indexPath = indexPath {
+            delegate?.numberCell(self, didUpdateNumber: currentText, at: indexPath)
+        }
         
         // Always return false to prevent the default behavior since we're handling the text change manually
         return false
@@ -123,11 +132,14 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
     // UITextFieldDelegate method to show underscore when text field is empty
     func textFieldDidEndEditing(_ textField: UITextField) {
+        if let indexPath = indexPath {
+            delegate?.numberCell(self, didUpdateNumber: textField.text ?? "", at: indexPath)
+        }
         if textField.text?.isEmpty ?? true {
             // Show underscore if the text field is empty
             let underlineAttribute: [NSAttributedString.Key: Any] = [
                 .underlineStyle: NSUnderlineStyle.single.rawValue,
-                .foregroundColor: Appearance.mono200 // Or the color you want for the underscore
+                .foregroundColor: Appearance.mono200
             ]
             let attributedText = NSAttributedString(string: "_", attributes: underlineAttribute)
             textField.attributedText = attributedText
