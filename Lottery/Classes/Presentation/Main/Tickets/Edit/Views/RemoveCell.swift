@@ -11,7 +11,7 @@ class RemoveCell: UICollectionViewCell {
     
     private let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "SuggestNewGame.Close"), for: .normal)
+        button.setImage(UIImage(named: "EditTickets.Close"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .center
         return button

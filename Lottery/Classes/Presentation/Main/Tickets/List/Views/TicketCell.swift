@@ -243,7 +243,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         formatter.dateStyle = .medium
         
         // Compare dates and set the title accordingly
-        titleLabel.text = ticketDate > now ? "NEXT DRAW" : "PAST DRAW"
+        titleLabel.text = ticketDate < now ? "NEXT DRAW" : "PAST DRAW"
         dateLabel.text = formatter.string(from: ticketDate)
         
         // Update numbers array for the collection view
@@ -258,7 +258,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         }
         
         // Configure cell appearance based on draw date
-        if ticketDate > now {
+        if ticketDate < now {
             editButton.isHidden = false
         } else {
             editButton.isHidden = true
