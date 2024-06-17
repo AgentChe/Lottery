@@ -15,7 +15,7 @@ struct FetchStatesRequest: EndPoint {
     }
     
     var method: HTTPMethod {
-        .get
+        .post
     }
     
     var parameters: [String : Any] {

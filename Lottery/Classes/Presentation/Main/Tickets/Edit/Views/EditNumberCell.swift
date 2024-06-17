@@ -47,7 +47,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
     private func setupUI() {
         backgroundColor = Appearance.mono100
-        layer.cornerRadius = 20.scale
+        layer.cornerRadius = (bounds.width/2.32).scale
         layer.masksToBounds = true
         layer.borderColor = Appearance.main500.cgColor
         layer.borderWidth = 1.scale

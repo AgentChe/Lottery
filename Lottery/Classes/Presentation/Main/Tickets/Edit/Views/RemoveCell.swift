@@ -38,7 +38,7 @@ class RemoveCell: UICollectionViewCell {
     
     private func setupUI() {
         backgroundColor = Appearance.mono100
-        layer.cornerRadius = 25.scale
+        layer.cornerRadius = (bounds.width/2.32).scale
         layer.masksToBounds = true
         
         addSubview(closeButton)

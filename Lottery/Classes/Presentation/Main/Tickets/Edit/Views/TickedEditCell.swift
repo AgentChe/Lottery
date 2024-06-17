@@ -106,21 +106,23 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
 private extension TicketEditCell {
     @objc private func plusButtonTapped() {
         guard var ticket = self.ticket else { return }
+    
+        let numberOfElementsInLastSection = numbersStringArray.last?.count ?? 5
+        let newEmptySection = Array(repeating: "", count: numberOfElementsInLastSection)
+    
+        numbersStringArray.append(newEmptySection)
         
-        // Add a new empty section (or initialize with default values)
-        numbersStringArray.append(["", "", "", "", ""]) // Appending an empty section for demonstration
-        
-        // Update the cell's ticket property and UI
         self.ticket = ticket
-      
+
         collectionViewHeightConstraint.isActive = false
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
         collectionViewHeightConstraint.isActive = true
-       
+
         collectionView.reloadData()
-       
+    
         delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
     }
+
     
     func setupUI() {
         backgroundColor = Appearance.mono100
@@ -262,7 +264,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             }
             cell.indexPath = indexPath
             cell.delegate = self
-            cell.layer.cornerRadius = 20.scale
+            
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
@@ -296,13 +298,29 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
-            // Size for the RemoveCell
-            return CGSize(width: 40.scale, height: 40.scale) // Example size, adjust as needed
-        } else {
-            // Size for the EditNumberCell
-            return CGSize(width: 40.scale, height: 40.scale) // Example size, adjust as needed
+        // Default size for the cell
+        let defaultSize = CGSize(width: 40.scale, height: 40.scale)
+
+        // Check if there are numbers in the numbersStringArray
+        guard let lastRow = numbersStringArray.last else {
+            // Return default size if numbersStringArray is empty or nil
+            return defaultSize
         }
+        
+        // Get the number of cells in the last row
+        let numberOfCells = lastRow.count + 1
+        
+        // Calculate the available width based on the given constraints
+        let totalWidth: CGFloat = 343.scale
+        let sideMargins: CGFloat = 40.scale
+        let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+        
+        // Calculate the width for each cell
+        let availableWidth = totalWidth - sideMargins - cellSpacing
+        let cellWidth = availableWidth / CGFloat(numberOfCells)
+        
+        // Return the size for the cell
+        return CGSize(width:cellWidth , height: cellWidth)
     }
 }
 
