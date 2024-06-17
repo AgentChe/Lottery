@@ -13,7 +13,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
     private let dateFormatter = DateFormatter()
     private var selectedDate = Date()
     private var currentMonth: Date
-    private var latestMonth: Date
+    private var latestMonth: Date // Add this property
 
     private let headerLabel = UILabel()
     private let daysOfWeekStackView = UIStackView()
@@ -26,7 +26,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     override init(frame: CGRect) {
         self.currentMonth = Date()
-        self.latestMonth = Date()
+        self.latestMonth = Date() // Initialize the latest month to the current date
         
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0.scale
@@ -66,27 +66,28 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         if let chevronBackward = UIImage(systemName: "chevron.backward") {
             previousButton.setImage(chevronBackward, for: .normal)
         }
-        previousButton.tintColor = Appearance.mono200
+        previousButton.tintColor = Appearance.mono200 // Set the color of the icon
         previousButton.addTarget(self, action: #selector(previousMonth), for: .touchUpInside)
-        previousButton.tag = 1
+        previousButton.tag = 1 // Assign a tag to identify the button later
         addSubview(previousButton)
 
         let nextButton = UIButton(type: .system)
         if let chevronForward = UIImage(systemName: "chevron.forward") {
             nextButton.setImage(chevronForward, for: .normal)
         }
-        nextButton.tintColor = Appearance.mono200
+        nextButton.tintColor = Appearance.mono200 // Set the color of the icon
         nextButton.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
-        nextButton.tag = 2
+        nextButton.tag = 2 // Assign a tag to identify the button later
         addSubview(nextButton)
 
+        // Setup days of the week
         let days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
         for day in days {
             let label = UILabel()
             label.text = day
             label.font = Fonts.Inter.semiBold(size: 14.scale)
             label.textAlignment = .center
-            label.textColor = Appearance.mono200
+            label.textColor = Appearance.mono200 // Dark color for day labels
             daysOfWeekStackView.addArrangedSubview(label)
         }
 
@@ -97,10 +98,11 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
         addSubview(collectionView)
 
+        // Setup buttons
         saveButton.setTitle("Save", for: .normal)
-        saveButton.backgroundColor = Appearance.main100
+        saveButton.backgroundColor = Appearance.main100 // Custom red color
         saveButton.setTitleColor(.white, for: .normal)
-        saveButton.layer.cornerRadius = 22.scale
+        saveButton.layer.cornerRadius = 22.scale // Half the height for rounded effect
         saveButton.layer.masksToBounds = true
         saveButton.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
@@ -108,15 +110,16 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
         closeButton.setTitle("Close", for: .normal)
         closeButton.backgroundColor = .clear
-        closeButton.setTitleColor(Appearance.mono200, for: .normal)
+        closeButton.setTitleColor(Appearance.mono200, for: .normal) // Dark color for close button text
         closeButton.layer.borderWidth = 1.scale
-        closeButton.layer.borderColor = Appearance.main300Calendar.cgColor
-        closeButton.layer.cornerRadius = 22.scale
+        closeButton.layer.borderColor = Appearance.main300Calendar.cgColor // Border matching the text color
+        closeButton.layer.cornerRadius = 22.scale // Half the height for rounded effect
         closeButton.layer.masksToBounds = true
         closeButton.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         addSubview(closeButton)
     }
+
 
     private func setupConstraints() {
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -133,13 +136,13 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            headerLabel.widthAnchor.constraint(equalToConstant: 150.scale),
+            headerLabel.widthAnchor.constraint(equalToConstant: 190.scale),
             
             previousButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
-            previousButton.trailingAnchor.constraint(equalTo: nextButton.leadingAnchor, constant: -20.scale),
+            previousButton.trailingAnchor.constraint(equalTo: nextButton.leadingAnchor, constant: -20.scale), // Adjust spacing as needed
             
             nextButton.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor),
-            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale), // Adjust if needed
 
             daysOfWeekStackView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 8.scale),
             daysOfWeekStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
@@ -164,15 +167,21 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         ])
     }
 
+
     private func updateHeader() {
         dateFormatter.dateFormat = "MMMM yyyy"
         headerLabel.text = dateFormatter.string(from: currentMonth)
         
-        let nextButton = viewWithTag(2) as! UIButton
+        let previousButton = viewWithTag(1) as! UIButton
         
-        // Always enable the next button
-        nextButton.tintColor = Appearance.mono200
-        nextButton.isUserInteractionEnabled = true
+        if calendar.isDate(currentMonth, equalTo: latestMonth, toGranularity: .month) &&
+           calendar.isDate(currentMonth, equalTo: latestMonth, toGranularity: .year) {
+            previousButton.tintColor = Appearance.main300
+            previousButton.isUserInteractionEnabled = false
+        } else {
+            previousButton.tintColor = Appearance.mono200
+            previousButton.isUserInteractionEnabled = true
+        }
     }
 
     @objc private func previousMonth() {
@@ -211,49 +220,54 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         return calendar.component(.weekday, from: lastDay) - 1
     }
 
+    // MARK: - UICollectionViewDataSource
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 42
+        return 42 // Always show 6 rows * 7 columns = 42 items
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCell", for: indexPath) as! DateCell
-        let firstWeekday = firstWeekdayOfMonth() - 1
+        let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
         let range = calendar.range(of: .day, in: .month, for: currentMonth)!
         let numDays = range.count
 
         if indexPath.item < firstWeekday {
+            // Dates from the previous month
             let previousMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth)!
             let previousMonthRange = calendar.range(of: .day, in: .month, for: previousMonth)!
             let day = previousMonthRange.count - firstWeekday + indexPath.item + 1
             cell.dateLabel.text = "\(day)"
-            cell.dateLabel.textColor = Appearance.main300
+            cell.dateLabel.textColor = Appearance.main300 // Gray color for non-current month dates
             cell.backgroundColor = Appearance.main600
-            cell.isUserInteractionEnabled = false
+            cell.isUserInteractionEnabled = false // Disable interaction for non-current month dates
         } else if indexPath.item >= firstWeekday && indexPath.item < numDays + firstWeekday {
+            // Dates from the current month
             let day = indexPath.item - firstWeekday + 1
             cell.dateLabel.text = "\(day)"
          
             if calendar.isDate(selectedDate, inSameDayAs: calendar.date(byAdding: .day, value: day - 1, to: startOfMonth(for: currentMonth))!) {
-                cell.backgroundColor = Appearance.main100
+                cell.backgroundColor = Appearance.main100 // Highlight color
                 cell.dateLabel.textColor = .white
             } else {
                 cell.backgroundColor = Appearance.mono100
                 cell.dateLabel.textColor = Appearance.mono200
             }
-            cell.isUserInteractionEnabled = true
+            cell.isUserInteractionEnabled = true // Enable interaction for current month dates
         } else {
+            // Dates from the next month
             let day = indexPath.item - numDays - firstWeekday + 1
             cell.dateLabel.text = "\(day)"
-            cell.dateLabel.textColor = Appearance.main300
+            cell.dateLabel.textColor = Appearance.main300 // Gray color for non-current month dates
             cell.backgroundColor = Appearance.main600
-            cell.isUserInteractionEnabled = false
+            cell.isUserInteractionEnabled = false // Disable interaction for non-current month dates
         }
 
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let firstWeekday = firstWeekdayOfMonth() - 1
+        let firstWeekday = firstWeekdayOfMonth() - 1 // Zero-indexed
         let range = calendar.range(of: .day, in: .month, for: currentMonth)!
         let numDays = range.count
         
@@ -263,12 +277,15 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             dateComponents.day = day
             if let date = calendar.date(from: dateComponents) {
                 selectedDate = date
-                collectionView.reloadData()
+                collectionView.reloadData() // Update the selection
             }
         }
     }
 
+    // MARK: - UICollectionViewDelegateFlowLayout
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         return CGSize(width: 44.5.scale, height: 44.scale)
     }
 }
