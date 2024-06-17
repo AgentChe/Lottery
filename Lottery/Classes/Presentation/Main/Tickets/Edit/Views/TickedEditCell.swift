@@ -52,7 +52,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         layout.minimumInteritemSpacing = 12.scale
         layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 10.scale, bottom: 0.scale, right: 10.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
@@ -287,15 +287,49 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     func removeItem(at indexPath: IndexPath) {
-        numbersStringArray.remove(at: indexPath.section)
+          // Check if it's the only row left
+          if numbersStringArray.count == 1 && indexPath.section == 0 {
+              presentDeleteConfirmationAlert()
+          } else {
+              // Normal removal process
+              numbersStringArray.remove(at: indexPath.section)
+              
+              collectionViewHeightConstraint.isActive = false
+              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+              collectionViewHeightConstraint.isActive = true
+              
+              collectionView.reloadData()
+          }
+      }
+    private func presentDeleteConfirmationAlert() {
+        let alertVC = CustomAlertViewController()
         
-        collectionViewHeightConstraint.isActive = false
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
-        collectionViewHeightConstraint.isActive = true
+        alertVC.onConfirmDelete = { [weak self] in
+            guard let self = self else { return }
+            // Code to remove the ticket here
+            self.removeTicket()
+        }
         
-        collectionView.reloadData()
+        alertVC.onCancel = {
+            // Code to handle cancellation (if any)
+        }
+        
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        
+        if let parentVC = self.parentViewController {
+            parentVC.present(alertVC, animated: true, completion: nil)
+        }
     }
     
+    private func removeTicket() {
+        // Code to remove the ticket from the data source and update the UI
+        numbersStringArray.removeAll()
+        // Further logic to notify the delegate or update the data model
+        
+        collectionView.reloadData()
+        // Notify the delegate or view controller about the deletion
+    }
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Default size for the cell

@@ -93,8 +93,65 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     @objc func saveTicketButtonTapped() {
-        print("Save ticket button tapped")
+        // Convert numbersStringArray to [[Int]]
+        var numbersArray: [[Int]] = []
+        for section in numbersStringArray {
+            var intSection: [Int] = []
+            for numberString in section {
+                if let number = Int(numberString) {
+                    intSection.append(number)
+                }
+            }
+            numbersArray.append(intSection)
+        }
+        
+        // Ensure we have a ticket to modify
+        guard var existingTicket = ticket else { return }
+        
+        // Update the ticket's numbers
+        existingTicket.numbers = numbersArray
+        
+        // Get the necessary properties from the ticket to use in the editTicket method
+        let id = existingTicket.id
+        let lotteryId = existingTicket.lotteryId
+        let pictureUrl = existingTicket.pictureUrl
+        let date = existingTicket.date
+        
+        // Create an instance of TicketsManager (assuming you have a shared instance or create a new one)
+        let ticketsManager = TicketsManager()
+        
+        // Call the editTicket method
+        ticketsManager.editTicket(id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbersArray) { result in
+            switch result {
+            case .success(let updatedTicket):
+                // Handle success (e.g., show a success message or pop the view controller)
+                print("Ticket updated successfully: \(updatedTicket)")
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+                
+            case .failure(let error):
+                // Handle failure by presenting an alert to the user
+                print("Failed to update the ticket: \(error)")
+                
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(
+                        title: "Update Failed",
+                        message: "Unable to update the ticket. Please try again later. Error: \(error.localizedDescription)",
+                        preferredStyle: .alert
+                    )
+                    
+                    // Add an OK button to the alert
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                    // Present the alert
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
     }
+
+
     
     private func setupNavigationBarTitle() {
         guard let backButtonImage = UIImage(named: "EditBackButtonImage") else { return }
