@@ -5,90 +5,100 @@
 //  Created by Niiaz Khasanov on 6/12/24.
 //
 
-//
-//  EditTicketViewController.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/12/24.
-//
-
 import UIKit
 
 class EditTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    // Properties to hold ticket data
+
     var ticket: Ticket?
+    var numbersStringArray: [[String]] = [] {
+        didSet {
+            updateSaveButtonState()
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
     var collectionView: UICollectionView!
     
-    // Save Ticket Button
     private let saveTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("Save ticket", for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
-        button.layer.cornerRadius = 20.scale // Half of the height for rounded corners
+        button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(saveTicketButtonTapped), for: .touchUpInside)
+        button.isEnabled = false // Initially disabled
         return button
     }()
+    
+    // Bottom constraint for the save button
+    private var saveButtonBottomConstraint: NSLayoutConstraint!
+
+    // Custom initializer
+    init(ticket: Ticket) {
+        super.init(nibName: nil, bundle: nil)
+        self.ticket = ticket
+        self.numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
+    }
+    
+    // Required initializer for compatibility with storyboards
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
-        // Set up navigation bar
         setupNavigationBar()
         setupNavigationBarTitle()
         
-        // Set up the collection view layout
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical // or .horizontal based on your design
+        layout.scrollDirection = .vertical
         
-        // Initialize the collection view
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
-        // Register the custom cell class
         collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
         
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
         
-        // Add collection view to the view hierarchy
         view.addSubview(collectionView)
-        
-        // Add Save Ticket Button to the view hierarchy
         view.addSubview(saveTicketButton)
         
-        // Set constraints for the collection view
+        setupConstraints()
+        updateSaveButtonState() // Initial check to set the button state based on initial data
+        
+        // Add keyboard observers
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale), // Make space for the button
+            collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            // Set constraints for the Save Ticket Button
             saveTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            saveTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale),
-            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale) // Adjust height as needed
+            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale)
         ])
+        
+        // Initialize the bottom constraint
+        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
+        saveButtonBottomConstraint.isActive = true
     }
     
-    // Action for Save Ticket Button
     @objc func saveTicketButtonTapped() {
-        // Code to save the ticket
-        // This can include any logic to save or submit the ticket data
         print("Save ticket button tapped")
     }
     
-    // Setup navigation bar title with a custom back button
     private func setupNavigationBarTitle() {
-        // Load the custom back button image
         guard let backButtonImage = UIImage(named: "EditBackButtonImage") else { return }
         
-        // Create a UIButton with specific dimensions and set it as the custom view
         let backButton = UIButton(type: .custom)
         backButton.setImage(backButtonImage, for: .normal)
         backButton.imageView?.contentMode = .scaleAspectFit
@@ -96,38 +106,25 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
         backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
 
-        // Create a UIBarButtonItem using the custom UIButton
         let barButtonItem = UIBarButtonItem(customView: backButton)
         
-        // Set the custom back button as the left bar button item
         self.navigationItem.leftBarButtonItem = barButtonItem
     }
 
     @objc func handleBackButton() {
-        // Code to execute when the back button is tapped
         navigationController?.popViewController(animated: true)
     }
 
-    // Setup the navigation bar's appearance
     private func setupNavigationBar() {
-        // Ensure the navigation bar does not obscure the view
         navigationController?.navigationBar.isTranslucent = true
-        
-        // Set navigation bar background and shadow images to empty, making it transparent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
-        
-        // Optional: Set navigation bar elements to a specific color to ensure they are visible
         navigationController?.navigationBar.tintColor = Appearance.mono200
-        
-        // Setting the title with custom attributes if needed
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
 
-    // UICollectionViewDataSource methods
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1 // Only one cell
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -135,17 +132,68 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         if let ticket = self.ticket {
             cell.configure(ticket: ticket)
         }
+        cell.delegate = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
     
-    // UICollectionViewDelegateFlowLayout method
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Calculate the cell size
         let width = collectionView.frame.width
         let height = collectionView.frame.height
         return CGSize(width: 343.scale,
-                      height:  CGFloat(ticket?.numbers.count ?? 0) * (40 + 20).scale + 41.scale + 15.scale + 50.scale + 30.scale)
+                      height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+    }
+
+    // Validation method to check if all numbers are valid
+    private func areAllNumbersValid() -> Bool {
+        for section in numbersStringArray {
+            for number in section {
+                if Int(number) == nil {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    // Method to update save button state based on validation
+    private func updateSaveButtonState() {
+        let allNumbersValid = areAllNumbersValid()
+        saveTicketButton.isEnabled = allNumbersValid
+        saveTicketButton.backgroundColor = allNumbersValid ? Appearance.main100 : .gray // Change the color to gray if not valid
+    }
+    
+    // Handle keyboard appearance
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height
+            let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
+            let totalHeight = keyboardHeight
+            
+            saveButtonBottomConstraint.constant = -totalHeight
+            UIView.animate(withDuration: 0.3) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+
+    // Handle keyboard disappearance
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        saveButtonBottomConstraint.constant = -30.scale
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+}
+
+extension EditTicketViewController: EditTicketViewControllerDelegate {
+    func updateSizeOfEditCell(numbersStringArray: [[String]]) {
+        self.numbersStringArray = numbersStringArray
+        collectionView.collectionViewLayout.invalidateLayout()
     }
 }

@@ -6,16 +6,25 @@
 //
 
 import UIKit
-
+protocol RemoveCellDelegate: AnyObject {
+    func removeItem(at indexPath: IndexPath)
+}
 class RemoveCell: UICollectionViewCell {
-    
+    weak var delegate: RemoveCellDelegate?
     private let closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "EditTickets.Close"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .center
+        button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         return button
     }()
+    
+    var indexPath: IndexPath!
+    
+    @objc private func closeButtonTapped() {
+        delegate?.removeItem(at: indexPath)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)

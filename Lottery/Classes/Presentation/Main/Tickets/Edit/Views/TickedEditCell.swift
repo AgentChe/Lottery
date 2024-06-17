@@ -12,16 +12,19 @@ protocol EditNumberCellDelegate: AnyObject {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
 }
 
-class TicketEditCell: UICollectionViewCell {
-
+protocol EditTicketViewControllerDelegate : AnyObject {
+    func updateSizeOfEditCell(numbersStringArray: [[String]])
+}
+class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
+    
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
-            print("numbersStringArray: \(numbersStringArray)")
+            delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
     
-    
+    weak var delegate: EditTicketViewControllerDelegate?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -109,13 +112,16 @@ private extension TicketEditCell {
         
         // Update the cell's ticket property and UI
         self.ticket = ticket
+      
         collectionViewHeightConstraint.isActive = false
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
         collectionViewHeightConstraint.isActive = true
-        
+       
         collectionView.reloadData()
+       
+        delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
     }
-
+    
     func setupUI() {
         backgroundColor = Appearance.mono100
         logoImageView.contentMode = .scaleAspectFit
@@ -186,7 +192,7 @@ private extension TicketEditCell {
             
             // Set constraints for the Plus Button
             plusButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            plusButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 15.scale),
+            plusButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 18.scale),
             plusButton.widthAnchor.constraint(equalToConstant: 50.scale),
             plusButton.heightAnchor.constraint(equalToConstant: 50.scale)
         ])
@@ -238,7 +244,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return numbersStringArray.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Add 1 to the count to include the RemoveCell
         if let numbersCount = numbersStringArray[safe: section]?.count {
@@ -254,6 +260,8 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RemoveCell", for: indexPath) as? RemoveCell else {
                 return UICollectionViewCell()
             }
+            cell.indexPath = indexPath
+            cell.delegate = self
             cell.layer.cornerRadius = 20.scale
             return cell
         } else {
@@ -271,24 +279,19 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             return cell
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // Check if the selected cell is a RemoveCell
-        if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
-            // Handle the removal of the item
-            removeItem(at: indexPath)
-        } else {
-            // Handle selection for EditNumberCell if needed
-        }
+        
     }
     
-    private func removeItem(at indexPath: IndexPath) {
-        // Perform removal logic. For example, you might update the numbersStringArray and reload the data.
-        if var numbers = numbersStringArray[safe: indexPath.section] {
-            numbers.removeLast()
-            numbersStringArray[indexPath.section] = numbers
-            collectionView.reloadData()
-        }
+    func removeItem(at indexPath: IndexPath) {
+        numbersStringArray.remove(at: indexPath.section)
+        
+        collectionViewHeightConstraint.isActive = false
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+        collectionViewHeightConstraint.isActive = true
+        
+        collectionView.reloadData()
     }
     
     // Implementing sizeForItemAt to dynamically set item size
@@ -309,10 +312,6 @@ extension TicketEditCell: EditNumberCellDelegate {
               indexPath.item < numbersStringArray[indexPath.section].count else { return }
         
         numbersStringArray[indexPath.section][indexPath.item] = number
-        
-        // Optionally reload the collection view or update the specific cell
-        // collectionView.reloadData()
-        // or
-        // collectionView.reloadItems(at: [indexPath])
+     
     }
 }

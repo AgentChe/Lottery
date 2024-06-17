@@ -16,7 +16,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .clear
+        view.backgroundColor = Appearance.main500
         setupNavigationBarTitle()
         setupNavigationBarAppearance()
         setupCollectionView()
@@ -156,8 +156,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
         let ticket = tickets[indexPath.item]
         
-        let editVC = EditTicketViewController()
-        editVC.ticket = ticket
+        let editVC = EditTicketViewController(ticket: ticket)
         
         navigationController?.pushViewController(editVC, animated: true)
     }
