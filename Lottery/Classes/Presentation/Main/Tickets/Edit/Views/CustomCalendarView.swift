@@ -145,13 +145,13 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale), // Adjust if needed
 
             daysOfWeekStackView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 8.scale),
-            daysOfWeekStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            daysOfWeekStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            daysOfWeekStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            daysOfWeekStackView.widthAnchor.constraint(equalToConstant: 312.scale),
             daysOfWeekStackView.heightAnchor.constraint(equalToConstant: 20.scale),
             
             collectionView.topAnchor.constraint(equalTo: daysOfWeekStackView.bottomAnchor, constant: 8.scale),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            collectionView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            collectionView.widthAnchor.constraint(equalToConstant: 312.scale),
             collectionView.heightAnchor.constraint(equalToConstant: 308.scale - 44.scale),
             
             saveButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 16.scale),
@@ -286,6 +286,6 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return CGSize(width: 44.5.scale, height: 44.scale)
+        return CGSize(width: 44.13.scale, height: 44.scale)
     }
 }
