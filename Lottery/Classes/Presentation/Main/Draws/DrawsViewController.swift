@@ -6,16 +6,10 @@
 //
 
 
-//
-//  DrawsViewController.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/6/24.
-//
-
 import UIKit
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
@@ -25,6 +19,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDrawsCollectionView: UICollectionView!
     private var pastDrawsCollectionView: UICollectionView!
+    private var scanButton: UIButton! // Adding the scan button
     
     private var nextDraws: [Game] = []
     private var pastDraws: [Game] = []
@@ -37,6 +32,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         view.backgroundColor = Appearance.main400
         setupSegmentedControl()
         setupCollectionViews()
+        setupScanButton()  // Setup scan button
         setupLayoutConstraints()
         fetchStateAndGames()
         setupNavigationBarTitle()
@@ -91,6 +87,18 @@ private extension DrawsViewController {
         pastDrawsCollectionView.isHidden = true
     }
     
+    func setupScanButton() {
+        scanButton = UIButton(type: .custom)
+        if let scanImage = UIImage(named: "Scan.BeginButton") {
+            scanButton.setImage(scanImage, for: .normal)
+        }
+        scanButton.translatesAutoresizingMaskIntoConstraints = false
+        scanButton.backgroundColor = .clear
+        scanButton.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
+        
+        view.addSubview(scanButton)
+    }
+    
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
@@ -107,13 +115,17 @@ private extension DrawsViewController {
             pastDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             pastDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
+
+            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
+            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
+            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
+            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale)
         ])
     }
 }
 
 // MARK: - CollectionView Delegate FlowLayout
 extension DrawsViewController {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cellWidth: CGFloat = 343.scale // Width is fixed to the collection view width with padding
         
@@ -137,12 +149,10 @@ extension DrawsViewController {
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
-    // Set the minimum line spacing (vertical spacing between rows)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 40.scale // Adjust as needed for spacing between rows
     }
     
-    // Set the section insets (padding around the section)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 50.scale, left: 0, bottom: 10.scale, right: 0) // Adjust insets as needed
     }
@@ -301,3 +311,11 @@ private extension DrawsViewController {
     }
 }
 
+// MARK: - Actions
+private extension DrawsViewController {
+    @objc func scanButtonTapped() {
+        // Implement the action for the scan button tap
+        print("Scan button tapped")
+        // Add your custom action code here
+    }
+}

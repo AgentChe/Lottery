@@ -7,11 +7,11 @@
 
 import UIKit
 
-
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
     private var tickets = [Ticket]()
     private var collectionView: UICollectionView!
+    private var scanButton: UIButton! // Adding the scan button
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
 
     override func viewDidLoad() {
@@ -20,24 +20,18 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         setupNavigationBarTitle()
         setupNavigationBarAppearance()
         setupCollectionView()
+        setupScanButton()  // Setup scan button
+        setupLayoutConstraints()  // Apply layout constraints including scan button
         fetchTickets()
     }
+    
     private func setupNavigationBarAppearance() {
-          // Set the navigation bar to a solid color
-        navigationController?.navigationBar.barTintColor = Appearance.main400 // Set to your desired color
-          
-          // Disable translucency
-          navigationController?.navigationBar.isTranslucent = false
-          
-          // Optionally remove the shadow image for a cleaner look
-          navigationController?.navigationBar.shadowImage = UIImage()
-          
-          // Set the navigation bar title color to ensure visibility
-          navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-          
-          // Ensure the custom navigation items like title and right bar button appear as intended
-          setupNavigationBarTitle()
-      }
+        navigationController?.navigationBar.barTintColor = Appearance.main400
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        setupNavigationBarTitle()
+    }
 
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
@@ -62,6 +56,27 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+
+    private func setupScanButton() {
+        scanButton = UIButton(type: .custom)
+        if let scanImage = UIImage(named: "Scan.BeginButton") {
+            scanButton.setImage(scanImage, for: .normal)
+        }
+        scanButton.translatesAutoresizingMaskIntoConstraints = false
+        scanButton.backgroundColor = .clear
+        scanButton.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
+        
+        view.addSubview(scanButton)
+    }
+
+    private func setupLayoutConstraints() {
+        NSLayoutConstraint.activate([
+            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
+            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
+            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
+            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale)
         ])
     }
 
@@ -118,6 +133,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         present(navController, animated: true, completion: nil)
     }
 
+    @objc func scanButtonTapped() {
+        // Implement the action for the scan button tap
+        print("Scan button tapped in TicketsViewController")
+        // Add your custom action code here
+    }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return tickets.count
     }
@@ -149,9 +170,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-    
-    // MARK: - TicketCellDelegate Method
 
+    // MARK: - TicketCellDelegate Method
     func editButtonTapped(for cell: TicketCell) {
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
         let ticket = tickets[indexPath.item]
