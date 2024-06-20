@@ -16,7 +16,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Appearance.main500
+        view.backgroundColor = Appearance.main400
         setupNavigationBarTitle()
         setupNavigationBarAppearance()
         setupCollectionView()

@@ -58,7 +58,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         layer.masksToBounds = true
 
         headerLabel.font = Fonts.Inter.bold(size: 20.scale)
-        headerLabel.textAlignment = .center
+        headerLabel.textAlignment = .left
         headerLabel.textColor = Appearance.mono200
         addSubview(headerLabel)
 
