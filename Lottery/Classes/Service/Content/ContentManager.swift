@@ -59,14 +59,14 @@ extension ContentManager: ContentManagerProtocol {
     
     func fetchLotteries(forceUpdate: Bool, stateId: Int? = nil, completion: @escaping (Result<[Lottery], Error>) -> Void) {
         if !forceUpdate, let cachedLotteries: [Lottery] = loadFromCache(forKey: Constants.lotteryCacheKey) {
-            if let stateId = stateId {
-                let filteredLotteries = cachedLotteries.filter { $0.stateId == stateId }
-                completion(.success(filteredLotteries))
-            } else {
-                completion(.success(cachedLotteries))
-            }
-            return
-        }
+               if let stateId = stateId {
+                   let filteredLotteries = cachedLotteries.filter { $0.avaliable_states.contains(stateId) }
+                   completion(.success(filteredLotteries))
+               } else {
+                   completion(.success(cachedLotteries))
+               }
+               return
+           }
         
         guard let userToken = sessionManager.getSession()?.userToken else {
             completion(.failure(ContentError(.notContent)))

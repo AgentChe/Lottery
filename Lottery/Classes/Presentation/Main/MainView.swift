@@ -11,6 +11,10 @@ final class MainView: UIView {
     lazy var container = makeContainer()
     lazy var tabView = makeTabView()
     
+    // Stored properties for constraints
+    var containerBottomConstraint: NSLayoutConstraint?
+    var tabViewBottomConstraint: NSLayoutConstraint?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -23,21 +27,30 @@ final class MainView: UIView {
 }
 
 // MARK: Make constraints
+
 private extension MainView {
     func makeConstraints() {
+        // Activate constraints for the container
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: leadingAnchor),
             container.trailingAnchor.constraint(equalTo: trailingAnchor),
-            container.topAnchor.constraint(equalTo: topAnchor),
-            container.bottomAnchor.constraint(equalTo: tabView.topAnchor)
+            container.topAnchor.constraint(equalTo: topAnchor)
         ])
         
+        // Create and store the container's bottom constraint
+        containerBottomConstraint = container.bottomAnchor.constraint(equalTo: tabView.topAnchor)
+        containerBottomConstraint?.isActive = true
+        
+        // Activate constraints for the tabView
         NSLayoutConstraint.activate([
             tabView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tabView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tabView.bottomAnchor.constraint(equalTo: bottomAnchor),
             tabView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 100.scale : 80.scale)
         ])
+        
+        // Create and store the tabView's bottom constraint
+        tabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        tabViewBottomConstraint?.isActive = true
     }
 }
 

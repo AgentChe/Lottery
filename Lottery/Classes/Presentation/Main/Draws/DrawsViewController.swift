@@ -14,6 +14,15 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         return .darkContent
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+            
+        }
+    }
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
     private var contentManager: ContentManagerProtocol = ContentManager()
@@ -310,12 +319,47 @@ private extension DrawsViewController {
         }
     }
 }
-
-// MARK: - Actions
 private extension DrawsViewController {
     @objc func scanButtonTapped() {
-        // Implement the action for the scan button tap
-        print("Scan button tapped")
-        // Add your custom action code here
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        
+        // Check if the current view controller is embedded in a navigation controller
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
+
+                updateMainViewControllerConstraints(for: mainViewController)
+                
+            }
+        } else {
+            // If not, present the view controller modally as a fallback
+            present(scanOnboardingViewController, animated: true, completion: nil)
+        }
     }
+    
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
+        let mainView = mainViewController.mainView
+        let tabView = mainView.tabView
+        
+  
+        
+        if mainView.tabViewBottomConstraint?.constant != newConstant {
+            // Deactivate and nil the old constraint if it's different
+            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
+                oldTabViewBottomConstraint.isActive = false
+                mainView.tabViewBottomConstraint = nil
+            }
+            
+            // Create and activate the new constraint
+            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
+            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
+            newTabViewBottomConstraint.isActive = true
+            
+            // Call layoutIfNeeded to apply the changes
+            mainView.layoutIfNeeded()
+        }
+    }
+   
 }

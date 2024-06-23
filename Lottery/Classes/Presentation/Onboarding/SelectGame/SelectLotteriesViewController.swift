@@ -36,7 +36,7 @@ class SelectLotteriesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupButtons()
-        fetchGames()
+        fetchLotteries()
     }
 }
 
@@ -48,7 +48,7 @@ private extension SelectLotteriesViewController {
         selectLotteryView.addAnotherGameButton.addTarget(self, action: #selector(addAnotherGameButtonTapped), for: .touchUpInside)
     }
     
-    func fetchGames() {
+    func fetchLotteries() {
         contentManager.fetchLotteries(forceUpdate: true, stateId: nil) { [weak self] result in
             switch result {
             case .success(let lotteries):
@@ -82,7 +82,7 @@ private extension SelectLotteriesViewController {
     
     func presentTryAgainViewController(with error: Error) {
         let vc = TryAgainViewController.make(error: error) { [weak self] in
-            self?.fetchGames()
+            self?.fetchLotteries()
         }
         present(vc, animated: true)
     }

@@ -108,6 +108,10 @@ extension ProfileManager: ProfileManagerProtocol {
     }
 
     func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool = false, complete: @escaping (Result<Bool, Error>) -> Void) {
+        
+        cacheProfile(lotteries: lotteries, state: state)
+        
+        
         guard let userToken = sessionManager.getSession()?.userToken else {
             complete(.failure(SignError.tokenNotFound))
             return

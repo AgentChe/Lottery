@@ -90,7 +90,8 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
                 let nextStep = self?.determineNextStep() ?? .main
                 self?.goToNext(at: nextStep)
             case .failure(let error):
-                self?.presentTryAgainViewController(with: error)
+              //  self?.presentTryAgainViewController(with: error)
+                self?.goToNext(at: .main)
             }
         }
     }

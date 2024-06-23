@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
+		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
+		A32748BC2C25E74F00E9F79A /* ScanSelectStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */; };
+		A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */; };
 		A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */; };
 		A3282B192C20A4C4006EED71 /* UIView(helper).swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B182C20A4C4006EED71 /* UIView(helper).swift */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
@@ -35,7 +38,7 @@
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
 		A3FD9EAA2C11EDBE000FAD68 /* CustomSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */; };
-		A3FD9EAC2C11F98C000FAD68 /* Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EAB2C11F98C000FAD68 /* Delay.swift */; };
+		A3FD9EAC2C11F98C000FAD68 /* Delay+RootVCGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EAB2C11F98C000FAD68 /* Delay+RootVCGetter.swift */; };
 		A3FD9EAF2C120A62000FAD68 /* SelectLotteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EAE2C120A62000FAD68 /* SelectLotteryView.swift */; };
 		A3FF55572C07E0B600E81771 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55562C07E0B600E81771 /* State.swift */; };
 		A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF55582C07E0CA00E81771 /* Lottery.swift */; };
@@ -163,6 +166,9 @@
 /* Begin PBXFileReference section */
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
+		A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateViewController.swift; sourceTree = "<group>"; };
+		A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateView.swift; sourceTree = "<group>"; };
 		A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
 		A3282B182C20A4C4006EED71 /* UIView(helper).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView(helper).swift"; sourceTree = "<group>"; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
@@ -190,7 +196,7 @@
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentControl.swift; sourceTree = "<group>"; };
-		A3FD9EAB2C11F98C000FAD68 /* Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delay.swift; sourceTree = "<group>"; };
+		A3FD9EAB2C11F98C000FAD68 /* Delay+RootVCGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Delay+RootVCGetter.swift"; sourceTree = "<group>"; };
 		A3FD9EAE2C120A62000FAD68 /* SelectLotteryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLotteryView.swift; sourceTree = "<group>"; };
 		A3FF55562C07E0B600E81771 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		A3FF55582C07E0CA00E81771 /* Lottery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lottery.swift; sourceTree = "<group>"; };
@@ -339,6 +345,24 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A32748B82C25D71E00E9F79A /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				A32748BD2C25E79100E9F79A /* Views */,
+				A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */,
+				A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */,
+			);
+			path = Scan;
+			sourceTree = "<group>";
+		};
+		A32748BD2C25E79100E9F79A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		A3668DAE2C1A1C7300754446 /* List */ = {
 			isa = PBXGroup;
 			children = (
@@ -485,7 +509,7 @@
 		A3FD9EAD2C11F999000FAD68 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				A3FD9EAB2C11F98C000FAD68 /* Delay.swift */,
+				A3FD9EAB2C11F98C000FAD68 /* Delay+RootVCGetter.swift */,
 				A3282B182C20A4C4006EED71 /* UIView(helper).swift */,
 			);
 			path = Helpers;
@@ -855,6 +879,7 @@
 			children = (
 				DE42B2152BFF664F00FF61B0 /* TryAgain */,
 				DE42B1582BFF3CB100FF61B0 /* Main */,
+				A32748B82C25D71E00E9F79A /* Scan */,
 				DE42B1632BFF3CB100FF61B0 /* Onboarding */,
 				DE42B16F2BFF3CB100FF61B0 /* Paygate */,
 				DE42B1742BFF3CB100FF61B0 /* Splash */,
@@ -1168,6 +1193,7 @@
 				DE42B1972BFF3CB200FF61B0 /* TapAreaButton.swift in Sources */,
 				A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */,
 				A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */,
+				A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */,
 				DE42B1F02BFF463B00FF61B0 /* TabItemView.swift in Sources */,
 				DE42B1C62BFF3CB200FF61B0 /* PaygateView.swift in Sources */,
 				DE42B1A62BFF3CB200FF61B0 /* PushNotificationsManager.swift in Sources */,
@@ -1201,7 +1227,7 @@
 				A3FF55662C07E42D00E81771 /* Game.swift in Sources */,
 				A3FD9EAF2C120A62000FAD68 /* SelectLotteryView.swift in Sources */,
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
-				A3FD9EAC2C11F98C000FAD68 /* Delay.swift in Sources */,
+				A3FD9EAC2C11F98C000FAD68 /* Delay+RootVCGetter.swift in Sources */,
 				DE42B1B32BFF3CB200FF61B0 /* Appearance.swift in Sources */,
 				DE42B1C12BFF3CB200FF61B0 /* DefaultPaygate.swift in Sources */,
 				DE42B2102BFF583A00FF61B0 /* SyncTokensRequest.swift in Sources */,
@@ -1246,6 +1272,7 @@
 				DE42B18F2BFF3CB200FF61B0 /* RxActivityIndicator.swift in Sources */,
 				A3FF55572C07E0B600E81771 /* State.swift in Sources */,
 				DE42B1AA2BFF3CB200FF61B0 /* Fonts.swift in Sources */,
+				A32748BC2C25E74F00E9F79A /* ScanSelectStateViewController.swift in Sources */,
 				DE42B1F62BFF4E0D00FF61B0 /* OWelcomeView.swift in Sources */,
 				DE42B19B2BFF3CB200FF61B0 /* UIApplication+Extension.swift in Sources */,
 				DE42B1C92BFF3CB200FF61B0 /* SplashReceiptValidationObserver.swift in Sources */,
@@ -1273,6 +1300,7 @@
 				DE42B21C2BFF700B00FF61B0 /* LoginResult.swift in Sources */,
 				A3EF37232C174E1D00753C41 /* NumberCell.swift in Sources */,
 				A3FF55732C07E5A300E81771 /* Ticket.swift in Sources */,
+				A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */,
 				A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
 				A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */,

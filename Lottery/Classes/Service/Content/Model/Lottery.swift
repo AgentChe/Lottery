@@ -11,7 +11,8 @@ struct Lottery: Codable {
     let id: Int
     let name: String
     let logoUrl: URL
-    let stateId: Int
+    let apiUrl: URL
+    let avaliable_states: [Int]
 
     init?(response: Any) {
         guard let dict = response as? [String: Any],
@@ -19,13 +20,16 @@ struct Lottery: Codable {
               let name = dict["name"] as? String,
               let logoUrlString = dict["logo_url"] as? String,
               let logoUrl = URL(string: logoUrlString),
-              let stateId = dict["state_id"] as? Int else {
+              let avaliable_states = dict["available_states"] as? [Int],
+              let apiUrlString = dict["api_url"] as? String,
+         let apiUrl = URL(string: apiUrlString)  else {
             return nil
         }
         self.id = id
         self.name = name
         self.logoUrl = logoUrl
-        self.stateId = stateId
+        self.avaliable_states = avaliable_states
+        self.apiUrl = apiUrl
     }
 }
 

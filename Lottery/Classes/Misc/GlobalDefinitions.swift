@@ -10,7 +10,7 @@ import Foundation
 // TODO: заменить по готовности доки
 final class GlobalDefinitions {
     static let domain = "http://178.57.217.33:8000"
-    static let apiKey = "uadq2R32E6OOOkBrxyBH"
+    static let apiKey = "CVW34OdTfiTKzKHCMAI0unHpotOOSePkXRG10rehoSRfyv0aKaAWApHydxhFaYftyfoXFuW3utyhrZSQtqjcWl994tPfd4QHu5jfdxQP5cDDRMXvz0H2iHw6TXdO9WUL"
     
     static let otterScaleHost = "https://api.korrekted.com"
     static let otterScaleApiKey = "i9upCYSnV2mW4aM3"
