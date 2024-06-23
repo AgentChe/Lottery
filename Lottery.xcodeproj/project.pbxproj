@@ -11,6 +11,8 @@
 		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
 		A32748BC2C25E74F00E9F79A /* ScanSelectStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */; };
 		A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */; };
+		A32748C12C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748C02C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift */; };
+		A32748C32C28E99E00E9F79A /* ScanSelectLotteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748C22C28E99E00E9F79A /* ScanSelectLotteryView.swift */; };
 		A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */; };
 		A3282B192C20A4C4006EED71 /* UIView(helper).swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B182C20A4C4006EED71 /* UIView(helper).swift */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
@@ -169,6 +171,8 @@
 		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
 		A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateViewController.swift; sourceTree = "<group>"; };
 		A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateView.swift; sourceTree = "<group>"; };
+		A32748C02C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectLotteriesViewController.swift; sourceTree = "<group>"; };
+		A32748C22C28E99E00E9F79A /* ScanSelectLotteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectLotteryView.swift; sourceTree = "<group>"; };
 		A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
 		A3282B182C20A4C4006EED71 /* UIView(helper).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView(helper).swift"; sourceTree = "<group>"; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
@@ -350,6 +354,7 @@
 			children = (
 				A32748BD2C25E79100E9F79A /* Views */,
 				A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */,
+				A32748C02C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift */,
 				A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */,
 			);
 			path = Scan;
@@ -359,6 +364,7 @@
 			isa = PBXGroup;
 			children = (
 				A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */,
+				A32748C22C28E99E00E9F79A /* ScanSelectLotteryView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1221,6 +1227,7 @@
 				DE42B1C32BFF3CB200FF61B0 /* PaygateInfoCell.swift in Sources */,
 				DE42B18C2BFF3CB200FF61B0 /* FirebaseManager.swift in Sources */,
 				DE42B2012BFF50E300FF61B0 /* APIOperation.swift in Sources */,
+				A32748C12C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift in Sources */,
 				DE42B1A02BFF3CB200FF61B0 /* UIView+RxExtension.swift in Sources */,
 				A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */,
 				DE42B2192BFF666F00FF61B0 /* TryAgainView.swift in Sources */,
@@ -1248,6 +1255,7 @@
 				DE42B1B52BFF3CB200FF61B0 /* SceneDelegate.swift in Sources */,
 				A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */,
 				A3FF55852C08C03400E81771 /* GetProfileRequest.swift in Sources */,
+				A32748C32C28E99E00E9F79A /* ScanSelectLotteryView.swift in Sources */,
 				DE42B1AE2BFF3CB200FF61B0 /* ScreenSize.swift in Sources */,
 				DE42B1CB2BFF3CB200FF61B0 /* SplashViewController.swift in Sources */,
 				DE42B18E2BFF3CB200FF61B0 /* RequestReview.swift in Sources */,

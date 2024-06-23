@@ -106,7 +106,7 @@ private extension ScanSelectStateView {
           
             
             descriptionLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10.scale),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
+            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.scale),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             
             stateTableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),

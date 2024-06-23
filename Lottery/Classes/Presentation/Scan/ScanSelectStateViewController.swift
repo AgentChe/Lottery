@@ -70,26 +70,34 @@ private extension ScanSelectStateViewController {
     }
     
     func setupNavigationBackButton() {
-        // Hide the default back button
-        navigationItem.hidesBackButton = true
+        // Create a custom back button
+        let backButton = UIButton(type: .custom)
         
-//        // Load the image from your asset catalog
-//        let backButtonImage = UIImage(named: "Scan.SelectState")
-//        
-//        // Create a UIButton with the custom image
-//        let backButton = UIButton(type: .custom)
-//        backButton.setImage(backButtonImage, for: .normal)
-//        backButton.addTarget(self, action: #selector(navigationBackButtonTapped), for: .touchUpInside)
-//        
-//        // Adjust the frame if needed
-//        backButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-//        
-//        // Create a UIBarButtonItem using the UIButton
-//        let backBarButtonItem = UIBarButtonItem(customView: backButton)
-//        
-//        // Set the custom UIBarButtonItem as the left bar button item
-//        navigationItem.leftBarButtonItem = backBarButtonItem
+        // Set the custom image for the button
+        if let image = UIImage(named: "Scan.SelectState") {
+            backButton.setImage(image, for: .normal)
+        }
+        
+        // Set the frame or size of the button as needed
+        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.imageView?.contentMode = .scaleAspectFit
+        
+        // Add a target to handle back navigation
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        
+        // Create a UIBarButtonItem with the custom button
+        let backButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Replace the default back button with the custom button
+        parent?.navigationItem.leftBarButtonItem = backButtonItem
+        parent?.navigationItem.hidesBackButton = true // Hide the default back button
     }
+
+    @objc private func customBackButtonTapped() {
+        // Perform back navigation
+        navigationController?.popViewController(animated: true)
+    }
+
     
     @objc func navigationBackButtonTapped() {
         // Handle the navigation back button tap action

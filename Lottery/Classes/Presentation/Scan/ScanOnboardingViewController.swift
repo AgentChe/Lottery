@@ -51,7 +51,7 @@ final class ScanOnboardingViewController: UIViewController {
      
     private func showSelectLotteriesViewController() {
         guard let selectedState = selectedState else { return } // Ensure we have a stateId
-        let selectGameVC = SelectLotteriesViewController(stateId: selectedState)
+        let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState)
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedGames = selectedGames
