@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 final class ScanMenuViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -29,7 +30,7 @@ final class ScanMenuViewController: UIViewController {
         button.backgroundColor = Appearance.main100
         button.tintColor = Appearance.mono100
         button.layer.cornerRadius = 21.scale
-        button.addTarget(self, action: #selector(firstButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(scanTicketButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -43,19 +44,19 @@ final class ScanMenuViewController: UIViewController {
         button.backgroundColor = Appearance.mono100
         button.tintColor = Appearance.mono200
         button.layer.cornerRadius = 21.scale
-        button.addTarget(self, action: #selector(secondButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(addTicketManuallyButtonTapped), for: .touchUpInside)
         return button
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.mono200
-
+        
         // Adding subviews
         view.addSubview(imageView)
         view.addSubview(scanTicketButton)
         view.addSubview(addTicketButton)
-
+        
         // Applying constraints
         setupConstraints()
         
@@ -94,32 +95,99 @@ final class ScanMenuViewController: UIViewController {
         NSLayoutConstraint.activate([
             // Constraints for imageView
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50.scale),
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30.scale),
             imageView.widthAnchor.constraint(equalToConstant: 343.scale),
             imageView.heightAnchor.constraint(equalToConstant: 510.scale), // Adjust as needed for aspect ratio
             
             // Constraints for firstButton
             scanTicketButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scanTicketButton.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20.scale),
+            scanTicketButton.bottomAnchor.constraint(equalTo: addTicketButton.topAnchor, constant: -15.scale),
             scanTicketButton.widthAnchor.constraint(equalToConstant: 343.scale),
             scanTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
             
             // Constraints for secondButton
             addTicketButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addTicketButton.topAnchor.constraint(equalTo: scanTicketButton.bottomAnchor, constant: 15.scale),
+            addTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50.scale),
             addTicketButton.widthAnchor.constraint(equalToConstant: 343.scale),
             addTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
     }
     
     // Actions for the buttons
-    @objc private func firstButtonTapped() {
-        print("First button tapped")
-        // Add functionality for the first button
+    @objc private func scanTicketButtonTapped() {
+        
+        requestCameraPermission()
+        
+        
     }
     
-    @objc private func secondButtonTapped() {
+    @objc private func addTicketManuallyButtonTapped() {
         print("Second button tapped")
         // Add functionality for the second button
+    }
+    func requestCameraPermission() {
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch cameraAuthorizationStatus {
+        case .notDetermined:
+            // The user has not yet been asked for camera access.
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                // Ensure UI updates are on the main thread
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    
+                    if granted {
+                        print("Camera access granted.")
+                        let scanViewController = ScanViewController()
+                        if let navigationController = self.navigationController {
+                            navigationController.pushViewController(scanViewController, animated: true)
+                        } else {
+                            // If not in a navigation controller, present it modally
+                            self.present(scanViewController, animated: true, completion: nil)
+                        }
+                    } else {
+                        print("Camera access denied.")
+                    }
+                }
+            }
+        case .restricted, .denied:
+            // The user has previously denied or restricted camera access.
+            self.showCameraAccessDeniedAlert()
+        case .authorized:
+            // The user has previously granted camera access.
+            print("Camera access already granted.")
+            
+            DispatchQueue.main.async {
+                print("Camera access granted.")
+                let scanViewController = ScanViewController()
+                if let navigationController = self.navigationController {
+                    navigationController.pushViewController(scanViewController, animated: true)
+                } else {
+                    // If not in a navigation controller, present it modally
+                    self.present(scanViewController, animated: true, completion: nil)
+                }
+            }
+        @unknown default:
+            // Handle other possible cases, future-proofing.
+            fatalError("Unknown camera authorization status.")
+        }
+    }
+    
+    
+    
+    func showCameraAccessDeniedAlert() {
+        let alert = UIAlertController(
+            title: "Camera Access Needed",
+            message: "Please allow camera access in Settings to use this feature.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Open Settings", style: .default, handler: { _ in
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }

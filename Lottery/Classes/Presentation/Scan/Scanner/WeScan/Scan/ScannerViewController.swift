@@ -25,6 +25,13 @@ public final class ScannerViewController: UIViewController {
     /// The original bar style that was set by the host app
     private var originalBarStyle: UIBarStyle?
     
+    private lazy var darkBlueBackground: UIView = {
+        let view = UIView(frame: UIScreen.main.bounds)
+        view.backgroundColor = Appearance.mono200
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var shutterButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -225,14 +232,35 @@ public final class ScannerViewController: UIViewController {
     // MARK: - Setups
     
     private func setupViews() {
-        view.backgroundColor = .darkGray
         view.layer.addSublayer(videoPreviewLayer)
         quadView.translatesAutoresizingMaskIntoConstraints = false
         quadView.editable = false
         view.addSubview(quadView)
         view.addSubview(cancelButton)
+        view.addSubview(darkBlueBackground)
+        applyMaskToDarkBlueBackground()
         view.addSubview(shutterButton)
         view.addSubview(activityIndicator)
+        
+        
+    }
+    private func applyMaskToDarkBlueBackground() {
+        let maskLayer = CAShapeLayer()
+        
+        // Define the mask's frame
+        let maskFrame = CGRect(x: 16.scale, y: 129.scale, width: 343.scale, height: 510.scale)
+        
+        // Create the path for the mask
+        let path = UIBezierPath(rect: darkBlueBackground.bounds) // Start with the full view bounds
+        let maskPath = UIBezierPath(roundedRect: maskFrame, cornerRadius: 20.scale)
+        
+        // Append the maskPath to the path and set the fill rule to even-odd to create a hole
+        path.append(maskPath)
+        maskLayer.path = path.cgPath
+        maskLayer.fillRule = .evenOdd
+        
+        // Apply the mask layer to darkBlueBackground
+        darkBlueBackground.layer.mask = maskLayer
     }
     
     private func setupNavigationBar() {
@@ -437,7 +465,7 @@ extension ScannerViewController: RectangleDetectionDelegateProtocol {
         activityIndicator.stopAnimating()
         
         let editVC = EditScanViewController(image: picture, quad: quad, filterType: currentFilter)
-        navigationController?.pushViewController(editVC, animated: false)
+        parent?.navigationController?.pushViewController(editVC, animated: false)
         
         shutterButton.isUserInteractionEnabled = true
     }
