@@ -54,11 +54,6 @@ class ScannedResultsViewController: UIViewController, UICollectionViewDataSource
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        let tabBarVC = findRootTabBarController()
-        tabBarVC?.tabBar.isHidden = false
-    }
 
     private func setupCollectionView() {
         collectionView.dataSource = self

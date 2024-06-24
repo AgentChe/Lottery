@@ -99,8 +99,8 @@ private extension ScanSelectLotteriesViewController {
         }
         
         // Show preloader and hide button
-        selectLotteryView.continueButton.isHidden = true
-        selectLotteryView.preloader.startAnimating()
+//        selectLotteryView.continueButton.isHidden = true
+//        selectLotteryView.preloader.startAnimating()
         
         onContinue?(selectedLotteries)
     }

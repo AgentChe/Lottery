@@ -24,6 +24,8 @@ final class SplashViewController: UIViewController {
         view = mainView
     }
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

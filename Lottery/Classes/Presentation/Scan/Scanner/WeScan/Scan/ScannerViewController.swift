@@ -1,25 +1,13 @@
 import AVFoundation
 import UIKit
 
-func findRootTabBarController() -> UITabBarController? {
-    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-          let sceneDelegate = windowScene.delegate as? SceneDelegate else {
-        return nil
-    }
-    
-    if let rootViewController = sceneDelegate.window?.rootViewController as? UITabBarController {
-        return rootViewController
-    } else {
-        return nil
-    }
-}
 
 /// The `ScannerViewController` offers an interface to give feedback to the user regarding quadrilaterals that are detected. It also gives the user the opportunity to capture an image with a detected rectangle.
 public final class ScannerViewController: UIViewController {
     let saveButton = UIButton(type: .system)
     let imageButton = UIButton()
     public override var preferredStatusBarStyle: UIStatusBarStyle {
-        .darkContent
+        .lightContent
     }
     var currentFilter: FilterType = .adaptiveThreshold
     private var captureSessionManager: CaptureSessionManager?
@@ -75,8 +63,8 @@ public final class ScannerViewController: UIViewController {
         button.setImage(UIImage(named: "Scan.Filters"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 24.scale).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 24.scale).isActive = true
         button.addTarget(self, action: #selector(applyFilter), for: .touchUpInside)
         return button
     }()
@@ -90,7 +78,7 @@ public final class ScannerViewController: UIViewController {
     private lazy var grayscaleButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Grayscale", for: .normal)
-        button.titleLabel?.font = Fonts.Inter.medium(size: 18)
+        button.titleLabel?.font = Fonts.Inter.medium(size: 18.scale)
         button.tintColor = Appearance.mono200
         button.addTarget(self, action: #selector(applyGrayscaleFilter), for: .touchUpInside)
         return button
@@ -115,7 +103,7 @@ public final class ScannerViewController: UIViewController {
         super.viewDidLoad()
         
         title = nil
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = Appearance.mono200
         
         setupViews()
         setupNavigationBar()
@@ -131,10 +119,10 @@ public final class ScannerViewController: UIViewController {
     
     private func setupSaveButton() {
         saveButton.setTitle("Save (1)", for: .normal)
-        saveButton.titleLabel?.font = Fonts.Inter.medium(size: 16)
+        saveButton.titleLabel?.font = Fonts.Inter.medium(size: 16.scale)
         saveButton.backgroundColor = Appearance.mono200
-        saveButton.tintColor = .white
-        saveButton.layer.cornerRadius = 16
+        saveButton.tintColor = Appearance.mono100
+        saveButton.layer.cornerRadius = 16.scale
         saveButton.clipsToBounds = true
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -142,7 +130,7 @@ public final class ScannerViewController: UIViewController {
         //            imageButton.setImage(lastImage, for: .normal)
         //        }
         //        imageButton.imageView?.contentMode = .scaleAspectFill
-        imageButton.layer.cornerRadius = 8
+        imageButton.layer.cornerRadius = 8.scale
         imageButton.clipsToBounds = true
         imageButton.translatesAutoresizingMaskIntoConstraints = false
         imageButton.addTarget(self, action: #selector(imageButtonTapped), for: .touchUpInside)
@@ -151,15 +139,15 @@ public final class ScannerViewController: UIViewController {
         view.addSubview(imageButton)
         
         NSLayoutConstraint.activate([
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
             saveButton.centerYAnchor.constraint(equalTo: shutterButton.centerYAnchor),
-            saveButton.widthAnchor.constraint(equalToConstant: 103),
-            saveButton.heightAnchor.constraint(equalToConstant: 44),
+            saveButton.widthAnchor.constraint(equalToConstant: 103.scale),
+            saveButton.heightAnchor.constraint(equalToConstant: 44.scale),
             
-            imageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            imageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             imageButton.centerYAnchor.constraint(equalTo: shutterButton.centerYAnchor),
-            imageButton.widthAnchor.constraint(equalToConstant: 44),
-            imageButton.heightAnchor.constraint(equalToConstant: 44)
+            imageButton.widthAnchor.constraint(equalToConstant: 44.scale),
+            imageButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
         
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
@@ -171,9 +159,7 @@ public final class ScannerViewController: UIViewController {
         print("Save button tapped")
         let scannedResultsVC = ScannedResultsViewController()
         navigationController?.pushViewController(scannedResultsVC, animated: true)
-        
-        let tabBarVC = findRootTabBarController()
-        tabBarVC?.tabBar.isHidden = true
+     
     }
     
     @objc private func saveButtonTapped() {
@@ -182,9 +168,8 @@ public final class ScannerViewController: UIViewController {
         let scannedResultsVC = ScannedResultsViewController()
         navigationController?.pushViewController(scannedResultsVC, animated: true)
         
-        let tabBarVC = findRootTabBarController()
-        tabBarVC?.tabBar.isHidden = true
     }
+    
     
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -277,8 +262,8 @@ public final class ScannerViewController: UIViewController {
         
         shutterButtonConstraints = [
             shutterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            shutterButton.widthAnchor.constraint(equalToConstant: 65.0),
-            shutterButton.heightAnchor.constraint(equalToConstant: 65.0)
+            shutterButton.widthAnchor.constraint(equalToConstant: 80.0.scale),
+            shutterButton.heightAnchor.constraint(equalToConstant: 80.0.scale)
         ]
         
         activityIndicatorConstraints = [
@@ -288,23 +273,19 @@ public final class ScannerViewController: UIViewController {
         
         if #available(iOS 11.0, *) {
             cancelButtonConstraints = [
-                cancelButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 24.0),
-                view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
+                cancelButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 24.0.scale),
+                view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0/2 - 10.0).scale)
             ]
-            if let tabBarController = findRootTabBarController() {
-                let tabBarHeight = tabBarController.tabBar.frame.height
-                let shutterButtonBottomConstraint = shutterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(tabBarHeight + 18).scale)
+            
+                let shutterButtonBottomConstraint = shutterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40.scale)
                 
                 shutterButtonConstraints.append(shutterButtonBottomConstraint)
-            } else {
-                // Handle the case where the tab bar controller is not found
-                print("Tab bar controller not found")
-            }
+           
             
         } else {
             cancelButtonConstraints = [
-                cancelButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 24.0),
-                view.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
+                cancelButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 24.0.scale),
+                view.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0/2 - 10.0).scale)
             ]
             
         }
@@ -457,9 +438,6 @@ extension ScannerViewController: RectangleDetectionDelegateProtocol {
         
         let editVC = EditScanViewController(image: picture, quad: quad, filterType: currentFilter)
         navigationController?.pushViewController(editVC, animated: false)
-        
-        let tabBarVC = findRootTabBarController()
-        tabBarVC?.tabBar.isHidden = true
         
         shutterButton.isUserInteractionEnabled = true
     }

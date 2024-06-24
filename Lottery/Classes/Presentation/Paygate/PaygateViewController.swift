@@ -32,6 +32,9 @@ final class PaygateViewController: UIViewController {
     override func loadView() {
         view = mainView
     }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,9 +103,7 @@ final class PaygateViewController: UIViewController {
         mainView.leftOptionButton.isChecked = true
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .darkContent
-    }
+   
 }
 
 // MARK: Make

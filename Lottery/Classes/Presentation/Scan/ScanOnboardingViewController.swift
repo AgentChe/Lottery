@@ -28,7 +28,7 @@ final class ScanOnboardingViewController: UIViewController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .darkContent
+        return .lightContent
     }
     
     private func setupInitialViewControllerToChooseState() {
@@ -90,7 +90,7 @@ final class ScanOnboardingViewController: UIViewController {
     private func completeOnboarding() {
 //        markAsViewed()
 //        saveProfile()
-        let scanViewController = ScanViewController()
+        let scanViewController = ScanMenuViewController()
         if let navigationController = navigationController {
             navigationController.pushViewController(scanViewController, animated: true)
         } else {

@@ -266,8 +266,7 @@ final class EditScanViewController: UIViewController,UIGestureRecognizerDelegate
         // Work around for an iOS 11.2 bug where UIBarButtonItems don't get back to their normal state after being pressed.
         navigationController?.navigationBar.tintAdjustmentMode = .normal
         navigationController?.navigationBar.tintAdjustmentMode = .automatic
-        let tabBarVC = findRootTabBarController()
-        tabBarVC?.tabBar.isHidden = false
+       
     }
 
   

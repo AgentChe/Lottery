@@ -59,21 +59,19 @@ public final class ImageScannerController: UINavigationController {
     override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
 
     public required init(image: UIImage? = nil, delegate: ImageScannerControllerDelegate? = nil) {
         super.init(rootViewController: ScannerViewController())
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = Appearance.mono100
         
         self.imageScannerDelegate = delegate
 
-        if #available(iOS 13.0, *) {
-            navigationBar.tintColor = .label
-        } else {
-            navigationBar.tintColor = .black
-        }
-        navigationBar.isTranslucent = false
-        self.view.addSubview(blackFlashView)
-        setupConstraints()
+    
+        //self.view.addSubview(blackFlashView)
+        //setupConstraints()
 
         // If an image was passed in by the host app (e.g. picked from the photo library), use it instead of the document scanner.
         if let image {
@@ -83,7 +81,9 @@ public final class ImageScannerController: UINavigationController {
                 self.setViewControllers([editViewController], animated: false)
             }
         }
+     
     }
+ 
 
     override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -142,7 +142,7 @@ public final class ImageScannerController: UINavigationController {
 
     internal func flashToBlack() {
         view.bringSubviewToFront(blackFlashView)
-        blackFlashView.isHidden = false
+        blackFlashView.isHidden = true
         let flashDuration = DispatchTime.now() + 0.05
         DispatchQueue.main.asyncAfter(deadline: flashDuration) {
             self.blackFlashView.isHidden = true
