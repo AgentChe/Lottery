@@ -35,6 +35,7 @@ final class ScanOnboardingViewController: UIViewController {
         let selectStateVC = ScanSelectStateViewController()
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
+          
             self.selectedState = selectedState
             self.showSelectLotteriesViewController()
         }

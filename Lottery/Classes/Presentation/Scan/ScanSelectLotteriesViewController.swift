@@ -61,7 +61,7 @@ private extension ScanSelectLotteriesViewController {
         backButton.imageView?.contentMode = .scaleAspectFit
         
         // Add a target to handle back navigation
-       // backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
         
         // Create a UIBarButtonItem with the custom button
         let backButtonItem = UIBarButtonItem(customView: backButton)
@@ -69,6 +69,10 @@ private extension ScanSelectLotteriesViewController {
         // Replace the default back button with the custom button
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true // Hide the default back button
+    }
+    @objc private func customBackButtonTapped() {
+        // Perform back navigation
+        navigationController?.popViewController(animated: true)
     }
     func setupButtons() {
         selectLotteryView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)

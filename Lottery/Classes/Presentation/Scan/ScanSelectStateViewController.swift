@@ -56,10 +56,10 @@ private extension ScanSelectStateViewController {
         }
         
         // Show preloader and hide button
-        selectStateView.continueButton.isHidden = true
+        // selectStateView.continueButton.isHidden = true
         selectStateView.preloader.startAnimating()
-        
         onContinue?(selectedState)
+        selectStateView.preloader.stopAnimating()
     }
     
     func presentTryAgainViewController(with error: Error) {

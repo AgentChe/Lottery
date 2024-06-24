@@ -179,23 +179,28 @@ extension ScanSelectLotteryView: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
+// MARK: - UITableViewDelegate
+
 extension ScanSelectLotteryView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if selectedLotteries.contains(indexPath.row) {
-            selectedLotteries.remove(indexPath.row)
-        } else {
-            selectedLotteries.insert(indexPath.row)
+        // Clear all other selections
+        for index in selectedLotteries {
+            tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
         }
+        
+        // Clear the selectedLotteries set and add the new selection
+        selectedLotteries.removeAll()
+        selectedLotteries.insert(indexPath.row)
+        
         updateContinueButtonState()
         tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if selectedLotteries.contains(indexPath.row) {
-            selectedLotteries.remove(indexPath.row)
-        } else {
-            selectedLotteries.insert(indexPath.row)
-        }
+        // Ensure the selected row remains selected until another row is chosen
+        selectedLotteries.removeAll()
+        selectedLotteries.insert(indexPath.row)
+        
         updateContinueButtonState()
         tableView.reloadData()
     }
