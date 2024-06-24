@@ -76,7 +76,7 @@ private extension ScanSelectLotteriesViewController {
     }
     func setupButtons() {
         selectLotteryView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
-        selectLotteryView.addAnotherGameButton.addTarget(self, action: #selector(addAnotherGameButtonTapped), for: .touchUpInside)
+        
     }
     
     func fetchLotteries() {
@@ -105,11 +105,7 @@ private extension ScanSelectLotteriesViewController {
         onContinue?(selectedLotteries)
     }
     
-    @objc func addAnotherGameButtonTapped() {
-        let suggestNewGameVC = SuggestNewGameViewController()
-        suggestNewGameVC.modalPresentationStyle = .fullScreen
-        present(suggestNewGameVC, animated: true, completion: nil)
-    }
+
     
     func presentTryAgainViewController(with error: Error) {
         let vc = TryAgainViewController.make(error: error) { [weak self] in

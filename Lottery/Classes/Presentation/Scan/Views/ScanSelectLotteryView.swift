@@ -34,21 +34,6 @@ final class ScanSelectLotteryView: UIView {
         return preloader
     }()
     
-    let addAnotherGameButton: UIButton = {
-        let button = UIButton()
-        let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
-            .font(Fonts.Inter.medium(size: 17.scale))
-        let attributedTitle = "Add another game".localized.attributed(with: attrs)
-        button.setAttributedTitle(attributedTitle, for: .normal)
-        button.backgroundColor = .white
-        button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
-        button.layer.borderWidth = 1.scale
-        button.layer.cornerRadius = 20.scale
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
- 
     
     private let descriptionLabel: UILabel = {
         let attrs = TextAttributes()
@@ -114,7 +99,6 @@ private extension ScanSelectLotteryView {
         addSubview(gameTableView)
         addSubview(continueButton)
         addSubview(preloader) // Add preloader to the view
-        addSubview(addAnotherGameButton)
         setupConstraints()
     }
     
@@ -130,7 +114,7 @@ private extension ScanSelectLotteryView {
             gameTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             gameTableView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.scale),
             
-            continueButton.bottomAnchor.constraint(equalTo: addAnotherGameButton.topAnchor, constant: -10.scale),
+            continueButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
             continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             continueButton.heightAnchor.constraint(equalToConstant: 50.scale),
@@ -138,11 +122,7 @@ private extension ScanSelectLotteryView {
             // Constraints for preloader
             preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
             preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
-            
-            addAnotherGameButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
-            addAnotherGameButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            addAnotherGameButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            addAnotherGameButton.heightAnchor.constraint(equalToConstant: 50.scale)
+         
         ])
     }
     

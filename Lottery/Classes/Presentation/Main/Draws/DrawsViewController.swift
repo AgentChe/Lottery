@@ -36,6 +36,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
@@ -243,7 +244,7 @@ private extension DrawsViewController {
         
         // Present the navigation controller
         present(navController, animated: true, completion: nil)
-    }
+    } 
     
     func segmentedControlChanged(index: Int) {
         if index == 0 {
@@ -254,7 +255,7 @@ private extension DrawsViewController {
             pastDrawsCollectionView.isHidden = false
         }
     }
-    
+   
     func fetchStateAndGames() {
         profileManager.getProfile(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
@@ -323,6 +324,7 @@ private extension DrawsViewController {
     @objc func scanButtonTapped() {
         let scanOnboardingViewController = ScanOnboardingViewController.make()
         
+        
         // Check if the current view controller is embedded in a navigation controller
         if let navigationController = self.navigationController {
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
@@ -337,6 +339,7 @@ private extension DrawsViewController {
             // If not, present the view controller modally as a fallback
             present(scanOnboardingViewController, animated: true, completion: nil)
         }
+            
     }
     
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
