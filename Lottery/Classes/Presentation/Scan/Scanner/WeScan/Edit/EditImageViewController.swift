@@ -70,6 +70,7 @@ public final class EditImageViewController: UIViewController {
         setupConstraints()
         zoomGestureController = ZoomGestureController(image: image, quadView: quadView)
         addLongGesture(of: zoomGestureController)
+        
     }
 
     override public func viewDidLayoutSubviews() {

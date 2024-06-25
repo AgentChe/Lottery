@@ -52,7 +52,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         layout.minimumInteritemSpacing = 12.scale
         layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 10.scale, bottom: 0.scale, right: 10.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
@@ -97,7 +97,22 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
         collectionViewHeightConstraint.isActive = false
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
+        
+        // Get the number of cells in the last row
+        if let firstNumberArray = numbersStringArray.first {
+            let numberOfCells = firstNumberArray.count + 1
+            // Calculate the available width based on the given constraints
+            let totalWidth: CGFloat = 343.scale
+            let sideMargins: CGFloat = 40.scale
+            let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+            
+            // Calculate the width for each cell
+            let availableWidth = totalWidth - sideMargins - cellSpacing
+            let cellWidth = availableWidth / CGFloat(numberOfCells)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+        } else {
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
+            }
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
     }
@@ -115,7 +130,20 @@ private extension TicketEditCell {
         self.ticket = ticket
 
         collectionViewHeightConstraint.isActive = false
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+        if let firstNumberArray = numbersStringArray.first {
+            let numberOfCells = firstNumberArray.count + 1
+            // Calculate the available width based on the given constraints
+            let totalWidth: CGFloat = 343.scale
+            let sideMargins: CGFloat = 40.scale
+            let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+            
+            // Calculate the width for each cell
+            let availableWidth = totalWidth - sideMargins - cellSpacing
+            let cellWidth = availableWidth / CGFloat(numberOfCells)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+        } else {
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+            }
         collectionViewHeightConstraint.isActive = true
 
         collectionView.reloadData()
@@ -295,7 +323,21 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
               numbersStringArray.remove(at: indexPath.section)
               
               collectionViewHeightConstraint.isActive = false
-              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+              // Get the number of cells in the last row
+              if let firstNumberArray = numbersStringArray.first {
+                  let numberOfCells = firstNumberArray.count + 1
+                  // Calculate the available width based on the given constraints
+                  let totalWidth: CGFloat = 343.scale
+                  let sideMargins: CGFloat = 40.scale
+                  let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+                  
+                  // Calculate the width for each cell
+                  let availableWidth = totalWidth - sideMargins - cellSpacing
+                  let cellWidth = availableWidth / CGFloat(numberOfCells)
+                  collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+              } else {
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+                }
               collectionViewHeightConstraint.isActive = true
               
               collectionView.reloadData()

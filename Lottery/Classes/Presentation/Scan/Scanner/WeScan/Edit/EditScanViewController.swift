@@ -111,7 +111,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         touchDown.minimumPressDuration = 0
         touchDown.delegate = self
         view.addGestureRecognizer(touchDown)
-        view.backgroundColor = .red
+        view.backgroundColor = .clear
         
         setupNavigationBackButton()
     }
@@ -180,7 +180,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         keepButton.layer.cornerRadius = 21.scale // Adjust radius to match the one in your image with scale
         keepButton.clipsToBounds = true
         keepButton.translatesAutoresizingMaskIntoConstraints = false
-        keepButton.addTarget(self, action: #selector(keepButtonTapped), for: .touchUpInside)
+        keepButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         
         view.addSubview(keepButton)
         
@@ -201,7 +201,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc func keepButtonTapped() {
+    @objc func continueButtonTapped() {
         guard let quad = quadView.quad,
               let ciImage = CIImage(image: image) else {
             if let imageScannerController = navigationController as? ImageScannerController {
@@ -246,7 +246,13 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             enhancedScan: enhancedScan
         )
         ImageManager.shared.addImageScans(results)
-        self.navigationController?.popViewController(animated: true)
+        
+        let ticket = Ticket(id: 1, lotteryId: 1, pictureUrl: URL(string: "http://example.com/pic.png"), date: 1627490000.0, numbers: [[1, 2, 3, 4 ],[6, 7, 8, 9]])
+        
+        let checkTicketViewController = CheckTicketViewController(ticket: ticket)
+        
+        
+        navigationController?.pushViewController( checkTicketViewController, animated: true)
     }
     
     private func setupConstraints() {

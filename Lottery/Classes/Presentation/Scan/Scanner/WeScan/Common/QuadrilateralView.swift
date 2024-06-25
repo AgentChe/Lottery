@@ -34,7 +34,7 @@ final class QuadrilateralView: UIView {
 
     /// We want the corner views to be displayed under the outline of the quadrilateral.
     /// Because of that, we need the quadrilateral to be drawn on a UIView above them.
-    private let quadView: UIView = {
+     let quadView: UIView = {
         let view = UIView()
         view.backgroundColor = Appearance.mono200
         view.alpha = 0.7
@@ -102,7 +102,7 @@ final class QuadrilateralView: UIView {
     private let cornerViewSize = CGSize(width: 20.0, height: 20.0)
 
     // MARK: - Life Cycle
-
+   
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()

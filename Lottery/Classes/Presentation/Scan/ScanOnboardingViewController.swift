@@ -24,7 +24,8 @@ final class ScanOnboardingViewController: UIViewController {
     }
     override func loadView() {
         super.loadView()
-      
+        //navigationItem.hidesBackButton = true
+        setupNavigationBackButton()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -48,7 +49,33 @@ final class ScanOnboardingViewController: UIViewController {
         selectStateVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         selectStateVC.didMove(toParent: self)
     }
-    
+    func setupNavigationBackButton() {
+        // Create a custom back button
+        let backButton = UIButton(type: .custom)
+        
+        // Set the custom image for the button
+        if let image = UIImage(named: "Scan.ScanTheTicket") {
+            backButton.setImage(image, for: .normal)
+        }
+        
+        // Set the frame or size of the button as needed
+        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.imageView?.contentMode = .scaleAspectFit
+        
+        // Add a target to handle back navigation
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        
+        // Create a UIBarButtonItem with the custom button
+        let backButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Replace the default back button with the custom button
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true // Hide the default back button
+    }
+    @objc private func customBackButtonTapped() {
+        // Perform back navigation
+        navigationController?.popViewController(animated: true)
+    }
     private func setupInitialViewControllerToScan() {
         // Set up the first view controller in the onboarding flow
         let scanViewController = ScanViewController()
@@ -60,6 +87,7 @@ final class ScanOnboardingViewController: UIViewController {
 //        }
         
         // Add the initial view controller as a child view controller
+        
         addChild(scanViewController)
         view.addSubview(scanViewController.view)
         scanViewController.view.frame = view.bounds

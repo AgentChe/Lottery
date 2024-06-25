@@ -80,6 +80,7 @@
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
+		A3AE80142C2B63BB00E5B473 /* CheckTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80132C2B63BB00E5B473 /* CheckTicketViewController.swift */; };
 		A3B3C7B52C29BCC5009EA452 /* ScanMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B3C7B42C29BCC5009EA452 /* ScanMenuViewController.swift */; };
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
@@ -294,6 +295,7 @@
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
+		A3AE80132C2B63BB00E5B473 /* CheckTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckTicketViewController.swift; sourceTree = "<group>"; };
 		A3B3C7B42C29BCC5009EA452 /* ScanMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanMenuViewController.swift; sourceTree = "<group>"; };
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
@@ -466,6 +468,7 @@
 				A32748C02C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift */,
 				A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */,
 				A3B3C7B42C29BCC5009EA452 /* ScanMenuViewController.swift */,
+				A3AE80132C2B63BB00E5B473 /* CheckTicketViewController.swift */,
 			);
 			path = Scan;
 			sourceTree = "<group>";
@@ -1600,6 +1603,7 @@
 				A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */,
 				DE42B1C72BFF3CB200FF61B0 /* PaygateViewController.swift in Sources */,
 				DE42B18F2BFF3CB200FF61B0 /* RxActivityIndicator.swift in Sources */,
+				A3AE80142C2B63BB00E5B473 /* CheckTicketViewController.swift in Sources */,
 				A3FF55572C07E0B600E81771 /* State.swift in Sources */,
 				A327496D2C29859400E9F79A /* FocusRectangleView.swift in Sources */,
 				DE42B1AA2BFF3CB200FF61B0 /* Fonts.swift in Sources */,

@@ -327,6 +327,7 @@ private extension DrawsViewController {
         
         // Check if the current view controller is embedded in a navigation controller
         if let navigationController = self.navigationController {
+           
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
             
             if let navigationController = getRootViewController() as? NavigationController,

@@ -13,20 +13,22 @@ class ScanViewController: UIViewController, ImageScannerControllerDelegate {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
+     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //setupNavigationBackButton()
         // Initialize the scanner
         let scanner = ImageScannerController()
         scanner.imageScannerDelegate = self
-        
+ 
         // Add the scanner as a child view controller
         addChild(scanner)
         scanner.view.frame = view.bounds  // Adjust the frame as needed
         view.addSubview(scanner.view)
         scanner.didMove(toParent: self)
-        
-        setupNavigationBackButton()
+        //setupNavigationBackButton()
+      
     }
     func setupNavigationBackButton() {
         // Create a custom back button
@@ -48,8 +50,8 @@ class ScanViewController: UIViewController, ImageScannerControllerDelegate {
         let backButtonItem = UIBarButtonItem(customView: backButton)
         
         // Replace the default back button with the custom button
-        navigationItem.leftBarButtonItem = backButtonItem
-        navigationItem.hidesBackButton = true // Hide the default back button
+        parent?.navigationItem.leftBarButtonItem = backButtonItem
+        parent?.navigationItem.hidesBackButton = true // Hide the default back button
     }
 
     @objc private func customBackButtonTapped() {

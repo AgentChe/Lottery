@@ -113,7 +113,7 @@ public final class ScannerViewController: UIViewController {
         view.backgroundColor = Appearance.mono200
         
         setupViews()
-        setupNavigationBar()
+        //setupNavigationBar()
         setupConstraints()
         
         captureSessionManager = CaptureSessionManager(videoPreviewLayer: videoPreviewLayer, delegate: self)
@@ -121,7 +121,7 @@ public final class ScannerViewController: UIViewController {
         originalBarStyle = navigationController?.navigationBar.barStyle
         
         NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: Notification.Name.AVCaptureDeviceSubjectAreaDidChange, object: nil)
-        setupSaveButton()
+        
     }
     
     private func setupSaveButton() {
@@ -132,11 +132,7 @@ public final class ScannerViewController: UIViewController {
         saveButton.layer.cornerRadius = 16.scale
         saveButton.clipsToBounds = true
         saveButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        //        if let lastImage = ImageManager.shared.imageScans.last?.originalScan.image {
-        //            imageButton.setImage(lastImage, for: .normal)
-        //        }
-        //        imageButton.imageView?.contentMode = .scaleAspectFill
+  
         imageButton.layer.cornerRadius = 8.scale
         imageButton.clipsToBounds = true
         imageButton.translatesAutoresizingMaskIntoConstraints = false
@@ -186,21 +182,8 @@ public final class ScannerViewController: UIViewController {
         quadView.removeQuadrilateral()
         captureSessionManager?.start()
         UIApplication.shared.isIdleTimerDisabled = true
+        quadView.quadView.backgroundColor = .clear
         
-        navigationController?.navigationBar.barStyle = .blackTranslucent
-        
-        let backButton = UIBarButtonItem()
-        backButton.title = ""
-        navigationItem.backBarButtonItem = backButton
-        
-        updateButtonVisibility()
-        saveButton.setTitle("Save (\(ImageManager.shared.getImageScansCount()))", for: .normal)
-        if let lastImage = ImageManager.shared.imageScans.last?.croppedScan.image {
-            imageButton.setImage(lastImage, for: .normal)
-            imageButton.imageView?.contentMode = .scaleAspectFill
-        } else {
-            imageButton.setImage(nil, for: .normal)
-        }
     }
     
     
@@ -220,8 +203,10 @@ public final class ScannerViewController: UIViewController {
         super.viewWillDisappear(animated)
         UIApplication.shared.isIdleTimerDisabled = false
         
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barStyle = originalBarStyle ?? .default
+       // navigationController?.navigationBar.isTranslucent = false
+       // navigationController?.navigationBar.barStyle = originalBarStyle ?? .default
+        quadView.quadView.backgroundColor = Appearance.mono200
+        
         captureSessionManager?.stop()
         guard let device = AVCaptureDevice.default(for: AVMediaType.video) else { return }
         if device.torchMode == .on {
