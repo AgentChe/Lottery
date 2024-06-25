@@ -106,9 +106,9 @@ final class ScanOnboardingViewController: UIViewController {
                 switch result {
                 case .success(let profile):
                     if let stateId = profile.state {
-                        self?.setupInitialViewControllerToChooseState()
-                        //self?.stateId = stateId
-                       // self?.setupInitialViewControllerToScan()
+                       // self?.setupInitialViewControllerToChooseState()
+                        
+                        self?.setupInitialViewControllerToScan()
                         
                     } else {
                         print("State ID is not available in profile")

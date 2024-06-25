@@ -20,6 +20,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         imageView.isOpaque = true
         imageView.image = image
         imageView.alpha = 1
+        imageView.layer.cornerRadius = 20.scale
         imageView.backgroundColor = .white
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -37,6 +38,8 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let quadView = QuadrilateralView()
         quadView.editable = true
         quadView.translatesAutoresizingMaskIntoConstraints = false
+        quadView.layer.cornerRadius = 20.scale
+        quadView.layer.masksToBounds = true
         return quadView
     }()
     
@@ -247,24 +250,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     }
     
     private func setupConstraints() {
-        let imageViewConstraints = [
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? 0.scale : -100.scale),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            view.bottomAnchor.constraint(equalTo: imageView.bottomAnchor),
-            view.leadingAnchor.constraint(equalTo: imageView.leadingAnchor)
-        ]
-        
-        quadViewWidthConstraint = quadView.widthAnchor.constraint(equalToConstant: 0.0.scale)
-        quadViewHeightConstraint = quadView.heightAnchor.constraint(equalToConstant: 0.0.scale)
-        
-        let quadViewConstraints = [
-            quadView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
-            quadView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
-            quadViewWidthConstraint,
-            quadViewHeightConstraint
-        ]
-        
-        NSLayoutConstraint.activate(quadViewConstraints + imageViewConstraints)
+       
         
         // Constraints for keepButton
         NSLayoutConstraint.activate([
@@ -287,6 +273,25 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             cornerImageView.widthAnchor.constraint(equalToConstant: 343.scale),
             cornerImageView.heightAnchor.constraint(equalToConstant: 510.scale)
         ])
+        
+        let imageViewConstraints = [
+            imageView.trailingAnchor.constraint(equalTo: cornerImageView.trailingAnchor),
+            imageView.leadingAnchor.constraint(equalTo: cornerImageView.leadingAnchor),
+            imageView.centerYAnchor.constraint(equalTo: cornerImageView.centerYAnchor),
+            imageView.heightAnchor.constraint(equalToConstant: 710.scale)
+        ]
+        
+        quadViewWidthConstraint = quadView.widthAnchor.constraint(equalToConstant: 0.0.scale)
+        quadViewHeightConstraint = quadView.heightAnchor.constraint(equalToConstant: 0.0.scale)
+        
+        let quadViewConstraints = [
+            quadView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            quadView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+            quadViewWidthConstraint,
+            quadViewHeightConstraint
+        ]
+        
+        NSLayoutConstraint.activate(quadViewConstraints + imageViewConstraints)
     }
     
     // MARK: - UIGestureRecognizerDelegate
@@ -381,8 +386,8 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     /// to make sure that the quadView is on top of the displayed image.
     private func adjustQuadViewConstraints() {
         let frame = AVMakeRect(aspectRatio: image.size, insideRect: imageView.bounds)
-        quadViewWidthConstraint.constant = frame.size.width
-        quadViewHeightConstraint.constant = frame.size.height
+        quadViewWidthConstraint.constant = 343.scale//frame.size.width
+        quadViewHeightConstraint.constant = 510.scale//frame.size.height
     }
     
     /// Generates a `Quadrilateral` object that's centered and 90% of the size of the passed in image.
