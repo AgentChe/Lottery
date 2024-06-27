@@ -29,7 +29,7 @@ class PastGameCell: UICollectionViewCell {
         return label
     }()
     
-    private let myLuckyNumbersTitleLabel: UILabel = {
+     let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "MY LUCKY NUMBERS"
         label.font = Fonts.Inter.regular(size: 12.5.scale)
@@ -46,7 +46,7 @@ class PastGameCell: UICollectionViewCell {
         return label
     }()
     
-    private let dashedLineImageView: UIImageView = {
+     let dashedLineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "PastDraws.DashedLine")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -69,7 +69,7 @@ class PastGameCell: UICollectionViewCell {
         return collectionView
     }()
     
-    private lazy var myLuckyNumbersCollectionView: UICollectionView = {
+     lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 10.scale
@@ -262,9 +262,13 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegate {
         let isHighlight = allNumbers.contains(number)
         cell.configure(with: String(number))
         cell.backgroundColor = isHighlight ? Appearance.main600 : .white
-        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : UIColor.white.cgColor
-        
+        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
+        if comparisonArray.count == 0 {
+            return
+            
+        }
         let lastIndex = comparisonArray[indexPath.section].count - 1
+
         if indexPath.item == lastIndex {
             cell.backgroundColor = Appearance.main100
             cell.setNumberLabelColor(Appearance.mono100)

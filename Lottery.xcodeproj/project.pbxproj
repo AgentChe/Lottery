@@ -81,6 +81,11 @@
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
 		A3AE80142C2B63BB00E5B473 /* CheckTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80132C2B63BB00E5B473 /* CheckTicketViewController.swift */; };
+		A3AE80172C2C577200E5B473 /* LuckyNumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */; };
+		A3AE80192C2C5D6900E5B473 /* SelectTheGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */; };
+		A3AE801C2C2CA19600E5B473 /* SelectGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE801B2C2CA19600E5B473 /* SelectGameCell.swift */; };
+		A3AE801E2C2CB11200E5B473 /* EditLuckyNumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE801D2C2CB11200E5B473 /* EditLuckyNumbersViewController.swift */; };
+		A3AE80202C2CC82800E5B473 /* TicketLuckyNumbersEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE801F2C2CC82800E5B473 /* TicketLuckyNumbersEditCell.swift */; };
 		A3B3C7B52C29BCC5009EA452 /* ScanMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B3C7B42C29BCC5009EA452 /* ScanMenuViewController.swift */; };
 		A3CF29592C0D53DE00DF735A /* SuggestNewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */; };
 		A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */; };
@@ -296,6 +301,11 @@
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
 		A3AE80132C2B63BB00E5B473 /* CheckTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckTicketViewController.swift; sourceTree = "<group>"; };
+		A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersViewController.swift; sourceTree = "<group>"; };
+		A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTheGameViewController.swift; sourceTree = "<group>"; };
+		A3AE801B2C2CA19600E5B473 /* SelectGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGameCell.swift; sourceTree = "<group>"; };
+		A3AE801D2C2CB11200E5B473 /* EditLuckyNumbersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLuckyNumbersViewController.swift; sourceTree = "<group>"; };
+		A3AE801F2C2CC82800E5B473 /* TicketLuckyNumbersEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketLuckyNumbersEditCell.swift; sourceTree = "<group>"; };
 		A3B3C7B42C29BCC5009EA452 /* ScanMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanMenuViewController.swift; sourceTree = "<group>"; };
 		A3CF29582C0D53DE00DF735A /* SuggestNewGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameViewController.swift; sourceTree = "<group>"; };
 		A3CF295A2C0D567B00DF735A /* SuggestNewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameView.swift; sourceTree = "<group>"; };
@@ -672,6 +682,26 @@
 			isa = PBXGroup;
 			children = (
 				A39B2B392C0F5B880024FC9F /* LotteryCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A3AE80152C2C575600E5B473 /* LuckyNumbers */ = {
+			isa = PBXGroup;
+			children = (
+				A3AE801A2C2CA18700E5B473 /* Views */,
+				A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */,
+				A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */,
+				A3AE801D2C2CB11200E5B473 /* EditLuckyNumbersViewController.swift */,
+				A3AE801F2C2CC82800E5B473 /* TicketLuckyNumbersEditCell.swift */,
+			);
+			path = LuckyNumbers;
+			sourceTree = "<group>";
+		};
+		A3AE801A2C2CA18700E5B473 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A3AE801B2C2CA19600E5B473 /* SelectGameCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1146,6 +1176,7 @@
 			children = (
 				DE42B2152BFF664F00FF61B0 /* TryAgain */,
 				DE42B1582BFF3CB100FF61B0 /* Main */,
+				A3AE80152C2C575600E5B473 /* LuckyNumbers */,
 				A32748B82C25D71E00E9F79A /* Scan */,
 				DE42B1632BFF3CB100FF61B0 /* Onboarding */,
 				DE42B16F2BFF3CB100FF61B0 /* Paygate */,
@@ -1493,6 +1524,7 @@
 				A3FF557F2C08B8C400E81771 /* AddLuckyNumbersRequest.swift in Sources */,
 				DE42B1972BFF3CB200FF61B0 /* TapAreaButton.swift in Sources */,
 				A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */,
+				A3AE801C2C2CA19600E5B473 /* SelectGameCell.swift in Sources */,
 				A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */,
 				A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */,
 				DE42B1F02BFF463B00FF61B0 /* TabItemView.swift in Sources */,
@@ -1508,10 +1540,12 @@
 				A3FF555F2C07E26700E81771 /* FetchLotteriesRequest.swift in Sources */,
 				A327497B2C29859400E9F79A /* ImageManager.swift in Sources */,
 				A3FF55752C07E5C700E81771 /* AddTicketRequest.swift in Sources */,
+				A3AE80202C2CC82800E5B473 /* TicketLuckyNumbersEditCell.swift in Sources */,
 				DE42B1BC2BFF3CB200FF61B0 /* OSlideView.swift in Sources */,
 				DE42B1C02BFF3CB200FF61B0 /* Currency.swift in Sources */,
 				DE42B2142BFF5BEB00FF61B0 /* SplashViewModel.swift in Sources */,
 				DE42B1AD2BFF3CB200FF61B0 /* Scalable.swift in Sources */,
+				A3AE80192C2C5D6900E5B473 /* SelectTheGameViewController.swift in Sources */,
 				DE42B1942BFF3CB200FF61B0 /* PaddingLabel.swift in Sources */,
 				A327497A2C29859400E9F79A /* ASeekForAccesToScanViewController.swift in Sources */,
 				DE42B1952BFF3CB200FF61B0 /* PaddingTextField.swift in Sources */,
@@ -1607,6 +1641,7 @@
 				A3FF55572C07E0B600E81771 /* State.swift in Sources */,
 				A327496D2C29859400E9F79A /* FocusRectangleView.swift in Sources */,
 				DE42B1AA2BFF3CB200FF61B0 /* Fonts.swift in Sources */,
+				A3AE80172C2C577200E5B473 /* LuckyNumbersViewController.swift in Sources */,
 				A32748BC2C25E74F00E9F79A /* ScanSelectStateViewController.swift in Sources */,
 				DE42B1F62BFF4E0D00FF61B0 /* OWelcomeView.swift in Sources */,
 				DE42B19B2BFF3CB200FF61B0 /* UIApplication+Extension.swift in Sources */,
@@ -1633,6 +1668,7 @@
 				A327496A2C29859400E9F79A /* ReviewViewController.swift in Sources */,
 				A3FF55612C07E31300E81771 /* ContentManager.swift in Sources */,
 				A3FF55692C07E4CF00E81771 /* FetchNextGamesRequest.swift in Sources */,
+				A3AE801E2C2CB11200E5B473 /* EditLuckyNumbersViewController.swift in Sources */,
 				A327497C2C29859400E9F79A /* PhotoReviewViewController.swift in Sources */,
 				DE42B21C2BFF700B00FF61B0 /* LoginResult.swift in Sources */,
 				A32749412C29859400E9F79A /* CGImagePropertyOrientation.swift in Sources */,

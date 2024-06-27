@@ -9,7 +9,7 @@ struct LoginRequest: EndPoint {
     let userToken: String
     
     var path: String {
-        "/api/users/login"
+        "/api/login"
     }
     
     var method: HTTPMethod {

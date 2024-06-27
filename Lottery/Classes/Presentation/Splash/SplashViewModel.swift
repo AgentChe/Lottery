@@ -96,6 +96,8 @@ private extension SplashViewModel {
                 
                 let otterScaleID = OtterScale.shared.getInternalID()
                 
+                print(otterScaleID)
+                
                 func source() -> Single<Void> {
                     Single<Void>.create { single in
                         if let cachedToken = self.sessionManager.getSession()?.userToken {

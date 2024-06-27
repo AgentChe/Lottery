@@ -99,4 +99,29 @@ extension GamesManager: GamesManagerProtocol {
             }
         }
     }
+    func addLuckyNumbers(lotteryId: Int, date: String, numbers: [[Int]], completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
+
+        let request = AddLuckyNumbersRequest(lotteryId: lotteryId, numbers: numbers, userToken: userToken, date: date)
+        let operation = APIOperation(endPoint: request)
+        
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
+            
+            self?.operations.removeValue(forKey: operationId)
+            
+            if let error = error {
+                completion(.failure(error))
+            } else if let resultDict = result as? [String: Any], let success = resultDict["result"] as? Bool, success {
+                completion(.success(true))
+            } else {
+                completion(.failure(ContentError(.notContent)))
+            }
+        }
+    }
 }

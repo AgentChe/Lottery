@@ -190,6 +190,15 @@ extension DrawsViewController {
             let game = pastDraws[indexPath.item]
             cell.configure(game: game, lotteries: lotteries)
             cell.layer.cornerRadius = 20.scale
+            if let myLuckyNumbers = game.myLuckyNumbers {
+                if myLuckyNumbers.isEmpty {
+                    cell.dashedLineImageView.alpha = 0
+                    cell.myLuckyNumbersTitleLabel.alpha = 0
+                } else {
+                    cell.dashedLineImageView.alpha = 1
+                    cell.myLuckyNumbersTitleLabel.alpha = 1
+                }
+            }
             return cell
         }
     }

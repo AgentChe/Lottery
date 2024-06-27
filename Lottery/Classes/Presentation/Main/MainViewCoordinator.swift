@@ -14,9 +14,9 @@ final class MainViewCoordinator {
     lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
     lazy var myTicketsVC = NavigationController(rootViewController: myTicketsController)
     
-    private lazy var drawsController = DrawsViewController() // TODO: заменить на актуальный
-    private lazy var luckyNumbersController = UIViewController() // TODO: заменить на актуальный
-    private lazy var myTicketsController = TicketsViewController() // TODO: заменить на актуальный
+    private lazy var drawsController = DrawsViewController() 
+    private lazy var luckyNumbersController = LuckyNumbersViewController()
+    private lazy var myTicketsController = TicketsViewController()
     
     private var previousVC: UIViewController?
     

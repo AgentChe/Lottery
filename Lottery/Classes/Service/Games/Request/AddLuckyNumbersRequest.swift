@@ -8,10 +8,12 @@
 import Foundation
 
 struct AddLuckyNumbersRequest: EndPoint {
+  
+    let lotteryId: Int
     let numbers: [[Int]]
-    let gameId: Int
     let userToken: String
-    
+    let date: String
+ 
     var path: String {
         "/api/games/luckynumbers/add"
     }
@@ -25,7 +27,8 @@ struct AddLuckyNumbersRequest: EndPoint {
             "api_key": GlobalDefinitions.apiKey,
             "user_token": userToken,
             "numbers": numbers,
-            "game_id": gameId
+            "lotteryId": lotteryId,
+            "date": date
         ]
     }
     

@@ -175,8 +175,8 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         keepButton = UIButton(type: .system)
         keepButton.setTitle("Continue", for: .normal)
         keepButton.backgroundColor = Appearance.main100 // Using your custom color
-        keepButton.setTitleColor(.white, for: .normal)
-        keepButton.titleLabel?.font = Fonts.Inter.medium(size: 17.scale) // Using your custom font with scale
+        keepButton.setTitleColor(Appearance.mono100, for: .normal)
+        keepButton.titleLabel?.font = Fonts.Inter.bold(size: 17.scale) // Using your custom font with scale
         keepButton.layer.cornerRadius = 21.scale // Adjust radius to match the one in your image with scale
         keepButton.clipsToBounds = true
         keepButton.translatesAutoresizingMaskIntoConstraints = false
@@ -187,9 +187,9 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         // Retake button
         retakeButton = UIButton(type: .system)
         retakeButton.setTitle("Retake photo", for: .normal)
-        retakeButton.backgroundColor = .white // Clear background
+        retakeButton.backgroundColor = Appearance.mono100 // Clear background
         retakeButton.setTitleColor(Appearance.mono200, for: .normal)
-        retakeButton.titleLabel?.font = Fonts.Inter.medium(size: 17.scale) // Using your custom font with scale
+        retakeButton.titleLabel?.font = Fonts.Inter.bold(size: 17.scale) // Using your custom font with scale
         retakeButton.layer.cornerRadius = 21.scale // No rounded corners
         retakeButton.clipsToBounds = true
         retakeButton.translatesAutoresizingMaskIntoConstraints = false

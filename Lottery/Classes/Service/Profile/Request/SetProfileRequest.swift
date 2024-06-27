@@ -26,7 +26,7 @@ struct SetProfileRequest: EndPoint {
             "user_token": userToken
         ]
         if let lotteries = lotteries {
-            params["lotteries"] = [] // lotteries
+            params["lotteries"] =  lotteries
         }
         if let state = state {
             params["state"] = state
