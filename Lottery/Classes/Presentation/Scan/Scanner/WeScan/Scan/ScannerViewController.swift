@@ -1,3 +1,13 @@
+
+//
+//  ScannerViewController.swift
+//  WeScan
+//
+//  Created by Boris Emorine on 2/8/18.
+//  Copyright © 2018 WeTransfer. All rights reserved.
+//
+//  swiftlint:disable line_length
+
 import AVFoundation
 import UIKit
 
@@ -182,7 +192,7 @@ public final class ScannerViewController: UIViewController {
         quadView.removeQuadrilateral()
         captureSessionManager?.start()
         UIApplication.shared.isIdleTimerDisabled = true
-        quadView.quadView.backgroundColor = .clear
+       // quadView.quadView.backgroundColor = .clear
         
     }
     
@@ -205,7 +215,7 @@ public final class ScannerViewController: UIViewController {
         
        // navigationController?.navigationBar.isTranslucent = false
        // navigationController?.navigationBar.barStyle = originalBarStyle ?? .default
-        quadView.quadView.backgroundColor = Appearance.mono200
+        //quadView.quadView.backgroundColor = Appearance.mono200
         
         captureSessionManager?.stop()
         guard let device = AVCaptureDevice.default(for: AVMediaType.video) else { return }
@@ -449,7 +459,7 @@ extension ScannerViewController: RectangleDetectionDelegateProtocol {
     func captureSessionManager(_ captureSessionManager: CaptureSessionManager, didCapturePicture picture: UIImage, withQuad quad: Quadrilateral?) {
         activityIndicator.stopAnimating()
         
-        let editVC = EditScanViewController(image: picture, quad: quad, filterType: currentFilter)
+        let editVC = EditScanViewController(image: picture, quad: quad)
         parent?.navigationController?.pushViewController(editVC, animated: false)
         
         shutterButton.isUserInteractionEnabled = true

@@ -6,7 +6,6 @@
 //  Copyright © 2018 WeTransfer. All rights reserved.
 //
 
-
 import AVFoundation
 import Foundation
 import UIKit
@@ -24,7 +23,7 @@ final class QuadrilateralView: UIView {
 
     private let quadLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = Appearance.mono200.cgColor
+        layer.strokeColor = UIColor.white.cgColor
         layer.lineWidth = 1.0
         layer.opacity = 1.0
         layer.isHidden = true
@@ -34,10 +33,9 @@ final class QuadrilateralView: UIView {
 
     /// We want the corner views to be displayed under the outline of the quadrilateral.
     /// Because of that, we need the quadrilateral to be drawn on a UIView above them.
-     let quadView: UIView = {
+    private let quadView: UIView = {
         let view = UIView()
-        view.backgroundColor = Appearance.mono200
-        view.alpha = 0.7
+        view.backgroundColor = UIColor.clear
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -47,8 +45,8 @@ final class QuadrilateralView: UIView {
 
     public var editable = false {
         didSet {
-            cornerViews(hidden: false)
-            quadLayer.fillColor = editable ?  UIColor(white: 1.0, alpha: 0.5).cgColor :  UIColor(white: 0.0, alpha: 0.6).cgColor
+            cornerViews(hidden: !editable)
+            quadLayer.fillColor = editable ? UIColor(white: 0.0, alpha: 0.6).cgColor : UIColor(white: 1.0, alpha: 0.5).cgColor
             guard let quad else {
                 return
             }
@@ -73,12 +71,12 @@ final class QuadrilateralView: UIView {
             guard oldValue != isHighlighted else {
                 return
             }
-            quadLayer.fillColor = isHighlighted ? UIColor(white: 0.0, alpha: 0).cgColor : UIColor(white: 1.0, alpha: 0.5).cgColor
-//            if isHighlighted {
-//                bringSubviewToFront(quadView)
-//            } else {
-//                sendSubviewToBack(quadView)
-//            }
+            quadLayer.fillColor = isHighlighted ? UIColor.clear.cgColor : UIColor(white: 0.0, alpha: 0.6).cgColor
+            if isHighlighted {
+                bringSubviewToFront(quadView)
+            } else {
+                sendSubviewToBack(quadView)
+            }
         }
     }
 
@@ -102,11 +100,10 @@ final class QuadrilateralView: UIView {
     private let cornerViewSize = CGSize(width: 20.0, height: 20.0)
 
     // MARK: - Life Cycle
-   
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
-        backgroundColor = .clear
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -117,16 +114,15 @@ final class QuadrilateralView: UIView {
         addSubview(quadView)
         setupCornerViews()
         setupConstraints()
-    
-
+        quadView.layer.addSublayer(quadLayer)
     }
 
     private func setupConstraints() {
         let quadViewConstraints = [
-            quadView.topAnchor.constraint(equalTo: topAnchor, constant: 0.scale),
+            quadView.topAnchor.constraint(equalTo: topAnchor),
             quadView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            quadView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            quadView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.scale)
+            bottomAnchor.constraint(equalTo: quadView.bottomAnchor),
+            trailingAnchor.constraint(equalTo: quadView.trailingAnchor)
         ]
 
         NSLayoutConstraint.activate(quadViewConstraints)
@@ -167,24 +163,22 @@ final class QuadrilateralView: UIView {
     }
 
     private func drawQuad(_ quad: Quadrilateral, animated: Bool) {
-        let fullPath = UIBezierPath(rect: quadView.bounds) // Full view rectangle
-        let quadPath = quad.path                           // Your existing quadrilateral path
+        var path = quad.path
 
-        fullPath.append(quadPath)                          // Append the quad path
-        fullPath.usesEvenOddFillRule = true                // Important for subtracting the path
-
-        let maskLayer = CAShapeLayer()
-        maskLayer.path = fullPath.cgPath                   // Set the combined path
-        maskLayer.fillRule = .evenOdd                      // Use even-odd rule to create the hole
-        maskLayer.fillColor = UIColor.black.cgColor        // Mask color (black shows, white hides)
-
-        if animated {
-            let pathAnimation = CABasicAnimation(keyPath: "path")
-            pathAnimation.duration = 0.2
-            maskLayer.add(pathAnimation, forKey: "path")
+        if editable {
+            path = path.reversing()
+            let rectPath = UIBezierPath(rect: bounds)
+            path.append(rectPath)
         }
 
-        quadView.layer.mask = maskLayer                    // Set the new maskLayer as the mask of the quadView
+        if animated == true {
+            let pathAnimation = CABasicAnimation(keyPath: "path")
+            pathAnimation.duration = 0.2
+            quadLayer.add(pathAnimation, forKey: "path")
+        }
+
+        quadLayer.path = path.cgPath
+        quadLayer.isHidden = false
     }
 
     private func layoutCornerViews(forQuad quad: Quadrilateral) {

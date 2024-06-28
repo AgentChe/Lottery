@@ -5,7 +5,6 @@
 //  Created by Niiaz Khasanov on 6/25/24.
 //
 
-
 import UIKit
 
 class CheckTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -25,11 +24,36 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
-        button.layer.cornerRadius = 20.scale
+        button.layer.cornerRadius = 25.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(saveTicketButtonTapped), for: .touchUpInside)
         button.isEnabled = false // Initially disabled
         return button
+    }()
+    
+    private let rescanButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Rescan", for: .normal)
+        button.backgroundColor = .white
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 25.scale
+        button.layer.borderWidth = 1.scale
+        button.layer.borderColor = Appearance.lightGrayBorderTicket.cgColor
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(rescanButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    // ImageView above the collectionView
+     let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        // Set your image here
+        imageView.backgroundColor = .red
+        imageView.image = UIImage(named: "YourImageName")
+        return imageView
     }()
     
     // Bottom constraint for the save button
@@ -65,8 +89,10 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
         
+        view.addSubview(imageView)
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
+        view.addSubview(rescanButton)
         
         setupConstraints()
         updateSaveButtonState() // Initial check to set the button state based on initial data
@@ -78,18 +104,28 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 375.scale),
+            imageView.heightAnchor.constraint(equalToConstant: 320.scale),
+            
+            collectionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10.scale),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             saveTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale)
+            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale),
+            saveTicketButton.bottomAnchor.constraint(equalTo: rescanButton.topAnchor, constant: -10.scale),
+            
+            rescanButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
+            rescanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            rescanButton.heightAnchor.constraint(equalToConstant: 50.scale)
         ])
         
         // Initialize the bottom constraint
-        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
+        saveButtonBottomConstraint = rescanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
         saveButtonBottomConstraint.isActive = true
     }
     
@@ -151,8 +187,12 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
             }
         }
     }
-
-
+    
+    @objc func rescanButtonTapped() {
+        // Handle the rescan button tap
+        print("Rescan button tapped")
+        // Add your rescan logic here
+    }
     
     private func setupNavigationBarTitle() {
         guard let backButtonImage = UIImage(named: "EditBackButtonImage") else { return }

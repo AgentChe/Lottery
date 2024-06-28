@@ -54,3 +54,23 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         PushNotificationsManager.shared.application(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
     }
 }
+
+extension UIImage {
+    func cropByPercentage(xPercent: CGFloat, yPercent: CGFloat, widthPercent: CGFloat, heightPercent: CGFloat) -> UIImage? {
+        let imageWidth = self.size.width
+        let imageHeight = self.size.height
+        
+        let x = imageWidth * xPercent
+        let y = imageHeight * yPercent
+        let width = imageWidth * widthPercent
+        let height = imageHeight * heightPercent
+        
+        let cropRect = CGRect(x: x, y: y, width: width, height: height)
+        
+        guard let cgImage = self.cgImage?.cropping(to: cropRect) else {
+            return nil
+        }
+        
+        return UIImage(cgImage: cgImage)
+    }
+}

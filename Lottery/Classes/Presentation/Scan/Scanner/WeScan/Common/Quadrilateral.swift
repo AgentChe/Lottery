@@ -237,3 +237,5 @@ extension Quadrilateral: Equatable {
             && lhs.bottomLeft == rhs.bottomLeft
     }
 }
+
+
