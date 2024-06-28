@@ -18,7 +18,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         imageView.clipsToBounds = true
         imageView.isOpaque = true
         imageView.image = image
-        imageView.backgroundColor = .black
+        imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -206,7 +206,14 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         navigationController?.navigationBar.tintAdjustmentMode = .normal
         navigationController?.navigationBar.tintAdjustmentMode = .automatic
     }
-
+    private lazy var cornerImageView: UIImageView = {
+         let imageView = UIImageView()
+         imageView.frame = CGRect(x: 16.scale, y: 129.scale, width: 343.scale, height: 510.scale)
+         imageView.image = UIImage(named: "Scan.DragTheCorners")
+         imageView.contentMode = .scaleAspectFit
+         imageView.translatesAutoresizingMaskIntoConstraints = false
+         return imageView
+     }()
     func setupNavigationBackButton() {
         // Create a custom back button
         let backButton = UIButton(type: .custom)
@@ -241,10 +248,19 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     private func setupViews() {
         view.addSubview(imageView)
         view.addSubview(quadView)
+        view.addSubview(cornerImageView)
+        view.backgroundColor = Appearance.mono200
     }
 
     private func setupConstraints() {
         // Constraints for keepButton
+        NSLayoutConstraint.activate([
+                   cornerImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+                   cornerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 129.scale),
+                   cornerImageView.widthAnchor.constraint(equalToConstant: 343.scale),
+                   cornerImageView.heightAnchor.constraint(equalToConstant: 505.scale)
+               ])
+               
         NSLayoutConstraint.activate([
             keepButton.bottomAnchor.constraint(equalTo: retakeButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -10.scale : -5.scale), // Distance between buttons.
             keepButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 40.scale),
@@ -261,9 +277,9 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         ])
         
         let imageViewConstraints = [
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -25.scale),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25.scale),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ]
 
@@ -272,7 +288,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
 
         let quadViewConstraints = [
             quadView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
-            quadView.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant: 0),
+            quadView.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant: -25.scale),
             quadViewWidthConstraint,
             quadViewHeightConstraint
         ]
