@@ -33,7 +33,7 @@ final class QuadrilateralView: UIView {
 
     /// We want the corner views to be displayed under the outline of the quadrilateral.
     /// Because of that, we need the quadrilateral to be drawn on a UIView above them.
-    private let quadView: UIView = {
+     let quadView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.clear
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -115,6 +115,13 @@ final class QuadrilateralView: UIView {
         setupCornerViews()
         setupConstraints()
         quadView.layer.addSublayer(quadLayer)
+        
+        let maskView = UIView()
+        maskView.frame = CGRect(x: 15.scale, y: 1.scale, width: 340.scale, height: 498.scale)
+        maskView.backgroundColor = .red
+        
+        quadView.mask = maskView
+        quadView.layer.cornerRadius = 20.scale
     }
 
     private func setupConstraints() {

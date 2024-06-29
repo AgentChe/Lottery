@@ -6,6 +6,7 @@
 //  Copyright © 2018 WeTransfer. All rights reserved.
 //
 
+
 import AVFoundation
 import UIKit
 
@@ -23,7 +24,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     private lazy var quadView: QuadrilateralView = {
         let quadView = QuadrilateralView()
         quadView.editable = true
@@ -54,7 +55,27 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         button.tintColor = navigationController?.navigationBar.tintColor
         return button
     }()
-
+    private lazy var cornerImageView: UIImageView = {
+         let imageView = UIImageView()
+         imageView.frame = CGRect(x: 16.scale, y: 140.scale, width: 343.scale, height: 477.scale)
+         imageView.image = UIImage(named: "Scan.DragTheCorners")
+         imageView.contentMode = .scaleAspectFill
+         imageView.backgroundColor = .clear
+         imageView.layer.cornerRadius = 20.scale
+         imageView.translatesAutoresizingMaskIntoConstraints = false
+         return imageView
+     }()
+     
+    private lazy var maskView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        view.layer.cornerRadius = 20.scale
+        view.layer.masksToBounds = true
+        view.frame = CGRect(x: 20.scale, y: 150.scale, width: 330.5.scale, height: 506.scale)
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     /// The image the quadrilateral was detected on.
     private let image: UIImage
 
@@ -106,6 +127,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         setupNavigationBackButton()
         setupButtons()
         setupConstraints()
+        
     }
 
     private func setupButtons() {
@@ -206,14 +228,9 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         navigationController?.navigationBar.tintAdjustmentMode = .normal
         navigationController?.navigationBar.tintAdjustmentMode = .automatic
     }
-    private lazy var cornerImageView: UIImageView = {
-         let imageView = UIImageView()
-         imageView.frame = CGRect(x: 16.scale, y: 129.scale, width: 343.scale, height: 510.scale)
-         imageView.image = UIImage(named: "Scan.DragTheCorners")
-         imageView.contentMode = .scaleAspectFit
-         imageView.translatesAutoresizingMaskIntoConstraints = false
-         return imageView
-     }()
+    
+   
+    
     func setupNavigationBackButton() {
         // Create a custom back button
         let backButton = UIButton(type: .custom)
@@ -249,18 +266,33 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         view.addSubview(imageView)
         view.addSubview(quadView)
         view.addSubview(cornerImageView)
+        view.addSubview(maskView)
         view.backgroundColor = Appearance.mono200
-    }
+        
+        imageView.mask = maskView
+        
+        
+        
+     }
 
     private func setupConstraints() {
-        // Constraints for keepButton
+        // Constraints for cornerImageView
         NSLayoutConstraint.activate([
-                   cornerImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
-                   cornerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 129.scale),
-                   cornerImageView.widthAnchor.constraint(equalToConstant: 343.scale),
-                   cornerImageView.heightAnchor.constraint(equalToConstant: 505.scale)
-               ])
-               
+            cornerImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            cornerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 142.scale),
+            cornerImageView.widthAnchor.constraint(equalToConstant: 339.scale),
+            cornerImageView.heightAnchor.constraint(equalToConstant: 477.scale)
+        ])
+        
+        // Constraints for maskView
+        NSLayoutConstraint.activate([
+            maskView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            maskView.topAnchor.constraint(equalTo: view.topAnchor, constant: 129.scale),
+            maskView.widthAnchor.constraint(equalToConstant: 300.scale),
+            maskView.heightAnchor.constraint(equalToConstant: 400.scale)
+        ])
+        
+        // Constraints for keepButton
         NSLayoutConstraint.activate([
             keepButton.bottomAnchor.constraint(equalTo: retakeButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -10.scale : -5.scale), // Distance between buttons.
             keepButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 40.scale),
