@@ -9,13 +9,14 @@ import UIKit
 import VisionKit
 import Vision
 
+ 
 protocol RecognizedTextDataSource: AnyObject {
     func addRecognizedText(recognizedText: [VNRecognizedTextObservation])
 }
 
 
 class CheckTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -136,6 +137,8 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         // Add keyboard observers
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+         
     }
     
     private func setupConstraints() {
@@ -350,6 +353,19 @@ extension CheckTicketViewController: EditTicketViewControllerDelegate {
 }
 
 extension CheckTicketViewController: RecognizedTextDataSource {
+    func processImage(image: UIImage) {
+        guard let cgImage = image.cgImage else {
+            print("Failed to get cgimage from input image")
+            return
+        }
+        
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([textRecognitionRequest])
+        } catch {
+            print(error)
+        }
+    }
     func addRecognizedText(recognizedText: [VNRecognizedTextObservation]) {
         // Create a full transcript to run analysis on.
         let maximumCandidates = 1
@@ -365,5 +381,104 @@ extension CheckTicketViewController: RecognizedTextDataSource {
                     }
                 }
         print("Text recoginzed is:", transcript)
+        if let ticket = ticket {
+            fullfillNumbersStringArray(transcript: transcript, ticket: ticket)
+        }
+    }
+}
+
+extension CheckTicketViewController {
+    func fullfillNumbersStringArray(transcript: String, ticket: Ticket ) -> [[Int]] {
+        if ticket.id != 3 && ticket.id != 6 {
+            let numbersArray = convertStringToIntArray(transcript)
+            if isDivisible(numbersArray.count, by: 12) {
+                let numberOfRows = numbersArray.count/12
+                let twoDigitsArray = convertToTwoDigitArray(numbersArray)
+                print("Text recoginzed is: \(twoDigitsArray)")
+                
+                print("Text recoginzed is: ",reshapeArray6Case(twoDigitsArray, numberOfRows: numberOfRows))
+            } else {
+                presentRecognitionErrorAlert(on: self)
+            }
+            
+        }
+        return [[]]
+    }
+    func convertStringToIntArray(_ str: String) -> [Int] {
+        return str.compactMap { $0.wholeNumberValue }
+    }
+    func isDivisible(_ dividend: Int, by divisor: Int) -> Bool {
+        return dividend % divisor == 0
+    }
+    func presentRecognitionErrorAlert(on viewController: UIViewController) {
+        // Create the alert controller
+        let alert = UIAlertController(
+            title: "Recognition Error",
+            message: "An error occurred during the recognition process. Please try again.",
+            preferredStyle: .alert
+        )
+        
+        // Add an action to the alert
+        let tryAgainAction = UIAlertAction(title: "Try Again", style: .default) { _ in
+            // Code to retry the recognition process
+            print("User tapped Try Again")
+        }
+        
+        // Add the action to the alert controller
+        alert.addAction(tryAgainAction)
+        
+        // Present the alert on the provided view controller
+        viewController.present(alert, animated: true, completion: nil)
+    }
+    func convertToTwoDigitArray(_ inputArray: [Int]) -> [String] {
+        var resultArray: [String] = []
+        
+        // Check if the array has an even number of elements
+        if inputArray.count % 2 != 0 {
+            print("The input array does not have an even number of elements.")
+            return resultArray
+        }
+        
+        for i in stride(from: 0, to: inputArray.count, by: 2) {
+            // Combine each pair of elements into a two-digit string
+            let combinedNumber = String(format: "%d%d", inputArray[i], inputArray[i+1])
+            resultArray.append(combinedNumber)
+        }
+        
+        return resultArray
+    }
+    func reshapeArray6Case(_ input: [String], numberOfRows: Int) -> [[Int]]? {
+        // Convert strings to integers
+        let integers = input.compactMap { Int($0) }
+        
+        // Calculate expected number of elements based on provided number of rows and fixed 6 columns
+        let expectedNumberOfElements = numberOfRows * 6
+        
+        // Ensure the input array has the exact number of required elements
+        if integers.count != expectedNumberOfElements {
+            print("Input array does not contain the correct number of elements.")
+            return nil
+        }
+        
+        // Create an array to hold the reshaped data
+        var output = [[Int]]()
+        
+        for i in 0..<numberOfRows {
+            var row = [Int]()
+            for k in 0..<6 {
+                row.append(k) // Example value, you can replace it with any value you want
+            }
+            output.append(row)
+        }
+        
+        for j in 0..<numberOfRows {
+            for k in 0..<6 {
+                //print(k*numberOfRows + j)
+                output[j][k] = integers[k*numberOfRows + j]
+                //print(integers[k*numberOfRows + j], j,k,numberOfRows)
+            }
+        }
+        
+        return output
     }
 }

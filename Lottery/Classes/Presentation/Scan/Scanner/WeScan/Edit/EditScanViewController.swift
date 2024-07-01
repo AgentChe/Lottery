@@ -212,6 +212,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let checkTicketViewController = CheckTicketViewController(ticket: ticket)
         
         checkTicketViewController.imageView.image = results.croppedScan.image
+        checkTicketViewController.processImage(image: results.croppedScan.image)
         navigationController?.pushViewController( checkTicketViewController, animated: true)
     }
 
