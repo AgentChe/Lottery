@@ -14,13 +14,13 @@ final class ScanOnboardingViewController: UIViewController {
     
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     private var selectedState: Int?
-    private var selectedGames: [Int] = []
+    private var selectedLotteries: [Int] = []
     //private var stateId: Int?
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        getSavedProfile()
-
+        //getSavedProfile()
+        setupInitialViewControllerToChooseState()
     }
     override func loadView() {
         super.loadView()
@@ -102,7 +102,7 @@ final class ScanOnboardingViewController: UIViewController {
         let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState)
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
-            self.selectedGames = selectedGames
+            self.selectedLotteries = selectedGames
             self.completeOnboarding()
         }
         
@@ -119,6 +119,10 @@ final class ScanOnboardingViewController: UIViewController {
 //        markAsViewed()
 //        saveProfile()
         let scanViewController = ScanMenuViewController()
+        scanViewController.stateId = selectedState
+        if let selectedLottery = self.selectedLotteries.first {
+            scanViewController.lotteryId = selectedLottery
+        }
         if let navigationController = navigationController {
             navigationController.pushViewController(scanViewController, animated: true)
         } else {
@@ -156,7 +160,7 @@ final class ScanOnboardingViewController: UIViewController {
             return
         }
 
-        profileManager.setProfile(lotteries: selectedGames, state: stateId, forceUpdate: true) { [weak self] result in
+        profileManager.setProfile(lotteries: selectedLotteries, state: stateId, forceUpdate: true) { [weak self] result in
             switch result {
             case .success:
                 let nextStep = self?.determineNextStep() ?? .main

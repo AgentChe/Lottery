@@ -14,12 +14,15 @@ class ScanViewController: UIViewController, ImageScannerControllerDelegate {
         .lightContent
     }
      
-    
+    var stateId: Int!
+    var lotteryId: Int!
     override func viewDidLoad() {
         super.viewDidLoad()
         //setupNavigationBackButton()
         // Initialize the scanner
-        let scanner = ImageScannerController()
+        let scanner = ImageScannerController(lotteryId: self.lotteryId, stateId: self.stateId)
+        scanner.stateId = stateId
+        scanner.lotteryId = lotteryId
         scanner.imageScannerDelegate = self
  
         // Add the scanner as a child view controller

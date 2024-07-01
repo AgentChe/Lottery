@@ -12,6 +12,8 @@ import UIKit
 
 /// The `EditScanViewController` offers an interface for the user to edit the detected quadrilateral.
 final class EditScanViewController: UIViewController, UIGestureRecognizerDelegate {
+    var stateId: Int!
+    var lotteryId: Int!
     var keepButton: UIButton!
     var retakeButton: UIButton!
     private lazy var imageView: UIImageView = {
@@ -187,15 +189,17 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         ])
         
         var finalImage: UIImage? = UIImage.from(ciImage: filteredImage)
-        //
-        //          switch filterType {
-        //          case .none:
-        //              break
-        //          case .grayscale:
-        //              finalImage = filteredImage.applyingGrayscaleFilter()
-        //          case .adaptiveThreshold:
-        //              finalImage = filteredImage.applyingAdaptiveThreshold()
-        //          }
+        
+       let finalImageGray = filteredImage.applyingGrayscaleFilter()
+        
+//                  switch filterType {
+//                  case .none:
+//                      break
+//                  case .grayscale:
+//                      finalImage = filteredImage.applyingGrayscaleFilter()
+//                  case .adaptiveThreshold:
+//                      finalImage = filteredImage.applyingAdaptiveThreshold()
+//                  }
         
         let enhancedScan = finalImage.flatMap { ImageScannerScan(image: $0) }
         
@@ -205,17 +209,30 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             croppedScan: ImageScannerScan(image: finalImage ?? UIImage()),
             enhancedScan: enhancedScan
         )
+        let resultsGray = ImageScannerResults(
+            detectedRectangle: scaledQuad,
+            originalScan: ImageScannerScan(image: image),
+            croppedScan: ImageScannerScan(image: finalImageGray ?? UIImage()),
+            enhancedScan: enhancedScan
+        )
         ImageManager.shared.addImageScans(results)
         
-        let ticket = Ticket(id: 1, lotteryId: 1, pictureUrl: URL(string: "http://example.com/pic.png"), date: 1627490000.0, numbers: [[1, 2, 3, 4 ],[6, 7, 8, 9]])
+        let ticket = Ticket(id: 1, lotteryId: lotteryId , pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[1, 2, 3, 4 ],[6, 7, 8, 9]])
         
         let checkTicketViewController = CheckTicketViewController(ticket: ticket)
         
+        
+//        let testCIImage =  results.croppedScan.image.ciImage
+//        if let filteredIamge = testCIImage?.applyingGrayscaleFilter() {
+//            checkTicketViewController.processImage(image: UIImage.from(ciImage: filteredImage))
+//        }
+
         checkTicketViewController.imageView.image = results.croppedScan.image
-        checkTicketViewController.processImage(image: results.croppedScan.image)
+        checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         navigationController?.pushViewController( checkTicketViewController, animated: true)
     }
 
+  
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         adjustQuadViewConstraints()

@@ -44,7 +44,8 @@ public final class ImageScannerController: UINavigationController {
 
     /// The object that acts as the delegate of the `ImageScannerController`.
     public weak var imageScannerDelegate: ImageScannerControllerDelegate?
-
+    var stateId: Int!
+    var lotteryId: Int!
     // MARK: - Life Cycle
 
     /// A black UIView, used to quickly display a black screen when the shutter button is presseed.
@@ -63,8 +64,11 @@ public final class ImageScannerController: UINavigationController {
         return .lightContent
     }
 
-    public required init(image: UIImage? = nil, delegate: ImageScannerControllerDelegate? = nil) {
-        super.init(rootViewController: ScannerViewController())
+    public required init(image: UIImage? = nil, delegate: ImageScannerControllerDelegate? = nil, lotteryId: Int, stateId: Int ) {
+        let scannerViewController =  ScannerViewController()
+        scannerViewController.lotteryId = lotteryId
+        scannerViewController.stateId = stateId
+        super.init(rootViewController: scannerViewController)
         self.view.backgroundColor = Appearance.mono100
         
         self.imageScannerDelegate = delegate
@@ -78,6 +82,7 @@ public final class ImageScannerController: UINavigationController {
             detect(image: image) { [weak self] detectedQuad in
                 guard let self else { return }
                 let editViewController = EditScanViewController(image: image, quad: detectedQuad, rotateImage: false)
+                editViewController.stateId = stateId
                 self.setViewControllers([editViewController], animated: false)
             }
         }

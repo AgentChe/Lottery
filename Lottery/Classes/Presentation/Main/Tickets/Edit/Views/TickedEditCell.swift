@@ -48,9 +48,9 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 12.scale
-        layout.minimumInteritemSpacing = 12.scale
-        layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 10.scale, bottom: 0.scale, right: 10.scale)
+        layout.minimumLineSpacing = 6.scale
+        layout.minimumInteritemSpacing = 6.scale
+        layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +81,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
-    
+   
     func configure(ticket: Ticket) {
         self.ticket = ticket
         numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
@@ -104,12 +104,12 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
             }
@@ -135,14 +135,14 @@ private extension TicketEditCell {
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
         } else {
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 6).scale)
             }
         collectionViewHeightConstraint.isActive = true
 
@@ -193,7 +193,7 @@ private extension TicketEditCell {
     }
     
     func setupLayoutConstraints() {
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 10 + 10).scale)
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 6 + 10).scale)
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
             logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
@@ -315,34 +315,34 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     func removeItem(at indexPath: IndexPath) {
-          // Check if it's the only row left
-          if numbersStringArray.count == 1 && indexPath.section == 0 {
-              presentDeleteConfirmationAlert()
-          } else {
-              // Normal removal process
-              numbersStringArray.remove(at: indexPath.section)
-              
-              collectionViewHeightConstraint.isActive = false
-              // Get the number of cells in the last row
-              if let firstNumberArray = numbersStringArray.first {
-                  let numberOfCells = firstNumberArray.count + 1
-                  // Calculate the available width based on the given constraints
-                  let totalWidth: CGFloat = 343.scale
-                  let sideMargins: CGFloat = 40.scale
-                  let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
-                  
-                  // Calculate the width for each cell
-                  let availableWidth = totalWidth - sideMargins - cellSpacing
-                  let cellWidth = availableWidth / CGFloat(numberOfCells)
-                  collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
-              } else {
-                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
-                }
-              collectionViewHeightConstraint.isActive = true
-              
-              collectionView.reloadData()
-          }
-      }
+        // Check if it's the only row left
+        if numbersStringArray.count == 1 && indexPath.section == 0 {
+            presentDeleteConfirmationAlert()
+        } else {
+            // Normal removal process
+            numbersStringArray.remove(at: indexPath.section)
+            
+            collectionViewHeightConstraint.isActive = false
+            // Get the number of cells in the last row
+            if let firstNumberArray = numbersStringArray.first {
+                let numberOfCells = firstNumberArray.count + 1
+                // Calculate the available width based on the given constraints
+                let totalWidth: CGFloat = 343.scale
+                let sideMargins: CGFloat = 40.scale
+                let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+                
+                // Calculate the width for each cell
+                let availableWidth = totalWidth - sideMargins - cellSpacing
+                let cellWidth = availableWidth / CGFloat(numberOfCells)
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
+            } else {
+              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 6).scale)
+              }
+            collectionViewHeightConstraint.isActive = true
+            
+            collectionView.reloadData()
+        }
+    }
     private func presentDeleteConfirmationAlert() {
         let alertVC = CustomAlertViewController()
         
@@ -389,7 +389,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
         // Calculate the available width based on the given constraints
         let totalWidth: CGFloat = 343.scale
         let sideMargins: CGFloat = 40.scale
-        let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+        let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
         
         // Calculate the width for each cell
         let availableWidth = totalWidth - sideMargins - cellSpacing

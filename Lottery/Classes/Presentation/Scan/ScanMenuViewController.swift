@@ -9,6 +9,8 @@ import UIKit
 import AVFoundation
 
 final class ScanMenuViewController: UIViewController {
+    var stateId: Int!
+    var lotteryId: Int!
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -139,6 +141,8 @@ final class ScanMenuViewController: UIViewController {
                     if granted {
                         print("Camera access granted.")
                         let scanViewController = ScanViewController()
+                        scanViewController.stateId = self.stateId
+                        scanViewController.lotteryId = self.lotteryId
                         if let navigationController = self.navigationController {
                             navigationController.pushViewController(scanViewController, animated: true)
                         } else {
@@ -160,6 +164,8 @@ final class ScanMenuViewController: UIViewController {
             DispatchQueue.main.async {
                 print("Camera access granted.")
                 let scanViewController = ScanViewController()
+                scanViewController.stateId = self.stateId
+                scanViewController.lotteryId = self.lotteryId
                 if let navigationController = self.navigationController {
                     navigationController.pushViewController(scanViewController, animated: true)
                 } else {

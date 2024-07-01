@@ -110,6 +110,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
             }
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
+        setNeedsLayout()
     }
 }
 

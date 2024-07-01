@@ -77,7 +77,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     init(ticket: Ticket) {
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
-        self.numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
+        self.numbersStringArray = [[]]
         
         textRecognitionRequest = VNRecognizeTextRequest { request, error in
             guard let resultsViewController = self.resultsViewController else {
@@ -138,7 +138,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-         
+       // processImage(image: imageView.image)
     }
     
     private func setupConstraints() {
@@ -146,7 +146,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
             imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.widthAnchor.constraint(equalToConstant: 375.scale),
-            imageView.heightAnchor.constraint(equalToConstant: 320.scale),
+            imageView.heightAnchor.constraint(equalToConstant: 120.scale),
             
             collectionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10.scale),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
@@ -284,14 +284,14 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 12.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
         } else {
             return CGSize(width: 343.scale,
                           height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
@@ -389,20 +389,67 @@ extension CheckTicketViewController: RecognizedTextDataSource {
 
 extension CheckTicketViewController {
     func fullfillNumbersStringArray(transcript: String, ticket: Ticket ) -> [[Int]] {
-        if ticket.id != 3 && ticket.id != 6 {
+        if  ticket.id != 6 {
             let numbersArray = convertStringToIntArray(transcript)
             if isDivisible(numbersArray.count, by: 12) {
                 let numberOfRows = numbersArray.count/12
                 let twoDigitsArray = convertToTwoDigitArray(numbersArray)
-                print("Text recoginzed is: \(twoDigitsArray)")
-                
-                print("Text recoginzed is: ",reshapeArray6Case(twoDigitsArray, numberOfRows: numberOfRows))
+               // print("Text recoginzed is: \(twoDigitsArray)")
+                if ticket.id != 3 {
+                    let numberTwoDimeArray = reshapeArray6CaseVert(twoDigitsArray, numberOfRows: numberOfRows)
+                    print("Text recoginzed is: \(convertToFormattedStringArray(intArray: numberTwoDimeArray!)) " )
+                     
+                    if let numberTwoDimeArray = numberTwoDimeArray {
+                        self.ticket?.numbers = numberTwoDimeArray
+                        numbersStringArray = convertToFormattedStringArray(intArray: numberTwoDimeArray)
+                        
+                    } else {
+                        presentRecognitionErrorAlert(on: self)
+                    }
+                    
+                } else {
+                    let numberTwoDimeArray = reshapeArray6CaseHor(twoDigitsArray, numberOfRows: numberOfRows)
+                    print("Text recoginzed is: \(convertToFormattedStringArray(intArray: numberTwoDimeArray!)) " )
+                    if let numberTwoDimeArray = numberTwoDimeArray {
+                        self.ticket?.numbers = numberTwoDimeArray
+                        numbersStringArray = convertToFormattedStringArray(intArray: numberTwoDimeArray)
+                    } else {
+                        presentRecognitionErrorAlert(on: self)
+                    }
+                    
+                }
             } else {
                 presentRecognitionErrorAlert(on: self)
             }
             
         }
+        if ticket.id == 6 {
+            let numbersArray = convertStringToIntArray(transcript)
+            if isDivisible(numbersArray.count, by: 8) {
+                let digitsStringArray = convertToTwoDigitArray(numbersArray)
+                self.ticket?.numbers = [ digitsStringArray.compactMap { Int($0) } ]
+                print("2by2 array: \(convertToFormattedStringArray(stringArray: digitsStringArray))")
+                numbersStringArray = [convertToFormattedStringArray(stringArray: digitsStringArray)]
+            } else {
+                presentRecognitionErrorAlert(on: self)
+                
+            }
+        }
+        collectionView.reloadData()
         return [[]]
+    }
+    func convertToFormattedStringArray(stringArray: [String]) -> [String] {
+        return stringArray.map { string in
+            if let intValue = Int(string), intValue >= 0 && intValue < 10 {
+                return String(format: "%02d", intValue)
+            }
+            return string
+        }
+    }
+    func convertToFormattedStringArray(intArray: [[Int]]) -> [[String]] {
+        return intArray.map { row in
+            row.map { String(format: "%02d", $0) }
+        }
     }
     func convertStringToIntArray(_ str: String) -> [Int] {
         return str.compactMap { $0.wholeNumberValue }
@@ -447,38 +494,51 @@ extension CheckTicketViewController {
         
         return resultArray
     }
-    func reshapeArray6Case(_ input: [String], numberOfRows: Int) -> [[Int]]? {
-        // Convert strings to integers
+    func reshapeArray6CaseVert(_ input: [String], numberOfRows: Int) -> [[Int]]? {
         let integers = input.compactMap { Int($0) }
-        
-        // Calculate expected number of elements based on provided number of rows and fixed 6 columns
         let expectedNumberOfElements = numberOfRows * 6
-        
-        // Ensure the input array has the exact number of required elements
         if integers.count != expectedNumberOfElements {
             print("Input array does not contain the correct number of elements.")
             return nil
         }
-        
-        // Create an array to hold the reshaped data
         var output = [[Int]]()
-        
         for i in 0..<numberOfRows {
             var row = [Int]()
             for k in 0..<6 {
-                row.append(k) // Example value, you can replace it with any value you want
+                row.append(k)
             }
             output.append(row)
         }
-        
         for j in 0..<numberOfRows {
             for k in 0..<6 {
                 //print(k*numberOfRows + j)
                 output[j][k] = integers[k*numberOfRows + j]
-                //print(integers[k*numberOfRows + j], j,k,numberOfRows)
+                print(integers[k*numberOfRows + j], j,k,numberOfRows)
             }
         }
-        
+        return output
+    }
+    func reshapeArray6CaseHor(_ input: [String], numberOfRows: Int) -> [[Int]]? {
+        let integers = input.compactMap { Int($0) }
+        let expectedNumberOfElements = numberOfRows * 6
+        if integers.count != expectedNumberOfElements {
+            print("Input array does not contain the correct number of elements.")
+            return nil
+        }
+        var output = [[Int]]()
+        for i in 0..<numberOfRows {
+            var row = [Int]()
+            for k in 0..<6 {
+                row.append(k)
+            }
+            output.append(row)
+        }
+        for i in 0..<numberOfRows {
+            for j in 0..<6 {
+                output[i][j] = integers[i*6 + j]
+                
+            }
+        }
         return output
     }
 }

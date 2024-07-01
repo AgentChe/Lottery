@@ -14,6 +14,8 @@ import UIKit
 
 /// The `ScannerViewController` offers an interface to give feedback to the user regarding quadrilaterals that are detected. It also gives the user the opportunity to capture an image with a detected rectangle.
 public final class ScannerViewController: UIViewController {
+    var stateId: Int!
+    var lotteryId: Int!
     let saveButton = UIButton(type: .system)
     let imageButton = UIButton()
     public override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -460,6 +462,8 @@ extension ScannerViewController: RectangleDetectionDelegateProtocol {
         activityIndicator.stopAnimating()
         
         let editVC = EditScanViewController(image: picture, quad: quad)
+        editVC.stateId = stateId
+        editVC.lotteryId = lotteryId
         parent?.navigationController?.pushViewController(editVC, animated: false)
         
         shutterButton.isUserInteractionEnabled = true
