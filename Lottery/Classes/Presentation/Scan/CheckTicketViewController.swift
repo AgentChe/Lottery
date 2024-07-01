@@ -6,6 +6,13 @@
 //
 
 import UIKit
+import VisionKit
+import Vision
+
+protocol RecognizedTextDataSource: AnyObject {
+    func addRecognizedText(recognizedText: [VNRecognizedTextObservation])
+}
+
 
 class CheckTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
@@ -16,7 +23,12 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
             collectionView.collectionViewLayout.invalidateLayout()
         }
     }
+    var transcript = ""
+    
     var collectionView: UICollectionView!
+    
+    var textRecognitionRequest = VNRecognizeTextRequest()
+    var resultsViewController: (UIViewController & RecognizedTextDataSource)?
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
@@ -60,10 +72,34 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     private var saveButtonBottomConstraint: NSLayoutConstraint!
 
     // Custom initializer
+    
     init(ticket: Ticket) {
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
+        
+        textRecognitionRequest = VNRecognizeTextRequest { request, error in
+            guard let resultsViewController = self.resultsViewController else {
+                print("resultsViewController is not set")
+                return
+            }
+            
+            if let requestResults = request.results as? [VNRecognizedTextObservation], !requestResults.isEmpty {
+                DispatchQueue.main.async {
+                    resultsViewController.addRecognizedText(recognizedText: requestResults)
+                }
+            }
+        }
+        
+        // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
+        textRecognitionRequest.recognitionLevel = .accurate
+        
+        if #available(iOS 16.0, *) {
+            textRecognitionRequest.revision = VNRecognizeTextRequestRevision3
+        }
+        
+        textRecognitionRequest.usesLanguageCorrection = true
+        resultsViewController = self 
     }
     
     // Required initializer for compatibility with storyboards
@@ -310,5 +346,24 @@ extension CheckTicketViewController: EditTicketViewControllerDelegate {
     func updateSizeOfEditCell(numbersStringArray: [[String]]) {
         self.numbersStringArray = numbersStringArray
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+}
+
+extension CheckTicketViewController: RecognizedTextDataSource {
+    func addRecognizedText(recognizedText: [VNRecognizedTextObservation]) {
+        // Create a full transcript to run analysis on.
+        let maximumCandidates = 1
+        for observation in recognizedText {
+                    guard let candidate = observation.topCandidates(maximumCandidates).first else { continue }
+                    
+                    // Filter to include only numbers
+                    let numbersOnly = candidate.string.filter { "0123456789".contains($0) }
+                    
+                    if !numbersOnly.isEmpty {
+                        // Add recognized numbers to the transcript
+                        transcript += numbersOnly  // Add a new line for each recognized line
+                    }
+                }
+        print("Text recoginzed is:", transcript)
     }
 }

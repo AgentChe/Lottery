@@ -221,7 +221,11 @@ final class QuadrilateralView: UIView {
             return
         }
         isHighlighted = true
-
+        topLeftCornerView.circleLayer.fillColor = UIColor.clear.cgColor
+        topRightCornerView.circleLayer.fillColor = UIColor.clear.cgColor
+        bottomLeftCornerView.circleLayer.fillColor = UIColor.clear.cgColor
+        bottomRightCornerView.circleLayer.fillColor = UIColor.clear.cgColor
+      
         let cornerView = cornerViewForCornerPosition(position: position)
         guard cornerView.isHighlighted == false else {
             cornerView.highlightWithImage(image)
@@ -236,6 +240,10 @@ final class QuadrilateralView: UIView {
 
     func resetHighlightedCornerViews() {
         isHighlighted = false
+        topLeftCornerView.circleLayer.fillColor = UIColor.white.cgColor
+        topRightCornerView.circleLayer.fillColor = UIColor.white.cgColor
+        bottomLeftCornerView.circleLayer.fillColor = UIColor.white.cgColor
+        bottomRightCornerView.circleLayer.fillColor = UIColor.white.cgColor
         resetHighlightedCornerViews(cornerViews: [topLeftCornerView, topRightCornerView, bottomLeftCornerView, bottomRightCornerView])
     }
 
