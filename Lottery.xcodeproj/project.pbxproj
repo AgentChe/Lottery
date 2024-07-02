@@ -79,6 +79,7 @@
 		A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DC22C1C96AD00754446 /* RemoveCell.swift */; };
 		A37557F72C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */; };
 		A37557F92C344A4C0028DB95 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F82C344A4C0028DB95 /* ImageViewController.swift */; };
+		A37557FB2C345B270028DB95 /* TickedEditScanCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -301,6 +302,7 @@
 		A3668DC22C1C96AD00754446 /* RemoveCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveCell.swift; sourceTree = "<group>"; };
 		A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTicketRecongnizeDigitsDelegate.swift; sourceTree = SOURCE_ROOT; };
 		A37557F82C344A4C0028DB95 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedEditScanCell.swift; sourceTree = SOURCE_ROOT; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -476,6 +478,7 @@
 		A32748B82C25D71E00E9F79A /* Scan */ = {
 			isa = PBXGroup;
 			children = (
+				A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */,
 				A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */,
 				A32749312C29859400E9F79A /* Scanner */,
 				A32748BD2C25E79100E9F79A /* Views */,
@@ -1612,6 +1615,7 @@
 				A327493A2C29859400E9F79A /* VisionRectangleDetector.swift in Sources */,
 				DE42B1AE2BFF3CB200FF61B0 /* ScreenSize.swift in Sources */,
 				DE42B1CB2BFF3CB200FF61B0 /* SplashViewController.swift in Sources */,
+				A37557FB2C345B270028DB95 /* TickedEditScanCell.swift in Sources */,
 				DE42B18E2BFF3CB200FF61B0 /* RequestReview.swift in Sources */,
 				A32749432C29859400E9F79A /* CGRect+Utils.swift in Sources */,
 				DE42B2042BFF50E300FF61B0 /* HTTPMethod.swift in Sources */,

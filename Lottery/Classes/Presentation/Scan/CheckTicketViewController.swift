@@ -123,7 +123,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
-        collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
+        collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
         
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
         
@@ -266,11 +266,12 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditScanCell", for: indexPath) as! TicketEditScanCell
         if let ticket = self.ticket {
             cell.configure(ticket: ticket)
         }
         cell.delegate = self
+        cell.parentvc = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
