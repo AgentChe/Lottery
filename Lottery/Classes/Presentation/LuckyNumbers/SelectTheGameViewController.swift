@@ -124,6 +124,7 @@ final class SelectTheGameViewController: UIViewController {
         guard let selectedIndexPath = selectedIndexPath else { return }
         let selectedGame = nextDraws[selectedIndexPath.row]
         let pictureUrl = URL(string: "https://example.com")
+        
         let numbersStringArray: [[String]] = [["","","","","",""],["","","","","",""]]
         let ticket : Ticket = Ticket(id: 0,
                                      lotteryId: selectedGame.lotteryId,
@@ -131,8 +132,11 @@ final class SelectTheGameViewController: UIViewController {
                                      date: selectedGame.date,
                                      numbers: [])
         
-        let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket)
+        let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: selectedGame, lotteries: lotteries)
         navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
+    }
+    func doesURLContain(_ urlString: String, word: String) -> Bool {
+        return urlString.lowercased().contains(word)
     }
 }
 
@@ -155,8 +159,10 @@ extension SelectTheGameViewController: UICollectionViewDataSource, UICollectionV
         dateFormatter.dateFormat = "MMM dd, yyyy" // Use the desired date format
         let dateString = dateFormatter.string(from: date)
         
-        let imageName = "placeholderImage" // Example image name, replace with your data
-        cell.configure(with: dateString, imageName: imageName)
+    
+        cell.configure(with: dateString,
+                       game: nextDraws[indexPath.item],
+                       lotteries: lotteries)
         
         // Update the cell's appearance based on selection state
         if indexPath == selectedIndexPath {

@@ -18,7 +18,7 @@ class SelectGameCell: UICollectionViewCell {
         return label
     }()
     
-    private let gameImageView: UIImageView = {
+    private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "placeholderImage")
         imageView.contentMode = .scaleAspectFit
@@ -42,7 +42,7 @@ class SelectGameCell: UICollectionViewCell {
         backgroundColor = Appearance.mono100
         
         contentView.addSubview(dateLabel)
-        contentView.addSubview(gameImageView)
+        contentView.addSubview(logoImageView)
         
         NSLayoutConstraint.activate([
             // Date label constraints
@@ -52,15 +52,21 @@ class SelectGameCell: UICollectionViewCell {
             dateLabel.heightAnchor.constraint(equalToConstant: 24.scale),
             
             // Game image view constraints
-            gameImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale),
-            gameImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant:  -5.scale),
-            gameImageView.widthAnchor.constraint(equalToConstant: 150.scale),
-            gameImageView.heightAnchor.constraint(equalToConstant: 45.scale)
+            logoImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale),
+            logoImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant:  -5.scale),
+            logoImageView.widthAnchor.constraint(equalToConstant: 150.scale),
+            logoImageView.heightAnchor.constraint(equalToConstant: 45.scale)
         ])
     }
     
-    func configure(with date: String, imageName: String) {
+    func configure(with date: String, game: Game, lotteries: [Lottery]) {
         dateLabel.text = date
-        gameImageView.image = UIImage(named: imageName)
+        logoImageView.image = UIImage(named: "placeholderImage")
+        for lottery in lotteries {
+            if lottery.id == game.lotteryId {
+                
+                logoImageView.kf.setImage(with: lottery.logoUrl)
+            }
+        }
     }
 }

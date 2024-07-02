@@ -28,6 +28,9 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
     private var datePickerContainer: UIView?
     private let customDatePicker = CustomCalendarView()
     
+    var logoIamgeLeadingConstraint: NSLayoutConstraint!
+    var logoIamgeWidthConstraint: NSLayoutConstraint!
+    
     // Plus Button Declaration
     private let plusButton: UIButton = {
         let button = UIButton()
@@ -77,11 +80,35 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.delegate = self
     }
     
-    func configure(ticket: Ticket,numbersStringArray: [[String]]) {
+    func configure(ticket: Ticket, game: Game, lotteries: [Lottery]) {
         self.ticket = ticket
-        self.numbersStringArray = numbersStringArray
+      //  self.numbersStringArray = numbersStringArray
         
         logoImageView.image = UIImage(named: "placeholderImage")
+        for lottery in lotteries {
+            if lottery.id == game.lotteryId {
+                logoImageView.kf.setImage(with: lottery.logoUrl)
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    self.numbersStringArray = [["","","",""]]
+                } else {
+                    self.numbersStringArray = [["","","","","",""]]
+                }
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    
+                }
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                    logoIamgeLeadingConstraint.isActive = false
+                    logoIamgeWidthConstraint.isActive = false
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                    logoIamgeLeadingConstraint.isActive = true
+                    logoIamgeWidthConstraint.isActive = true
+                    setNeedsLayout()
+                }
+            }
+        }
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
@@ -190,10 +217,13 @@ private extension TicketLuckyNumbersEditCell {
     
     func setupLayoutConstraints() {
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 10 + 10).scale)
+        
+        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
-            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale),
+            logoIamgeLeadingConstraint,
+            logoIamgeWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
             dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
@@ -403,6 +433,9 @@ extension TicketLuckyNumbersEditCell: EditNumberCellDelegate {
         
         numbersStringArray[indexPath.section][indexPath.item] = number
      
+    }
+    func doesURLContain(_ urlString: String, word: String) -> Bool {
+        return urlString.lowercased().contains(word)
     }
 }
 

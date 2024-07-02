@@ -35,10 +35,14 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
 
-    // Custom initializer
-    init(ticket: Ticket) {
+    // Custom
+    var game: Game!
+    var lotteries: [Lottery]!
+    init(ticket: Ticket, game: Game, lotteries: [Lottery]) {
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
+        self.game = game
+        self.lotteries = lotteries
         self.numbersStringArray = [["","","","","",""]]
     }
     
@@ -188,7 +192,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketLuckyNumbersEditCellId", for: indexPath) as! TicketLuckyNumbersEditCell
         if let ticket = self.ticket {
-            cell.configure(ticket: ticket, numbersStringArray: numbersStringArray)
+            cell.configure(ticket: ticket, game: game, lotteries: lotteries)
         }
         cell.delegate = self
         cell.layer.cornerRadius = 20.scale
