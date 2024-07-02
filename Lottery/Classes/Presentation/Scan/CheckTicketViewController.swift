@@ -9,7 +9,7 @@ import UIKit
 import VisionKit
 import Vision
 
- 
+
 protocol RecognizedTextDataSource: AnyObject {
     func addRecognizedText(recognizedText: [VNRecognizedTextObservation])
 }
@@ -59,11 +59,12 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     }()
     
     // ImageView above the collectionView
-     let imageView: UIImageView = {
+    let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         // Set your image here
+        imageView.layer.masksToBounds = true
         imageView.backgroundColor = .red
         imageView.image = UIImage(named: "YourImageName")
         return imageView
@@ -71,7 +72,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
-
+    
     // Custom initializer
     
     init(ticket: Ticket) {
@@ -100,7 +101,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         textRecognitionRequest.usesLanguageCorrection = true
-        resultsViewController = self 
+        resultsViewController = self
     }
     
     // Required initializer for compatibility with storyboards
@@ -138,7 +139,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-       // processImage(image: imageView.image)
+        // processImage(image: imageView.image)
     }
     
     private func setupConstraints() {
@@ -242,16 +243,16 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         backButton.backgroundColor = .clear
         backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
         backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
-
+        
         let barButtonItem = UIBarButtonItem(customView: backButton)
         
         self.navigationItem.leftBarButtonItem = barButtonItem
     }
-
+    
     @objc func handleBackButton() {
         navigationController?.popViewController(animated: true)
     }
-
+    
     private func setupNavigationBar() {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -259,7 +260,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.tintColor = Appearance.mono200
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
@@ -297,7 +298,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
                           height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
         }
     }
-
+    
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
@@ -309,7 +310,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         }
         return true
     }
-
+    
     // Method to update save button state based on validation
     private func updateSaveButtonState() {
         let allNumbersValid = areAllNumbersValid()
@@ -330,7 +331,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
             }
         }
     }
-
+    
     // Handle keyboard disappearance
     @objc private func keyboardWillHide(_ notification: Notification) {
         saveButtonBottomConstraint.constant = -30.scale
@@ -345,200 +346,78 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     }
 }
 
-extension CheckTicketViewController: EditTicketViewControllerDelegate {
-    func updateSizeOfEditCell(numbersStringArray: [[String]]) {
-        self.numbersStringArray = numbersStringArray
-        collectionView.collectionViewLayout.invalidateLayout()
-    }
-}
-
-extension CheckTicketViewController: RecognizedTextDataSource {
-    func processImage(image: UIImage) {
-        guard let cgImage = image.cgImage else {
-            print("Failed to get cgimage from input image")
-            return
-        }
-        
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        do {
-            try handler.perform([textRecognitionRequest])
-        } catch {
-            print(error)
-        }
-    }
-    func addRecognizedText(recognizedText: [VNRecognizedTextObservation]) {
-        // Create a full transcript to run analysis on.
-        let maximumCandidates = 1
-        for observation in recognizedText {
-                    guard let candidate = observation.topCandidates(maximumCandidates).first else { continue }
-                    
-                    // Filter to include only numbers
-                    let numbersOnly = candidate.string.filter { "0123456789".contains($0) }
-                    
-                    if !numbersOnly.isEmpty {
-                        // Add recognized numbers to the transcript
-                        transcript += numbersOnly  // Add a new line for each recognized line
-                    }
-                }
-        print("Text recoginzed is:", transcript)
-        if let ticket = ticket {
-            fullfillNumbersStringArray(transcript: transcript, ticket: ticket)
-        }
-    }
-}
-
 extension CheckTicketViewController {
-    func fullfillNumbersStringArray(transcript: String, ticket: Ticket ) -> [[Int]] {
-        if  ticket.id != 6 {
-            let numbersArray = convertStringToIntArray(transcript)
-            if isDivisible(numbersArray.count, by: 12) {
-                let numberOfRows = numbersArray.count/12
-                let twoDigitsArray = convertToTwoDigitArray(numbersArray)
-               // print("Text recoginzed is: \(twoDigitsArray)")
-                if ticket.id != 3 {
-                    let numberTwoDimeArray = reshapeArray6CaseVert(twoDigitsArray, numberOfRows: numberOfRows)
-                    print("Text recoginzed is: \(convertToFormattedStringArray(intArray: numberTwoDimeArray!)) " )
-                     
-                    if let numberTwoDimeArray = numberTwoDimeArray {
-                        self.ticket?.numbers = numberTwoDimeArray
-                        numbersStringArray = convertToFormattedStringArray(intArray: numberTwoDimeArray)
-                        
-                    } else {
-                        presentRecognitionErrorAlert(on: self)
-                    }
-                    
-                } else {
-                    let numberTwoDimeArray = reshapeArray6CaseHor(twoDigitsArray, numberOfRows: numberOfRows)
-                    print("Text recoginzed is: \(convertToFormattedStringArray(intArray: numberTwoDimeArray!)) " )
-                    if let numberTwoDimeArray = numberTwoDimeArray {
-                        self.ticket?.numbers = numberTwoDimeArray
-                        numbersStringArray = convertToFormattedStringArray(intArray: numberTwoDimeArray)
-                    } else {
-                        presentRecognitionErrorAlert(on: self)
-                    }
-                    
-                }
-            } else {
-                presentRecognitionErrorAlert(on: self)
-            }
-            
-        }
-        if ticket.id == 6 {
-            let numbersArray = convertStringToIntArray(transcript)
-            if isDivisible(numbersArray.count, by: 8) {
-                let digitsStringArray = convertToTwoDigitArray(numbersArray)
-                self.ticket?.numbers = [ digitsStringArray.compactMap { Int($0) } ]
-                print("2by2 array: \(convertToFormattedStringArray(stringArray: digitsStringArray))")
-                numbersStringArray = [convertToFormattedStringArray(stringArray: digitsStringArray)]
-            } else {
-                presentRecognitionErrorAlert(on: self)
-                
-            }
-        }
-        collectionView.reloadData()
-        return [[]]
-    }
-    func convertToFormattedStringArray(stringArray: [String]) -> [String] {
-        return stringArray.map { string in
-            if let intValue = Int(string), intValue >= 0 && intValue < 10 {
-                return String(format: "%02d", intValue)
-            }
-            return string
-        }
-    }
-    func convertToFormattedStringArray(intArray: [[Int]]) -> [[String]] {
-        return intArray.map { row in
-            row.map { String(format: "%02d", $0) }
-        }
-    }
-    func convertStringToIntArray(_ str: String) -> [Int] {
-        return str.compactMap { $0.wholeNumberValue }
-    }
-    func isDivisible(_ dividend: Int, by divisor: Int) -> Bool {
-        return dividend % divisor == 0
-    }
-    func presentRecognitionErrorAlert(on viewController: UIViewController) {
-        // Create the alert controller
-        let alert = UIAlertController(
-            title: "Recognition Error",
-            message: "An error occurred during the recognition process. Please try again.",
-            preferredStyle: .alert
-        )
+  
+    func addGaussianBlurEffect(to imageView: UIImageView, withOverlayImage overlayImageName: String, target: Any?, action: Selector?) {
+        guard let image = imageView.image else { return }
         
-        // Add an action to the alert
-        let tryAgainAction = UIAlertAction(title: "Try Again", style: .default) { _ in
-            // Code to retry the recognition process
-            print("User tapped Try Again")
+        // Create a blurred version of the image
+        let ciImage = CIImage(image: image)
+        let filter = CIFilter(name: "CIGaussianBlur")
+        filter?.setValue(ciImage, forKey: kCIInputImageKey)
+        filter?.setValue(10.0, forKey: kCIInputRadiusKey) // Adjust the blur radius as needed
+        
+        guard let outputCIImage = filter?.outputImage else { return }
+        let context = CIContext(options: nil)
+        
+        guard let cgImage = context.createCGImage(outputCIImage, from: ciImage!.extent) else { return }
+        let blurredImage = UIImage(cgImage: cgImage)
+        
+        // Create and configure the blur effect image view
+        let blurImageView = UIImageView(image: blurredImage)
+        blurImageView.translatesAutoresizingMaskIntoConstraints = false
+        blurImageView.contentMode = .scaleAspectFill
+        blurImageView.layer.masksToBounds = true
+        imageView.addSubview(blurImageView)
+        
+        // Create a darker overlay
+        let darkOverlayView = UIView()
+        darkOverlayView.translatesAutoresizingMaskIntoConstraints = false
+        darkOverlayView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        imageView.addSubview(darkOverlayView)
+        
+        // Create and configure the overlay image view
+        let overlayImageView = UIImageView()
+        overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+        overlayImageView.contentMode = .scaleAspectFit
+        overlayImageView.image = UIImage(named: overlayImageName)
+        imageView.addSubview(overlayImageView)
+        
+        // Add constraints for the blur effect image view to fill the entire image view
+        NSLayoutConstraint.activate([
+            blurImageView.topAnchor.constraint(equalTo: imageView.topAnchor),
+            blurImageView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            blurImageView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+            blurImageView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor)
+        ])
+        
+        // Add constraints for the dark overlay view to fill the entire image view
+        NSLayoutConstraint.activate([
+            darkOverlayView.topAnchor.constraint(equalTo: imageView.topAnchor),
+            darkOverlayView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            darkOverlayView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+            darkOverlayView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor)
+        ])
+        
+        // Add constraints to center the overlay image view in the image view and set its size
+        NSLayoutConstraint.activate([
+            overlayImageView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            overlayImageView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+            overlayImageView.widthAnchor.constraint(equalToConstant: 40.scale),
+            overlayImageView.heightAnchor.constraint(equalToConstant: 40.scale)
+        ])
+        
+        // Add tap gesture recognizer to the image view
+        if let target = target, let action = action {
+            let tapGestureRecognizer = UITapGestureRecognizer(target: target, action: action)
+            imageView.isUserInteractionEnabled = true
+            imageView.addGestureRecognizer(tapGestureRecognizer)
         }
-        
-        // Add the action to the alert controller
-        alert.addAction(tryAgainAction)
-        
-        // Present the alert on the provided view controller
-        viewController.present(alert, animated: true, completion: nil)
     }
-    func convertToTwoDigitArray(_ inputArray: [Int]) -> [String] {
-        var resultArray: [String] = []
-        
-        // Check if the array has an even number of elements
-        if inputArray.count % 2 != 0 {
-            print("The input array does not have an even number of elements.")
-            return resultArray
-        }
-        
-        for i in stride(from: 0, to: inputArray.count, by: 2) {
-            // Combine each pair of elements into a two-digit string
-            let combinedNumber = String(format: "%d%d", inputArray[i], inputArray[i+1])
-            resultArray.append(combinedNumber)
-        }
-        
-        return resultArray
-    }
-    func reshapeArray6CaseVert(_ input: [String], numberOfRows: Int) -> [[Int]]? {
-        let integers = input.compactMap { Int($0) }
-        let expectedNumberOfElements = numberOfRows * 6
-        if integers.count != expectedNumberOfElements {
-            print("Input array does not contain the correct number of elements.")
-            return nil
-        }
-        var output = [[Int]]()
-        for i in 0..<numberOfRows {
-            var row = [Int]()
-            for k in 0..<6 {
-                row.append(k)
-            }
-            output.append(row)
-        }
-        for j in 0..<numberOfRows {
-            for k in 0..<6 {
-                //print(k*numberOfRows + j)
-                output[j][k] = integers[k*numberOfRows + j]
-                print(integers[k*numberOfRows + j], j,k,numberOfRows)
-            }
-        }
-        return output
-    }
-    func reshapeArray6CaseHor(_ input: [String], numberOfRows: Int) -> [[Int]]? {
-        let integers = input.compactMap { Int($0) }
-        let expectedNumberOfElements = numberOfRows * 6
-        if integers.count != expectedNumberOfElements {
-            print("Input array does not contain the correct number of elements.")
-            return nil
-        }
-        var output = [[Int]]()
-        for i in 0..<numberOfRows {
-            var row = [Int]()
-            for k in 0..<6 {
-                row.append(k)
-            }
-            output.append(row)
-        }
-        for i in 0..<numberOfRows {
-            for j in 0..<6 {
-                output[i][j] = integers[i*6 + j]
-                
-            }
-        }
-        return output
-    }
+    @objc func imageViewTapped() {
+           let imageVC = ImageViewController()
+           imageVC.image = imageView.image
+           imageVC.modalPresentationStyle = .overFullScreen
+           present(imageVC, animated: false, completion: nil)
+       }
 }

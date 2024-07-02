@@ -228,6 +228,15 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
 //        }
 
         checkTicketViewController.imageView.image = results.croppedScan.image
+        let croppedImageSize = results.croppedScan.image.size
+        if croppedImageSize.width/croppedImageSize.height < 3.125 {
+            checkTicketViewController.imageView.contentMode = .scaleAspectFill
+        } else {
+            checkTicketViewController.imageView.contentMode = .scaleAspectFit
+        }
+        if croppedImageSize.width/croppedImageSize.height < 3 {
+            checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckTicketViewController.imageViewTapped))
+        }
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         navigationController?.pushViewController( checkTicketViewController, animated: true)
     }

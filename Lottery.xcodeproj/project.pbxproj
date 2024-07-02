@@ -77,6 +77,8 @@
 		A3668DBA2C1C4CEA00754446 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB92C1C4CEA00754446 /* DateCell.swift */; };
 		A3668DC12C1C89F100754446 /* EditNumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DC02C1C89F100754446 /* EditNumberCell.swift */; };
 		A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DC22C1C96AD00754446 /* RemoveCell.swift */; };
+		A37557F72C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */; };
+		A37557F92C344A4C0028DB95 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F82C344A4C0028DB95 /* ImageViewController.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -297,6 +299,8 @@
 		A3668DB92C1C4CEA00754446 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		A3668DC02C1C89F100754446 /* EditNumberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNumberCell.swift; sourceTree = "<group>"; };
 		A3668DC22C1C96AD00754446 /* RemoveCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveCell.swift; sourceTree = "<group>"; };
+		A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTicketRecongnizeDigitsDelegate.swift; sourceTree = SOURCE_ROOT; };
+		A37557F82C344A4C0028DB95 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -472,6 +476,7 @@
 		A32748B82C25D71E00E9F79A /* Scan */ = {
 			isa = PBXGroup;
 			children = (
+				A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */,
 				A32749312C29859400E9F79A /* Scanner */,
 				A32748BD2C25E79100E9F79A /* Views */,
 				A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */,
@@ -479,6 +484,7 @@
 				A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */,
 				A3B3C7B42C29BCC5009EA452 /* ScanMenuViewController.swift */,
 				A3AE80132C2B63BB00E5B473 /* CheckTicketViewController.swift */,
+				A37557F82C344A4C0028DB95 /* ImageViewController.swift */,
 			);
 			path = Scan;
 			sourceTree = "<group>";
@@ -1632,6 +1638,7 @@
 				DE42B18D2BFF3CB200FF61B0 /* ImagePicker.swift in Sources */,
 				A327496E2C29859400E9F79A /* RectangleFeaturesFunnel.swift in Sources */,
 				DE42B1A72BFF3CB200FF61B0 /* ContentError.swift in Sources */,
+				A37557F72C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift in Sources */,
 				DE42B1AC2BFF3CB200FF61B0 /* ObservableRetrySingle.swift in Sources */,
 				A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */,
 				A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */,
@@ -1678,6 +1685,7 @@
 				A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
 				A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */,
+				A37557F92C344A4C0028DB95 /* ImageViewController.swift in Sources */,
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
 				A3FF558B2C0CC3AA00E81771 /* SelectLotteriesViewController.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,

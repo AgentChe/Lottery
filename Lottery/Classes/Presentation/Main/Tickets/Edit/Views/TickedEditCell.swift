@@ -52,7 +52,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         layout.minimumInteritemSpacing = 6.scale
         layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
