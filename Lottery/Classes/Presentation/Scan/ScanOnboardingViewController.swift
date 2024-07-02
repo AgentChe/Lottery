@@ -18,14 +18,17 @@ final class ScanOnboardingViewController: UIViewController {
     //private var stateId: Int?
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         //getSavedProfile()
         setupInitialViewControllerToChooseState()
+        
     }
     override func loadView() {
         super.loadView()
         //navigationItem.hidesBackButton = true
         setupNavigationBackButton()
+     //   navigationController?.view.backgroundColor = Appearance.main500
+      
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -71,6 +74,7 @@ final class ScanOnboardingViewController: UIViewController {
         // Replace the default back button with the custom button
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true // Hide the default back button
+        
     }
     @objc private func customBackButtonTapped() {
         // Perform back navigation

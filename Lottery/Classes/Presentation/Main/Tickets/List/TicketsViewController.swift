@@ -1,3 +1,4 @@
+
 //
 //  TicketsViewController.swift
 //  Lottery
@@ -12,6 +13,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private var tickets = [Ticket]()
     private var collectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
+    private var noTicketsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
 
     override func viewDidLoad() {
@@ -19,17 +21,18 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         view.backgroundColor = Appearance.main400
         setupNavigationBarTitle()
         setupNavigationBarAppearance()
+        setupNoTicketsImageView()
         setupCollectionView()
         setupScanButton()  // Setup scan button
-        setupLayoutConstraints()  // Apply layout constraints including scan button
+        setupLayoutConstraints()  // Apply layout constraints including scan button and no tickets image view
         fetchTickets()
     }
     
     private func setupNavigationBarAppearance() {
-        navigationController?.navigationBar.barTintColor = Appearance.main400
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+//        navigationController?.navigationBar.barTintColor = Appearance.main400
+//        navigationController?.navigationBar.isTranslucent = false
+//        navigationController?.navigationBar.shadowImage = UIImage()
+//        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         setupNavigationBarTitle()
     }
 
@@ -70,13 +73,26 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         view.addSubview(scanButton)
     }
+    private func setupNoTicketsImageView() {
+
+        noTicketsImageView = UIImageView(image: UIImage(named: "Tickets.NoSavedTickets"))
+        noTicketsImageView.translatesAutoresizingMaskIntoConstraints = false
+        noTicketsImageView.contentMode = .scaleAspectFit
+        
+        view.addSubview(noTicketsImageView)
+    }
 
     private func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
             scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
             scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
             scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale)
+            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+
+            noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
+            noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
+            noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
 
@@ -124,7 +140,15 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
 
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+            
+        }
+    }
     @objc func handleMenuTap() {
         let menuVC = MenuViewController()
         let navController = NavigationController(rootViewController: menuVC)
@@ -133,11 +157,6 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         present(navController, animated: true, completion: nil)
     }
 
-    @objc func scanButtonTapped() {
-        // Implement the action for the scan button tap
-        print("Scan button tapped in TicketsViewController")
-        // Add your custom action code here
-    }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return tickets.count
@@ -177,7 +196,50 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let ticket = tickets[indexPath.item]
         
         let editVC = EditTicketViewController(ticket: ticket)
-        
+         
         navigationController?.pushViewController(editVC, animated: true)
+    }
+    @objc func scanButtonTapped() {
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        
+        
+        // Check if the current view controller is embedded in a navigation controller
+        if let navigationController = self.navigationController {
+           
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
+
+                updateMainViewControllerConstraints(for: mainViewController)
+                
+            }
+        } else {
+            // If not, present the view controller modally as a fallback
+            present(scanOnboardingViewController, animated: true, completion: nil)
+        }
+            
+    }
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
+        let mainView = mainViewController.mainView
+        let tabView = mainView.tabView
+        
+  
+        
+        if mainView.tabViewBottomConstraint?.constant != newConstant {
+            // Deactivate and nil the old constraint if it's different
+            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
+                oldTabViewBottomConstraint.isActive = false
+                mainView.tabViewBottomConstraint = nil
+            }
+            
+            // Create and activate the new constraint
+            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
+            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
+            newTabViewBottomConstraint.isActive = true
+            
+            // Call layoutIfNeeded to apply the changes
+            mainView.layoutIfNeeded()
+        }
     }
 }
