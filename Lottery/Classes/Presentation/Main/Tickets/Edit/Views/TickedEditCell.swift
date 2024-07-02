@@ -291,6 +291,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
                 return UICollectionViewCell()
             }
             cell.indexPath = indexPath
+            cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
             
             return cell
@@ -305,6 +306,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
                 cell.delegate = self // Set the delegate
+                cell.numberOfCells = numbersStringArray.last?.count
             }
             return cell
         }

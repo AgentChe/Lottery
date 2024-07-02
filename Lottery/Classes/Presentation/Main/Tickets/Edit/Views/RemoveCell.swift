@@ -11,6 +11,13 @@ protocol RemoveCellDelegate: AnyObject {
 }
 class RemoveCell: UICollectionViewCell {
     weak var delegate: RemoveCellDelegate?
+    var numberOfCells: Int? {
+        didSet {
+            if let numberOfCells = numberOfCells {
+                layer.cornerRadius = numberOfCells == 6 ? 20.scale : 28.scale
+            }
+        }
+    }
     private let closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "EditTickets.Close"), for: .normal)

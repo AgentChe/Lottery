@@ -11,7 +11,25 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
     weak var delegate: EditNumberCellDelegate?
     var indexPath: IndexPath?
-    
+    var numberOfCells: Int? {
+        didSet {
+            if let numberOfCells = numberOfCells {
+                layer.cornerRadius = numberOfCells == 6 ? 20.scale : 28.scale
+                if numberOfCells == 4 {
+                    if self.indexPath?.item == 0 || self.indexPath?.item == 1 {
+                        backgroundColor = Appearance.main100
+                        numberTextField.textColor = Appearance.mono100
+                        layer.borderWidth = 0.scale
+                    }
+                    if self.indexPath?.item == 2 || self.indexPath?.item == 3 {
+                        backgroundColor = Appearance.mono100
+                        numberTextField.textColor = Appearance.mono200
+                        layer.borderWidth = 1.scale
+                    }
+                }
+            }
+        }
+    }
     // Replace UILabel with UITextField
     private let numberTextField: UITextField = {
         let textField = UITextField()
@@ -102,6 +120,8 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
             numberTextField.textColor = Appearance.mono200
             layer.borderWidth = 1.scale
         }
+        
+        
     }
     
     // UITextFieldDelegate method to handle changes to the text

@@ -217,7 +217,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         )
         ImageManager.shared.addImageScans(results)
         
-        let ticket = Ticket(id: 1, lotteryId: lotteryId , pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[1, 2, 3, 4 ],[6, 7, 8, 9]])
+        let ticket = Ticket(id: 1, lotteryId: lotteryId , pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
         
         let checkTicketViewController = CheckTicketViewController(ticket: ticket)
         
