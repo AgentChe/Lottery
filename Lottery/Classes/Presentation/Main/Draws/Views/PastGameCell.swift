@@ -12,7 +12,8 @@ class PastGameCell: UICollectionViewCell {
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
-    
+    var logoIamgeLeadingConstraint: NSLayoutConstraint!
+    var logoIamgeWidthConstraint: NSLayoutConstraint!
     private let winningNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "WINNING NUMBERS"
@@ -105,7 +106,33 @@ class PastGameCell: UICollectionViewCell {
 extension PastGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
         logoImageView.image = UIImage(named: "placeholderImage")
-        
+        logoImageView.contentMode = .scaleAspectFit
+        for lottery in lotteries {
+            if lottery.id == game.lotteryId {
+
+                logoImageView.kf.setImage(with: lottery.logoUrl)
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    logoIamgeLeadingConstraint.isActive = false
+                    logoIamgeWidthConstraint.isActive = false
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    logoIamgeLeadingConstraint.isActive = true
+                    logoIamgeWidthConstraint.isActive = true
+                    setNeedsLayout()
+                    
+                }
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                    logoIamgeLeadingConstraint.isActive = false
+                    logoIamgeWidthConstraint.isActive = false
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                    logoIamgeLeadingConstraint.isActive = true
+                    logoIamgeWidthConstraint.isActive = true
+                    setNeedsLayout()
+                }
+                
+            }
+        }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -131,6 +158,9 @@ extension PastGameCell {
         
         let million = number / 1_000_000
         return String(format: "$%.0f M.", million)
+    }
+    func doesURLContain(_ urlString: String, word: String) -> Bool {
+        return urlString.lowercased().contains(word)
     }
 }
 
@@ -167,10 +197,12 @@ private extension PastGameCell {
     }
     
     func setupLayoutConstraints() {
+        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
-            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale),
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
+            logoIamgeLeadingConstraint,
+            logoIamgeWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
             dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),

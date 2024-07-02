@@ -7,6 +7,7 @@
 
 
 import UIKit
+import Kingfisher
 
 class NextGameCell: UICollectionViewCell {
     
@@ -17,7 +18,8 @@ class NextGameCell: UICollectionViewCell {
     private let cashValueLabel = UILabel()
     private let jackpotTitleLabel = UILabel()
     private let cashValueTitleLabel = UILabel()
-    
+    var logoIamgeLeadingConstraint: NSLayoutConstraint!
+    var logoIamgeWidthConstraint: NSLayoutConstraint!
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -33,7 +35,28 @@ class NextGameCell: UICollectionViewCell {
 extension NextGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
         logoImageView.image = UIImage(named: "placeholderImage")
-        
+        logoImageView.contentMode = .scaleAspectFit
+        for lottery in lotteries {
+            if lottery.id == game.lotteryId {
+
+                logoImageView.kf.setImage(with: lottery.logoUrl)
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    
+                }
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                    logoIamgeLeadingConstraint.isActive = false
+                    logoIamgeWidthConstraint.isActive = false
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                    logoIamgeLeadingConstraint.isActive = true
+                    logoIamgeWidthConstraint.isActive = true
+                    setNeedsLayout()
+                }
+                
+            }
+        }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
@@ -72,8 +95,8 @@ private extension NextGameCell {
         dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
         dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
         dateLabelContainer.layer.shadowOpacity = 0.5
-        dateLabelContainer.layer.shadowRadius = 3.scale // Apply scale to shadow radius
-        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale) // Apply scale to shadow offset
+        dateLabelContainer.layer.shadowRadius = 3.scale
+        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
         dateLabel.font = Fonts.Inter.medium(size: 12.5.scale) // Apply scale to font size
         dateLabel.textAlignment = .center
@@ -115,11 +138,14 @@ private extension NextGameCell {
     }
     
     func setupLayoutConstraints() {
+        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+        
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale), // Apply scale to leading constraint
-            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale), // Apply scale to width
-            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale), // Apply scale to height
+            logoIamgeLeadingConstraint,
+            logoIamgeWidthConstraint,
+            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
         
             dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale), // Apply scale to top constraint
             dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale), // Apply scale to trailing constraint
@@ -146,5 +172,8 @@ private extension NextGameCell {
             
             cashValueTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale) // Apply scale to bottom constraint
         ])
+    }
+    func doesURLContain(_ urlString: String, word: String) -> Bool {
+        return urlString.lowercased().contains(word)
     }
 }
