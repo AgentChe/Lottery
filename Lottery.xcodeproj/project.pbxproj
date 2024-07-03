@@ -80,6 +80,7 @@
 		A37557F72C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */; };
 		A37557F92C344A4C0028DB95 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F82C344A4C0028DB95 /* ImageViewController.swift */; };
 		A37557FB2C345B270028DB95 /* TickedEditScanCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */; };
+		A375583B2C35B86C0028DB95 /* LuckyNumbersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583A2C35B86C0028DB95 /* LuckyNumbersCell.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -303,6 +304,7 @@
 		A37557F62C343C260028DB95 /* ScanTicketRecongnizeDigitsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTicketRecongnizeDigitsDelegate.swift; sourceTree = SOURCE_ROOT; };
 		A37557F82C344A4C0028DB95 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedEditScanCell.swift; sourceTree = SOURCE_ROOT; };
+		A375583A2C35B86C0028DB95 /* LuckyNumbersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersCell.swift; sourceTree = SOURCE_ROOT; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -698,6 +700,7 @@
 		A3AE80152C2C575600E5B473 /* LuckyNumbers */ = {
 			isa = PBXGroup;
 			children = (
+				A375583A2C35B86C0028DB95 /* LuckyNumbersCell.swift */,
 				A3AE801A2C2CA18700E5B473 /* Views */,
 				A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */,
 				A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */,
@@ -1594,6 +1597,7 @@
 				A32749482C29859400E9F79A /* UIImage+Utils.swift in Sources */,
 				A3FF557D2C08B8A600E81771 /* AddLotteryRequest.swift in Sources */,
 				DE42B2062BFF50E300FF61B0 /* RequestDispatcher.swift in Sources */,
+				A375583B2C35B86C0028DB95 /* LuckyNumbersCell.swift in Sources */,
 				A32749762C29859400E9F79A /* CaptureSession+Focus.swift in Sources */,
 				DE42B1EB2BFF429200FF61B0 /* Session.swift in Sources */,
 				A3668DAD2C19BFCF00754446 /* NotchedBackgroundView.swift in Sources */,

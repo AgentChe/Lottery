@@ -12,7 +12,7 @@ struct AddLuckyNumbersRequest: EndPoint {
     let lotteryId: Int
     let numbers: [[Int]]
     let userToken: String
-    let date: String
+    let date: TimeInterval
  
     var path: String {
         "/api/games/luckynumbers/add"
@@ -24,8 +24,8 @@ struct AddLuckyNumbersRequest: EndPoint {
     
     var parameters: [String : Any] {
         [
-            "api_key": GlobalDefinitions.apiKey,
             "user_token": userToken,
+            "api_key": GlobalDefinitions.apiKey,
             "numbers": numbers,
             "lotteryId": lotteryId,
             "date": date

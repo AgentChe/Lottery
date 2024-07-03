@@ -115,47 +115,36 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         
         // Update the ticket's numbers
         existingTicket.numbers = numbersArray
-        
-        // Get the necessary properties from the ticket to use in the editTicket method
-        let id = existingTicket.id
-        let lotteryId = existingTicket.lotteryId
-        let pictureUrl = existingTicket.pictureUrl
-        let date = existingTicket.date
-        
-        // Create an instance of TicketsManager (assuming you have a shared instance or create a new one)
-        let ticketsManager = TicketsManager()
-        
-        // Call the editTicket method
-        ticketsManager.editTicket(id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbersArray) { result in
+
+        let lotteryId = game.lotteryId
+        let date = game.date
+
+        let gamesManager = GamesManager()
+        gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: numbersArray) { [weak self] result in
             switch result {
-            case .success(let updatedTicket):
-                // Handle success (e.g., show a success message or pop the view controller)
-                print("Ticket updated successfully: \(updatedTicket)")
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+            case .success(let success):
+                if success {
+                    // Handle success case
+                    print("Lucky numbers added successfully.")
+                } else {
+                    DispatchQueue.main.async {
+                        self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                    }
                 }
-                
             case .failure(let error):
-                // Handle failure by presenting an alert to the user
-                print("Failed to update the ticket: \(error)")
-                
                 DispatchQueue.main.async {
-                    let alert = UIAlertController(
-                        title: "Update Failed",
-                        message: "Unable to update the ticket. Please try again later. Error: \(error.localizedDescription)",
-                        preferredStyle: .alert
-                    )
-                    
-                    // Add an OK button to the alert
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    
-                    // Present the alert
-                    self.present(alert, animated: true, completion: nil)
+                    self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
                 }
             }
         }
     }
 
+    func showErrorAlert(message: String) {
+           let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+           let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+           alertController.addAction(okAction)
+           self.present(alertController, animated: true, completion: nil)
+       }
 
     
     private func setupNavigationBarTitle() {

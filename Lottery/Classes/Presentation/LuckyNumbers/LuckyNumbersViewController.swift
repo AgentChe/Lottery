@@ -8,7 +8,10 @@
 import UIKit
 
 final class LuckyNumbersViewController: UIViewController {
-    
+    let gamesManager = GamesManager()
+    private var contentManager: ContentManagerProtocol = ContentManager()
+    private var nextDraws: [Game] = []
+    private var lotteries: [Lottery] = []
     // Declare all views as class properties
     private let imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "LuckyNumbers.Add"))
@@ -55,14 +58,46 @@ final class LuckyNumbersViewController: UIViewController {
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
     }()
-    
+    private var nextDrawsCollectionView: UICollectionView!
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
         setupNavigationBarTitle()
         setupViews()
+        fetchLotteries(for: nil)
+        
     }
-    
+ 
+    func fetchLotteries(for stateId: Int?) {
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    self?.fetchNextGames(for: stateId ?? nil)
+                   
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
+                }
+            }
+        }
+    }
+
+    func fetchNextGames(for stateId: Int?) {
+        gamesManager.fetchNextGames(stateId: stateId ?? nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let games):
+                    self?.nextDraws = games
+                    delay(0.05) {
+                      //  self?.nextDrawsCollectionView.reloadData()
+                    }
+                case .failure(let error):
+                    print("Failed to fetch next games: \(error)")
+                }
+            }
+        }
+    }
     func setupNavigationBarTitle() {
         // Create the title label
         let titleLabel = UILabel()
