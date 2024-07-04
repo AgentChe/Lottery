@@ -9,7 +9,7 @@
 import UIKit
 
 class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -34,7 +34,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
-
+    
     // Custom
     var game: Game!
     var lotteries: [Lottery]!
@@ -43,15 +43,15 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         self.ticket = ticket
         self.game = game
         self.lotteries = lotteries
-        if game.myLuckyNumbers?.count == 0 {
-            if game.lotteryId != 6 {
-                self.numbersStringArray = [["","","","","",""]]
-            } else {
-                self.numbersStringArray = [["","","",""]]
-            }
-        } else {
-             numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
-        }
+//        if game.myLuckyNumbers?.count == 0 {
+//            if game.lotteryId != 6 {
+//                self.numbersStringArray = [["","","","","",""]]
+//            } else {
+//                self.numbersStringArray = [["","","",""]]
+//            }
+//        } else {
+//            numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
+//        }
     }
     func convertIntArrayToStringArray(_ intArray: [[Int]]) -> [[String]] {
         return intArray.map { $0.map { String($0) } }
@@ -125,10 +125,10 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         
         // Update the ticket's numbers
         existingTicket.numbers = numbersArray
-
+        
         let lotteryId = game.lotteryId
         let date = game.date
-
+        
         let gamesManager = GamesManager()
         gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: numbersArray) { [weak self] result in
             switch result {
@@ -136,6 +136,11 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                 if success {
                     // Handle success case
                     print("Lucky numbers added successfully.")
+                    DispatchQueue.main.async {
+                       
+                        self?.navigationController?.popToRootViewController(animated: true)
+                    }
+                    
                 } else {
                     DispatchQueue.main.async {
                         self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
@@ -148,14 +153,14 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             }
         }
     }
-
+   
     func showErrorAlert(message: String) {
-           let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-           let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-           alertController.addAction(okAction)
-           self.present(alertController, animated: true, completion: nil)
-       }
-
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     
     private func setupNavigationBarTitle() {
         guard let backButtonImage = UIImage(named: "LuckyNumbers.Header") else { return }
@@ -166,16 +171,16 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         backButton.backgroundColor = .clear
         backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
         backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
-
+        
         let barButtonItem = UIBarButtonItem(customView: backButton)
         
         self.navigationItem.leftBarButtonItem = barButtonItem
     }
-
+    
     @objc func handleBackButton() {
         navigationController?.popViewController(animated: true)
     }
-
+    
     private func setupNavigationBar() {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -183,7 +188,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         navigationController?.navigationBar.tintColor = Appearance.mono200
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
@@ -194,6 +199,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             cell.configure(ticket: ticket, game: game, lotteries: lotteries)
         }
         cell.delegate = self
+        cell.parentVC = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -220,7 +226,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                           height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
         }
     }
-
+    
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
@@ -232,7 +238,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         }
         return true
     }
-
+    
     // Method to update save button state based on validation
     private func updateSaveButtonState() {
         let allNumbersValid = areAllNumbersValid()
@@ -253,7 +259,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             }
         }
     }
-
+    
     // Handle keyboard disappearance
     @objc private func keyboardWillHide(_ notification: Notification) {
         saveButtonBottomConstraint.constant = -30.scale
@@ -272,5 +278,54 @@ extension EditLuckyNumbersViewController: EditTicketViewControllerDelegate {
     func updateSizeOfEditCell(numbersStringArray: [[String]]) {
         self.numbersStringArray = numbersStringArray
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+}
+
+extension EditLuckyNumbersViewController {
+    func removeTicketButtonTapped() {
+        // Convert numbersStringArray to [[Int]]
+        var numbersArray: [[Int]] = []
+        for section in numbersStringArray {
+            var intSection: [Int] = []
+            for numberString in section {
+                if let number = Int(numberString) {
+                    intSection.append(number)
+                }
+            }
+            numbersArray.append(intSection)
+        }
+        
+        // Ensure we have a ticket to modify
+        guard var existingTicket = ticket else { return }
+        
+        // Update the ticket's numbers
+        existingTicket.numbers = numbersArray
+        
+        let lotteryId = game.lotteryId
+        let date = game.date
+        
+        let gamesManager = GamesManager()
+        gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: numbersArray) { [weak self] result in
+            switch result {
+            case .success(let success):
+                if success {
+                    // Handle success case
+                    print("Lucky numbers added successfully.")
+                    DispatchQueue.main.async {
+                       
+                        self?.navigationController?.popViewController(animated: true)
+                    }
+                    
+                } else {
+                    DispatchQueue.main.async {
+                        self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                }
+            }
+        }
     }
 }

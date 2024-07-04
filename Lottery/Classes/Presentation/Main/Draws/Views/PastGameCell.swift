@@ -298,7 +298,7 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegate {
         if comparisonArray.count == 0 {
             return
             
-        }
+        } 
         let lastIndex = comparisonArray[indexPath.section].count - 1
 
         if indexPath.item == lastIndex {

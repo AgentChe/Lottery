@@ -20,6 +20,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
     }
     
     weak var delegate: EditTicketViewControllerDelegate?
+    weak var parentVC: EditLuckyNumbersViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -109,7 +110,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
                         setNeedsLayout()
                     }
                 } else {
-                    numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? []) // [["01","01","01","01"]] 
+                    numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? []) // [["01","01","01","01"]]
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
                         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
@@ -322,6 +323,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
         return numbersStringArray.count
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Add 1 to the count to include the RemoveCell
         if let numbersCount = numbersStringArray[safe: section]?.count {
@@ -393,12 +395,14 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
           }
       }
     private func presentDeleteConfirmationAlert() {
-        let alertVC = CustomAlertViewController()
+        let alertVC = LuckyNumbersAlertViewController()
         
         alertVC.onConfirmDelete = { [weak self] in
             guard let self = self else { return }
             // Code to remove the ticket here
-            self.removeTicket()
+            parentVC?.numbersStringArray = []
+            parentVC?.removeTicketButtonTapped()
+           
         }
         
         alertVC.onCancel = {

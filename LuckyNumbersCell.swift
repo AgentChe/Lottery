@@ -20,7 +20,7 @@ class LuckyNumbersCell: UICollectionViewCell {
     private let dateLabel = UILabel()
     var logoIamgeLeadingConstraint: NSLayoutConstraint!
     var logoIamgeWidthConstraint: NSLayoutConstraint!
-    
+
     let dashedLineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "PastDraws.DashedLine")
@@ -84,9 +84,7 @@ class LuckyNumbersCell: UICollectionViewCell {
         
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
-                let pictureUrl = URL(string: "https://example.com")
                 
-                 
                 let ticket : Ticket = Ticket(id: 0,
                                              lotteryId: game.lotteryId,
                                              pictureUrl: lottery.logoUrl,
@@ -99,13 +97,64 @@ class LuckyNumbersCell: UICollectionViewCell {
         }
         
     }
-  
-
+    
+    
     
     @objc private func removeButtonTapped() {
-        print("Remove button tapped")
-        // Add your remove functionality here
+        
+            let alertVC = LuckyNumbersAlertViewController()
+            
+            alertVC.onConfirmDelete = { [weak self] in
+                guard let self = self else { return }
+                let lotteryId = game.lotteryId
+                let date = game.date
+                
+                let gamesManager = GamesManager()
+                gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: []) { [weak self] result in
+                    switch result {
+                    case .success(let success):
+                        if success {
+                            // Handle success case
+                            print("Lucky numbers removed successfully.")
+                            DispatchQueue.main.async {
+                                self?.delegate?.fetchLotteries(for: nil)
+                            }
+                            
+                        } else {
+                            DispatchQueue.main.async {
+                                self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                        }
+                    }
+                }
+                
+            }
+            
+            alertVC.onCancel = {
+                // Code to handle cancellation (if any)
+            }
+            
+            alertVC.modalPresentationStyle = .overFullScreen
+            alertVC.modalTransitionStyle = .crossDissolve
+            
+            if let parentVC = self.parentViewController {
+                parentVC.present(alertVC, animated: false, completion: nil)
+            }
+
+
+        
     }
+    func showErrorAlert(message: String) {
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        delegate?.present(alertController, animated: true, completion: nil)
+    }
+    
 }
 
 // MARK: - Public Methods
@@ -239,7 +288,7 @@ private extension LuckyNumbersCell {
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
-extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegate {
+extension LuckyNumbersCell: UICollectionViewDataSource , UICollectionViewDelegateFlowLayout{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return myLuckyNumbers.count // Using the first set of numbers for simplicity
     }
@@ -256,23 +305,41 @@ extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegate
         
         return cell
     }
-
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0.scale,
+                            left :myLuckyNumbers.first?.count == 6 ? 0.scale : 58.scale ,
+                            bottom: 0.scale,
+                            right: 16.scale)
+    }
+    
     private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
         let number = myLuckyNumbers[indexPath.section][indexPath.item]
         configureCell(cell, withNumber: number, indexPath: indexPath)
     }
-
+    
     private func configureCell(_ cell: NumberCell, withNumber number: Int, indexPath: IndexPath) {
         cell.configure(with: String(number))
         cell.layer.borderColor = Appearance.main500.cgColor
-
-        let lastIndex = myLuckyNumbers[indexPath.section].count - 1
-        if indexPath.item == lastIndex {
-            cell.backgroundColor = Appearance.main100
-            cell.setNumberLabelColor(Appearance.mono100)
-        } else {
-            cell.setNumberLabelColor(Appearance.mono200)
-            cell.layer.borderColor = Appearance.main500.cgColor
+        if myLuckyNumbers.first?.count == 6 {
+            let lastIndex = myLuckyNumbers[indexPath.section].count - 1
+            if indexPath.item == lastIndex {
+                cell.backgroundColor = Appearance.main100
+                cell.setNumberLabelColor(Appearance.mono100)
+            } else {
+                cell.setNumberLabelColor(Appearance.mono200)
+                cell.layer.borderColor = Appearance.main500.cgColor
+            }
+        }
+        if myLuckyNumbers.first?.count == 4 {
+            if indexPath.item == 0 || indexPath.item == 1  {
+                cell.backgroundColor = Appearance.main100
+                cell.setNumberLabelColor(Appearance.mono100)
+            }
+            if indexPath.item == 2 || indexPath.item == 3 {
+                cell.backgroundColor = Appearance.mono100
+                cell.setNumberLabelColor(Appearance.mono200)
+                cell.layer.borderColor = Appearance.main500.cgColor
+            }
         }
     }
 }

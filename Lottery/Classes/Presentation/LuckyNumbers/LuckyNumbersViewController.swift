@@ -46,7 +46,19 @@ final class LuckyNumbersViewController: UIViewController {
         label.isHidden = true
         return label
     }()
-    
+    private let addLuckyNumbersButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Add lucky numbers", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        button.isEnabled = true // Initially disabled
+        button.isHidden = true
+        return button
+    }()
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Add", for: .normal)
@@ -92,7 +104,10 @@ final class LuckyNumbersViewController: UIViewController {
         setupViews()
         fetchLotteries(for: nil)
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchLotteries(for: nil)
+    }
     func fetchLotteries(for stateId: Int?) {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -114,6 +129,7 @@ final class LuckyNumbersViewController: UIViewController {
                 case .success(let games):
                     self?.nextDraws = games.filter { $0.myLuckyNumbers?.isEmpty == false }
                     self?.nextDrawsCollectionView.isHidden = self?.nextDraws.count == 0 ? true : false
+                    self?.addLuckyNumbersButton.isHidden = self?.nextDraws.count == 0 ? true : false
                     self?.imageView.isHidden = self?.nextDraws.count == 0 ? false : true
                     self?.firstLabel.isHidden = self?.nextDraws.count == 0 ? false : true
                     self?.secondLabel.isHidden = self?.nextDraws.count == 0 ? false : true
@@ -122,6 +138,7 @@ final class LuckyNumbersViewController: UIViewController {
                 case .failure(let error):
                     print("Failed to fetch next games: \(error)")
                     self?.nextDrawsCollectionView.isHidden =  true
+                    self?.addLuckyNumbersButton.isHidden = true
                     self?.imageView.isHidden = false
                     self?.firstLabel.isHidden = false
                     self?.secondLabel.isHidden = false
@@ -170,7 +187,7 @@ final class LuckyNumbersViewController: UIViewController {
         view.addSubview(secondLabel)
         view.addSubview(addButton)
         view.addSubview(nextDrawsCollectionView)
-        
+        view.addSubview(addLuckyNumbersButton)
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 0),
@@ -189,7 +206,12 @@ final class LuckyNumbersViewController: UIViewController {
             nextDrawsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             nextDrawsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nextDrawsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            addLuckyNumbersButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
+            addLuckyNumbersButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            addLuckyNumbersButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            addLuckyNumbersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
         ])
     }
     
@@ -201,6 +223,7 @@ final class LuckyNumbersViewController: UIViewController {
             present(selectTheGameViewController, animated: true, completion: nil)
         }
     }
+    
 }
 
 extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
