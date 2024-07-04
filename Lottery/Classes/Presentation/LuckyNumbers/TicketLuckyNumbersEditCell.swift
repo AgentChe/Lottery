@@ -185,7 +185,7 @@ private extension TicketLuckyNumbersEditCell {
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
             }
@@ -402,7 +402,6 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
             // Code to remove the ticket here
             parentVC?.numbersStringArray = []
             parentVC?.removeTicketButtonTapped()
-           
         }
         
         alertVC.onCancel = {
@@ -418,12 +417,8 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     }
     
     private func removeTicket() {
-        // Code to remove the ticket from the data source and update the UI
         numbersStringArray.removeAll()
-        // Further logic to notify the delegate or update the data model
-        
         collectionView.reloadData()
-        // Notify the delegate or view controller about the deletion
     }
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

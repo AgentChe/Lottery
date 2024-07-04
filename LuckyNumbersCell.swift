@@ -327,6 +327,7 @@ extension LuckyNumbersCell: UICollectionViewDataSource , UICollectionViewDelegat
                 cell.setNumberLabelColor(Appearance.mono100)
             } else {
                 cell.setNumberLabelColor(Appearance.mono200)
+                cell.backgroundColor = Appearance.mono100
                 cell.layer.borderColor = Appearance.main500.cgColor
             }
         }
