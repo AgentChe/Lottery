@@ -53,7 +53,7 @@ class SelectGameCell: UICollectionViewCell {
             
             // Game image view constraints
             logoImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale),
-            logoImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant:  -5.scale),
+            logoImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant:  0.scale),
             logoImageView.widthAnchor.constraint(equalToConstant: 150.scale),
             logoImageView.heightAnchor.constraint(equalToConstant: 45.scale)
         ])
