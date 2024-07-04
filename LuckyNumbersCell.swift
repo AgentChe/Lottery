@@ -8,53 +8,27 @@
 import UIKit
 import Kingfisher
 class LuckyNumbersCell: UICollectionViewCell {
-    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        print("Touch!")
+    }
+    var game: Game!
+    var lotteries: [Lottery]!
+    weak var delegate: LuckyNumbersViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
     var logoIamgeLeadingConstraint: NSLayoutConstraint!
     var logoIamgeWidthConstraint: NSLayoutConstraint!
-    private let winningNumbersTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "WINNING NUMBERS"
-        label.font = Fonts.Inter.regular(size: 12.5.scale)
-        label.textAlignment = .center
-        label.textColor = Appearance.mono200
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Create an attributed string with increased kerning
-        let attributedText = NSMutableAttributedString(string: "WINNING NUMBERS")
-        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
-        
-        label.attributedText = attributedText
-        return label
-    }()
     
-     let myLuckyNumbersTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "MY LUCKY NUMBERS"
-        label.font = Fonts.Inter.regular(size: 12.5.scale)
-        label.textAlignment = .center
-        label.textColor = Appearance.mono200
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Create an attributed string with increased kerning
-        let attributedText = NSMutableAttributedString(string: "MY LUCKY NUMBERS")
-        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
-        
-        label.attributedText = attributedText
-        
-        return label
-    }()
-    
-     let dashedLineImageView: UIImageView = {
+    let dashedLineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "PastDraws.DashedLine")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private lazy var winningNumbersCollectionView: UICollectionView = {
+    lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 10.scale
@@ -70,29 +44,33 @@ class LuckyNumbersCell: UICollectionViewCell {
         return collectionView
     }()
     
-     lazy var myLuckyNumbersCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10.scale
-        layout.minimumLineSpacing = 14.scale
-        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
-        return collectionView
+    let editButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "LuckyNumbers.Edit"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.widthAnchor.constraint(equalToConstant: 40.scale).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 40.scale).isActive = true
+        button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    let removeButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "LuckyNumbers.Remove"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.widthAnchor.constraint(equalToConstant: 40.scale).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 40.scale).isActive = true
+        button.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
+        return button
     }()
     
     // Arrays to hold the nested numbers
-    private var winningNumbers: [[Int]] = []
     private var myLuckyNumbers: [[Int]] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
+        layer.cornerRadius = 16.scale
         setupUI()
         setupLayoutConstraints()
     }
@@ -100,16 +78,45 @@ class LuckyNumbersCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc private func editButtonTapped() {
+        print("Edit button tapped")
+        
+        for lottery in lotteries {
+            if lottery.id == game.lotteryId {
+                let pictureUrl = URL(string: "https://example.com")
+                
+                 
+                let ticket : Ticket = Ticket(id: 0,
+                                             lotteryId: game.lotteryId,
+                                             pictureUrl: lottery.logoUrl,
+                                             date: game.date,
+                                             numbers: game.winningNumbers ?? [])
+                
+                let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
+                delegate?.navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
+            }
+        }
+        
+    }
+  
+
+    
+    @objc private func removeButtonTapped() {
+        print("Remove button tapped")
+        // Add your remove functionality here
+    }
 }
 
 // MARK: - Public Methods
 extension LuckyNumbersCell {
     func configure(game: Game, lotteries: [Lottery]) {
+        self.game = game
+        self.lotteries = lotteries
         logoImageView.image = UIImage(named: "placeholderImage")
         logoImageView.contentMode = .scaleAspectFit
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
-
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
                     logoIamgeLeadingConstraint.isActive = false
@@ -119,9 +126,8 @@ extension LuckyNumbersCell {
                     logoIamgeLeadingConstraint.isActive = true
                     logoIamgeWidthConstraint.isActive = true
                     setNeedsLayout()
-                    
                 }
-                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
                     logoIamgeLeadingConstraint.isActive = false
                     logoIamgeWidthConstraint.isActive = false
                     logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
@@ -130,7 +136,6 @@ extension LuckyNumbersCell {
                     logoIamgeWidthConstraint.isActive = true
                     setNeedsLayout()
                 }
-                
             }
         }
         let dateFormatter = DateFormatter()
@@ -141,14 +146,10 @@ extension LuckyNumbersCell {
         dateLabel.text = formattedDate.uppercased()
         
         // Assign data to arrays (use the full double array)
-        winningNumbers = game.winningNumbers ?? []
         myLuckyNumbers = game.myLuckyNumbers ?? []
         
         // Reload collection views with new data
-        winningNumbersCollectionView.reloadData()
         myLuckyNumbersCollectionView.reloadData()
-        
-        
     }
     
     private func formatToMillions(_ value: String) -> String {
@@ -189,11 +190,10 @@ private extension LuckyNumbersCell {
         addSubview(logoImageView)
         addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
-        addSubview(winningNumbersCollectionView)
-        addSubview(winningNumbersTitleLabel)
-        addSubview(dashedLineImageView)
         addSubview(myLuckyNumbersCollectionView)
-        addSubview(myLuckyNumbersTitleLabel)
+        addSubview(dashedLineImageView)
+        addSubview(editButton)
+        addSubview(removeButton)
     }
     
     func setupLayoutConstraints() {
@@ -215,33 +215,25 @@ private extension LuckyNumbersCell {
             dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor),
             dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
             
-            // Winning Numbers CollectionView
-            winningNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale),
-            winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
-            
-            // Winning Numbers Title Label
-            winningNumbersTitleLabel.topAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 20.scale),
-            winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            
-            // Dashed Line View
-            dashedLineImageView.topAnchor.constraint(equalTo: winningNumbersTitleLabel.bottomAnchor, constant: 25.scale),
-            dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
-            dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
-            dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
-            
             // My Lucky Numbers CollectionView
-            myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
+            myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 21.scale),
             myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            // My Lucky Numbers Title Label
-            myLuckyNumbersTitleLabel.topAnchor.constraint(equalTo: myLuckyNumbersCollectionView.bottomAnchor, constant: 25.scale),
-            myLuckyNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            myLuckyNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            // Dashed Line View
+            dashedLineImageView.topAnchor.constraint(equalTo: myLuckyNumbersCollectionView.bottomAnchor, constant: 25.scale),
+            dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
+            dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
+            dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
+            
+            // Edit Button
+            editButton.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 24.scale),
+            editButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28.scale),
+            
+            // Remove Button
+            removeButton.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 24.scale),
+            removeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.scale),
         ])
     }
 }
@@ -249,63 +241,38 @@ private extension LuckyNumbersCell {
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if collectionView == winningNumbersCollectionView {
-            return winningNumbers.count ?? 0 // Using the first set of numbers for simplicity
-        } else {
-            return myLuckyNumbers.count ?? 0 // Using the first set of numbers for simplicity
-        }
+        return myLuckyNumbers.count // Using the first set of numbers for simplicity
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == winningNumbersCollectionView {
-            return winningNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
-        } else {
-            return myLuckyNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
-        }
+        return myLuckyNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
             fatalError("Could not dequeue cell with identifier: NumberCell")
         }
-        
-        if collectionView == winningNumbersCollectionView {
-            configureCellForWinningNumbers(cell, at: indexPath)
-        } else {
-            configureCellForLuckyNumbers(cell, at: indexPath)
-        }
+        configureCellForLuckyNumbers(cell, at: indexPath)
         
         return cell
     }
 
-    private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
-        let number = winningNumbers[indexPath.section][indexPath.item]
-        configureCell(cell, withNumber: number, comparisonArray: myLuckyNumbers, indexPath: indexPath)
-    }
-
     private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
         let number = myLuckyNumbers[indexPath.section][indexPath.item]
-        configureCell(cell, withNumber: number, comparisonArray: winningNumbers, indexPath: indexPath)
+        configureCell(cell, withNumber: number, indexPath: indexPath)
     }
 
-    private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
-        let allNumbers = Set(comparisonArray.flatMap({ $0 }))
-        let isHighlight = allNumbers.contains(number)
+    private func configureCell(_ cell: NumberCell, withNumber number: Int, indexPath: IndexPath) {
         cell.configure(with: String(number))
-        cell.backgroundColor = isHighlight ? Appearance.main600 : .white
-        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
-        if comparisonArray.count == 0 {
-            return
-            
-        }
-        let lastIndex = comparisonArray[indexPath.section].count - 1
+        cell.layer.borderColor = Appearance.main500.cgColor
 
+        let lastIndex = myLuckyNumbers[indexPath.section].count - 1
         if indexPath.item == lastIndex {
             cell.backgroundColor = Appearance.main100
             cell.setNumberLabelColor(Appearance.mono100)
         } else {
             cell.setNumberLabelColor(Appearance.mono200)
+            cell.layer.borderColor = Appearance.main500.cgColor
         }
     }
 }

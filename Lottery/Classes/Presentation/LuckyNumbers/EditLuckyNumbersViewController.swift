@@ -43,9 +43,19 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         self.ticket = ticket
         self.game = game
         self.lotteries = lotteries
-        self.numbersStringArray = [["","","","","",""]]
+        if game.myLuckyNumbers?.count == 0 {
+            if game.lotteryId != 6 {
+                self.numbersStringArray = [["","","","","",""]]
+            } else {
+                self.numbersStringArray = [["","","",""]]
+            }
+        } else {
+             numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
+        }
     }
-    
+    func convertIntArrayToStringArray(_ intArray: [[Int]]) -> [[String]] {
+        return intArray.map { $0.map { String($0) } }
+    }
     // Required initializer for compatibility with storyboards
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -191,8 +201,24 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width
         let height = collectionView.frame.height
-        return CGSize(width: 343.scale,
-                      height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+        // Get the number of cells in the last row
+        if let firstNumberArray = numbersStringArray.first {
+            let numberOfCells = firstNumberArray.count + 1
+            // Calculate the available width based on the given constraints
+            let totalWidth: CGFloat = 343.scale
+            let sideMargins: CGFloat = 40.scale
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            
+            // Calculate the width for each cell
+            let availableWidth = totalWidth - sideMargins - cellSpacing
+            let cellWidth = availableWidth / CGFloat(numberOfCells)
+            
+            return CGSize(width: 343.scale,
+                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+        } else {
+            return CGSize(width: 343.scale,
+                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+        }
     }
 
     // Validation method to check if all numbers are valid

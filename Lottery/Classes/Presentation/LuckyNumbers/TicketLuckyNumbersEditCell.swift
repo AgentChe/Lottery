@@ -88,24 +88,42 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
                 logoImageView.kf.setImage(with: lottery.logoUrl)
-                if  doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                    self.numbersStringArray = [["","","",""]]
+                if game.myLuckyNumbers?.count == 0 {
+                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                        self.numbersStringArray = [["","","",""]]
+                    } else {
+                        self.numbersStringArray = [["","","","","",""]]
+                    }
+                    if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+                        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                        
+                    }
+                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                        logoIamgeLeadingConstraint.isActive = false
+                        logoIamgeWidthConstraint.isActive = false
+                        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                        logoIamgeLeadingConstraint.isActive = true
+                        logoIamgeWidthConstraint.isActive = true
+                        setNeedsLayout()
+                    }
                 } else {
-                    self.numbersStringArray = [["","","","","",""]]
-                }
-                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
-                    
-                }
-                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
-                    setNeedsLayout()
+                    numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? []) // [["01","01","01","01"]] 
+                    if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+                        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                        
+                    }
+                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                        logoIamgeLeadingConstraint.isActive = false
+                        logoIamgeWidthConstraint.isActive = false
+                        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                        logoIamgeLeadingConstraint.isActive = true
+                        logoIamgeWidthConstraint.isActive = true
+                        setNeedsLayout()
+                    }
                 }
             }
         }
@@ -138,6 +156,9 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
         setNeedsLayout()
+    }
+    func convertIntArrayToStringArray(_ intArray: [[Int]]) -> [[String]] {
+        return intArray.map { $0.map { String($0) } }
     }
 }
 
@@ -317,6 +338,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
                 return UICollectionViewCell()
             }
             cell.indexPath = indexPath
+            cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
             
             return cell
@@ -331,6 +353,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
                 cell.delegate = self // Set the delegate
+                cell.numberOfCells = numbersStringArray.last?.count
             }
             return cell
         }

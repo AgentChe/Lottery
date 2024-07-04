@@ -4,7 +4,6 @@
 //
 //  Created by Niiaz Khasanov on 6/26/24.
 //
-
 import UIKit
 
 final class LuckyNumbersViewController: UIViewController {
@@ -12,11 +11,12 @@ final class LuckyNumbersViewController: UIViewController {
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDraws: [Game] = []
     private var lotteries: [Lottery] = []
-    // Declare all views as class properties
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "LuckyNumbers.Add"))
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -29,6 +29,7 @@ final class LuckyNumbersViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.widthAnchor.constraint(equalToConstant: 200.scale).isActive = true
         label.heightAnchor.constraint(equalToConstant: 23.scale).isActive = true
+        label.isHidden = true
         return label
     }()
     
@@ -42,6 +43,7 @@ final class LuckyNumbersViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.widthAnchor.constraint(equalToConstant: 200.scale).isActive = true
         label.heightAnchor.constraint(equalToConstant: 40.scale).isActive = true
+        label.isHidden = true
         return label
     }()
     
@@ -56,18 +58,41 @@ final class LuckyNumbersViewController: UIViewController {
         button.widthAnchor.constraint(equalToConstant: 195.scale).isActive = true
         button.heightAnchor.constraint(equalToConstant: 44.scale).isActive = true
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        button.isHidden = true
         return button
     }()
-    private var nextDrawsCollectionView: UICollectionView!
+    
+    private lazy var nextDrawsCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: view.frame.width - 32, height: 210.scale)
+        layout.minimumLineSpacing = 16.scale
+        layout.sectionInset = UIEdgeInsets(top: 150.scale, left: 0, bottom: 10.scale, right: 0)
+        layout.scrollDirection = .vertical
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .red
+        if #available(iOS 17.4, *) {
+            collectionView.bouncesVertically = true
+        } else {
+            // Fallback on earlier versions
+        }
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.isHidden = true
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(LuckyNumbersCell.self, forCellWithReuseIdentifier: "LuckyNumbersCell")
+        
+        return collectionView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
         setupNavigationBarTitle()
         setupViews()
         fetchLotteries(for: nil)
-        
     }
- 
+    
     func fetchLotteries(for stateId: Int?) {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -75,63 +100,57 @@ final class LuckyNumbersViewController: UIViewController {
                 case .success(let lotteries):
                     self?.lotteries = lotteries
                     self?.fetchNextGames(for: stateId ?? nil)
-                   
                 case .failure(let error):
                     print("Failed to fetch lotteries: \(error)")
                 }
             }
         }
     }
-
+    
     func fetchNextGames(for stateId: Int?) {
         gamesManager.fetchNextGames(stateId: stateId ?? nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
-                    self?.nextDraws = games
-                    delay(0.05) {
-                      //  self?.nextDrawsCollectionView.reloadData()
-                    }
+                    self?.nextDraws = games.filter { $0.myLuckyNumbers?.isEmpty == false }
+                    self?.nextDrawsCollectionView.isHidden = self?.nextDraws.count == 0 ? true : false
+                    self?.imageView.isHidden = self?.nextDraws.count == 0 ? false : true
+                    self?.firstLabel.isHidden = self?.nextDraws.count == 0 ? false : true
+                    self?.secondLabel.isHidden = self?.nextDraws.count == 0 ? false : true
+                    self?.addButton.isHidden = self?.nextDraws.count == 0 ? false : true
+                    self?.nextDrawsCollectionView.reloadData()
                 case .failure(let error):
                     print("Failed to fetch next games: \(error)")
+                    self?.nextDrawsCollectionView.isHidden =  true
+                    self?.imageView.isHidden = false
+                    self?.firstLabel.isHidden = false
+                    self?.secondLabel.isHidden = false
+                    self?.addButton.isHidden = false
                 }
             }
         }
     }
+    
     func setupNavigationBarTitle() {
-        // Create the title label
         let titleLabel = UILabel()
         titleLabel.text = "LUCKY NUMBERS"
         titleLabel.textColor = Appearance.mono200
         titleLabel.font = Fonts.Inter.bold(size: 20.scale)
-        
-        // Set intrinsic size for proper layout
         titleLabel.sizeToFit()
         
-        // Create a UIBarButtonItem with the custom label
         let leftBarItem = UIBarButtonItem(customView: titleLabel)
-        
         navigationItem.leftBarButtonItem = leftBarItem
         
-        // Create a right bar button item for the menu
         if let menuImage = UIImage(named: "Menu") {
-            // Create the UIImageView with aspect fit
             let menuImageView = UIImageView(image: menuImage)
             menuImageView.contentMode = .scaleAspectFit
-            
-            // Set the height of the image view to match the title label's height
             let titleHeight = titleLabel.intrinsicContentSize.height
             menuImageView.frame = CGRect(x: 0.scale, y: 0.scale, width: titleHeight, height: titleHeight)
-            
-            // Wrap the image view in a UIView to manage its layout
             let menuContainerView = UIView(frame: menuImageView.frame)
             menuContainerView.addSubview(menuImageView)
-            
-            // Create the UIBarButtonItem with the custom view
             let rightBarItem = UIBarButtonItem(customView: menuContainerView)
             navigationItem.rightBarButtonItem = rightBarItem
             
-            // Add tap gesture to the image view for menu action
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMenuTap))
             menuContainerView.isUserInteractionEnabled = true
             menuContainerView.addGestureRecognizer(tapGesture)
@@ -142,48 +161,83 @@ final class LuckyNumbersViewController: UIViewController {
         let menuVC = MenuViewController()
         let navController = NavigationController(rootViewController: menuVC)
         navController.modalPresentationStyle = .fullScreen
-        
-        // Present the navigation controller
         present(navController, animated: true, completion: nil)
     }
     
     func setupViews() {
-        // Add subviews to the main view
         view.addSubview(imageView)
         view.addSubview(firstLabel)
         view.addSubview(secondLabel)
         view.addSubview(addButton)
+        view.addSubview(nextDrawsCollectionView)
         
-        // Layout the views using Auto Layout
         NSLayoutConstraint.activate([
-            // Center the image view horizontally and vertically
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 0),
             imageView.widthAnchor.constraint(equalToConstant: 130.scale),
             imageView.heightAnchor.constraint(equalToConstant: 130.scale),
             
-            // Place the first label below the image view
             firstLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20.scale),
             firstLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            // Place the second label below the first label
             secondLabel.topAnchor.constraint(equalTo: firstLabel.bottomAnchor, constant: 8.scale),
             secondLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            // Place the button below the second label
             addButton.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 20.scale),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            nextDrawsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            nextDrawsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nextDrawsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
     @objc func addButtonTapped() {
-        // Handle the add button tap
-     let selectTheGameViewController = SelectTheGameViewController()
+        let selectTheGameViewController = SelectTheGameViewController()
         if let navigationController = navigationController {
             navigationController.pushViewController(selectTheGameViewController, animated: true)
         } else {
-            // If not in a navigation controller, present it modally
             present(selectTheGameViewController, animated: true, completion: nil)
         }
+    }
+}
+
+extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return nextDraws.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LuckyNumbersCell", for: indexPath) as? LuckyNumbersCell else {
+            fatalError("Could not dequeue cell with identifier: LuckyNumbersCell")
+        }
+        
+        let game = nextDraws[indexPath.item]
+        cell.configure(game: game, lotteries: lotteries)
+        cell.delegate = self
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 50.scale, left: 16.scale, bottom: 20.scale, right: 16.scale)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+      
+        let game = nextDraws[indexPath.item]
+        var cellHeight = 210.scale
+        if let myLuckyNumbers = game.myLuckyNumbers {
+            if myLuckyNumbers.isEmpty {
+                cellHeight = 150.scale
+            } else {
+                cellHeight = 210.scale + CGFloat(max(0, myLuckyNumbers.count - 1)) * CGFloat(55.scale)
+            }
+        }
+        return CGSize(width: collectionView.frame.width - 32, height: cellHeight)
     }
 }
