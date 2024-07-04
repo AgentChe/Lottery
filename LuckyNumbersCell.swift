@@ -18,8 +18,8 @@ class LuckyNumbersCell: UICollectionViewCell {
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
-    var logoIamgeLeadingConstraint: NSLayoutConstraint!
-    var logoIamgeWidthConstraint: NSLayoutConstraint!
+    var logoImageLeadingConstraint: NSLayoutConstraint!
+    var logoImageWidthConstraint: NSLayoutConstraint!
 
     let dashedLineImageView: UIImageView = {
         let imageView = UIImageView()
@@ -168,21 +168,21 @@ extension LuckyNumbersCell {
             if lottery.id == game.lotteryId {
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
                     setNeedsLayout()
                 }
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
                     setNeedsLayout()
                 }
             }
@@ -246,12 +246,12 @@ private extension LuckyNumbersCell {
     }
     
     func setupLayoutConstraints() {
-        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
-        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+        logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+        logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
-            logoIamgeLeadingConstraint,
-            logoIamgeWidthConstraint,
+            logoImageLeadingConstraint,
+            logoImageWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
             dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),

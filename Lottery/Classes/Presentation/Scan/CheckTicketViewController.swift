@@ -79,7 +79,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.numbersStringArray = [[]]
-        
+    
         textRecognitionRequest = VNRecognizeTextRequest { request, error in
             guard let resultsViewController = self.resultsViewController else {
                 print("resultsViewController is not set")

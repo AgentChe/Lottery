@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import Kingfisher
 class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
-    
+    let contentManager = ContentManager()
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -23,6 +24,9 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
     
     private var datePickerContainer: UIView?
     private let customDatePicker = CustomCalendarView()
+    var logoImageLeadingConstraint: NSLayoutConstraint!
+    var logoImageWidthConstraint: NSLayoutConstraint!
+
     
     // Plus Button Declaration
     private let plusButton: UIButton = {
@@ -78,7 +82,22 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
         numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
         
         logoImageView.image = UIImage(named: "placeholderImage")
-        
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    for lottery in lotteries {
+                        if lottery.id == ticket.lotteryId {
+                            self?.logoImageView.kf.setImage(with: lottery.logoUrl)
+                            self?.setTheConstraintsForLogoImage(lotteries: lotteries, Lottery: lottery)
+                        }
+                    }
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
+                }
+            }
+        }
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -106,6 +125,33 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
             }
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
+    }
+    func setTheConstraintsForLogoImage(lotteries: [Lottery], Lottery: Lottery) {
+        for lottery in lotteries {
+            if lottery.id == Lottery.id {
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
+                    setNeedsLayout()
+                }
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
+                    setNeedsLayout()
+                }
+            }
+        }
+        func doesURLContain(_ urlString: String, word: String) -> Bool {
+            return urlString.lowercased().contains(word)
+        }
     }
 }
 
@@ -184,11 +230,13 @@ private extension TicketEditScanCell {
     }
     
     func setupLayoutConstraints() {
+        logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+        logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 6 + 10).scale)
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
-            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale),
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
+            logoImageLeadingConstraint,
+            logoImageWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
             dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
@@ -402,3 +450,4 @@ extension TicketEditScanCell: EditNumberCellDelegate {
      
     }
 }
+

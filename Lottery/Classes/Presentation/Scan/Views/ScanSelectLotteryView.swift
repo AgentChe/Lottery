@@ -79,6 +79,7 @@ final class ScanSelectLotteryView: UIView {
 
 extension ScanSelectLotteryView {
     func getSelectedLotteries() -> [Int] {
+         
         return Array(selectedLotteries)
     }
     
