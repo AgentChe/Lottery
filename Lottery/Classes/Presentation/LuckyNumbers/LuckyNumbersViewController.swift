@@ -82,7 +82,7 @@ final class LuckyNumbersViewController: UIViewController {
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .clear
         if #available(iOS 17.4, *) {
             collectionView.bouncesVertically = true
         } else {

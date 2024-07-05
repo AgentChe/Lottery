@@ -65,7 +65,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         imageView.contentMode = .scaleAspectFill
         // Set your image here
         imageView.layer.masksToBounds = true
-        imageView.backgroundColor = .red
+        imageView.backgroundColor = .clear
         imageView.image = UIImage(named: "YourImageName")
         return imageView
     }()
