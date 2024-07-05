@@ -95,10 +95,26 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-
-    private func setupNavigationBarTitle() {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.barTintColor = .clear
+         navigationController?.navigationBar.isTranslucent = true
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         navigationController?.navigationBar.barTintColor = .red
-         navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.isTranslucent = false
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+            
+            fetchTickets()
+            
+        }
+    }
+    private func setupNavigationBarTitle() {
+   
         let titleLabel = UILabel()
         titleLabel.text = "MY TICKETS"
         titleLabel.textColor = Appearance.mono200
@@ -156,17 +172,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if let navigationController = getRootViewController() as? NavigationController,
-           let mainViewController = navigationController.viewControllers.first as? MainViewController {
-
-            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
-            
-            fetchTickets()
-            
-        }
-    }
+    
     @objc func handleMenuTap() {
         let menuVC = MenuViewController()
         let navController = NavigationController(rootViewController: menuVC)
