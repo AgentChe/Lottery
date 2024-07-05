@@ -84,6 +84,7 @@
 		A375583D2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583C2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift */; };
 		A375583F2C37BEB80028DB95 /* AddScanTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */; };
 		A37558412C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */; };
+		A37558432C383FDE0028DB95 /* DeleteTicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37558422C383FDE0028DB95 /* DeleteTicketRequest.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -311,6 +312,7 @@
 		A375583C2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersAlertViewController.swift; sourceTree = SOURCE_ROOT; };
 		A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScanTicketViewController.swift; sourceTree = "<group>"; };
 		A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanAddNumbersEditCell.swift; sourceTree = "<group>"; };
+		A37558422C383FDE0028DB95 /* DeleteTicketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTicketRequest.swift; sourceTree = SOURCE_ROOT; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -912,6 +914,7 @@
 		A3FF55712C07E58300E81771 /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				A37558422C383FDE0028DB95 /* DeleteTicketRequest.swift */,
 				A3FF55742C07E5C700E81771 /* AddTicketRequest.swift */,
 				A3FF55762C07E5F900E81771 /* EditTicketRequest.swift */,
 				A3FF55782C07E62D00E81771 /* ListTicketsRequest.swift */,
@@ -1643,6 +1646,7 @@
 				DE42B1CE2BFF3CB200FF61B0 /* PaygateOptionLineComponent.swift in Sources */,
 				A3FF55812C08BFDB00E81771 /* Profile.swift in Sources */,
 				A327497D2C29859400E9F79A /* ScanViewController.swift in Sources */,
+				A37558432C383FDE0028DB95 /* DeleteTicketRequest.swift in Sources */,
 				A32749462C29859400E9F79A /* UIImage+Orientation.swift in Sources */,
 				DE42B1D32BFF3CB200FF61B0 /* ProductPrice.swift in Sources */,
 				A3668DB82C1B4D4C00754446 /* CustomCalendarView.swift in Sources */,

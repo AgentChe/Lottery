@@ -211,7 +211,7 @@ final class LuckyNumbersViewController: UIViewController {
             addLuckyNumbersButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             addLuckyNumbersButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
             addLuckyNumbersButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            addLuckyNumbersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
+            addLuckyNumbersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
         ])
     }
     
@@ -247,7 +247,7 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 50.scale, left: 16.scale, bottom: 20.scale, right: 16.scale)
+        return UIEdgeInsets(top: 50.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -256,9 +256,9 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
         var cellHeight = 210.scale
         if let myLuckyNumbers = game.myLuckyNumbers {
             if myLuckyNumbers.isEmpty {
-                cellHeight = 150.scale
+                cellHeight = 155.scale
             } else {
-                cellHeight = 210.scale + CGFloat(max(0, myLuckyNumbers.count - 1)) * CGFloat(55.scale)
+                cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count )) * CGFloat(54.scale)
             }
         }
         return CGSize(width: collectionView.frame.width - 32, height: cellHeight)

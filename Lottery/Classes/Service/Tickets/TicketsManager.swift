@@ -21,6 +21,31 @@ final class TicketsManager {
 
 // MARK: - TicketsManagerProtocol
 extension TicketsManager: TicketsManagerProtocol {
+    func listTickets( completion: @escaping (Result<[Ticket], Error>) -> Void) {
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
+        let request = ListTicketsRequest(userToken: userToken)
+        let operation = APIOperation(endPoint: request)
+        
+        let operationId = UUID().uuidString
+        operations[operationId] = operation
+        
+        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
+            
+            self?.operations.removeValue(forKey: operationId)
+            
+            if let error = error {
+                completion(.failure(error))
+            } else if let ticketsArray = result as? [[String: Any]] {
+                let tickets = ticketsArray.compactMap { Ticket(response: $0) }
+                completion(.success(tickets))
+            } else {
+                completion(.failure(ContentError(.notContent)))
+            }
+        }
+    }
     func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
             completion(.failure(ContentError(.notContent)))
@@ -96,32 +121,36 @@ extension TicketsManager: TicketsManagerProtocol {
         }
 
     }
+    func deleteTicket(id: Int, completion: @escaping (Result<ResultResponse, Error>) -> Void) {
+          guard let userToken = sessionManager.getSession()?.userToken else {
+              completion(.failure(ContentError(.notContent)))
+              return
+          }
+          
+          let request = DeleteTicketRequest(userToken: userToken, id: id)
+          let operationId = UUID().uuidString
+          
+          operations[operationId] = APIOperation(endPoint: request)
+          
+          performRequest(request) { [weak self] (result: Result<ResultResponse, Error>) in
+              self?.operations.removeValue(forKey: operationId)
+              
+              switch result {
+              case .success(let response):
+                  if response.result {
+                      completion(.success(response))
+                  } else {
+                      let error = NSError(domain: "Delete operation failed", code: -1, userInfo: [NSLocalizedDescriptionKey: "The delete operation did not succeed."])
+                      completion(.failure(error))
+                  }
+              case .failure(let error):
+                  completion(.failure(error))
+              }
+          }
+      }
+
     
-    func listTickets( completion: @escaping (Result<[Ticket], Error>) -> Void) {
-        guard let userToken = sessionManager.getSession()?.userToken else {
-            completion(.failure(ContentError(.notContent)))
-            return
-        }
-        let request = ListTicketsRequest(userToken: userToken)
-        let operation = APIOperation(endPoint: request)
-        
-        let operationId = UUID().uuidString
-        operations[operationId] = operation
-        
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            
-            self?.operations.removeValue(forKey: operationId)            
-            
-            if let error = error {
-                completion(.failure(error))
-            } else if let ticketsArray = result as? [[String: Any]] {
-                let tickets = ticketsArray.compactMap { Ticket(response: $0) }
-                completion(.success(tickets))
-            } else {
-                completion(.failure(ContentError(.notContent)))
-            }
-        }
-    }
+    
 }
 extension TicketsManager {
     private func performRequest<T: EndPoint, U: Codable>(_ endpoint: T, completion: @escaping (Result<U, Error>) -> Void) {
@@ -171,6 +200,7 @@ extension TicketsManager {
          
          task.resume()
      }
+  
 }
 struct LotteryResponse: Codable {
     let id: Int
@@ -178,4 +208,7 @@ struct LotteryResponse: Codable {
     let pictureUrl: String
     let date: Double
     let numbers: [[Int]]
+}
+struct ResultResponse: Codable {
+    let result: Bool
 }

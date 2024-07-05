@@ -30,16 +30,17 @@ class LuckyNumbersCell: UICollectionViewCell {
     
     lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10.scale
-        layout.minimumLineSpacing = 14.scale
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 6.scale
+        layout.minimumLineSpacing = 6.scale
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.isUserInteractionEnabled = false
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
         return collectionView
     }()
@@ -89,7 +90,7 @@ class LuckyNumbersCell: UICollectionViewCell {
                                              lotteryId: game.lotteryId,
                                              pictureUrl: lottery.logoUrl,
                                              date: game.date,
-                                             numbers: game.winningNumbers ?? [])
+                                                 numbers: game.myLuckyNumbers ?? [])
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
                 delegate?.navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
@@ -268,20 +269,20 @@ private extension LuckyNumbersCell {
             myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 21.scale),
             myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
+            myLuckyNumbersCollectionView.bottomAnchor.constraint(equalTo: dashedLineImageView.topAnchor, constant: -20.scale),
             
             // Dashed Line View
-            dashedLineImageView.topAnchor.constraint(equalTo: myLuckyNumbersCollectionView.bottomAnchor, constant: 25.scale),
+            dashedLineImageView.bottomAnchor.constraint(equalTo: editButton.topAnchor, constant: -25.scale),
             dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
             dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
             dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
             
             // Edit Button
-            editButton.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 24.scale),
+            editButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
             editButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28.scale),
             
             // Remove Button
-            removeButton.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 24.scale),
+            removeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
             removeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.scale),
         ])
     }
@@ -308,8 +309,8 @@ extension LuckyNumbersCell: UICollectionViewDataSource , UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0.scale,
                             left :myLuckyNumbers.first?.count == 6 ? 0.scale : 58.scale ,
-                            bottom: 0.scale,
-                            right: 16.scale)
+                            bottom: 14.scale,
+                            right: myLuckyNumbers.first?.count == 6 ? 0.scale : -58.scale)
     }
     
     private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {

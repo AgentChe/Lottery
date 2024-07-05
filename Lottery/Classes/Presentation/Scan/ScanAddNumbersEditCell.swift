@@ -291,6 +291,8 @@ private extension ScanAddTicketNumbersEditCell {
         dateFormatter.dateFormat = "MMM d, yyyy"
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
+        parentvc?.ticket?.date = date.timeIntervalSince1970
+        ticket?.date = date.timeIntervalSince1970
     }
 }
 

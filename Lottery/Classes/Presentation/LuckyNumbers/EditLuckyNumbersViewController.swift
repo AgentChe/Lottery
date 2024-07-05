@@ -21,7 +21,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save ticket", for: .normal)
+        button.setTitle("Save", for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -43,15 +43,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         self.ticket = ticket
         self.game = game
         self.lotteries = lotteries
-//        if game.myLuckyNumbers?.count == 0 {
-//            if game.lotteryId != 6 {
-//                self.numbersStringArray = [["","","","","",""]]
-//            } else {
-//                self.numbersStringArray = [["","","",""]]
-//            }
-//        } else {
-//            numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
-//        }
+
+        numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
+
     }
     func convertIntArrayToStringArray(_ intArray: [[Int]]) -> [[String]] {
         return intArray.map { $0.map { String($0) } }

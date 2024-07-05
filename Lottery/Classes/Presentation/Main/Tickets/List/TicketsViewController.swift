@@ -97,6 +97,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     private func setupNavigationBarTitle() {
+        navigationController?.navigationBar.barTintColor = .red
+         navigationController?.navigationBar.isTranslucent = false
         let titleLabel = UILabel()
         titleLabel.text = "MY TICKETS"
         titleLabel.textColor = Appearance.mono200

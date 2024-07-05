@@ -22,7 +22,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         let button = UIButton()
         button.setTitle("Save ticket", for: .normal)
         button.backgroundColor = Appearance.main100
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(Appearance.mono100, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -30,9 +30,22 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         button.isEnabled = false // Initially disabled
         return button
     }()
+    private let deleteTicketButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Delete", for: .normal)
+        button.backgroundColor = Appearance.mono100
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 20.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(deleteTicketButtonTapped), for: .touchUpInside)
+        button.isEnabled = true // Initially disabled
+        return button
+    }()
     
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
+    private var deleteButtonBottomConstraint: NSLayoutConstraint!
 
     // Custom initializer
     init(ticket: Ticket) {
@@ -66,6 +79,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
+        view.addSubview(deleteTicketButton)
         
         setupConstraints()
         updateSaveButtonState() // Initial check to set the button state based on initial data
@@ -84,14 +98,91 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             
             saveTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale)
+            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale),
+            
+            
+            deleteTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
+            deleteTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            deleteTicketButton.heightAnchor.constraint(equalToConstant: 50.scale)
+            
         ])
         
         // Initialize the bottom constraint
-        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
+        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: deleteTicketButton.topAnchor , constant: -10.scale)
         saveButtonBottomConstraint.isActive = true
+        deleteButtonBottomConstraint  = deleteTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
+        deleteButtonBottomConstraint.isActive = true
     }
-    
+    @objc func deleteTicketButtonTapped() {
+        // Convert numbersStringArray to [[Int]]
+        var numbersArray: [[Int]] = []
+        for section in numbersStringArray {
+            var intSection: [Int] = []
+            for numberString in section {
+                if let number = Int(numberString) {
+                    intSection.append(number)
+                }
+            }
+            numbersArray.append(intSection)
+        }
+        
+        // Ensure we have a ticket to modify
+        guard var existingTicket = ticket else { return }
+        
+        // Update the ticket's numbers
+        existingTicket.numbers = numbersArray
+        
+        // Get the necessary properties from the ticket to use in the editTicket method
+        let id = existingTicket.id
+        let lotteryId = existingTicket.lotteryId
+        let pictureUrl = existingTicket.pictureUrl
+        let date = existingTicket.date
+        
+        // Create an instance of TicketsManager (assuming you have a shared instance or create a new one)
+        let ticketsManager = TicketsManager()
+        
+        // Call the editTicket method
+        ticketsManager.deleteTicket(id: id) { result in
+            switch result {
+            case .success:
+                // Handle success (e.g., show a success message or pop the view controller)
+                print("Ticket deleted successfully")
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                    let alert = UIAlertController(
+                        title: "Ticket Deleted Successfully",
+                        message: "Your ticket has been successfully deleted.",
+                        preferredStyle: .alert
+                    )
+                    
+                    // Add an OK button to the alert
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                    // Present the alert
+                    self.present(alert, animated: true, completion: nil)
+                }
+                
+            case .failure(let error):
+                // Handle failure by presenting an alert to the user
+                print("Failed to delete the ticket: \(error)")
+                
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(
+                        title: "Delete Failed",
+                        message: "Unable to delete the ticket. Please try again later. Error: \(error.localizedDescription)",
+                        preferredStyle: .alert
+                    )
+                    
+                    // Add an OK button to the alert
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                    // Present the alert
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+
+    }
     @objc func saveTicketButtonTapped() {
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
