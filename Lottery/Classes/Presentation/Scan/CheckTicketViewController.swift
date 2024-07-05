@@ -171,6 +171,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     
     @objc func saveTicketButtonTapped() {
         // Convert numbersStringArray to [[Int]]
+        
         var numbersArray: [[Int]] = []
         for section in numbersStringArray {
             var intSection: [Int] = []
@@ -194,17 +195,27 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         let pictureUrl = existingTicket.pictureUrl
         let date = existingTicket.date
         
-        // Create an instance of TicketsManager (assuming you have a shared instance or create a new one)
+
         let ticketsManager = TicketsManager()
         
-        // Call the editTicket method
-        ticketsManager.editTicket(id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbersArray) { result in
+        ticketsManager.addTicket(lotteryId: lotteryId,pictureUrl: pictureUrl, date: date, numbers: numbersArray) { result in
             switch result {
             case .success(let updatedTicket):
-                // Handle success (e.g., show a success message or pop the view controller)
-                print("Ticket updated successfully: \(updatedTicket)")
+                
+                print("Ticket added successfully: \(updatedTicket)")
                 DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popToRootViewController(animated: true)
+                    let alert = UIAlertController(
+                        title: "Ticket added succesfully.",
+                        message: "You can find your ticket in Tickets.",
+                        preferredStyle: .alert
+                    )
+                    
+                    // Add an OK button to the alert
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                    // Present the alert
+                    self.present(alert, animated: true, completion: nil)
                 }
                 
             case .failure(let error):

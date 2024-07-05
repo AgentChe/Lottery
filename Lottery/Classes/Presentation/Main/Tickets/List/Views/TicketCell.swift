@@ -62,13 +62,13 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     
     private var numbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 12.scale
-        layout.minimumInteritemSpacing = 12.scale
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 6.scale
+        layout.minimumInteritemSpacing = 6.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .yellow
         return collectionView
     }()
     
@@ -227,12 +227,13 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             numbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
             numbersCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10.scale),
             numbersCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10.scale),
-            numbersCollectionView.heightAnchor.constraint(equalToConstant: 50.scale),
+            numbersCollectionView.bottomAnchor.constraint(equalTo: editButton.isHidden ?  self.bottomAnchor : editButton.topAnchor, constant: -20.scale),
             
             editButton.topAnchor.constraint(equalTo: numbersCollectionView.bottomAnchor, constant: 20.scale),
             editButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
             editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
-            editButton.heightAnchor.constraint(equalToConstant: 44.scale)
+            editButton.heightAnchor.constraint(equalToConstant: editButton.isHidden ?  0.scale : 44.scale),
+            editButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale),
         ])
     }
     
@@ -243,7 +244,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         formatter.dateStyle = .medium
         
         // Compare dates and set the title accordingly
-        titleLabel.text = ticketDate < now ? "NEXT DRAW" : "PAST DRAW"
+        titleLabel.text = ticketDate > now ? "NEXT DRAW" : "PAST DRAW"
         dateLabel.text = formatter.string(from: ticketDate)
         
         // Update numbers array for the collection view
@@ -258,10 +259,12 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         }
         
         // Configure cell appearance based on draw date
-        if ticketDate < now {
+        if ticketDate > now {
             editButton.isHidden = false
+            setNeedsLayout()
         } else {
             editButton.isHidden = true
+            setNeedsLayout()
         }
     }
     
@@ -317,6 +320,6 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             inset = 0.scale
         }
         
-        return UIEdgeInsets(top: 0.scale, left: inset, bottom: 0.scale, right: inset)
+        return UIEdgeInsets(top: 15.scale, left: inset, bottom: 0.scale, right: inset)
     }
 }

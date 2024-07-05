@@ -7,10 +7,10 @@
 import Foundation
 
 struct Ticket: Codable {
-    let id: Int
-    let lotteryId: Int
-    let pictureUrl: URL?
-    let date: TimeInterval
+    var id: Int
+    var lotteryId: Int
+    var pictureUrl: URL?
+    var date: TimeInterval
     var numbers: [[Int]]
 
     // Existing initializer

@@ -175,9 +175,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let now = Date()
         let numbersCount = ticket.numbers.count
 
-        let isNextDraw = ticketDate < now
-        let baseHeight: CGFloat = isNextDraw ? 266.scale : 206.scale
-        let additionalHeight: CGFloat = 58.scale * CGFloat(max(0, numbersCount - 1))
+        let isNextDraw = ticketDate > now
+        let baseHeight: CGFloat = isNextDraw ? 236.scale : 210.scale
+        let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
 
         let cellHeight = baseHeight + additionalHeight
 

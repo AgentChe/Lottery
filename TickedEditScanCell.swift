@@ -9,7 +9,11 @@ import UIKit
 import Kingfisher
 class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
     let contentManager = ContentManager()
-    var ticket: Ticket?
+    var ticket: Ticket? {
+        didSet {
+           // parentvc?.ticket = ticket
+        }
+    }
     var numbersStringArray: [[String]] = [] {
         didSet {
             delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
@@ -19,7 +23,7 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
     weak var delegate: EditTicketViewControllerDelegate?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
-    private let dateLabel = TickedEditDatePaddedLabel()
+    private let dateLabel = TickedEditDatePaddedLabel() 
     private let pencilEditImageView = UIImageView()
     
     private var datePickerContainer: UIView?
@@ -88,6 +92,7 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
                 case .success(let lotteries):
                     for lottery in lotteries {
                         if lottery.id == ticket.lotteryId {
+                            self?.parentvc?.ticket?.pictureUrl = lottery.logoUrl
                             self?.logoImageView.kf.setImage(with: lottery.logoUrl)
                             self?.setTheConstraintsForLogoImage(lotteries: lotteries, Lottery: lottery)
                         }
@@ -303,6 +308,7 @@ private extension TicketEditScanCell {
         dateFormatter.dateFormat = "MMM d, yyyy"
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
+        parentvc?.ticket?.date = date.timeIntervalSince1970
     }
 }
 
