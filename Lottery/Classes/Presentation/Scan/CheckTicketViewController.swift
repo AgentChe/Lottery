@@ -243,6 +243,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
         // Handle the rescan button tap
         print("Rescan button tapped")
         // Add your rescan logic here
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupNavigationBarTitle() {
@@ -332,10 +333,10 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     
     // Handle keyboard appearance
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
             let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
-            let totalHeight = keyboardHeight
+            let totalHeight = keyboardHeight + 10.scale
             
             saveButtonBottomConstraint.constant = -totalHeight
             UIView.animate(withDuration: 0.3) {

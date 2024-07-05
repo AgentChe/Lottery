@@ -128,6 +128,19 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 print("Ticket updated successfully: \(updatedTicket)")
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
+                    let alert = UIAlertController(
+                           title: "Ticket Edited Successfully",
+                           message: "Your ticket has been successfully edited. You can find your edited ticket in the Tickets section.",
+                           preferredStyle: .alert
+                       )
+                    
+                    // Add an OK button to the alert
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                    // Present the alert
+                    self.present(alert, animated: true, completion: nil)
+                     
+                    
                 }
                 
             case .failure(let error):
@@ -190,6 +203,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             cell.configure(ticket: ticket)
         }
         cell.delegate = self
+        cell.parentvc = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -222,13 +236,13 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     
     // Handle keyboard appearance
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
             let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
             let totalHeight = keyboardHeight
             
             saveButtonBottomConstraint.constant = -totalHeight
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.35) {
                 self.view.layoutIfNeeded()
             }
         }

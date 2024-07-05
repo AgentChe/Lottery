@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol EditNumberCellDelegate: AnyObject {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
@@ -25,6 +26,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     }
     
     weak var delegate: EditTicketViewControllerDelegate?
+    weak var parentvc: EditTicketViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -86,7 +88,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         self.ticket = ticket
         numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
         
-        logoImageView.image = UIImage(named: "placeholderImage")
+        logoImageView.kf.setImage(with:ticket.pictureUrl)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
@@ -183,7 +185,10 @@ private extension TicketEditCell {
         
         customDatePicker.onDateSelected = { [weak self] selectedDate in
             self?.updateDateLabel(with: selectedDate)
+            self?.ticket?.date = selectedDate.timeIntervalSince1970
+            self?.parentvc?.ticket?.date = selectedDate.timeIntervalSince1970
             self?.dismissDatePicker()
+            
         }
         
         customDatePicker.onClose = { [weak self] in

@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Kingfisher
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
 }
@@ -36,7 +36,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "placeholderImage") // Placeholder image
+        imageView.image = UIImage(named: "") // Placeholder image
         return imageView
     }()
     
@@ -60,7 +60,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return button
     }()
     
-    private var numbersCollectionView: UICollectionView = {
+     var numbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 6.scale
@@ -68,11 +68,16 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .yellow
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
     
     private var numbers: [[Int]] = []
+
+    private var editButtonHeightConstraint: NSLayoutConstraint!
+    private var numbersCollectionViewBottomConstraint: NSLayoutConstraint!
+    private var numbersCollectionViewBottomToEditButtonConstraint: NSLayoutConstraint!
+    private var editButtonBottomConstraint: NSLayoutConstraint!
 
     @objc private func editButtonTapped() {
         delegate?.editButtonTapped(for: self)
@@ -92,14 +97,6 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         // Set cell properties
         self.backgroundColor = .white
         
-        // Create and apply the custom shape layer as a mask
-        let shapeLayer = createCustomShapeLayer()
-        self.layer.mask = shapeLayer
-        
-        // Add the border layer
-        let borderLayer = createBorderLayer()
-        self.layer.addSublayer(borderLayer)
-        
         // Configure collection view data source and delegate
         numbersCollectionView.dataSource = self
         numbersCollectionView.delegate = self
@@ -112,96 +109,6 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         self.addSubview(numbersCollectionView)
         self.addSubview(dashedLineImageView) // Add dashed line image view
         self.addSubview(editButton)
-    }
-    
-    private func createCustomShapeLayer() -> CAShapeLayer {
-        let layer = CAShapeLayer()
-        
-        // Create a Bezier path resembling the ticket shape with 32.scale circular cutouts
-        let path = UIBezierPath()
-        
-        // Define the shape based on the cell's bounds
-        let bounds = self.bounds
-        let cornerRadius: CGFloat = 20.scale // Radius for the corners
-        let cutoutRadius: CGFloat = 16.scale // Radius for 32.scale diameter cutouts
-        
-        // Start at the top-left corner
-        path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
-        
-        // Top edge
-        path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
-        
-        // Right edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
-        
-        // Bottom edge
-        path.addLine(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY))
-        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
-        
-        // Left edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
-        path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
-        
-        // Close the path
-        path.close()
-        
-        // Assign the path to the layer
-        layer.path = path.cgPath
-        layer.fillColor = UIColor.white.cgColor
-        
-        return layer
-    }
-    
-    private func createBorderLayer() -> CAShapeLayer {
-        let layer = CAShapeLayer()
-        
-        // Use the same path as the custom shape layer
-        let path = UIBezierPath()
-        
-        // Define the shape based on the cell's bounds
-        let bounds = self.bounds
-        let cornerRadius: CGFloat = 20.scale // Radius for the corners
-        let cutoutRadius: CGFloat = 16.scale // Radius of each circular cutout (50x50, hence radius is 25)
-        
-        // Start at the top-left corner
-        path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
-        
-        // Top edge
-        path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
-        
-        // Right edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
-        
-        // Bottom edge
-        path.addLine(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY))
-        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
-        
-        // Left edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
-        path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
-        
-        // Close the path
-        path.close()
-        
-        // Assign the path to the layer
-        layer.path = path.cgPath
-        layer.strokeColor = Appearance.lightGrayBorderTicket.cgColor // Customize the border color
-        layer.lineWidth = 2.0 // Customize the border width
-        layer.fillColor = UIColor.clear.cgColor // Ensure the fill color is clear
-        
-        return layer
     }
     
     private func setupConstraints() {
@@ -227,14 +134,23 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             numbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
             numbersCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10.scale),
             numbersCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10.scale),
-            numbersCollectionView.bottomAnchor.constraint(equalTo: editButton.isHidden ?  self.bottomAnchor : editButton.topAnchor, constant: -20.scale),
-            
-            editButton.topAnchor.constraint(equalTo: numbersCollectionView.bottomAnchor, constant: 20.scale),
+        ])
+        
+        editButtonHeightConstraint = editButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        editButtonHeightConstraint.isActive = true
+        
+        numbersCollectionViewBottomConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
+        numbersCollectionViewBottomToEditButtonConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: editButton.topAnchor, constant: -20.scale)
+        
+        editButtonBottomConstraint = editButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
+        
+        NSLayoutConstraint.activate([
             editButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
             editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
-            editButton.heightAnchor.constraint(equalToConstant: editButton.isHidden ?  0.scale : 44.scale),
-            editButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale),
         ])
+      
+           
+        
     }
     
     func configure(with ticket: Ticket) {
@@ -253,7 +169,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         
         // Load ticket image asynchronously
         if let url = ticket.pictureUrl {
-            loadImage(from: url)
+            self.ticketImageView.kf.setImage(with: url)
         } else {
             ticketImageView.image = nil
         }
@@ -261,22 +177,36 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         // Configure cell appearance based on draw date
         if ticketDate > now {
             editButton.isHidden = false
-            setNeedsLayout()
+            editButtonHeightConstraint.constant = 44.scale
+            editButtonBottomConstraint.isActive = true
+            numbersCollectionViewBottomToEditButtonConstraint.isActive = true
+            numbersCollectionViewBottomConstraint.isActive = false
         } else {
             editButton.isHidden = true
-            setNeedsLayout()
+            editButtonHeightConstraint.constant = 0.scale
+            editButtonBottomConstraint.isActive = false
+            numbersCollectionViewBottomConstraint.isActive = true
+            numbersCollectionViewBottomToEditButtonConstraint.isActive = false
         }
-    }
-    
-    private func loadImage(from url: URL) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.ticketImageView.image = image
+        
+        setNeedsLayout()
+              
+        let shapeLayer = self.createCustomShapeLayer()
+        self.layer.mask = shapeLayer
+        
+        // Add the border layer
+        let borderLayer = self.createBorderLayer()
+        
+        if let subLayers = self.layer.sublayers {
+            for subLayer in subLayers {
+                if subLayer.isKind(of: CAShapeLayer.self) {
+                    subLayer.removeFromSuperlayer()
                 }
             }
         }
+        self.layer.addSublayer(borderLayer)
     }
+    
     
     // MARK: - UICollectionViewDataSource Methods
     
@@ -321,5 +251,97 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         }
         
         return UIEdgeInsets(top: 15.scale, left: inset, bottom: 0.scale, right: inset)
+    }
+}
+
+extension TicketCell {
+     func createCustomShapeLayer() -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        
+        // Create a Bezier path resembling the ticket shape with 32.scale circular cutouts
+        let path = UIBezierPath()
+        
+        // Define the shape based on the cell's bounds
+        let bounds = self.bounds
+        let cornerRadius: CGFloat = 20.scale // Radius for the corners
+        let cutoutRadius: CGFloat = 16.scale // Radius for 32.scale diameter cutouts
+        
+        // Start at the top-left corner
+        path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
+        
+        // Top edge
+        path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
+        
+        // Right edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
+        
+        // Bottom edge
+        path.addLine(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
+        
+        // Left edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
+        
+        // Close the path
+        path.close()
+        
+        // Assign the path to the layer
+        layer.path = path.cgPath
+        layer.fillColor = UIColor.white.cgColor
+        
+        return layer
+    }
+    
+     func createBorderLayer() -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        
+        // Use the same path as the custom shape layer
+        let path = UIBezierPath()
+        
+        // Define the shape based on the cell's bounds
+        let bounds = self.bounds
+        let cornerRadius: CGFloat = 20.scale // Radius for the corners
+        let cutoutRadius: CGFloat = 16.scale // Radius of each circular cutout (50x50, hence radius is 25)
+        
+        // Start at the top-left corner
+        path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
+        
+        // Top edge
+        path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
+        
+        // Right edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
+        
+        // Bottom edge
+        path.addLine(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
+        
+        // Left edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
+        
+        // Close the path
+        path.close()
+        
+        // Assign the path to the layer
+        layer.path = path.cgPath
+        layer.strokeColor = Appearance.lightGrayBorderTicket.cgColor // Customize the border color
+        layer.lineWidth = 2.0 // Customize the border width
+        layer.fillColor = UIColor.clear.cgColor // Ensure the fill color is clear
+        
+        return layer
     }
 }

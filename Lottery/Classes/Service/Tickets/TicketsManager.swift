@@ -48,15 +48,16 @@ extension TicketsManager: TicketsManagerProtocol {
         performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
             self?.operations.removeValue(forKey: operationId)
             switch result {
-            case .success(let lotteryResponse):
-                let ticket = Ticket(id: lotteryResponse.id, lotteryId: lotteryResponse.lotteryId, pictureUrl: URL(string: lotteryResponse.pictureUrl), date: lotteryResponse.date, numbers: lotteryResponse.numbers)
+            case .success(let ticketResponse):
+                let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
                 completion(.success(ticket ))
                 
-               
+                
             case .failure(let error):
                 completion(.failure(ContentError(.notContent)))
             }
-        }    }
+        }  
+    }
     
     func editTicket(  id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
@@ -81,23 +82,18 @@ extension TicketsManager: TicketsManagerProtocol {
 //                completion(.failure(ContentError(.notContent)))
 //            }
 //        }
-//        performRequest(request) { [weak self] result in
-//            switch result {
-//            case .success(let data):
-//                do {
-//                    self?.operations.removeValue(forKey: operationId)
-//                    if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
-//                        completion(.success(ticket))
-//                    } else {
-//                        completion(.failure(ContentError(.notContent)))
-//                    }
-//                } catch {
-//                    completion(.failure(error))
-//                }
-//            case .failure(let error):
-//                completion(.failure(ContentError(.notContent)))
-//            }
-//        }
+        performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
+            self?.operations.removeValue(forKey: operationId)
+            switch result {
+            case .success(let ticketResponse):
+                let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
+                completion(.success(ticket ))
+                
+                
+            case .failure(let error):
+                completion(.failure(ContentError(.notContent)))
+            }
+        }
 
     }
     

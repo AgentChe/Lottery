@@ -134,9 +134,26 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
         
         // Apply the underline to the new text
+        var resultedColor = Appearance.mono200
+        
+        if numberOfCells == 6 {
+            if indexPath?.item == 5 {
+                resultedColor = Appearance.mono100
+            } else {
+                resultedColor = Appearance.mono200
+            }
+        }
+        if numberOfCells == 4 {
+            if indexPath?.item == 0 || indexPath?.item == 1 {
+                resultedColor = Appearance.mono100
+            } 
+            if indexPath?.item == 2 || indexPath?.item == 3 {
+                resultedColor = Appearance.mono200
+            }
+        }
         let underlineAttribute: [NSAttributedString.Key: Any] = [
             .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .foregroundColor: Appearance.mono200
+            .foregroundColor: resultedColor
         ]
         let attributedText = NSAttributedString(string: currentText, attributes: underlineAttribute)
         textField.attributedText = attributedText

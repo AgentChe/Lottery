@@ -54,6 +54,10 @@ class NumberTicketCell: UICollectionViewCell {
         } else {
             numberLabel.backgroundColor = .clear
             numberLabel.textColor = Appearance.mono200
+            numberLabel.layer.borderColor = Appearance.lightGrayBorderTicket.cgColor
+            numberLabel.layer.borderWidth = 1
+
+            
         }
     }
 }

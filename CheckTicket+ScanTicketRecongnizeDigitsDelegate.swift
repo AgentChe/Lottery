@@ -135,6 +135,7 @@ extension CheckTicketViewController {
         let tryAgainAction = UIAlertAction(title: "Try Again", style: .default) { _ in
             // Code to retry the recognition process
             print("User tapped Try Again")
+            self.navigationController?.popViewController(animated: true)
         }
         
         // Add the action to the alert controller

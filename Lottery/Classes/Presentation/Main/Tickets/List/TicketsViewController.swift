@@ -134,7 +134,21 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 case .success(let tickets):
                     self?.tickets = tickets.sorted(by: { $0.date > $1.date })
                     self?.collectionView.reloadData()
+                    if self?.tickets.count != 0 {
+                        self?.collectionView.isHidden = false
+                        self?.noTicketsImageView.isHidden = true
+                    } else {
+                        self?.collectionView.isHidden = true
+                        self?.noTicketsImageView.isHidden = false
+                    }
                 case .failure(let error):
+                    if self?.tickets.count != 0 {
+                        self?.collectionView.isHidden = false
+                        self?.noTicketsImageView.isHidden = true
+                    } else {
+                        self?.collectionView.isHidden = true
+                        self?.noTicketsImageView.isHidden = false
+                    }
                     self?.showError(error)
                 }
             }
@@ -146,6 +160,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
 
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+            
+            fetchTickets()
             
         }
     }
@@ -166,6 +182,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
         cell.configure(with: tickets[indexPath.item])
         cell.delegate = self
+        cell.numbersCollectionView.reloadData()
+
+        cell.setNeedsDisplay()
         return cell
     }
 
@@ -176,7 +195,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         let numbersCount = ticket.numbers.count
 
         let isNextDraw = ticketDate > now
-        let baseHeight: CGFloat = isNextDraw ? 236.scale : 210.scale
+        let baseHeight: CGFloat = isNextDraw ? 266.scale : 210.scale
         let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
 
         let cellHeight = baseHeight + additionalHeight
