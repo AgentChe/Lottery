@@ -242,7 +242,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     // Handle keyboard appearance
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
             let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
             let totalHeight = keyboardHeight

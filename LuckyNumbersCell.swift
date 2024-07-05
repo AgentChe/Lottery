@@ -36,7 +36,7 @@ class LuckyNumbersCell: UICollectionViewCell {
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
