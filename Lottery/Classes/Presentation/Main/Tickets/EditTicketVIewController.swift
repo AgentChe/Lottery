@@ -173,7 +173,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         backButton.setImage(backButtonImage, for: .normal)
         backButton.imageView?.contentMode = .scaleAspectFit
         backButton.backgroundColor = .clear
-        backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
+        backButton.frame = CGRect(x: 0, y: 0, width: 140.scale, height: 26.scale)
         backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
 
         let barButtonItem = UIBarButtonItem(customView: backButton)
@@ -211,9 +211,27 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width
         let height = collectionView.frame.height
-        return CGSize(width: 343.scale,
-                      height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+        
+        // Get the number of cells in the last row
+        if let firstNumberArray = numbersStringArray.first {
+            let numberOfCells = firstNumberArray.count + 1
+            // Calculate the available width based on the given constraints
+            let totalWidth: CGFloat = 343.scale
+            let sideMargins: CGFloat = 40.scale
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            
+            // Calculate the width for each cell
+            let availableWidth = totalWidth - sideMargins - cellSpacing
+            let cellWidth = availableWidth / CGFloat(numberOfCells)
+            
+            return CGSize(width: 343.scale,
+                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+        } else {
+            return CGSize(width: 343.scale,
+                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+        }
     }
+    
 
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
