@@ -82,6 +82,8 @@
 		A37557FB2C345B270028DB95 /* TickedEditScanCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */; };
 		A375583B2C35B86C0028DB95 /* LuckyNumbersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583A2C35B86C0028DB95 /* LuckyNumbersCell.swift */; };
 		A375583D2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583C2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift */; };
+		A375583F2C37BEB80028DB95 /* AddScanTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */; };
+		A37558412C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -307,6 +309,8 @@
 		A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedEditScanCell.swift; sourceTree = SOURCE_ROOT; };
 		A375583A2C35B86C0028DB95 /* LuckyNumbersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersCell.swift; sourceTree = SOURCE_ROOT; };
 		A375583C2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersAlertViewController.swift; sourceTree = SOURCE_ROOT; };
+		A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScanTicketViewController.swift; sourceTree = "<group>"; };
+		A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanAddNumbersEditCell.swift; sourceTree = "<group>"; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -482,7 +486,9 @@
 		A32748B82C25D71E00E9F79A /* Scan */ = {
 			isa = PBXGroup;
 			children = (
+				A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */,
 				A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */,
+				A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */,
 				A37557F62C343C260028DB95 /* CheckTicket+ScanTicketRecongnizeDigitsDelegate.swift */,
 				A32749312C29859400E9F79A /* Scanner */,
 				A32748BD2C25E79100E9F79A /* Views */,
@@ -1601,6 +1607,7 @@
 				A32749482C29859400E9F79A /* UIImage+Utils.swift in Sources */,
 				A3FF557D2C08B8A600E81771 /* AddLotteryRequest.swift in Sources */,
 				DE42B2062BFF50E300FF61B0 /* RequestDispatcher.swift in Sources */,
+				A37558412C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift in Sources */,
 				A375583B2C35B86C0028DB95 /* LuckyNumbersCell.swift in Sources */,
 				A32749762C29859400E9F79A /* CaptureSession+Focus.swift in Sources */,
 				DE42B1EB2BFF429200FF61B0 /* Session.swift in Sources */,
@@ -1720,6 +1727,7 @@
 				A32749352C29859400E9F79A /* CIRectangleDetector.swift in Sources */,
 				DE42B1C42BFF3CB200FF61B0 /* PaygateProductButton.swift in Sources */,
 				DE42B2002BFF50E300FF61B0 /* APIEnvironment.swift in Sources */,
+				A375583F2C37BEB80028DB95 /* AddScanTicketViewController.swift in Sources */,
 				A327493B2C29859400E9F79A /* EditImageViewController.swift in Sources */,
 				A3EF372B2C17B9DE00753C41 /* MenuCell.swift in Sources */,
 				A32749752C29859400E9F79A /* CaptureSession+Flash.swift in Sources */,

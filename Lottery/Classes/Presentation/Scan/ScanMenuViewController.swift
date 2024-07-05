@@ -11,6 +11,8 @@ import AVFoundation
 final class ScanMenuViewController: UIViewController {
     var stateId: Int!
     var lotteryId: Int!
+    var lotteries:[Lottery]!
+    private var contentManager: ContentManagerProtocol = ContentManager()
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -126,7 +128,36 @@ final class ScanMenuViewController: UIViewController {
     @objc private func addTicketManuallyButtonTapped() {
         print("Second button tapped")
         // Add functionality for the second button
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    for lottery in lotteries {
+                        if lottery.id == self?.lotteryId {
+                            let pictureUrl = lottery.logoUrl
+                            
+                            let ticket : Ticket = Ticket(id: 0,
+                                                         lotteryId: lottery.id,
+                                                         pictureUrl: pictureUrl,
+                                                         date: Date().timeIntervalSince1970,
+                                                         numbers: [])
+                            
+                            let addScanTicketVC = AddScanTicketViewController(ticket: ticket, lotteries: lotteries)
+                            self?.navigationController?.pushViewController(addScanTicketVC, animated: true)
+                        }
+                    }
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
+                }
+            }
+        }
+        
+        
+        
+        
     }
+   
     func requestCameraPermission() {
         let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         
