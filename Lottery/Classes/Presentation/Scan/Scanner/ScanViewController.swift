@@ -16,6 +16,10 @@ class ScanViewController: UIViewController, ImageScannerControllerDelegate {
      
     var stateId: Int!
     var lotteryId: Int!
+    override func loadView() {
+        super.loadView()
+        setupNavigationBackButton()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         //setupNavigationBackButton()
@@ -53,8 +57,8 @@ class ScanViewController: UIViewController, ImageScannerControllerDelegate {
         let backButtonItem = UIBarButtonItem(customView: backButton)
         
         // Replace the default back button with the custom button
-        parent?.navigationItem.leftBarButtonItem = backButtonItem
-        parent?.navigationItem.hidesBackButton = true // Hide the default back button
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true // Hide the default back button
     }
 
     @objc private func customBackButtonTapped() {

@@ -56,8 +56,7 @@ public final class ImageScannerController: UINavigationController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
-    override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+     override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
     public override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -70,6 +69,7 @@ public final class ImageScannerController: UINavigationController {
         scannerViewController.stateId = stateId
         super.init(rootViewController: scannerViewController)
         self.view.backgroundColor = Appearance.mono100
+      
         
         self.imageScannerDelegate = delegate
 
