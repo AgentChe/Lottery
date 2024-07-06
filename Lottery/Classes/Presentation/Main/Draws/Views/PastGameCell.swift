@@ -282,17 +282,17 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == winningNumbersCollectionView {
-            return winningNumbers.count ?? 0 // Using the first set of numbers for simplicity
+            return winningNumbers.count ?? 0
         } else {
-            return myLuckyNumbers.count ?? 0 // Using the first set of numbers for simplicity
+            return myLuckyNumbers.count ?? 0  
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == winningNumbersCollectionView {
-            return winningNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
+            return winningNumbers.first?.count ?? 0
         } else {
-            return myLuckyNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
+            return myLuckyNumbers.first?.count ?? 0
         }
     }
     

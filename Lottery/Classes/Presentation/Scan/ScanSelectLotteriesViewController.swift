@@ -10,6 +10,7 @@ import UIKit
 
 class ScanSelectLotteriesViewController: UIViewController {
     var onContinue: (([Int]) -> Void)?
+    var fromMenu = false
     private let contentManager: ContentManagerProtocol = ContentManager()
     private var lotteries: [Lottery] = []
     private let stateId: Int?
@@ -19,6 +20,7 @@ class ScanSelectLotteriesViewController: UIViewController {
     // Custom initializer to accept stateId
     init(stateId: Int?) {
         self.stateId = stateId
+        
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -33,6 +35,7 @@ class ScanSelectLotteriesViewController: UIViewController {
     
     override func loadView() {
         view = selectLotteryView
+        
     }
     
     override func viewDidLoad() {
@@ -40,7 +43,7 @@ class ScanSelectLotteriesViewController: UIViewController {
         setupButtons()
         fetchLotteries()
         setupNavigationBackButton()
-        
+        selectLotteryView.fromMenu = fromMenu
     }
 }
 

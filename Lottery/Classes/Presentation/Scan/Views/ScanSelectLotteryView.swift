@@ -11,7 +11,7 @@ import UIKit
 final class ScanSelectLotteryView: UIView {
     
     // MARK: - UI Components
-    
+    var fromMenu = false
     let continueButton: UIButton = {
         let button = UIButton()
         let attrs = TextAttributes()
@@ -170,21 +170,33 @@ extension ScanSelectLotteryView: UITableViewDelegate {
         }
         
         // Clear the selectedLotteries set and add the new selection
-        selectedLotteries.removeAll()
-        selectedLotteries.insert(indexPath.row)
+        
+        if !fromMenu {
+            selectedLotteries.removeAll()
+            selectedLotteries.insert(indexPath.row)
+        } else {
+            if selectedLotteries.contains(indexPath.row) {
+                selectedLotteries.remove(indexPath.row)
+            } else {
+                selectedLotteries.insert(indexPath.row)
+            }
+        }
+       
         
         updateContinueButtonState()
         tableView.reloadData()
     }
-    
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        // Ensure the selected row remains selected until another row is chosen
-        selectedLotteries.removeAll()
-        selectedLotteries.insert(indexPath.row)
-        
-        updateContinueButtonState()
-        tableView.reloadData()
-    }
+//    
+//    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+//        // Ensure the selected row remains selected until another row is chosen
+//       
+//            selectedLotteries.removeAll()
+//            selectedLotteries.insert(indexPath.row)
+//      
+//        
+//        updateContinueButtonState()
+//        tableView.reloadData()
+//    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 56.scale

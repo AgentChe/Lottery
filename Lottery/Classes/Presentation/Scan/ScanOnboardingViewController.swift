@@ -11,9 +11,9 @@ final class ScanOnboardingViewController: UIViewController {
     struct Constants {
         static let wasViewedKey = "onboarding_view_controller_was_viewed_key"
     }
-    
+    var fromMenu: Bool = false
     private let profileManager: ProfileManagerProtocol = ProfileManager()
-    private var selectedState: Int?
+     var selectedState: Int?
     private var selectedLotteries: [Int] = []
     //private var stateId: Int?
     override func viewDidLoad() {
@@ -41,9 +41,9 @@ final class ScanOnboardingViewController: UIViewController {
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
           
-            self.selectedState = selectedState
-            self.showSelectLotteriesViewController()
-        }
+                self.selectedState = selectedState
+                self.showSelectLotteriesViewController()
+            }
         
         // Add the initial view controller as a child view controller
         addChild(selectStateVC)
@@ -101,16 +101,21 @@ final class ScanOnboardingViewController: UIViewController {
     
 
      
-    private func showSelectLotteriesViewController() {
+     func showSelectLotteriesViewController() {
         guard let selectedState = selectedState else { return } // Ensure we have a stateId
         let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState)
+         selectGameVC.fromMenu = fromMenu
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedLotteries = selectedGames
             for i in 0..<selectedGames.count {
                 selectedLotteries[i] = selectedLotteries[i] + 1
             }
-            self.completeOnboarding()
+            if !fromMenu {
+                self.completeOnboarding()
+            } else {
+                navigationController?.popToRootViewController(animated: true)
+            }
         }
         
         // Push the SelectLotteriesViewController onto the navigation stack

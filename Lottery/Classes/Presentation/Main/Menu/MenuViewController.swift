@@ -151,11 +151,65 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
       private func navigateToGames() {
           // Implement navigation to Games screen
           print("Navigating to Games screen...")
+          let scanOnboardingViewController = ScanOnboardingViewController.make()
+          scanOnboardingViewController.fromMenu = true
+          let profileManager = ProfileManager()
+          profileManager.getProfile(forceUpdate: false) { [weak self] result in
+              DispatchQueue.main.async {
+                  switch result {
+                  case .success(let profile):
+                      if let stateId = profile.state {
+                          scanOnboardingViewController.selectedState = stateId
+        
+                          scanOnboardingViewController.showSelectLotteriesViewController()
+                      } else {
+                          print("State ID is not available in profile")
+                      }
+                  case .failure(let error):
+                      print("Failed to fetch profile: \(error)")
+                  }
+              }
+          }
+         
+          
+          // Check if the current view controller is embedded in a navigation controller
+          if let navigationController = self.navigationController {
+             
+              navigationController.pushViewController(scanOnboardingViewController, animated: true)
+              
+              if let navigationController = getRootViewController() as? NavigationController,
+                 let mainViewController = navigationController.viewControllers.first as? MainViewController {
+
+                  updateMainViewControllerConstraints(for: mainViewController)
+                  
+              }
+          } else {
+              // If not, present the view controller modally as a fallback
+              present(scanOnboardingViewController, animated: true, completion: nil)
+          }
       }
       
       private func navigateToState() {
           // Implement navigation to State screen
           print("Navigating to State screen...")
+          let scanOnboardingViewController = ScanOnboardingViewController.make()
+          scanOnboardingViewController.fromMenu = true
+          
+          // Check if the current view controller is embedded in a navigation controller
+          if let navigationController = self.navigationController {
+             
+              navigationController.pushViewController(scanOnboardingViewController, animated: true)
+              
+              if let navigationController = getRootViewController() as? NavigationController,
+                 let mainViewController = navigationController.viewControllers.first as? MainViewController {
+
+                  updateMainViewControllerConstraints(for: mainViewController)
+                  
+              }
+          } else {
+              // If not, present the view controller modally as a fallback
+              present(scanOnboardingViewController, animated: true, completion: nil)
+          }
       }
       
       private func navigateToWebView(with url: URL) {
@@ -163,4 +217,26 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
           settingsWebViewController.url = url
           present(settingsWebViewController, animated: true, completion: nil)
       }
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
+        let mainView = mainViewController.mainView
+        let tabView = mainView.tabView
+        
+  
+        
+        if mainView.tabViewBottomConstraint?.constant != newConstant {
+            // Deactivate and nil the old constraint if it's different
+            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
+                oldTabViewBottomConstraint.isActive = false
+                mainView.tabViewBottomConstraint = nil
+            }
+            
+            // Create and activate the new constraint
+            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
+            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
+            newTabViewBottomConstraint.isActive = true
+            
+            // Call layoutIfNeeded to apply the changes
+            mainView.layoutIfNeeded()
+        }
+    }
 }
