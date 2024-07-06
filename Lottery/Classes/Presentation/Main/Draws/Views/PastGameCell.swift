@@ -330,6 +330,15 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
     private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
         let number = myLuckyNumbers[indexPath.section][indexPath.item]
         configureCell(cell, withNumber: number, comparisonArray: winningNumbers, indexPath: indexPath)
+        if indexPath.item == myLuckyNumbers[0].count-1 {
+            for winNumArray in winningNumbers {
+                if winNumArray.last != number {
+                    cell.numberLabel.textColor = Appearance.main100
+                    cell.layer.borderColor = Appearance.main100.cgColor
+                    cell.backgroundColor = Appearance.mono100
+                }
+            }
+        }
     }
     
     private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
