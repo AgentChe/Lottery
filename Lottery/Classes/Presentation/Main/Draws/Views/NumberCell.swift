@@ -8,7 +8,7 @@
 import UIKit
 
 class NumberCell: UICollectionViewCell {
-    private let numberLabel = UILabel()
+     let numberLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,6 +41,5 @@ class NumberCell: UICollectionViewCell {
     
     func setNumberLabelColor(_ color: UIColor) {
         numberLabel.textColor = color
-        layer.borderColor = UIColor.clear.cgColor
     }
 }

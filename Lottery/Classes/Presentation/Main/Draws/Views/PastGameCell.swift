@@ -55,7 +55,7 @@ class PastGameCell: UICollectionViewCell {
         return imageView
     }()
     
-    private lazy var winningNumbersCollectionView: UICollectionView = {
+     lazy var winningNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 10.scale
@@ -150,9 +150,7 @@ extension PastGameCell {
         winningNumbers = game.winningNumbers ?? []
         myLuckyNumbers = game.myLuckyNumbers ?? []
         
-        // Reload collection views with new data
-        winningNumbersCollectionView.reloadData()
-        myLuckyNumbersCollectionView.reloadData()
+         
      
         myLuckyNumbersCollectionViewHeghitConstraint.isActive = false
         if myLuckyNumbers.isEmpty {
@@ -174,7 +172,9 @@ extension PastGameCell {
         }
         winningNumbersCollectionViewHeghitConstraint.isActive = true
         setNeedsLayout()
-        
+        // Reload collection views with new data
+        winningNumbersCollectionView.reloadData()
+        myLuckyNumbersCollectionView.reloadData()
         
     }
     
@@ -304,35 +304,62 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         
         return cell
     }
-
+    
     private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
         let number = winningNumbers[indexPath.section][indexPath.item]
-        configureCell(cell, withNumber: number, comparisonArray: myLuckyNumbers, indexPath: indexPath)
+       
+        var lastIndex = winningNumbers[0].count - 1
+        
+        if indexPath.item == lastIndex {
+            cell.numberLabel.text = String(number)
+            cell.backgroundColor = Appearance.main100
+            cell.numberLabel.textColor = Appearance.mono100
+            cell.layer.borderColor = UIColor.clear.cgColor
+        } else {
+            cell.numberLabel.text = String(number)
+            cell.backgroundColor = Appearance.mono100
+            cell.numberLabel.textColor = Appearance.mono200
+            cell.layer.borderColor = Appearance.main500.cgColor
+        }
+        if myLuckyNumbers.count != 0 {
+            configureCell(cell, withNumber: number, comparisonArray: myLuckyNumbers, indexPath: indexPath)
+        }
     }
-
+    
+    
     private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
         let number = myLuckyNumbers[indexPath.section][indexPath.item]
         configureCell(cell, withNumber: number, comparisonArray: winningNumbers, indexPath: indexPath)
     }
-
+    
     private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
+        if comparisonArray.count == 0 {
+            return
+
+        }
+        var lastIndex = comparisonArray[0].count - 1
+        if indexPath.item == lastIndex {
+         
+        } else {
+            cell.numberLabel.textColor = Appearance.mono200
+        }
+        
+        
         let allNumbers = Set(comparisonArray.flatMap({ $0 }))
         let isHighlight = allNumbers.contains(number)
         cell.configure(with: String(number))
-        cell.backgroundColor = isHighlight ? Appearance.main600 : .white
+        cell.backgroundColor = isHighlight ? Appearance.main600 : Appearance.mono100
         cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
-        if comparisonArray.count == 0 {
-            return
+      
+        if indexPath.item == lastIndex {
+            cell.backgroundColor = Appearance.main100
+            cell.numberLabel.textColor = Appearance.mono100
+            cell.layer.borderColor = UIColor.clear.cgColor
+        } else {
             
         }
-//        let lastIndex = comparisonArray[indexPath.section].count - 1
-//
-//        if indexPath.item == lastIndex {
-//            cell.backgroundColor = Appearance.main100
-//            cell.setNumberLabelColor(Appearance.mono100)
-//        } else {
-//            cell.setNumberLabelColor(Appearance.mono200)
-//        }
+        
+      
     }
 }
 

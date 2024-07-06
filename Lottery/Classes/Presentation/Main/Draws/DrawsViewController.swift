@@ -200,6 +200,7 @@ extension DrawsViewController {
                     cell.myLuckyNumbersTitleLabel.alpha = 1
                 }
             }
+ 
             return cell
         }
     }
