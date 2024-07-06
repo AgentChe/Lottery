@@ -63,7 +63,7 @@ class PastGameCell: UICollectionViewCell {
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .blue
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -80,7 +80,7 @@ class PastGameCell: UICollectionViewCell {
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
          collectionView.isUserInteractionEnabled = false
@@ -268,9 +268,15 @@ private extension PastGameCell {
 extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if collectionView == winningNumbersCollectionView {
-            return UIEdgeInsets(top: 0.scale, left: 0, bottom: 10.scale, right: 0)
+            return UIEdgeInsets(top: 0.scale, 
+                                left: winningNumbers.first?.count == 6 ? 0.scale : 58.scale,
+                                bottom: 10.scale,
+                                right:  winningNumbers.first?.count == 6 ? 0.scale : -58.scale)
         } else {
-            return UIEdgeInsets(top: 0.scale, left: 0, bottom: 10.scale, right: 0)
+            return UIEdgeInsets(top: 0.scale, 
+                                left: winningNumbers.first?.count == 6 ? 0.scale : 58.scale,
+                                bottom: 10.scale,
+                                right:  winningNumbers.first?.count == 6 ? 0.scale : -58.scale)
         }
         // Adjust insets as needed
     }
