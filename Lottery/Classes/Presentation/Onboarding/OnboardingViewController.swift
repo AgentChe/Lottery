@@ -68,6 +68,10 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedGames = selectedGames
+            for i in 0..<self.selectedGames.count {
+                self.selectedGames[i] = self.selectedGames[i] + 1
+            }
+             
             self.completeOnboarding()
         }
         pushViewController(selectGameVC, animated: true)

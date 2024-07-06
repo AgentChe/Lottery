@@ -13,7 +13,7 @@ final class ScanOnboardingViewController: UIViewController {
     }
     var fromMenu: Bool = false
     private let profileManager: ProfileManagerProtocol = ProfileManager()
-     var selectedState: Int?
+    var selectedState: Int?
     private var selectedLotteries: [Int] = []
     //private var stateId: Int?
     override func viewDidLoad() {
@@ -27,8 +27,8 @@ final class ScanOnboardingViewController: UIViewController {
         super.loadView()
         //navigationItem.hidesBackButton = true
         setupNavigationBackButton()
-     //   navigationController?.view.backgroundColor = Appearance.main500
-      
+        //   navigationController?.view.backgroundColor = Appearance.main500
+        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -40,10 +40,10 @@ final class ScanOnboardingViewController: UIViewController {
         let selectStateVC = ScanSelectStateViewController()
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
-          
-                self.selectedState = selectedState
-                self.showSelectLotteriesViewController()
-            }
+            
+            self.selectedState = selectedState
+            self.showSelectLotteriesViewController()
+        }
         
         // Add the initial view controller as a child view controller
         addChild(selectStateVC)
@@ -83,12 +83,12 @@ final class ScanOnboardingViewController: UIViewController {
     private func setupInitialViewControllerToScan() {
         // Set up the first view controller in the onboarding flow
         let scanViewController = ScanViewController()
-//        scanViewController.onContinue = { [weak self] selectedState in
-//            guard let self = self else { return }
-//          
-//            self.selectedState = selectedState
-//            self.showSelectLotteriesViewController()
-//        }
+        //        scanViewController.onContinue = { [weak self] selectedState in
+        //            guard let self = self else { return }
+        //
+        //            self.selectedState = selectedState
+        //            self.showSelectLotteriesViewController()
+        //        }
         
         // Add the initial view controller as a child view controller
         
@@ -99,22 +99,23 @@ final class ScanOnboardingViewController: UIViewController {
         scanViewController.didMove(toParent: self)
     }
     
-
-     
-     func showSelectLotteriesViewController() {
+    
+    
+    func showSelectLotteriesViewController() {
         guard let selectedState = selectedState else { return } // Ensure we have a stateId
         let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState)
-         selectGameVC.fromMenu = fromMenu
+        selectGameVC.fromMenu = fromMenu
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedLotteries = selectedGames
-            for i in 0..<selectedGames.count {
+            for i in 0..<self.selectedLotteries.count {
                 selectedLotteries[i] = selectedLotteries[i] + 1
             }
             if !fromMenu {
                 self.completeOnboarding()
             } else {
-                navigationController?.popToRootViewController(animated: true)
+                saveProfile()
+                
             }
         }
         
@@ -128,8 +129,8 @@ final class ScanOnboardingViewController: UIViewController {
     }
     
     private func completeOnboarding() {
-//        markAsViewed()
-//        saveProfile()
+        //        markAsViewed()
+        //        saveProfile()
         let scanViewController = ScanMenuViewController()
         scanViewController.stateId = selectedState
         if let selectedLottery = self.selectedLotteries.first {
@@ -150,7 +151,7 @@ final class ScanOnboardingViewController: UIViewController {
                 switch result {
                 case .success(let profile):
                     if let stateId = profile.state {
-                       // self?.setupInitialViewControllerToChooseState()
+                        // self?.setupInitialViewControllerToChooseState()
                         
                         self?.setupInitialViewControllerToScan()
                         
@@ -171,12 +172,16 @@ final class ScanOnboardingViewController: UIViewController {
             presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
-
+        
         profileManager.setProfile(lotteries: selectedLotteries, state: stateId, forceUpdate: true) { [weak self] result in
             switch result {
             case .success:
-                let nextStep = self?.determineNextStep() ?? .main
-                self?.goToNext(at: nextStep)
+                if !(self?.fromMenu ?? false) {
+                    let nextStep = self?.determineNextStep() ?? .main
+                    self?.goToNext(at: nextStep)
+                } else {
+                    self?.navigationController?.popToRootViewController(animated: true)
+                }
             case .failure(let error):
                 self?.presentTryAgainViewController(with: error)
             }

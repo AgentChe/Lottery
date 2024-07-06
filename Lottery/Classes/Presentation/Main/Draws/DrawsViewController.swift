@@ -9,7 +9,7 @@
 import UIKit
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+    var profile: Profile!
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -22,6 +22,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
             
         }
+        fetchStateAndGames()
     }
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
@@ -30,8 +31,17 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var pastDrawsCollectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
     
-    private var nextDraws: [Game] = []
-    private var pastDraws: [Game] = []
+    private var nextDraws: [Game] = [] {
+        didSet {
+            nextDraws.sort { $0.date > $1.date }
+        }
+    }
+
+    private var pastDraws: [Game] = [] {
+        didSet {
+            pastDraws.sort { $0.date > $1.date }
+        }
+    }
     private var lotteries: [Lottery] = []
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
@@ -274,6 +284,7 @@ private extension DrawsViewController {
                 case .success(let profile):
                     if let stateId = profile.state {
                         self?.fetchLotteries(for: stateId)
+                        self?.profile = profile
                     } else {
                         print("State ID is not available in profile")
                     }
@@ -289,7 +300,19 @@ private extension DrawsViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
-                    self?.nextDraws = games
+                    var selectedGames: [Game] = []
+                    if let profile = self?.profile{
+                        if let profileLotteries = profile.lotteries {
+                            for lottery in profileLotteries {
+                                for game in games {
+                                    if game.lotteryId == lottery {
+                                        selectedGames.append(game)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    self?.nextDraws = selectedGames
                     delay(0.05) {
                         self?.nextDrawsCollectionView.reloadData()
                     }
@@ -305,7 +328,20 @@ private extension DrawsViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
-                    self?.pastDraws = games
+                    
+                    var selectedGames: [Game] = []
+                    if let profile = self?.profile{
+                        if let profileLotteries = profile.lotteries {
+                            for lottery in profileLotteries {
+                                for game in games {
+                                    if game.lotteryId == lottery {
+                                        selectedGames.append(game)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    self?.pastDraws = selectedGames
                     delay(0.09) {
                         self?.pastDrawsCollectionView.reloadData()
                     }
