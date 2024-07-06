@@ -148,11 +148,11 @@ extension DrawsViewController {
             // For Past Draws
             let game = pastDraws[indexPath.item]
             cellHeight = 176.scale  // Default height
-            if let myLuckyNumbers = game.myLuckyNumbers {
+            if let myLuckyNumbers = game.myLuckyNumbers, let winningNumbers = game.winningNumbers {
                 if myLuckyNumbers.isEmpty {
                     cellHeight = 150.scale
                 } else {
-                    cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 10.scale) + 100.scale
+                    cellHeight = 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 10.scale) + 90.scale
                 }
             }
         }
@@ -175,7 +175,7 @@ extension DrawsViewController {
         if collectionView == nextDrawsCollectionView {
             return nextDraws.count
         } else {
-            return pastDraws.count
+            return pastDraws.count > 100 ? 100 : pastDraws.count
         }
     }
     

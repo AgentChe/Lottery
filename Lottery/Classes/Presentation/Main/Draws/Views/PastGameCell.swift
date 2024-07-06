@@ -30,6 +30,7 @@ class PastGameCell: UICollectionViewCell {
         return label
     }()
     var myLuckyNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
+    var winningNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
      let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "MY LUCKY NUMBERS"
@@ -66,6 +67,7 @@ class PastGameCell: UICollectionViewCell {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.isUserInteractionEnabled = false
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
         return collectionView
     }()
@@ -161,6 +163,16 @@ extension PastGameCell {
             myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         }
         myLuckyNumbersCollectionViewHeghitConstraint.isActive = true
+        
+        winningNumbersCollectionViewHeghitConstraint.isActive = false
+        if winningNumbers.isEmpty {
+            let cellHeight = 50.scale
+            winningNumbersCollectionViewHeghitConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+        } else {
+            let cellHeight =  CGFloat(max(0, winningNumbers.count )) * CGFloat(40 + 10.scale) + 0.scale
+            winningNumbersCollectionViewHeghitConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+        }
+        winningNumbersCollectionViewHeghitConstraint.isActive = true
         setNeedsLayout()
         
         
@@ -202,7 +214,7 @@ private extension PastGameCell {
     
     func setupLayoutConstraints() {
         myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
-      
+      winningNumbersCollectionViewHeghitConstraint = winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
@@ -225,10 +237,10 @@ private extension PastGameCell {
             winningNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
+            winningNumbersCollectionViewHeghitConstraint,
             
             // Winning Numbers Title Label
-            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 40.scale),
+            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 30.scale),
             winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             
@@ -256,7 +268,7 @@ private extension PastGameCell {
 extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if collectionView == winningNumbersCollectionView {
-            return UIEdgeInsets(top: 0.scale, left: 0, bottom: 0.scale, right: 0)
+            return UIEdgeInsets(top: 0.scale, left: 0, bottom: 10.scale, right: 0)
         } else {
             return UIEdgeInsets(top: 0.scale, left: 0, bottom: 10.scale, right: 0)
         }

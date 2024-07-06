@@ -41,7 +41,7 @@ extension NextGameCell {
 
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
                     logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
                     
                 }
@@ -142,7 +142,7 @@ private extension NextGameCell {
         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
             logoIamgeLeadingConstraint,
             logoIamgeWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
