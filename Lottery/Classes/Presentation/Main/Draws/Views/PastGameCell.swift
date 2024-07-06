@@ -29,7 +29,7 @@ class PastGameCell: UICollectionViewCell {
         label.attributedText = attributedText
         return label
     }()
-    
+    var myLuckyNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
      let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "MY LUCKY NUMBERS"
@@ -56,13 +56,13 @@ class PastGameCell: UICollectionViewCell {
     
     private lazy var winningNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 10.scale
         layout.minimumLineSpacing = 14.scale
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .blue
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -72,17 +72,19 @@ class PastGameCell: UICollectionViewCell {
     
      lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 10.scale
-        layout.minimumLineSpacing = 14.scale
+       
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
+         collectionView.isUserInteractionEnabled = false
         collectionView.delegate = self
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+         collectionView.layer.masksToBounds = false
         return collectionView
     }()
     
@@ -107,9 +109,11 @@ extension PastGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
         logoImageView.image = UIImage(named: "placeholderImage")
         logoImageView.contentMode = .scaleAspectFit
+        myLuckyNumbers = game.myLuckyNumbers ?? []
+        winningNumbers = game.winningNumbers ?? []
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
-
+                
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
                     logoIamgeLeadingConstraint.isActive = false
@@ -147,21 +151,21 @@ extension PastGameCell {
         // Reload collection views with new data
         winningNumbersCollectionView.reloadData()
         myLuckyNumbersCollectionView.reloadData()
+     
+        myLuckyNumbersCollectionViewHeghitConstraint.isActive = false
+        if myLuckyNumbers.isEmpty {
+            let cellHeight = 150.scale
+            myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+        } else {
+            let cellHeight =  CGFloat(max(0, myLuckyNumbers.count )) * CGFloat(40 + 10.scale) + 0.scale
+            myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+        }
+        myLuckyNumbersCollectionViewHeghitConstraint.isActive = true
+        setNeedsLayout()
         
         
     }
     
-    private func formatToMillions(_ value: String) -> String {
-        guard let number = Double(value.filter { "0123456789.".contains($0) }) else {
-            return value
-        }
-        
-        let million = number / 1_000_000
-        return String(format: "$%.0f M.", million)
-    }
-    func doesURLContain(_ urlString: String, word: String) -> Bool {
-        return urlString.lowercased().contains(word)
-    }
 }
 
 // MARK: - Setup Methods
@@ -197,6 +201,8 @@ private extension PastGameCell {
     }
     
     func setupLayoutConstraints() {
+        myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
+      
         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
@@ -222,7 +228,7 @@ private extension PastGameCell {
             winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
             // Winning Numbers Title Label
-            winningNumbersTitleLabel.topAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 20.scale),
+            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 40.scale),
             winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             
@@ -236,10 +242,10 @@ private extension PastGameCell {
             myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
             myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
+            myLuckyNumbersCollectionViewHeghitConstraint  ,
             
             // My Lucky Numbers Title Label
-            myLuckyNumbersTitleLabel.topAnchor.constraint(equalTo: myLuckyNumbersCollectionView.bottomAnchor, constant: 25.scale),
+            myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.scale),
             myLuckyNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
         ])
@@ -247,7 +253,15 @@ private extension PastGameCell {
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
-extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegate {
+extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if collectionView == winningNumbersCollectionView {
+            return UIEdgeInsets(top: 0.scale, left: 0, bottom: 0.scale, right: 0)
+        } else {
+            return UIEdgeInsets(top: 0.scale, left: 0, bottom: 10.scale, right: 0)
+        }
+        // Adjust insets as needed
+    }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == winningNumbersCollectionView {
             return winningNumbers.count ?? 0 // Using the first set of numbers for simplicity
@@ -298,14 +312,41 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegate {
         if comparisonArray.count == 0 {
             return
             
-        } 
-        let lastIndex = comparisonArray[indexPath.section].count - 1
+        }
+//        let lastIndex = comparisonArray[indexPath.section].count - 1
+//
+//        if indexPath.item == lastIndex {
+//            cell.backgroundColor = Appearance.main100
+//            cell.setNumberLabelColor(Appearance.mono100)
+//        } else {
+//            cell.setNumberLabelColor(Appearance.mono200)
+//        }
+    }
+}
 
-        if indexPath.item == lastIndex {
-            cell.backgroundColor = Appearance.main100
-            cell.setNumberLabelColor(Appearance.mono100)
-        } else {
-            cell.setNumberLabelColor(Appearance.mono200)
+extension PastGameCell {
+    private func formatToMillions(_ value: String) -> String {
+        guard let number = Double(value.filter { "0123456789.".contains($0) }) else {
+            return value
+        }
+        
+        let million = number / 1_000_000
+        return String(format: "$%.0f M.", million)
+    }
+    func doesURLContain(_ urlString: String, word: String) -> Bool {
+        return urlString.lowercased().contains(word)
+    }
+}
+extension UIView {
+    func disableAllConstraints() {
+        var viewsToDisable: [UIView] = [self]
+        var index = 0
+        
+        while index < viewsToDisable.count {
+            let currentView = viewsToDisable[index]
+            viewsToDisable += currentView.subviews
+            currentView.constraints.forEach { $0.isActive = false }
+            index += 1
         }
     }
 }

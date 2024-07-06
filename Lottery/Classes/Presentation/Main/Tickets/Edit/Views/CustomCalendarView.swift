@@ -271,10 +271,24 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         let range = calendar.range(of: .day, in: .month, for: currentMonth)!
         let numDays = range.count
         
-        if indexPath.item >= firstWeekday && indexPath.item < numDays + firstWeekday {
-            let day = indexPath.item - firstWeekday + 1
+        if let cell = collectionView.cellForItem(at: indexPath) as? DateCell, let dayText = cell.dateLabel.text, let day = Int(dayText) {
             var dateComponents = calendar.dateComponents([.year, .month], from: currentMonth)
-            dateComponents.day = day
+            
+            if indexPath.item < firstWeekday {
+                // Date from the previous month
+                let previousMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth)!
+                dateComponents = calendar.dateComponents([.year, .month], from: previousMonth)
+                dateComponents.day = day
+            } else if indexPath.item >= firstWeekday && indexPath.item < numDays + firstWeekday {
+                // Date from the current month
+                dateComponents.day = day
+            } else {
+                // Date from the next month
+                let nextMonth = calendar.date(byAdding: .month, value: 1, to: currentMonth)!
+                dateComponents = calendar.dateComponents([.year, .month], from: nextMonth)
+                dateComponents.day = day
+            }
+            
             if let date = calendar.date(from: dateComponents) {
                 selectedDate = date
                 collectionView.reloadData() // Update the selection

@@ -65,6 +65,7 @@ private extension DrawsViewController {
         
         segmentedControl.didTapSegment = { [weak self] index in
             self?.segmentedControlChanged(index: index)
+            self?.fetchStateAndGames()
         }
         
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
@@ -151,7 +152,7 @@ extension DrawsViewController {
                 if myLuckyNumbers.isEmpty {
                     cellHeight = 150.scale
                 } else {
-                    cellHeight = 280.scale + CGFloat(max(0, myLuckyNumbers.count - 1)) * CGFloat(55.scale)
+                    cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 10.scale) + 100.scale
                 }
             }
         }
@@ -304,7 +305,7 @@ private extension DrawsViewController {
                 switch result {
                 case .success(let games):
                     self?.pastDraws = games
-                    delay(0.05) {
+                    delay(0.09) {
                         self?.pastDrawsCollectionView.reloadData()
                     }
                 case .failure(let error):
