@@ -35,7 +35,10 @@ extension GamesManager: GamesManagerProtocol {
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             
-            self?.operations.removeValue(forKey: operationId)
+            guard let strongSelf = self else { return }
+               
+               strongSelf.operations.removeValue(forKey: operationId)
+            
             
             if let error = error {
                 completion(.failure(error))
@@ -90,7 +93,9 @@ extension GamesManager: GamesManagerProtocol {
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             
-            self?.operations.removeValue(forKey: operationId)
+            guard let strongSelf = self else { return }
+               
+               strongSelf.operations.removeValue(forKey: operationId)
             
             
             if let error = error {
@@ -137,8 +142,12 @@ extension GamesManager: GamesManagerProtocol {
                    
                     if let resultDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                        let success = resultDict["result"] as? Bool {
-                        self?.operations.removeValue(forKey: operationId)
+                        guard let strongSelf = self else { return }
+                           
+                           strongSelf.operations.removeValue(forKey: operationId)
+                        
                         completion(.success(success))
+                        
                     } else {
                         completion(.failure(ContentError(.notContent)))
                     }

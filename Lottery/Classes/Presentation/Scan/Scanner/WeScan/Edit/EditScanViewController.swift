@@ -13,7 +13,7 @@ import UIKit
 final class EditScanViewController: UIViewController, UIGestureRecognizerDelegate {
     var stateId: Int!
     var lotteryId: Int!
-    var keepButton: UIButton!
+    var continueButton: UIButton!
     var retakeButton: UIButton!
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -63,7 +63,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         view.backgroundColor = .red
         view.layer.cornerRadius = 20.scale
         view.layer.masksToBounds = true
-        view.frame = CGRect(x: 20.scale, y: 150.scale, width: 330.5.scale, height: 506.scale)
+        view.frame = CGRect(x: 20.scale, y: ScreenSize.isIphoneXFamily ? 150.scale : 90.scale, width: 330.5.scale, height: 506.scale)
         
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -111,23 +111,23 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     }
 
     private func setupButtons() {
-        keepButton = UIButton(type: .system)
-        keepButton.setTitle("EditScanViewController.ContinueButton".localized, for: .normal)
-        keepButton.backgroundColor = Appearance.main100
-        keepButton.setTitleColor(Appearance.mono100, for: .normal)
-        keepButton.titleLabel?.font = Fonts.Inter.bold(size: 17.scale)
-        keepButton.layer.cornerRadius = 21.scale
-        keepButton.clipsToBounds = true
-        keepButton.translatesAutoresizingMaskIntoConstraints = false
-        keepButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
-        view.addSubview(keepButton)
+        continueButton = UIButton(type: .system)
+        continueButton.setTitle("EditScanViewController.ContinueButton".localized, for: .normal)
+        continueButton.backgroundColor = Appearance.main100
+        continueButton.setTitleColor(Appearance.mono100, for: .normal)
+        continueButton.titleLabel?.font = Fonts.Inter.bold(size: 17.scale)
+        continueButton.layer.cornerRadius =  ScreenSize.isIphoneXFamily ? 21.scale : 17.5.scale
+        continueButton.clipsToBounds = true
+        continueButton.translatesAutoresizingMaskIntoConstraints = false
+        continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
+        view.addSubview(continueButton)
         
         retakeButton = UIButton(type: .system)
         retakeButton.setTitle("EditScanViewController.RetakeButton".localized, for: .normal)
         retakeButton.backgroundColor = Appearance.mono100
         retakeButton.setTitleColor(Appearance.mono200, for: .normal)
         retakeButton.titleLabel?.font = Fonts.Inter.bold(size: 17.scale)
-        retakeButton.layer.cornerRadius = 21.scale
+        retakeButton.layer.cornerRadius = ScreenSize.isIphoneXFamily ? 21.scale : 17.5.scale
         retakeButton.clipsToBounds = true
         retakeButton.translatesAutoresizingMaskIntoConstraints = false
         retakeButton.addTarget(self, action: #selector(retakeButtonTapped), for: .touchUpInside)
@@ -244,17 +244,17 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             maskView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? 129.scale : 129.scale.scale),
             maskView.widthAnchor.constraint(equalToConstant: 300.scale),
             maskView.heightAnchor.constraint(equalToConstant: 400.scale),
-            keepButton.bottomAnchor.constraint(equalTo: retakeButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -10.scale : -5.scale),
-            keepButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 40.scale),
-            keepButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: ScreenSize.isIphoneXFamily ? -20.scale : -40.scale),
-            keepButton.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 44.scale : 50.scale),
-            retakeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -40.scale : -10.scale),
+            continueButton.bottomAnchor.constraint(equalTo: retakeButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -10.scale : -5.scale),
+            continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 40.scale),
+            continueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: ScreenSize.isIphoneXFamily ? -20.scale : -40.scale),
+            continueButton.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 44.scale : 35.scale),
+            retakeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -40.scale : -15.scale),
             retakeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 40.scale),
             retakeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: ScreenSize.isIphoneXFamily ? -20.scale : -40.scale),
-            retakeButton.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 44.scale : 30.scale),
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -25.scale),
+            retakeButton.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 44.scale : 35.scale),
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -22.scale),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -25.scale),
+            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -22.scale),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
 
@@ -263,7 +263,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         NSLayoutConstraint.activate([
             quadView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            quadView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -25.scale ),
+            quadView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -22.scale ),
             quadViewWidthConstraint,
             quadViewHeightConstraint
         ])
@@ -343,6 +343,6 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     }
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return touch.view != keepButton && touch.view != retakeButton
+        return touch.view != continueButton && touch.view != retakeButton
     }
 }
