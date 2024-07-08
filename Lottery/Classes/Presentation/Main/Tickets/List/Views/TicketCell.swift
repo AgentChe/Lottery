@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
 }
@@ -51,7 +52,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     private let editButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Edit ticket", for: .normal)
+        button.setTitle("TicketCell.EditTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 22.scale // Rounded corners, half of height
@@ -60,7 +61,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return button
     }()
     
-     var numbersCollectionView: UICollectionView = {
+    var numbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 6.scale
@@ -148,9 +149,6 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             editButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
             editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
         ])
-      
-           
-        
     }
     
     func configure(with ticket: Ticket) {
@@ -160,7 +158,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         formatter.dateStyle = .medium
         
         // Compare dates and set the title accordingly
-        titleLabel.text = ticketDate > now ? "NEXT DRAW" : "PAST DRAW"
+        titleLabel.text = ticketDate > now ? "TicketCell.NextDraw".localized : "TicketCell.PastDraw".localized
         dateLabel.text = formatter.string(from: ticketDate)
         
         // Update numbers array for the collection view
@@ -206,7 +204,6 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         }
         self.layer.addSublayer(borderLayer)
     }
-    
     
     // MARK: - UICollectionViewDataSource Methods
     
@@ -255,7 +252,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
 }
 
 extension TicketCell {
-     func createCustomShapeLayer() -> CAShapeLayer {
+    func createCustomShapeLayer() -> CAShapeLayer {
         let layer = CAShapeLayer()
         
         // Create a Bezier path resembling the ticket shape with 32.scale circular cutouts
@@ -299,7 +296,7 @@ extension TicketCell {
         return layer
     }
     
-     func createBorderLayer() -> CAShapeLayer {
+    func createBorderLayer() -> CAShapeLayer {
         let layer = CAShapeLayer()
         
         // Use the same path as the custom shape layer

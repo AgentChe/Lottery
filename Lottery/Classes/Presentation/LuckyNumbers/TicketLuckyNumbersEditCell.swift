@@ -5,12 +5,9 @@
 //  Created by Niiaz Khasanov on 6/27/24.
 //
 
-
-
 import UIKit
 
-
-class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
+class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
     
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
@@ -35,7 +32,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
     // Plus Button Declaration
     private let plusButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "EditTickets.PlusButtonImage"), for: .normal) // Replace with your image asset name
+        button.setImage(UIImage(named: "TicketLuckyNumbersEditCell.PlusButtonImage".localized), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 25.scale // Half the height and width for a circular button
         button.layer.masksToBounds = true
@@ -56,9 +53,9 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
-        
         return collectionView
     }()
+    
     var collectionViewHeightConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect) {
@@ -83,24 +80,21 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
     
     func configure(ticket: Ticket, game: Game, lotteries: [Lottery]) {
         self.ticket = ticket
-      //  self.numbersStringArray = numbersStringArray
-        
         logoImageView.image = UIImage(named: "placeholderImage")
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if game.myLuckyNumbers?.count == 0 {
-                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                        self.numbersStringArray = [["","","",""]]
+                    if doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                        self.numbersStringArray = [["", "", "", ""]]
                     } else {
-                        self.numbersStringArray = [["","","","","",""]]
+                        self.numbersStringArray = [["", "", "", "", "", ""]]
                     }
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
                         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
-                        
                     }
-                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                    if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
                         logoIamgeLeadingConstraint.isActive = false
                         logoIamgeWidthConstraint.isActive = false
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
@@ -110,13 +104,12 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
                         setNeedsLayout()
                     }
                 } else {
-                    numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? []) // [["01","01","01","01"]]
+                    numbersStringArray = convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
                         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
-                        
                     }
-                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                    if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
                         logoIamgeLeadingConstraint.isActive = false
                         logoIamgeWidthConstraint.isActive = false
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
@@ -136,7 +129,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
         dateLabel.text = formattedDate.uppercased()
         
-        pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
+        pencilEditImageView.image = UIImage(named: "TicketLuckyNumbersEditCell.PencilImage".localized)
         collectionViewHeightConstraint.isActive = false
         
         // Get the number of cells in the last row
@@ -145,7 +138,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
@@ -153,11 +146,12 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
-            }
+        }
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
         setNeedsLayout()
     }
+    
     func convertIntArrayToStringArray(_ intArray: [[Int]]) -> [[String]] {
         return intArray.map { $0.map { String($0) } }
     }
@@ -180,7 +174,7 @@ private extension TicketLuckyNumbersEditCell {
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
@@ -188,14 +182,13 @@ private extension TicketLuckyNumbersEditCell {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
-            }
+        }
         collectionViewHeightConstraint.isActive = true
 
         collectionView.reloadData()
     
         delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
     }
-
     
     func setupUI() {
         backgroundColor = Appearance.mono100
@@ -323,7 +316,6 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
         return numbersStringArray.count
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Add 1 to the count to include the RemoveCell
         if let numbersCount = numbersStringArray[safe: section]?.count {
@@ -366,42 +358,43 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     }
     
     func removeItem(at indexPath: IndexPath) {
-          // Check if it's the only row left
-          if numbersStringArray.count == 1 && indexPath.section == 0 {
-              presentDeleteConfirmationAlert()
-          } else {
-              // Normal removal process
-              numbersStringArray.remove(at: indexPath.section)
-              
-              collectionViewHeightConstraint.isActive = false
-              // Get the number of cells in the last row
-              if let firstNumberArray = numbersStringArray.first {
-                  let numberOfCells = firstNumberArray.count + 1
-                  // Calculate the available width based on the given constraints
-                  let totalWidth: CGFloat = 343.scale
-                  let sideMargins: CGFloat = 40.scale
-                  let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
-                  
-                  // Calculate the width for each cell
-                  let availableWidth = totalWidth - sideMargins - cellSpacing
-                  let cellWidth = availableWidth / CGFloat(numberOfCells)
-                  collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
-              } else {
+        // Check if it's the only row left
+        if numbersStringArray.count == 1 && indexPath.section == 0 {
+            presentDeleteConfirmationAlert()
+        } else {
+            // Normal removal process
+            numbersStringArray.remove(at: indexPath.section)
+            
+            collectionViewHeightConstraint.isActive = false
+            // Get the number of cells in the last row
+            if let firstNumberArray = numbersStringArray.first {
+                let numberOfCells = firstNumberArray.count + 1
+                // Calculate the available width based on the given constraints
+                let totalWidth: CGFloat = 343.scale
+                let sideMargins: CGFloat = 40.scale
+                let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
+                
+                // Calculate the width for each cell
+                let availableWidth = totalWidth - sideMargins - cellSpacing
+                let cellWidth = availableWidth / CGFloat(numberOfCells)
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+            } else {
                 collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
-                }
-              collectionViewHeightConstraint.isActive = true
-              
-              collectionView.reloadData()
-          }
-      }
+            }
+            collectionViewHeightConstraint.isActive = true
+            
+            collectionView.reloadData()
+        }
+    }
+    
     private func presentDeleteConfirmationAlert() {
         let alertVC = LuckyNumbersAlertViewController()
         
         alertVC.onConfirmDelete = { [weak self] in
             guard let self = self else { return }
             // Code to remove the ticket here
-            parentVC?.numbersStringArray = []
-            parentVC?.removeTicketButtonTapped()
+            self.parentVC?.numbersStringArray = []
+            self.parentVC?.removeTicketButtonTapped()
         }
         
         alertVC.onCancel = {
@@ -420,6 +413,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
         numbersStringArray.removeAll()
         collectionView.reloadData()
     }
+    
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Default size for the cell
@@ -437,14 +431,14 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
         // Calculate the available width based on the given constraints
         let totalWidth: CGFloat = 343.scale
         let sideMargins: CGFloat = 40.scale
-        let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+        let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
         
         // Calculate the width for each cell
         let availableWidth = totalWidth - sideMargins - cellSpacing
         let cellWidth = availableWidth / CGFloat(numberOfCells)
         
         // Return the size for the cell
-        return CGSize(width:cellWidth , height: cellWidth)
+        return CGSize(width: cellWidth, height: cellWidth)
     }
 }
 
@@ -454,10 +448,9 @@ extension TicketLuckyNumbersEditCell: EditNumberCellDelegate {
               indexPath.item < numbersStringArray[indexPath.section].count else { return }
         
         numbersStringArray[indexPath.section][indexPath.item] = number
-     
     }
+    
     func doesURLContain(_ urlString: String, word: String) -> Bool {
         return urlString.lowercased().contains(word)
     }
 }
-

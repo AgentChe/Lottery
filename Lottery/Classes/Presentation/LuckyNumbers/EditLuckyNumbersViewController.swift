@@ -5,7 +5,6 @@
 //  Created by Niiaz Khasanov on 6/26/24.
 //
 
-
 import UIKit
 
 class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -21,7 +20,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save", for: .normal)
+        button.setTitle("EditLuckyNumbersViewController.SaveButton".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -44,12 +43,13 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         self.game = game
         self.lotteries = lotteries
 
-        numbersStringArray =  convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
-
+        numbersStringArray = convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
     }
+    
     func convertIntArrayToStringArray(_ intArray: [[Int]]) -> [[String]] {
         return intArray.map { $0.map { String($0) } }
     }
+    
     // Required initializer for compatibility with storyboards
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -128,33 +128,28 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             switch result {
             case .success(let success):
                 if success {
-                    // Handle success case
-                    print("Lucky numbers added successfully.")
                     DispatchQueue.main.async {
-                       
                         self?.navigationController?.popToRootViewController(animated: true)
                     }
-                    
                 } else {
                     DispatchQueue.main.async {
-                        self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                        self?.showErrorAlert(message: "EditLuckyNumbersViewController.ErrorMessage".localized)
                     }
                 }
-            case .failure(let error):
+            case .failure:
                 DispatchQueue.main.async {
-                    self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                    self?.showErrorAlert(message: "EditLuckyNumbersViewController.ErrorMessage".localized)
                 }
             }
         }
     }
    
     func showErrorAlert(message: String) {
-        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        let alertController = UIAlertController(title: "EditLuckyNumbersViewController.ErrorTitle".localized, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK".localized, style: .default, handler: nil)
         alertController.addAction(okAction)
         self.present(alertController, animated: true, completion: nil)
     }
-    
     
     private func setupNavigationBarTitle() {
         guard let backButtonImage = UIImage(named: "LuckyNumbers.Header") else { return }
@@ -207,7 +202,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
@@ -303,21 +298,17 @@ extension EditLuckyNumbersViewController {
             switch result {
             case .success(let success):
                 if success {
-                    // Handle success case
-                    print("Lucky numbers added successfully.")
                     DispatchQueue.main.async {
-                       
                         self?.navigationController?.popViewController(animated: true)
                     }
-                    
                 } else {
                     DispatchQueue.main.async {
-                        self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                        self?.showErrorAlert(message: "EditLuckyNumbersViewController.ErrorMessage".localized)
                     }
                 }
-            case .failure(let error):
+            case .failure:
                 DispatchQueue.main.async {
-                    self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                    self?.showErrorAlert(message: "EditLuckyNumbersViewController.ErrorMessage".localized)
                 }
             }
         }

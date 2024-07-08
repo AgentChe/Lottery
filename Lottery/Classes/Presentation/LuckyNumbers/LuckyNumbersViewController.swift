@@ -4,6 +4,7 @@
 //
 //  Created by Niiaz Khasanov on 6/26/24.
 //
+
 import UIKit
 
 final class LuckyNumbersViewController: UIViewController {
@@ -22,7 +23,7 @@ final class LuckyNumbersViewController: UIViewController {
     
     private let firstLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add your lucky numbers"
+        label.text = "LuckyNumbersViewController.AddLuckyNumbers".localized
         label.textColor = Appearance.mono200
         label.font = Fonts.Inter.bold(size: 16.scale)
         label.textAlignment = .center
@@ -35,7 +36,7 @@ final class LuckyNumbersViewController: UIViewController {
     
     private let secondLabel: UILabel = {
         let label = UILabel()
-        label.text = "You haven’t added any lucky numbers yet"
+        label.text = "LuckyNumbersViewController.NoLuckyNumbers".localized
         label.textColor = Appearance.main300
         label.font = Fonts.Inter.regular(size: 14.scale)
         label.textAlignment = .center
@@ -46,9 +47,10 @@ final class LuckyNumbersViewController: UIViewController {
         label.isHidden = true
         return label
     }()
+    
     private let addLuckyNumbersButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Add lucky numbers", for: .normal)
+        button.setTitle("LuckyNumbersViewController.AddLuckyNumbersButton".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -59,9 +61,10 @@ final class LuckyNumbersViewController: UIViewController {
         button.isHidden = true
         return button
     }()
+    
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Add", for: .normal)
+        button.setTitle("LuckyNumbersViewController.AddButton".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
@@ -103,10 +106,12 @@ final class LuckyNumbersViewController: UIViewController {
         setupViews()
         fetchLotteries(for: nil)
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchLotteries(for: nil)
     }
+    
     func fetchLotteries(for stateId: Int?) {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -114,8 +119,8 @@ final class LuckyNumbersViewController: UIViewController {
                 case .success(let lotteries):
                     self?.lotteries = lotteries
                     self?.fetchNextGames(for: stateId ?? nil)
-                case .failure(let error):
-                    print("Failed to fetch lotteries: \(error)")
+                case .failure:
+                    print("LuckyNumbersViewController.ErrorFetchLotteries".localized)
                 }
             }
         }
@@ -127,16 +132,16 @@ final class LuckyNumbersViewController: UIViewController {
                 switch result {
                 case .success(let games):
                     self?.nextDraws = games.filter { $0.myLuckyNumbers?.isEmpty == false }
-                    self?.nextDrawsCollectionView.isHidden = self?.nextDraws.count == 0 ? true : false
-                    self?.addLuckyNumbersButton.isHidden = self?.nextDraws.count == 0 ? true : false
-                    self?.imageView.isHidden = self?.nextDraws.count == 0 ? false : true
-                    self?.firstLabel.isHidden = self?.nextDraws.count == 0 ? false : true
-                    self?.secondLabel.isHidden = self?.nextDraws.count == 0 ? false : true
-                    self?.addButton.isHidden = self?.nextDraws.count == 0 ? false : true
+                    self?.nextDrawsCollectionView.isHidden = self?.nextDraws.isEmpty ?? true
+                    self?.addLuckyNumbersButton.isHidden = self?.nextDraws.isEmpty ?? true
+                    self?.imageView.isHidden = !(self?.nextDraws.isEmpty ?? false)
+                    self?.firstLabel.isHidden = !(self?.nextDraws.isEmpty ?? false)
+                    self?.secondLabel.isHidden = !(self?.nextDraws.isEmpty ?? false)
+                    self?.addButton.isHidden = !(self?.nextDraws.isEmpty ?? false)
                     self?.nextDrawsCollectionView.reloadData()
-                case .failure(let error):
-                    print("Failed to fetch next games: \(error)")
-                    self?.nextDrawsCollectionView.isHidden =  true
+                case .failure:
+                    print("LuckyNumbersViewController.ErrorFetchGames".localized)
+                    self?.nextDrawsCollectionView.isHidden = true
                     self?.addLuckyNumbersButton.isHidden = true
                     self?.imageView.isHidden = false
                     self?.firstLabel.isHidden = false
@@ -149,7 +154,7 @@ final class LuckyNumbersViewController: UIViewController {
     
     func setupNavigationBarTitle() {
         let titleLabel = UILabel()
-        titleLabel.text = "LUCKY NUMBERS"
+        titleLabel.text = "LuckyNumbersViewController.NavigationTitle".localized
         titleLabel.textColor = Appearance.mono200
         titleLabel.font = Fonts.Inter.bold(size: 20.scale)
         titleLabel.sizeToFit()
@@ -222,7 +227,6 @@ final class LuckyNumbersViewController: UIViewController {
             present(selectTheGameViewController, animated: true, completion: nil)
         }
     }
-    
 }
 
 extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -250,14 +254,13 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-      
         let game = nextDraws[indexPath.item]
         var cellHeight = 210.scale
         if let myLuckyNumbers = game.myLuckyNumbers {
             if myLuckyNumbers.isEmpty {
                 cellHeight = 155.scale
             } else {
-                cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count )) * CGFloat(54.scale)
+                cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(54.scale)
             }
         }
         return CGSize(width: collectionView.frame.width - 32, height: cellHeight)

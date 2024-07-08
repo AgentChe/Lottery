@@ -18,7 +18,7 @@ final class SelectTheGameViewController: UIViewController {
     // Declare UI elements
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Select the game to which you would like to add the lucky number"
+        label.text = "SelectTheGameViewController.Title".localized
         label.textAlignment = .left
         label.numberOfLines = 0
         label.textColor = Appearance.main300
@@ -37,7 +37,7 @@ final class SelectTheGameViewController: UIViewController {
     
     private let selectButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Select", for: .normal)
+        button.setTitle("SelectTheGameViewController.SelectButton".localized, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
         button.backgroundColor = Appearance.lightGrayBorderTicket
         button.layer.cornerRadius = 20.scale
@@ -125,16 +125,16 @@ final class SelectTheGameViewController: UIViewController {
         let selectedGame = nextDraws[selectedIndexPath.row]
         let pictureUrl = URL(string: "https://example.com")
         
-        let numbersStringArray: [[String]] = [["","","","","",""],["","","","","",""]]
-        let ticket : Ticket = Ticket(id: 0,
-                                     lotteryId: selectedGame.lotteryId,
-                                     pictureUrl: pictureUrl,
-                                     date: selectedGame.date,
-                                     numbers: [])
+        let ticket: Ticket = Ticket(id: 0,
+                                    lotteryId: selectedGame.lotteryId,
+                                    pictureUrl: pictureUrl,
+                                    date: selectedGame.date,
+                                    numbers: [])
         
         let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: selectedGame, lotteries: lotteries)
         navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
     }
+    
     func doesURLContain(_ urlString: String, word: String) -> Bool {
         return urlString.lowercased().contains(word)
     }
@@ -159,7 +159,6 @@ extension SelectTheGameViewController: UICollectionViewDataSource, UICollectionV
         dateFormatter.dateFormat = "MMM dd, yyyy" // Use the desired date format
         let dateString = dateFormatter.string(from: date)
         
-    
         cell.configure(with: dateString,
                        game: nextDraws[indexPath.item],
                        lotteries: lotteries)
@@ -203,10 +202,10 @@ extension SelectTheGameViewController {
                     if let stateId = profile.state {
                         self?.fetchLotteries(for: stateId)
                     } else {
-                        print("State ID is not available in profile")
+                        self?.showErrorAlert(message: "SelectTheGameViewController.ErrorStateIdUnavailable".localized)
                     }
-                case .failure(let error):
-                    print("Failed to fetch profile: \(error)")
+                case .failure:
+                    self?.showErrorAlert(message: "SelectTheGameViewController.ErrorFetchProfile".localized)
                 }
             }
         }
@@ -221,8 +220,8 @@ extension SelectTheGameViewController {
                     delay(0.05) {
                         self?.collectionView.reloadData()
                     }
-                case .failure(let error):
-                    print("Failed to fetch next games: \(error)")
+                case .failure:
+                    self?.showErrorAlert(message: "SelectTheGameViewController.ErrorFetchGames".localized)
                 }
             }
         }
@@ -235,10 +234,17 @@ extension SelectTheGameViewController {
                 case .success(let lotteries):
                     self?.lotteries = lotteries
                     self?.fetchNextGames(for: stateId)
-                case .failure(let error):
-                    print("Failed to fetch lotteries: \(error)")
+                case .failure:
+                    self?.showErrorAlert(message: "SelectTheGameViewController.ErrorFetchLotteries".localized)
                 }
             }
         }
+    }
+    
+    private func showErrorAlert(message: String) {
+        let alertController = UIAlertController(title: "Error".localized, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK".localized, style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }

@@ -79,3 +79,133 @@
 "Welcome.BulletPoint1" = "Monitor the main national lottery games";
 "Welcome.BulletPoint2" = "Scan and save your tickets";
 "Welcome.BulletPoint3" = "Get notified when drawings come out";
+
+// MARK: LuckyNumbersAlert
+"LuckyNumbersAlert.Title" = "Are you sure you want to delete these lucky numbers?";
+"LuckyNumbersAlert.DeleteButton" = "Delete";
+"LuckyNumbersAlert.CancelButton" = "Cancel";
+
+// MARK: LuckyNumbersCell
+"LuckyNumbersCell.ErrorTitle" = "Error";
+"LuckyNumbersCell.ErrorMessage" = "Failed to add lucky numbers. Please try again.";
+"LuckyNumbersCell.EditButton" = "Edit button tapped";
+"LuckyNumbersCell.RemoveButton" = "Lucky numbers removed successfully.";
+
+// MARK: SelectGameCell
+"SelectGameCell.DatePlaceholder" = "Date";
+
+// MARK: LuckyNumbersViewController
+"LuckyNumbersViewController.NavigationTitle" = "LUCKY NUMBERS";
+"LuckyNumbersViewController.AddLuckyNumbers" = "Add your lucky numbers";
+"LuckyNumbersViewController.NoLuckyNumbers" = "You haven’t added any lucky numbers yet";
+"LuckyNumbersViewController.AddLuckyNumbersButton" = "Add lucky numbers";
+"LuckyNumbersViewController.AddButton" = "Add";
+"LuckyNumbersViewController.ErrorFetchLotteries" = "Failed to fetch lotteries";
+"LuckyNumbersViewController.ErrorFetchGames" = "Failed to fetch next games";
+
+// MARK: SelectTheGameViewController
+"SelectTheGameViewController.Title" = "Select the game to which you would like to add the lucky number";
+"SelectTheGameViewController.SelectButton" = "Select";
+"SelectTheGameViewController.ErrorStateIdUnavailable" = "State ID is not available in profile";
+"SelectTheGameViewController.ErrorFetchProfile" = "Failed to fetch profile";
+"SelectTheGameViewController.ErrorFetchGames" = "Failed to fetch next games";
+"SelectTheGameViewController.ErrorFetchLotteries" = "Failed to fetch lotteries";
+
+// MARK: EditLuckyNumbersViewController
+"EditLuckyNumbersViewController.SaveButton" = "Save";
+"EditLuckyNumbersViewController.ErrorTitle" = "Error";
+"EditLuckyNumbersViewController.ErrorMessage" = "Failed to add lucky numbers. Please try again.";
+"EditLuckyNumbersViewController.SuccessMessage" = "Lucky numbers added successfully.";
+
+// MARK: TicketLuckyNumbersEditCell
+"TicketLuckyNumbersEditCell.ErrorTitle" = "Error";
+"TicketLuckyNumbersEditCell.ErrorMessage" = "Failed to add lucky numbers. Please try again.";
+"TicketLuckyNumbersEditCell.PlusButtonImage" = "EditTickets.PlusButtonImage";
+"TicketLuckyNumbersEditCell.PencilImage" = "EditTickets.Pencil";
+
+// MARK: TicketsViewController
+"TicketsViewController.MyTickets" = "MY TICKETS";
+"TicketsViewController.ErrorTitle" = "Error";
+"TicketsViewController.ErrorMessage" = "An error occurred. Please try again.";
+
+// MARK: TicketCell
+"TicketCell.NextDraw" = "NEXT DRAW";
+"TicketCell.PastDraw" = "PAST DRAW";
+"TicketCell.EditTicket" = "Edit ticket";
+
+// MARK: CustomCalendarView
+"CustomCalendarView.Save" = "Save";
+"CustomCalendarView.Close" = "Close";
+"CustomCalendarView.Days.Sunday" = "Su";
+"CustomCalendarView.Days.Monday" = "Mo";
+"CustomCalendarView.Days.Tuesday" = "Tu";
+"CustomCalendarView.Days.Wednesday" = "We";
+"CustomCalendarView.Days.Thursday" = "Th";
+"CustomCalendarView.Days.Friday" = "Fr";
+"CustomCalendarView.Days.Saturday" = "Sa";
+
+// MARK: EditTicketViewController
+"EditTicketViewController.SaveTicket" = "Save ticket";
+"EditTicketViewController.DeleteTicket" = "Delete";
+"EditTicketViewController.TicketDeletedSuccessfully.Title" = "Ticket Deleted Successfully";
+"EditTicketViewController.TicketDeletedSuccessfully.Message" = "Your ticket has been successfully deleted.";
+"EditTicketViewController.DeleteFailed.Title" = "Delete Failed";
+"EditTicketViewController.DeleteFailed.Message" = "Unable to delete the ticket. Please try again later. Error: %@";
+"EditTicketViewController.TicketEditedSuccessfully.Title" = "Ticket Edited Successfully";
+"EditTicketViewController.TicketEditedSuccessfully.Message" = "Your ticket has been successfully edited. You can find your edited ticket in the Tickets section.";
+"EditTicketViewController.UpdateFailed.Title" = "Update Failed";
+"EditTicketViewController.UpdateFailed.Message" = "Unable to update the ticket. Please try again later. Error: %@";
+
+// MARK: CustomAlertViewController
+"CustomAlertViewController.Title" = "Are you sure you want to delete the ticket?";
+"CustomAlertViewController.DeleteButton" = "Delete";
+"CustomAlertViewController.CancelButton" = "Cancel";
+
+// MARK: DrawsViewController
+"DrawsViewController.AllGamesTitle" = "ALL GAMES";
+"DrawsViewController.NextDraws" = "Next Draws";
+"DrawsViewController.PastDraws" = "Past Draws";
+
+// MARK: PastGameCell
+"PastGameCell.WinningNumbers" = "WINNING NUMBERS";
+"PastGameCell.MyLuckyNumbers" = "MY LUCKY NUMBERS";
+
+// MARK: AddScanTicketViewController
+"AddScanTicketViewController.SaveTicket" = "Save ticket";
+"AddScanTicketViewController.UpdateFailed.Title" = "Update Failed";
+"AddScanTicketViewController.UpdateFailed.Message" = "Unable to update the ticket. Please try again later. Error: %@";
+"AddScanTicketViewController.Error" = "Error";
+"AddScanTicketViewController.ErrorMessage" = "Unable to update the ticket. Please try again later. Error: %@";
+"AddScanTicketViewController.CustomBackButtonImage" = "Scan.AddTicket";
+"AddScanTicketViewController.NavigationTitle" = "LuckyNumbers.Header";
+
+// MARK: ScanTicketRecongnizeDigitsDelegate
+"ScanTicketRecongnizeDigitsDelegate.RecognitionError.Title" = "Recognition Error";
+"ScanTicketRecongnizeDigitsDelegate.RecognitionError.Message" = "An error occurred during the recognition process. Please try again.";
+"ScanTicketRecongnizeDigitsDelegate.TryAgain" = "Try Again";
+
+// MARK: EditScanViewController
+"EditScanViewController.Title" = "Edit Scan";
+"EditScanViewController.NextButton" = "Next";
+"EditScanViewController.CancelButton" = "Cancel";
+"EditScanViewController.ContinueButton" = "Continue";
+"EditScanViewController.RetakeButton" = "Retake photo";
+"EditScanViewController.RecognitionError.Title" = "Recognition Error";
+"EditScanViewController.RecognitionError.Message" = "An error occurred during the recognition process. Please try again.";
+
+// MARK: ScanMenuViewController
+"ScanMenuViewController.ScanTicketButton" = "Scan Ticket";
+"ScanMenuViewController.AddTicketManuallyButton" = "Add ticket manually";
+"ScanMenuViewController.CameraAccessNeededTitle" = "Camera Access Needed";
+"ScanMenuViewController.CameraAccessNeededMessage" = "Please allow camera access in Settings to use this feature.";
+"ScanMenuViewController.OpenSettingsButton" = "Open Settings";
+"ScanMenuViewController.CancelButton" = "Cancel";
+
+// MARK: CheckTicketViewController
+"CheckTicketViewController.SaveTicketButton" = "Save ticket";
+"CheckTicketViewController.RescanButton" = "Rescan";
+"CheckTicketViewController.UpdateFailedTitle" = "Update Failed";
+"CheckTicketViewController.UpdateFailedMessage" = "Unable to update the ticket. Please try again later. Error: %@";
+"CheckTicketViewController.TicketAddedSuccessfullyTitle" = "Ticket added successfully.";
+"CheckTicketViewController.TicketAddedSuccessfullyMessage" = "You can find your ticket in Tickets.";
+"CheckTicketViewController.OKButton" = "OK";

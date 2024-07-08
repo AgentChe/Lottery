@@ -6,7 +6,9 @@
 //
 
 
+
 import UIKit
+
 
 class LuckyNumbersAlertViewController: UIViewController {
 
@@ -33,7 +35,7 @@ class LuckyNumbersAlertViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Are you sure you want to delete these lucky numbers?"
+        label.text = "Are you sure you want to delete these lucky numbers?".localized
         label.font = Fonts.Inter.bold(size: 16.scale) // Using the custom font
         label.textColor = .black
         label.textAlignment = .center
@@ -44,7 +46,7 @@ class LuckyNumbersAlertViewController: UIViewController {
     
     private let deleteButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Delete", for: .normal)
+        button.setTitle("Delete".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.semiBold(size: 16.scale) // Using the custom font
@@ -56,7 +58,7 @@ class LuckyNumbersAlertViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Cancel", for: .normal)
+        button.setTitle("Cancel".localized, for: .normal)
         button.backgroundColor = .clear
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = Fonts.Inter.regular(size: 16.scale) // Using the custom font

@@ -20,7 +20,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save ticket", for: .normal)
+        button.setTitle("AddScanTicketViewController.SaveTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -99,7 +99,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         let backButton = UIButton(type: .custom)
         
         // Set the custom image for the button
-        if let image = UIImage(named: "Scan.AddTicket") {
+        if let image = UIImage(named: "AddScanTicketViewController.CustomBackButtonImage".localized) {
             backButton.setImage(image, for: .normal)
         }
         
@@ -170,17 +170,6 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                     print("Ticket added successfully: \(updatedTicket)")
                     DispatchQueue.main.async {
                         self.navigationController?.popToRootViewController(animated: true)
-//                        let alert = UIAlertController(
-//                            title: "Ticket added succesfully.",
-//                            message: "You can find your ticket in Tickets.",
-//                            preferredStyle: .alert
-//                        )
-//                        
-//                        // Add an OK button to the alert
-//                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                        
-//                        // Present the alert
-//                        self.present(alert, animated: true, completion: nil)
                     }
                     
                 case .failure(let error):
@@ -189,8 +178,8 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                     
                     DispatchQueue.main.async {
                         let alert = UIAlertController(
-                            title: "Update Failed",
-                            message: "Unable to update the ticket. Please try again later. Error: \(error.localizedDescription)",
+                            title: "AddScanTicketViewController.UpdateFailed.Title".localized,
+                            message: String(format: "AddScanTicketViewController.UpdateFailed.Message".localized, error.localizedDescription),
                             preferredStyle: .alert
                         )
                         
@@ -206,7 +195,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     }
    
     func showErrorAlert(message: String) {
-        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "AddScanTicketViewController.Error".localized, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(okAction)
         self.present(alertController, animated: true, completion: nil)
@@ -214,7 +203,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     
     
     private func setupNavigationBarTitle() {
-        guard let backButtonImage = UIImage(named: "LuckyNumbers.Header") else { return }
+        guard let backButtonImage = UIImage(named: "AddScanTicketViewController.NavigationTitle".localized) else { return }
         
         let backButton = UIButton(type: .custom)
         backButton.setImage(backButtonImage, for: .normal)
@@ -248,7 +237,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanAddTicketNumbersEditCell", for: indexPath) as! ScanAddTicketNumbersEditCell
         if let ticket = self.ticket, let lottery = self.lottery {
             
-            cell.configure(ticket: ticket, lottery: lottery, lotteries: lotteries, numbersStringArray:numbersStringArray)
+            cell.configure(ticket: ticket, lottery: lottery, lotteries: lotteries, numbersStringArray: numbersStringArray)
             
         }
         cell.delegate = self
@@ -266,17 +255,17 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale)
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale)
         }
     }
     

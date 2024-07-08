@@ -20,7 +20,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save ticket", for: .normal)
+        button.setTitle("EditTicketViewController.SaveTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -32,7 +32,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     }()
     private let deleteTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Delete", for: .normal)
+        button.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
         button.backgroundColor = Appearance.mono100
         button.setTitleColor(Appearance.mono200, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -150,8 +150,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                     let alert = UIAlertController(
-                        title: "Ticket Deleted Successfully",
-                        message: "Your ticket has been successfully deleted.",
+                        title: "EditTicketViewController.TicketDeletedSuccessfully.Title".localized,
+                        message: "EditTicketViewController.TicketDeletedSuccessfully.Message".localized,
                         preferredStyle: .alert
                     )
                     
@@ -168,8 +168,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 
                 DispatchQueue.main.async {
                     let alert = UIAlertController(
-                        title: "Delete Failed",
-                        message: "Unable to delete the ticket. Please try again later. Error: \(error.localizedDescription)",
+                        title: "EditTicketViewController.DeleteFailed.Title".localized,
+                        message: String(format: "EditTicketViewController.DeleteFailed.Message".localized, error.localizedDescription),
                         preferredStyle: .alert
                     )
                     
@@ -220,8 +220,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                     let alert = UIAlertController(
-                           title: "Ticket Edited Successfully",
-                           message: "Your ticket has been successfully edited. You can find your edited ticket in the Tickets section.",
+                           title: "EditTicketViewController.TicketEditedSuccessfully.Title".localized,
+                           message: "EditTicketViewController.TicketEditedSuccessfully.Message".localized,
                            preferredStyle: .alert
                        )
                     
@@ -240,8 +240,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 
                 DispatchQueue.main.async {
                     let alert = UIAlertController(
-                        title: "Update Failed",
-                        message: "Unable to update the ticket. Please try again later. Error: \(error.localizedDescription)",
+                        title: "EditTicketViewController.UpdateFailed.Title".localized,
+                        message: String(format: "EditTicketViewController.UpdateFailed.Message".localized, error.localizedDescription),
                         preferredStyle: .alert
                     )
                     

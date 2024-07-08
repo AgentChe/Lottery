@@ -81,7 +81,15 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         addSubview(nextButton)
 
         // Setup days of the week
-        let days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+        let days = [
+            "CustomCalendarView.Days.Sunday".localized,
+            "CustomCalendarView.Days.Monday".localized,
+            "CustomCalendarView.Days.Tuesday".localized,
+            "CustomCalendarView.Days.Wednesday".localized,
+            "CustomCalendarView.Days.Thursday".localized,
+            "CustomCalendarView.Days.Friday".localized,
+            "CustomCalendarView.Days.Saturday".localized
+        ]
         for day in days {
             let label = UILabel()
             label.text = day
@@ -99,7 +107,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         addSubview(collectionView)
 
         // Setup buttons
-        saveButton.setTitle("Save", for: .normal)
+        saveButton.setTitle("CustomCalendarView.Save".localized, for: .normal)
         saveButton.backgroundColor = Appearance.main100 // Custom red color
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.layer.cornerRadius = 22.scale // Half the height for rounded effect
@@ -108,7 +116,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         addSubview(saveButton)
 
-        closeButton.setTitle("Close", for: .normal)
+        closeButton.setTitle("CustomCalendarView.Close".localized, for: .normal)
         closeButton.backgroundColor = .clear
         closeButton.setTitleColor(Appearance.mono200, for: .normal) // Dark color for close button text
         closeButton.layer.borderWidth = 1.scale
@@ -119,7 +127,6 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         addSubview(closeButton)
     }
-
 
     private func setupConstraints() {
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -166,7 +173,6 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
             closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16.scale)
         ])
     }
-
 
     private func updateHeader() {
         dateFormatter.dateFormat = "MMMM yyyy"

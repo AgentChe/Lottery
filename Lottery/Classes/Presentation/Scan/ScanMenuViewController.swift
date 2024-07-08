@@ -11,7 +11,7 @@ import AVFoundation
 final class ScanMenuViewController: UIViewController {
     var stateId: Int!
     var lotteryId: Int!
-    var lotteries:[Lottery]!
+    var lotteries: [Lottery]!
     private var contentManager: ContentManagerProtocol = ContentManager()
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -29,7 +29,7 @@ final class ScanMenuViewController: UIViewController {
     private let scanTicketButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Scan Ticket", for: .normal)
+        button.setTitle("ScanMenuViewController.ScanTicketButton".localized, for: .normal)
         button.titleLabel?.font = Fonts.Inter.semiBold(size: 16.scale)
         button.backgroundColor = Appearance.main100
         button.tintColor = Appearance.mono100
@@ -42,9 +42,9 @@ final class ScanMenuViewController: UIViewController {
     private let addTicketButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Add ticket manually", for: .normal)
+        button.setTitle("ScanMenuViewController.AddTicketManuallyButton".localized, for: .normal)
         button.titleLabel?.font = Fonts.Inter.semiBold(size: 16.scale)
-        button.titleLabel?.textColor = .red//Appearance.mono200
+        button.titleLabel?.textColor = Appearance.mono200
         button.backgroundColor = Appearance.mono100
         button.tintColor = Appearance.mono200
         button.layer.cornerRadius = 21.scale
@@ -119,15 +119,11 @@ final class ScanMenuViewController: UIViewController {
     
     // Actions for the buttons
     @objc private func scanTicketButtonTapped() {
-        
         requestCameraPermission()
-        
-        
     }
     
     @objc private func addTicketManuallyButtonTapped() {
         print("Second button tapped")
-        // Add functionality for the second button
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -137,11 +133,13 @@ final class ScanMenuViewController: UIViewController {
                         if lottery.id == self?.lotteryId {
                             let pictureUrl = lottery.logoUrl
                             
-                            let ticket : Ticket = Ticket(id: 0,
-                                                         lotteryId: lottery.id,
-                                                         pictureUrl: pictureUrl,
-                                                         date: Date().timeIntervalSince1970,
-                                                         numbers: [])
+                            let ticket: Ticket = Ticket(
+                                id: 0,
+                                lotteryId: lottery.id,
+                                pictureUrl: pictureUrl,
+                                date: Date().timeIntervalSince1970,
+                                numbers: []
+                            )
                             
                             let addScanTicketVC = AddScanTicketViewController(ticket: ticket, lotteries: lotteries)
                             self?.navigationController?.pushViewController(addScanTicketVC, animated: true)
@@ -152,10 +150,6 @@ final class ScanMenuViewController: UIViewController {
                 }
             }
         }
-        
-        
-        
-        
     }
    
     func requestCameraPermission() {
@@ -163,12 +157,9 @@ final class ScanMenuViewController: UIViewController {
         
         switch cameraAuthorizationStatus {
         case .notDetermined:
-            // The user has not yet been asked for camera access.
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
-                // Ensure UI updates are on the main thread
                 DispatchQueue.main.async {
                     guard let self = self else { return }
-                    
                     if granted {
                         print("Camera access granted.")
                         let scanViewController = ScanViewController()
@@ -177,7 +168,6 @@ final class ScanMenuViewController: UIViewController {
                         if let navigationController = self.navigationController {
                             navigationController.pushViewController(scanViewController, animated: true)
                         } else {
-                            // If not in a navigation controller, present it modally
                             self.present(scanViewController, animated: true, completion: nil)
                         }
                     } else {
@@ -186,44 +176,35 @@ final class ScanMenuViewController: UIViewController {
                 }
             }
         case .restricted, .denied:
-            // The user has previously denied or restricted camera access.
             self.showCameraAccessDeniedAlert()
         case .authorized:
-            // The user has previously granted camera access.
-            print("Camera access already granted.")
-            
             DispatchQueue.main.async {
-                print("Camera access granted.")
                 let scanViewController = ScanViewController()
                 scanViewController.stateId = self.stateId
                 scanViewController.lotteryId = self.lotteryId
                 if let navigationController = self.navigationController {
                     navigationController.pushViewController(scanViewController, animated: true)
                 } else {
-                    // If not in a navigation controller, present it modally
                     self.present(scanViewController, animated: true, completion: nil)
                 }
             }
         @unknown default:
-            // Handle other possible cases, future-proofing.
             fatalError("Unknown camera authorization status.")
         }
     }
     
-    
-    
     func showCameraAccessDeniedAlert() {
         let alert = UIAlertController(
-            title: "Camera Access Needed",
-            message: "Please allow camera access in Settings to use this feature.",
+            title: "ScanMenuViewController.CameraAccessNeededTitle".localized,
+            message: "ScanMenuViewController.CameraAccessNeededMessage".localized,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Open Settings", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.OpenSettingsButton".localized, style: .default, handler: { _ in
             if let appSettings = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
     }

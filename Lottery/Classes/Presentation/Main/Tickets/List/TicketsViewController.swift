@@ -1,4 +1,3 @@
-
 //
 //  TicketsViewController.swift
 //  Lottery
@@ -29,10 +28,6 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     private func setupNavigationBarAppearance() {
-//        navigationController?.navigationBar.barTintColor = Appearance.main400
-//        navigationController?.navigationBar.isTranslucent = false
-//        navigationController?.navigationBar.shadowImage = UIImage()
-//        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         setupNavigationBarTitle()
     }
 
@@ -73,8 +68,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         view.addSubview(scanButton)
     }
-    private func setupNoTicketsImageView() {
 
+    private func setupNoTicketsImageView() {
         noTicketsImageView = UIImageView(image: UIImage(named: "Tickets.NoSavedTickets"))
         noTicketsImageView.translatesAutoresizingMaskIntoConstraints = false
         noTicketsImageView.contentMode = .scaleAspectFit
@@ -95,35 +90,33 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.barTintColor = .clear
-         navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.isTranslucent = true
     }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.barTintColor = .red
         navigationController?.navigationBar.isTranslucent = false
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
-
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
-            
             fetchTickets()
-            
         }
     }
+
     private func setupNavigationBarTitle() {
-   
         let titleLabel = UILabel()
-        titleLabel.text = "MY TICKETS"
+        titleLabel.text = "TicketsViewController.MyTickets".localized
         titleLabel.textColor = Appearance.mono200
         titleLabel.font = Fonts.Inter.bold(size: 20.scale)
         
         titleLabel.sizeToFit()
         
         let leftBarItem = UIBarButtonItem(customView: titleLabel)
-        
         navigationItem.leftBarButtonItem = leftBarItem
         
         if let menuImage = UIImage(named: "Menu") {
@@ -159,7 +152,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                         self?.collectionView.isHidden = true
                         self?.noTicketsImageView.isHidden = false
                     }
-                case .failure(let error):
+                case .failure:
                     if self?.tickets.count != 0 {
                         self?.collectionView.isHidden = false
                         self?.noTicketsImageView.isHidden = true
@@ -167,12 +160,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                         self?.collectionView.isHidden = true
                         self?.noTicketsImageView.isHidden = false
                     }
-                    self?.showError(error)
+                    self?.showError()
                 }
             }
         }
     }
-    
+
     @objc func handleMenuTap() {
         let menuVC = MenuViewController()
         let navController = NavigationController(rootViewController: menuVC)
@@ -180,7 +173,6 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         present(navController, animated: true, completion: nil)
     }
-
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return tickets.count
@@ -191,7 +183,6 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         cell.configure(with: tickets[indexPath.item])
         cell.delegate = self
         cell.numbersCollectionView.reloadData()
-
         cell.setNeedsDisplay()
         return cell
     }
@@ -211,9 +202,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         return CGSize(width: view.frame.width - 20.scale, height: cellHeight)
     }
 
-    func showError(_ error: Error) {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+    func showError() {
+        let alert = UIAlertController(title: "TicketsViewController.ErrorTitle".localized, message: "TicketsViewController.ErrorMessage".localized, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK".localized, style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 
@@ -221,37 +212,30 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     func editButtonTapped(for cell: TicketCell) {
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
         let ticket = tickets[indexPath.item]
-        
         let editVC = EditTicketViewController(ticket: ticket)
-         
         navigationController?.pushViewController(editVC, animated: true)
     }
+
     @objc func scanButtonTapped() {
         let scanOnboardingViewController = ScanOnboardingViewController.make()
         
-        
         // Check if the current view controller is embedded in a navigation controller
         if let navigationController = self.navigationController {
-           
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
             
             if let navigationController = getRootViewController() as? NavigationController,
                let mainViewController = navigationController.viewControllers.first as? MainViewController {
-
                 updateMainViewControllerConstraints(for: mainViewController)
-                
             }
         } else {
             // If not, present the view controller modally as a fallback
             present(scanOnboardingViewController, animated: true, completion: nil)
         }
-            
     }
-    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
+
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView
-        
-  
         
         if mainView.tabViewBottomConstraint?.constant != newConstant {
             // Deactivate and nil the old constraint if it's different

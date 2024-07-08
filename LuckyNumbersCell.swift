@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+
 class LuckyNumbersCell: UICollectionViewCell {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
@@ -81,81 +82,72 @@ class LuckyNumbersCell: UICollectionViewCell {
     }
     
     @objc private func editButtonTapped() {
-        print("Edit button tapped")
+        print("LuckyNumbersCell.EditButton".localized)
         
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
                 
-                let ticket : Ticket = Ticket(id: 0,
-                                             lotteryId: game.lotteryId,
-                                             pictureUrl: lottery.logoUrl,
-                                             date: game.date,
-                                                 numbers: game.myLuckyNumbers ?? [])
+                let ticket: Ticket = Ticket(id: 0,
+                                            lotteryId: game.lotteryId,
+                                            pictureUrl: lottery.logoUrl,
+                                            date: game.date,
+                                            numbers: game.myLuckyNumbers ?? [])
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
                 delegate?.navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
             }
         }
-        
     }
-    
-    
     
     @objc private func removeButtonTapped() {
+        let alertVC = LuckyNumbersAlertViewController()
         
-            let alertVC = LuckyNumbersAlertViewController()
+        alertVC.onConfirmDelete = { [weak self] in
+            guard let self = self else { return }
+            let lotteryId = self.game.lotteryId
+            let date = self.game.date
             
-            alertVC.onConfirmDelete = { [weak self] in
-                guard let self = self else { return }
-                let lotteryId = game.lotteryId
-                let date = game.date
-                
-                let gamesManager = GamesManager()
-                gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: []) { [weak self] result in
-                    switch result {
-                    case .success(let success):
-                        if success {
-                            // Handle success case
-                            print("Lucky numbers removed successfully.")
-                            DispatchQueue.main.async {
-                                self?.delegate?.fetchLotteries(for: nil)
-                            }
-                            
-                        } else {
-                            DispatchQueue.main.async {
-                                self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
-                            }
-                        }
-                    case .failure(let error):
+            let gamesManager = GamesManager()
+            gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: []) { [weak self] result in
+                switch result {
+                case .success(let success):
+                    if success {
+                        // Handle success case
+                        print("LuckyNumbersCell.RemoveButton".localized)
                         DispatchQueue.main.async {
-                            self?.showErrorAlert(message: "Failed to add lucky numbers. Please try again.")
+                            self?.delegate?.fetchLotteries(for: nil)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            self?.showErrorAlert(message: "LuckyNumbersCell.ErrorMessage".localized)
                         }
                     }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self?.showErrorAlert(message: "LuckyNumbersCell.ErrorMessage".localized)
+                    }
                 }
-                
             }
-            
-            alertVC.onCancel = {
-                // Code to handle cancellation (if any)
-            }
-            
-            alertVC.modalPresentationStyle = .overFullScreen
-            alertVC.modalTransitionStyle = .crossDissolve
-            
-            if let parentVC = self.parentViewController {
-                parentVC.present(alertVC, animated: false, completion: nil)
-            }
-
-
+        }
         
+        alertVC.onCancel = {
+            // Code to handle cancellation (if any)
+        }
+        
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        
+        if let parentVC = self.parentViewController {
+            parentVC.present(alertVC, animated: false, completion: nil)
+        }
     }
+    
     func showErrorAlert(message: String) {
-        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        let alertController = UIAlertController(title: "LuckyNumbersCell.ErrorTitle".localized, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK".localized, style: .default, handler: nil)
         alertController.addAction(okAction)
         delegate?.present(alertController, animated: true, completion: nil)
     }
-    
 }
 
 // MARK: - Public Methods
@@ -210,6 +202,7 @@ extension LuckyNumbersCell {
         let million = number / 1_000_000
         return String(format: "$%.0f M.", million)
     }
+    
     func doesURLContain(_ urlString: String, word: String) -> Bool {
         return urlString.lowercased().contains(word)
     }
@@ -289,7 +282,7 @@ private extension LuckyNumbersCell {
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
-extension LuckyNumbersCell: UICollectionViewDataSource , UICollectionViewDelegateFlowLayout{
+extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return myLuckyNumbers.count // Using the first set of numbers for simplicity
     }
@@ -306,9 +299,10 @@ extension LuckyNumbersCell: UICollectionViewDataSource , UICollectionViewDelegat
         
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0.scale,
-                            left :myLuckyNumbers.first?.count == 6 ? 0.scale : 58.scale ,
+                            left: myLuckyNumbers.first?.count == 6 ? 0.scale : 58.scale,
                             bottom: 14.scale,
                             right: myLuckyNumbers.first?.count == 6 ? 0.scale : -58.scale)
     }
@@ -333,7 +327,7 @@ extension LuckyNumbersCell: UICollectionViewDataSource , UICollectionViewDelegat
             }
         }
         if myLuckyNumbers.first?.count == 4 {
-            if indexPath.item == 0 || indexPath.item == 1  {
+            if indexPath.item == 0 || indexPath.item == 1 {
                 cell.backgroundColor = Appearance.main100
                 cell.setNumberLabelColor(Appearance.mono100)
             }

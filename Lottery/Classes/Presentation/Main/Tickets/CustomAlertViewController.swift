@@ -32,7 +32,7 @@ class CustomAlertViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Are you sure you want to delete the ticket?"
+        label.text = "CustomAlertViewController.Title".localized
         label.font = Fonts.Inter.bold(size: 16.scale) // Using the custom font
         label.textColor = .black
         label.textAlignment = .center
@@ -43,7 +43,7 @@ class CustomAlertViewController: UIViewController {
     
     private let deleteButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Delete", for: .normal)
+        button.setTitle("CustomAlertViewController.DeleteButton".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.semiBold(size: 16.scale) // Using the custom font
@@ -55,7 +55,7 @@ class CustomAlertViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Cancel", for: .normal)
+        button.setTitle("CustomAlertViewController.CancelButton".localized, for: .normal)
         button.backgroundColor = .clear
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = Fonts.Inter.regular(size: 16.scale) // Using the custom font

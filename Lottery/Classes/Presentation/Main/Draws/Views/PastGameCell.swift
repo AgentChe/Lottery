@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+
 class PastGameCell: UICollectionViewCell {
     
     private let logoImageView = UIImageView()
@@ -16,14 +17,14 @@ class PastGameCell: UICollectionViewCell {
     var logoIamgeWidthConstraint: NSLayoutConstraint!
     private let winningNumbersTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "WINNING NUMBERS"
+        label.text = "PastGameCell.WinningNumbers".localized
         label.font = Fonts.Inter.regular(size: 12.5.scale)
         label.textAlignment = .center
         label.textColor = Appearance.mono200
         label.translatesAutoresizingMaskIntoConstraints = false
         
         // Create an attributed string with increased kerning
-        let attributedText = NSMutableAttributedString(string: "WINNING NUMBERS")
+        let attributedText = NSMutableAttributedString(string: "PastGameCell.WinningNumbers".localized)
         attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
         
         label.attributedText = attributedText
@@ -33,14 +34,14 @@ class PastGameCell: UICollectionViewCell {
     var winningNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
      let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "MY LUCKY NUMBERS"
+        label.text = "PastGameCell.MyLuckyNumbers".localized
         label.font = Fonts.Inter.regular(size: 12.5.scale)
         label.textAlignment = .center
         label.textColor = Appearance.mono200
         label.translatesAutoresizingMaskIntoConstraints = false
         
         // Create an attributed string with increased kerning
-        let attributedText = NSMutableAttributedString(string: "MY LUCKY NUMBERS")
+        let attributedText = NSMutableAttributedString(string: "PastGameCell.MyLuckyNumbers".localized)
         attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
         
         label.attributedText = attributedText
@@ -254,7 +255,7 @@ private extension PastGameCell {
             myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
             myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            myLuckyNumbersCollectionViewHeghitConstraint  ,
+            myLuckyNumbersCollectionViewHeghitConstraint,
             
             // My Lucky Numbers Title Label
             myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.scale),
@@ -268,12 +269,12 @@ private extension PastGameCell {
 extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if collectionView == winningNumbersCollectionView {
-            return UIEdgeInsets(top: 0.scale, 
+            return UIEdgeInsets(top: 0.scale,
                                 left: winningNumbers.first?.count == 6 ? 0.scale : 58.scale,
                                 bottom: 10.scale,
                                 right:  winningNumbers.first?.count == 6 ? 0.scale : -58.scale)
         } else {
-            return UIEdgeInsets(top: 0.scale, 
+            return UIEdgeInsets(top: 0.scale,
                                 left: winningNumbers.first?.count == 6 ? 0.scale : 58.scale,
                                 bottom: 10.scale,
                                 right:  winningNumbers.first?.count == 6 ? 0.scale : -58.scale)
@@ -284,7 +285,7 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         if collectionView == winningNumbersCollectionView {
             return winningNumbers.count ?? 0
         } else {
-            return myLuckyNumbers.count ?? 0  
+            return myLuckyNumbers.count ?? 0
         }
     }
     

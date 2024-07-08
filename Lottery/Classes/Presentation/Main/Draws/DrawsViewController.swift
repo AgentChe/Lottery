@@ -69,7 +69,7 @@ private extension DrawsViewController {
         segmentedControl.buttonPadding = 10.scale
         segmentedControl.buttonCornerRadius = 32.scale
         segmentedControl.numberOfSegments = 2
-        segmentedControl.segmentsTitle = "Next Draws,Past Draws"
+        segmentedControl.segmentsTitle = "\("DrawsViewController.NextDraws".localized),\("DrawsViewController.PastDraws".localized)"
         segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
         segmentedControl.layer.borderColor = UIColor.clear.cgColor
         
@@ -221,7 +221,7 @@ private extension DrawsViewController {
     func setupNavigationBarTitle() {
         // Create the title label
         let titleLabel = UILabel()
-        titleLabel.text = "ALL GAMES"
+        titleLabel.text = "DrawsViewController.AllGamesTitle".localized
         titleLabel.textColor = Appearance.mono200
         titleLabel.font = Fonts.Inter.bold(size: 20.scale)
         
@@ -265,7 +265,7 @@ private extension DrawsViewController {
         
         // Present the navigation controller
         present(navController, animated: true, completion: nil)
-    } 
+    }
     
     func segmentedControlChanged(index: Int) {
         if index == 0 {

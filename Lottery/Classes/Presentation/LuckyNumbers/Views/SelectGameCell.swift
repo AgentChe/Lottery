@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 class SelectGameCell: UICollectionViewCell {
     
     private let dateLabel: UILabel = {
@@ -60,11 +59,10 @@ class SelectGameCell: UICollectionViewCell {
     }
     
     func configure(with date: String, game: Game, lotteries: [Lottery]) {
-        dateLabel.text = date
+        dateLabel.text = date.localized
         logoImageView.image = UIImage(named: "placeholderImage")
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
-                
                 logoImageView.kf.setImage(with: lottery.logoUrl)
             }
         }
