@@ -110,6 +110,11 @@ final class LuckyNumbersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchLotteries(for: nil)
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+        }
     }
     
     func fetchLotteries(for stateId: Int?) {
@@ -264,5 +269,28 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
             }
         }
         return CGSize(width: collectionView.frame.width - 32, height: cellHeight)
+    }
+}
+
+extension LuckyNumbersViewController {
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
+        let mainView = mainViewController.mainView
+        let tabView = mainView.tabView
+        
+        if mainView.tabViewBottomConstraint?.constant != newConstant {
+            // Deactivate and nil the old constraint if it's different
+            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
+                oldTabViewBottomConstraint.isActive = false
+                mainView.tabViewBottomConstraint = nil
+            }
+            
+            // Create and activate the new constraint
+            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
+            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
+            newTabViewBottomConstraint.isActive = true
+            
+            // Call layoutIfNeeded to apply the changes
+            mainView.layoutIfNeeded()
+        }
     }
 }

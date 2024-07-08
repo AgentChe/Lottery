@@ -237,11 +237,11 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             cornerImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
-            cornerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 142.scale),
+            cornerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? 142.scale : 77.scale),
             cornerImageView.widthAnchor.constraint(equalToConstant: 339.scale),
             cornerImageView.heightAnchor.constraint(equalToConstant: 477.scale),
             maskView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
-            maskView.topAnchor.constraint(equalTo: view.topAnchor, constant: 129.scale),
+            maskView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? 129.scale : 129.scale.scale),
             maskView.widthAnchor.constraint(equalToConstant: 300.scale),
             maskView.heightAnchor.constraint(equalToConstant: 400.scale),
             keepButton.bottomAnchor.constraint(equalTo: retakeButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -10.scale : -5.scale),
@@ -252,9 +252,9 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             retakeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 40.scale),
             retakeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: ScreenSize.isIphoneXFamily ? -20.scale : -40.scale),
             retakeButton.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 44.scale : 30.scale),
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -25.scale),
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -25.scale),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25.scale),
+            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -25.scale),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
 
@@ -263,7 +263,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         NSLayoutConstraint.activate([
             quadView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            quadView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -25.scale),
+            quadView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -25.scale ),
             quadViewWidthConstraint,
             quadViewHeightConstraint
         ])

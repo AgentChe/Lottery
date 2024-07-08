@@ -139,6 +139,8 @@ public final class ScannerViewController: UIViewController {
         originalBarStyle = navigationController?.navigationBar.barStyle
         
         NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: Notification.Name.AVCaptureDeviceSubjectAreaDidChange, object: nil)
+        
+        
          
     }
     func setupNavigationBackButton() {
@@ -279,7 +281,7 @@ public final class ScannerViewController: UIViewController {
         let maskLayer = CAShapeLayer()
         
         // Define the mask's frame
-        let maskFrame = CGRect(x: 16.scale, y: 129.scale, width: 343.scale, height: 510.scale)
+        let maskFrame = CGRect(x: 16.scale, y: ScreenSize.isIphoneXFamily ? 129.scale : 79.scale, width: 343.scale, height: 510.scale)
         
         // Create the path for the mask
         let path = UIBezierPath(rect: darkBlueBackground.bounds) // Start with the full view bounds
@@ -321,8 +323,8 @@ public final class ScannerViewController: UIViewController {
         
         shutterButtonConstraints = [
             shutterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            shutterButton.widthAnchor.constraint(equalToConstant: 80.0.scale),
-            shutterButton.heightAnchor.constraint(equalToConstant: 80.0.scale)
+            shutterButton.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 80.0.scale : 50.scale),
+            shutterButton.heightAnchor.constraint(equalToConstant:  ScreenSize.isIphoneXFamily ? 80.0.scale : 50.scale)
         ]
         
         activityIndicatorConstraints = [
@@ -336,7 +338,7 @@ public final class ScannerViewController: UIViewController {
                 view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0/2 - 10.0).scale)
             ]
             
-                let shutterButtonBottomConstraint = shutterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40.scale)
+            let shutterButtonBottomConstraint = shutterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -40.scale : -10.scale)
                 
                 shutterButtonConstraints.append(shutterButtonBottomConstraint)
            

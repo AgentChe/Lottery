@@ -136,7 +136,7 @@ private extension WelcomeView {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: topAnchor, constant: 84.scale),
+            welcomeLabel.topAnchor.constraint(equalTo: topAnchor, constant: ScreenSize.isIphoneXFamily ? 84.scale : 50.scale),
             welcomeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             welcomeLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             
@@ -168,11 +168,11 @@ private extension WelcomeView {
             bulletPoint3Label.centerYAnchor.constraint(equalTo: bulletPoint3View.centerYAnchor),
             
             logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            logoImageView.bottomAnchor.constraint(equalTo: startButton.topAnchor, constant: -40.scale),
-            logoImageView.widthAnchor.constraint(equalToConstant: 343.scale),
-            logoImageView.heightAnchor.constraint(equalToConstant: 356.scale),
+            logoImageView.bottomAnchor.constraint(equalTo: startButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -40.scale : -40.scale),
+            logoImageView.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 343.scale : 343.scale*0.86),
+            logoImageView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 356.scale : 356.scale*0.86),
             
-            startButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
+            startButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: ScreenSize.isIphoneXFamily ?  -50.scale : -20.scale),
             startButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             startButton.widthAnchor.constraint(equalToConstant: 343.scale),
             startButton.heightAnchor.constraint(equalToConstant: 44.scale),

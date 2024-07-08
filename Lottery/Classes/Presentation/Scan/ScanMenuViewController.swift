@@ -100,18 +100,18 @@ final class ScanMenuViewController: UIViewController {
             // Constraints for imageView
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30.scale),
-            imageView.widthAnchor.constraint(equalToConstant: 343.scale),
-            imageView.heightAnchor.constraint(equalToConstant: 510.scale), // Adjust as needed for aspect ratio
+            imageView.widthAnchor.constraint(equalToConstant:  ScreenSize.isIphoneXFamily ? 343.scale:343.scale*0.9),
+            imageView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 510.scale:510.scale*0.9),
             
             // Constraints for firstButton
             scanTicketButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scanTicketButton.bottomAnchor.constraint(equalTo: addTicketButton.topAnchor, constant: -15.scale),
-            scanTicketButton.widthAnchor.constraint(equalToConstant: 343.scale),
+            scanTicketButton.bottomAnchor.constraint(equalTo: addTicketButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -15.scale: -5.scale),
+            scanTicketButton.widthAnchor.constraint(equalToConstant:  343.scale),
             scanTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
             
             // Constraints for secondButton
             addTicketButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50.scale),
+            addTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -50.scale : -10.scale),
             addTicketButton.widthAnchor.constraint(equalToConstant: 343.scale),
             addTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])

@@ -131,7 +131,7 @@ private extension SelectLotteryView {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: ScreenSize.isIphoneXFamily ? 83.scale : 50.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
             headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             
@@ -153,7 +153,7 @@ private extension SelectLotteryView {
             preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
             preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
             
-            addAnotherGameButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
+            addAnotherGameButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant:  ScreenSize.isIphoneXFamily ? -50.scale : -20.scale),
             addAnotherGameButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             addAnotherGameButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             addAnotherGameButton.heightAnchor.constraint(equalToConstant: 50.scale)
