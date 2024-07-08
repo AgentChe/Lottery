@@ -10,14 +10,19 @@ import UIKit
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     // Define the menu items
-    private let menuItems = ["Games", "State", "Terms of Use", "Privacy Policy", "Support"]
+    private let menuItems = [
+        NSLocalizedString("Menu.Games", comment: "Games"),
+        NSLocalizedString("Menu.State", comment: "State"),
+        NSLocalizedString("Menu.TermsOfUse", comment: "Terms of Use"),
+        NSLocalizedString("Menu.PrivacyPolicy", comment: "Privacy Policy"),
+        NSLocalizedString("Menu.Support", comment: "Support")
+    ]
     
     // Create a table view
     private let tableView = UITableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = Appearance.main500
 
         setupNavigationBarItems()
@@ -28,7 +33,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     private func setupNavigationBarItems() {
         // Create the Menu label as the left bar button item
         let menuLabel = UILabel()
-        menuLabel.text = "MENU"
+        menuLabel.text = NSLocalizedString("Menu.Title", comment: "MENU")
         menuLabel.textColor = Appearance.mono200
         menuLabel.font = Fonts.Inter.bold(size: 20.scale)
         let menuBarItem = UIBarButtonItem(customView: menuLabel)
@@ -111,117 +116,88 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - UITableViewDelegate
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           // Deselect the cell immediately after selection
-           tableView.deselectRow(at: indexPath, animated: true)
-           
-           // Handle menu item selection with a switch statement
-           let selectedItem = menuItems[indexPath.row]
-           
-           switch selectedItem {
-           case "Games":
-               print("Selected Games")
-               // Add your action here for "Games"
-               navigateToGames()
-               
-           case "State":
-               print("Selected State")
-               // Add your action here for "State"
-               navigateToState()
-               
-           case "Terms of Use":
-               print("Selected Terms of Use")
-               // Add your action here for "Terms of Use"
-               navigateToWebView(with: GlobalDefinitions.termsOfUseUrl)
-               
-           case "Privacy Policy":
-               print("Selected Privacy Policy")
-               // Add your action here for "Privacy Policy"
-               navigateToWebView(with: GlobalDefinitions.privacyPolicyUrl)
-               
-           case "Support":
-               print("Selected Support")
-               // Add your action here for "Support"
-               navigateToWebView(with: GlobalDefinitions.contactUsUrl)
-               
-           default:
-               print("Unknown selection")
-           }
-       }
-    // Navigation methods for each menu item (replace these with actual implementations)
-      private func navigateToGames() {
-          // Implement navigation to Games screen
-          print("Navigating to Games screen...")
-          let scanOnboardingViewController = ScanOnboardingViewController.make()
-          scanOnboardingViewController.fromMenu = true
-          let profileManager = ProfileManager()
-          profileManager.getProfile(forceUpdate: false) { [weak self] result in
-              DispatchQueue.main.async {
-                  switch result {
-                  case .success(let profile):
-                      if let stateId = profile.state {
-                          scanOnboardingViewController.selectedState = stateId
+        // Deselect the cell immediately after selection
+        tableView.deselectRow(at: indexPath, animated: true)
         
-                          scanOnboardingViewController.showSelectLotteriesViewController()
-                      } else {
-                          print("State ID is not available in profile")
-                      }
-                  case .failure(let error):
-                      print("Failed to fetch profile: \(error)")
-                  }
-              }
-          }
-         
-          
-          // Check if the current view controller is embedded in a navigation controller
-          if let navigationController = self.navigationController {
-             
-              navigationController.pushViewController(scanOnboardingViewController, animated: true)
-              
-              if let navigationController = getRootViewController() as? NavigationController,
-                 let mainViewController = navigationController.viewControllers.first as? MainViewController {
+        // Handle menu item selection with a switch statement
+        let selectedItem = menuItems[indexPath.row]
+        
+        switch selectedItem {
+        case NSLocalizedString("Menu.Games", comment: "Games"):
+            print("Selected Games")
+            navigateToGames()
+        case NSLocalizedString("Menu.State", comment: "State"):
+            navigateToState()
+        case NSLocalizedString("Menu.TermsOfUse", comment: "Terms of Use"):
+            navigateToWebView(with: GlobalDefinitions.termsOfUseUrl)
+        case NSLocalizedString("Menu.PrivacyPolicy", comment: "Privacy Policy"):
+            navigateToWebView(with: GlobalDefinitions.privacyPolicyUrl)
+        case NSLocalizedString("Menu.Support", comment: "Support"):
+            navigateToWebView(with: GlobalDefinitions.contactUsUrl)
+        default:
+            print("Unknown selection")
+        }
+    }
 
-                  updateMainViewControllerConstraints(for: mainViewController)
-                  
-              }
-          } else {
-              // If not, present the view controller modally as a fallback
-              present(scanOnboardingViewController, animated: true, completion: nil)
-          }
-      }
-      
-      private func navigateToState() {
-          // Implement navigation to State screen
-          print("Navigating to State screen...")
-          let scanOnboardingViewController = ScanOnboardingViewController.make()
-          scanOnboardingViewController.fromMenu = true
-          
-          // Check if the current view controller is embedded in a navigation controller
-          if let navigationController = self.navigationController {
-             
-              navigationController.pushViewController(scanOnboardingViewController, animated: true)
-              
-              if let navigationController = getRootViewController() as? NavigationController,
-                 let mainViewController = navigationController.viewControllers.first as? MainViewController {
+    private func navigateToGames() {
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        scanOnboardingViewController.fromMenu = true
+        let profileManager = ProfileManager()
+        profileManager.getProfile(forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    if let stateId = profile.state {
+                        scanOnboardingViewController.selectedState = stateId
+                        scanOnboardingViewController.showSelectLotteriesViewController()
+                    } else {
+                        print("State ID is not available in profile")
+                    }
+                case .failure(let error):
+                    print("Failed to fetch profile: \(error)")
+                }
+            }
+        }
+        
+        // Check if the current view controller is embedded in a navigation controller
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                updateMainViewControllerConstraints(for: mainViewController)
+            }
+        } else {
+            // If not, present the view controller modally as a fallback
+            present(scanOnboardingViewController, animated: true, completion: nil)
+        }
+    }
+    
+    private func navigateToState() {
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        scanOnboardingViewController.fromMenu = true
+        
+        // Check if the current view controller is embedded in a navigation controller
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                updateMainViewControllerConstraints(for: mainViewController)
+            }
+        } else {
+            // If not, present the view controller modally as a fallback
+            present(scanOnboardingViewController, animated: true, completion: nil)
+        }
+    }
+    
+    private func navigateToWebView(with url: URL) {
+        let settingsWebViewController = SettingsWebViewController()
+        settingsWebViewController.url = url
+        present(settingsWebViewController, animated: true, completion: nil)
+    }
 
-                  updateMainViewControllerConstraints(for: mainViewController)
-                  
-              }
-          } else {
-              // If not, present the view controller modally as a fallback
-              present(scanOnboardingViewController, animated: true, completion: nil)
-          }
-      }
-      
-      private func navigateToWebView(with url: URL) {
-          let settingsWebViewController = SettingsWebViewController()
-          settingsWebViewController.url = url
-          present(settingsWebViewController, animated: true, completion: nil)
-      }
-    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView
-        
-  
         
         if mainView.tabViewBottomConstraint?.constant != newConstant {
             // Deactivate and nil the old constraint if it's different

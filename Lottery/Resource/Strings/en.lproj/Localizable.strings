@@ -209,3 +209,13 @@
 "CheckTicketViewController.TicketAddedSuccessfullyTitle" = "Ticket added successfully.";
 "CheckTicketViewController.TicketAddedSuccessfullyMessage" = "You can find your ticket in Tickets.";
 "CheckTicketViewController.OKButton" = "OK";
+
+// MARK: Menu Items
+"Menu.Games" = "Games";
+"Menu.State" = "State";
+"Menu.TermsOfUse" = "Terms of Use";
+"Menu.PrivacyPolicy" = "Privacy Policy";
+"Menu.Support" = "Support";
+
+// MARK: Menu Title
+"Menu.Title" = "MENU";
