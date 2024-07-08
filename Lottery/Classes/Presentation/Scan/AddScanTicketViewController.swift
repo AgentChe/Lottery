@@ -170,17 +170,17 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                     print("Ticket added successfully: \(updatedTicket)")
                     DispatchQueue.main.async {
                         self.navigationController?.popToRootViewController(animated: true)
-                        let alert = UIAlertController(
-                            title: "Ticket added succesfully.",
-                            message: "You can find your ticket in Tickets.",
-                            preferredStyle: .alert
-                        )
-                        
-                        // Add an OK button to the alert
-                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                        
-                        // Present the alert
-                        self.present(alert, animated: true, completion: nil)
+//                        let alert = UIAlertController(
+//                            title: "Ticket added succesfully.",
+//                            message: "You can find your ticket in Tickets.",
+//                            preferredStyle: .alert
+//                        )
+//                        
+//                        // Add an OK button to the alert
+//                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                        
+//                        // Present the alert
+//                        self.present(alert, animated: true, completion: nil)
                     }
                     
                 case .failure(let error):

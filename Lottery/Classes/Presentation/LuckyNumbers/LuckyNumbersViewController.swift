@@ -77,8 +77,7 @@ final class LuckyNumbersViewController: UIViewController {
     private lazy var nextDrawsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.frame.width - 32, height: 210.scale)
-        layout.minimumLineSpacing = 16.scale
-        layout.sectionInset = UIEdgeInsets(top: 150.scale, left: 0, bottom: 10.scale, right: 0)
+        layout.minimumLineSpacing = 50.scale
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
