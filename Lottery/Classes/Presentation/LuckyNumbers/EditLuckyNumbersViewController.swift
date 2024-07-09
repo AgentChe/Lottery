@@ -82,6 +82,8 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         // Add keyboard observers
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        
     }
     
     private func setupConstraints() {
@@ -97,7 +99,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         ])
         
         // Initialize the bottom constraint
-        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
+        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30.scale)
         saveButtonBottomConstraint.isActive = true
     }
     
@@ -225,6 +227,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                 }
             }
         }
+        if numbersStringArray.count == 0 {
+            return false
+        }
         return true
     }
     
@@ -237,12 +242,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     // Handle keyboard appearance
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect {
-            let keyboardHeight = keyboardFrame.height
-            let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
-            let totalHeight = keyboardHeight
-            
-            saveButtonBottomConstraint.constant = -totalHeight
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height  - view.safeAreaInsets.bottom
+            saveButtonBottomConstraint.constant = -keyboardHeight * 0.75
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
