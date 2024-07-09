@@ -108,9 +108,19 @@ private extension ScanSelectLotteriesViewController {
         // Show preloader and hide button
 //        selectLotteryView.continueButton.isHidden = true
 //        selectLotteryView.preloader.startAnimating()
+        var neededLotteries : [Lottery] = []
+        for i in 0..<lotteries.count {
+            for selectedLottery in selectedLotteries {
+                if selectedLottery == i {
+                    neededLotteries.append(lotteries[i])
+                } else {
+                    
+                }
+            }
+        }
         
-        let selectedLotteryId = lotteries[selectedLotteries[0]].id
-        onContinue?([selectedLotteryId])
+        let selectedLotteryIdsArray  = neededLotteries.map { $0.id }
+        onContinue?(selectedLotteryIdsArray)
     }
     
 

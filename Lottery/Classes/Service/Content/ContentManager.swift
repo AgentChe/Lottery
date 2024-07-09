@@ -37,10 +37,10 @@ extension ContentManager: ContentManagerProtocol {
         let request = FetchStatesRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
-        Oprtaions.contentManagerOprations[operationId] = operation
+        Opertaions.contentManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            Oprtaions.contentManagerOprations.removeValue(forKey: operationId)
+            Opertaions.contentManagerOprations.removeValue(forKey: operationId)
             
             DispatchQueue.main.async {
                 if let error = error {
@@ -75,10 +75,10 @@ extension ContentManager: ContentManagerProtocol {
         let request = FetchLotteriesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
-        Oprtaions.contentManagerOprations[operationId] = operation
+        Opertaions.contentManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) {  result, error in
-            Oprtaions.contentManagerOprations.removeValue(forKey: operationId)
+            Opertaions.contentManagerOprations.removeValue(forKey: operationId)
             
             DispatchQueue.main.async {
                 if let error = error {

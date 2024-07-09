@@ -49,10 +49,10 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Oprtaions.profileManagerOprations[operationId] = operation
+        Opertaions.profileManagerOprations[operationId] = operation
 
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Oprtaions.profileManagerOprations.removeValue(forKey: operationId)
+            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 complete?(LoginResult(error: error))
             }
@@ -64,10 +64,10 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Oprtaions.profileManagerOprations[operationId] = operation
+        Opertaions.profileManagerOprations[operationId] = operation
 
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Oprtaions.profileManagerOprations.removeValue(forKey: operationId)
+            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 complete?(LoginResult(error: error))
             }
@@ -89,10 +89,10 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
 
         let operationId = UUID().uuidString
-        Oprtaions.profileManagerOprations[operationId] = operation
+        Opertaions.profileManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Oprtaions.profileManagerOprations.removeValue(forKey: operationId)
+            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
@@ -118,10 +118,10 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
 
         let operationId = UUID().uuidString
-        Oprtaions.profileManagerOprations[operationId] = operation
+        Opertaions.profileManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Oprtaions.profileManagerOprations.removeValue(forKey: operationId)
+            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))

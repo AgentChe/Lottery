@@ -9,6 +9,7 @@ import UIKit
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
+    var games: [Game] = []
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -84,8 +85,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var nextDraws: [Game] = [] {
         didSet {
             nextDraws.sort { $0.date > $1.date }
-            noGamesAddedImageView.isHidden = !nextDraws.isEmpty
-            addButton.isHidden = !nextDraws.isEmpty
+            noGamesAddedImageView.isHidden =  profile.lotteries?.count != 0
+            addButton.isHidden = profile.lotteries?.count != 0
         }
     }
 
@@ -375,6 +376,7 @@ private extension DrawsViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
+                    
                     var selectedGames: [Game] = []
                     if let profile = self?.profile{
                         if let profileLotteries = profile.lotteries {
@@ -388,6 +390,7 @@ private extension DrawsViewController {
                         }
                     }
                     self?.nextDraws = selectedGames
+                    
                     delay(0.05) {
                         self?.nextDrawsCollectionView.reloadData()
                     }

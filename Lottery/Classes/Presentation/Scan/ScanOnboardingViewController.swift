@@ -180,7 +180,13 @@ final class ScanOnboardingViewController: UIViewController {
                     let nextStep = self?.determineNextStep() ?? .main
                     self?.goToNext(at: nextStep)
                 } else {
+                    let rootViewController =  self?.navigationController?.viewControllers.first
                     self?.navigationController?.popToRootViewController(animated: true)
+                    delay(0.7) {
+                        rootViewController?.dismiss(animated: true)
+                    }
+                    
+                    
                 }
             case .failure(let error):
                 self?.presentTryAgainViewController(with: error)

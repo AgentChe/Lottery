@@ -29,11 +29,11 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Oprtaions.ticketsManagerOprations[operationId] = operation
+        Opertaions.ticketsManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             
-            Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
+            Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -54,7 +54,7 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Oprtaions.ticketsManagerOprations[operationId] = operation
+        Opertaions.ticketsManagerOprations[operationId] = operation
         
 //        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
 //            
@@ -70,7 +70,7 @@ extension TicketsManager: TicketsManagerProtocol {
 //            }
 //        }
         performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
-            Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
+            Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
             switch result {
             case .success(let ticketResponse):
                 let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
@@ -92,7 +92,7 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Oprtaions.ticketsManagerOprations[operationId] = operation
+        Opertaions.ticketsManagerOprations[operationId] = operation
         
 //        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
 //            
@@ -107,7 +107,7 @@ extension TicketsManager: TicketsManagerProtocol {
 //            }
 //        }
         performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
-            Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
+            Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
             switch result {
             case .success(let ticketResponse):
                 let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
@@ -129,10 +129,10 @@ extension TicketsManager: TicketsManagerProtocol {
           let request = DeleteTicketRequest(userToken: userToken, id: id)
           let operationId = UUID().uuidString
           
-        Oprtaions.ticketsManagerOprations[operationId] = APIOperation(endPoint: request)
+        Opertaions.ticketsManagerOprations[operationId] = APIOperation(endPoint: request)
           
           performRequest(request) { [weak self] (result: Result<ResultResponse, Error>) in
-              Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
+              Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
               
               switch result {
               case .success(let response):
