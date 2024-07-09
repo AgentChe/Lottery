@@ -33,12 +33,10 @@ extension GamesManager: GamesManagerProtocol {
         let operationId = UUID().uuidString
         operations[operationId] = operation
         
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            
-            guard let strongSelf = self else { return }
+        
+        operation.execute(dispatcher: dispatcher) {  result, error in
                
-               strongSelf.operations.removeValue(forKey: operationId)
-            
+            self.operations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -91,12 +89,8 @@ extension GamesManager: GamesManagerProtocol {
         let operationId = UUID().uuidString
         operations[operationId] = operation
         
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            
-            guard let strongSelf = self else { return }
-               
-               strongSelf.operations.removeValue(forKey: operationId)
-            
+        operation.execute(dispatcher: dispatcher) {  result, error in
+            self.operations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -135,16 +129,18 @@ extension GamesManager: GamesManagerProtocol {
 //            }
 //        }
         
-        performRequest(request) { [weak self] result in
+        performRequest(request) {  result in
+        
+               
+            self.operations.removeValue(forKey: operationId)
+         
             switch result {
             case .success(let data):
                 do {
                    
                     if let resultDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                        let success = resultDict["result"] as? Bool {
-                        guard let strongSelf = self else { return }
-                           
-                           strongSelf.operations.removeValue(forKey: operationId)
+                        
                         
                         completion(.success(success))
                         

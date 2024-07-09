@@ -24,7 +24,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
-        button.layer.cornerRadius = 20.scale
+        button.layer.cornerRadius = 22.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(saveTicketButtonTapped), for: .touchUpInside)
         button.isEnabled = false // Initially disabled
@@ -95,11 +95,11 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             
             saveTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale)
+            saveTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
         
         // Initialize the bottom constraint
-        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30.scale)
+        saveButtonBottomConstraint = saveTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -17.5.scale)
         saveButtonBottomConstraint.isActive = true
     }
     

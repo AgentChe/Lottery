@@ -20,7 +20,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
     weak var parentVC: EditLuckyNumbersViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
-    private let dateLabel = TickedEditDatePaddedLabel()
+    private let dateLabel = TickedLuckyNumbersEditDatePaddedLabel()
     private let pencilEditImageView = UIImageView()
     
     private var datePickerContainer: UIView?

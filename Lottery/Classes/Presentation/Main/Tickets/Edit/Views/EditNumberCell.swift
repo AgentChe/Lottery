@@ -5,6 +5,13 @@
 //  Created by Niiaz Khasanov on 6/14/24.
 //
 
+//
+//  EditNumberCell.swift
+//  Lottery
+//
+//  Created by Niiaz Khasanov on 6/14/24.
+//
+
 import UIKit
 
 class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
@@ -126,12 +133,17 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
     // UITextFieldDelegate method to handle changes to the text
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Allow only numeric input and limit to 1 character
+        // Allow only numeric input and limit to 2 characters
         let allowedCharacters = CharacterSet.decimalDigits
         let characterSet = CharacterSet(charactersIn: string)
         
         // Determine the new text after the replacement
         let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+        
+        // Check if the new text exceeds the 2 characters limit
+        if currentText.count > 2 {
+            return false
+        }
         
         // Apply the underline to the new text
         var resultedColor = Appearance.mono200
@@ -146,7 +158,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         if numberOfCells == 4 {
             if indexPath?.item == 0 || indexPath?.item == 1 {
                 resultedColor = Appearance.mono100
-            } 
+            }
             if indexPath?.item == 2 || indexPath?.item == 3 {
                 resultedColor = Appearance.mono200
             }
@@ -178,7 +190,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
                 .underlineStyle: NSUnderlineStyle.single.rawValue,
                 .foregroundColor: Appearance.mono200
             ]
-            let attributedText = NSAttributedString(string: "_", attributes: underlineAttribute)
+            let attributedText = NSAttributedString(string: "", attributes: underlineAttribute)
             textField.attributedText = attributedText
         }
     }
