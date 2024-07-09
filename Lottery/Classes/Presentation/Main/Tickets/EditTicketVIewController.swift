@@ -345,12 +345,12 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     
     // Handle keyboard appearance
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
             let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
             let totalHeight = keyboardHeight
             
-            saveButtonBottomConstraint.constant = -totalHeight
+            saveButtonBottomConstraint.constant = -totalHeight * 0.55
             UIView.animate(withDuration: 0.35) {
                 self.view.layoutIfNeeded()
             }
@@ -359,7 +359,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
 
     // Handle keyboard disappearance
     @objc private func keyboardWillHide(_ notification: Notification) {
-        saveButtonBottomConstraint.constant = -30.scale
+        saveButtonBottomConstraint.constant = -10.scale
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }

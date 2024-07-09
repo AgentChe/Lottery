@@ -49,7 +49,7 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 6.scale
         layout.minimumInteritemSpacing = 6.scale
-        layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+     
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -108,7 +108,7 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
-        dateLabel.text = formattedDate.uppercased()
+        dateLabel.text = "MM/DD/YYY"//formattedDate.uppercased()
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
         collectionViewHeightConstraint.isActive = false
@@ -126,7 +126,7 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
         } else {
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 ).scale)
             }
         collectionViewHeightConstraint.isActive = true
         collectionView.reloadData()
@@ -237,7 +237,7 @@ private extension TicketEditScanCell {
     func setupLayoutConstraints() {
         logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
         logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 6 + 10).scale)
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 6 ).scale)
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
             logoImageLeadingConstraint,
@@ -328,6 +328,15 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
             return 0
         }
     }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if numbersStringArray.count == 1 {
+            return UIEdgeInsets(top: 10.scale,
+                                left: numbersStringArray[0].count == 6 ? 20.scale : 30.scale, bottom: 0.scale,
+                                right:  numbersStringArray[0].count == 6 ? 20.scale : 30.scale)
+        } else {
+            return UIEdgeInsets(top: 10.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
@@ -338,6 +347,13 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
             cell.indexPath = indexPath
             cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
+            if numbersStringArray.count == 1 {
+                cell.closeButton.alpha = 0
+            }
+            
+            if numbersStringArray.count > 1  {
+                cell.closeButton.alpha = 1
+            }
             
             return cell
         } else {

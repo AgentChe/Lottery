@@ -295,7 +295,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
             let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
             let totalHeight = keyboardHeight
             
-            saveButtonBottomConstraint.constant = -totalHeight
+            saveButtonBottomConstraint.constant = -totalHeight * 0.95
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }

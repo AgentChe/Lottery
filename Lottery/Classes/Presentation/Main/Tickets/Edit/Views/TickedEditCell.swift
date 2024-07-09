@@ -307,7 +307,6 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
                 cell.closeButton.alpha = 1
             }
             
-            
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {

@@ -305,12 +305,12 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
 
     // Handle keyboard appearance
     @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
             let accessoryViewHeight: CGFloat = saveTicketButton.inputAccessoryView?.frame.height ?? 0
             let totalHeight = keyboardHeight + 10.scale
 
-            saveButtonBottomConstraint.constant = -totalHeight
+            saveButtonBottomConstraint.constant = -totalHeight*0.9
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
