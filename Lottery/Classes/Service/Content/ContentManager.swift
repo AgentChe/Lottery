@@ -19,7 +19,6 @@ final class ContentManager {
     
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: - ContentManagerProtocol
@@ -38,10 +37,10 @@ extension ContentManager: ContentManagerProtocol {
         let request = FetchStatesRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.contentManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            self.operations.removeValue(forKey: operationId)
+            Oprtaions.contentManagerOprations.removeValue(forKey: operationId)
             
             DispatchQueue.main.async {
                 if let error = error {
@@ -76,10 +75,10 @@ extension ContentManager: ContentManagerProtocol {
         let request = FetchLotteriesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.contentManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) {  result, error in
-            self.operations.removeValue(forKey: operationId)
+            Oprtaions.contentManagerOprations.removeValue(forKey: operationId)
             
             DispatchQueue.main.async {
                 if let error = error {

@@ -173,6 +173,7 @@ extension ScanSelectLotteryView: UITableViewDelegate {
         
         if !fromMenu {
             selectedLotteries.removeAll()
+            
             selectedLotteries.insert(indexPath.row)
         } else {
             if selectedLotteries.contains(indexPath.row) {

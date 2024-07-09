@@ -110,9 +110,7 @@ final class ScanOnboardingViewController: UIViewController {
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedLotteries = selectedGames
-            for i in 0..<self.selectedLotteries.count {
-                selectedLotteries[i] = selectedLotteries[i] + 1
-            }
+            
             if !fromMenu {
                 self.completeOnboarding()
             } else {

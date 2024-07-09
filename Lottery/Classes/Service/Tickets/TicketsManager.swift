@@ -16,7 +16,6 @@ protocol TicketsManagerProtocol {
 final class TicketsManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: - TicketsManagerProtocol
@@ -30,11 +29,11 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.ticketsManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
             
-            self?.operations.removeValue(forKey: operationId)
+            Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -55,7 +54,7 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.ticketsManagerOprations[operationId] = operation
         
 //        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
 //            
@@ -71,7 +70,7 @@ extension TicketsManager: TicketsManagerProtocol {
 //            }
 //        }
         performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
-            self?.operations.removeValue(forKey: operationId)
+            Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
             switch result {
             case .success(let ticketResponse):
                 let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
@@ -93,7 +92,7 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.ticketsManagerOprations[operationId] = operation
         
 //        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
 //            
@@ -108,7 +107,7 @@ extension TicketsManager: TicketsManagerProtocol {
 //            }
 //        }
         performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
-            self?.operations.removeValue(forKey: operationId)
+            Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
             switch result {
             case .success(let ticketResponse):
                 let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
@@ -130,10 +129,10 @@ extension TicketsManager: TicketsManagerProtocol {
           let request = DeleteTicketRequest(userToken: userToken, id: id)
           let operationId = UUID().uuidString
           
-          operations[operationId] = APIOperation(endPoint: request)
+        Oprtaions.ticketsManagerOprations[operationId] = APIOperation(endPoint: request)
           
           performRequest(request) { [weak self] (result: Result<ResultResponse, Error>) in
-              self?.operations.removeValue(forKey: operationId)
+              Oprtaions.ticketsManagerOprations.removeValue(forKey: operationId)
               
               switch result {
               case .success(let response):

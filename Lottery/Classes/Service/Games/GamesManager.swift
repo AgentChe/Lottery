@@ -6,6 +6,13 @@
 //
 
 import Foundation
+class Oprtaions {
+    static var contentManagerOprations : [String: any APIOperationProtocol] = [:]
+    static var gamesManagerOprations : [String: any APIOperationProtocol] = [:]
+    static var ticketsManagerOprations : [String: any APIOperationProtocol] = [:]
+    static var profileManagerOprations : [String: any APIOperationProtocol] = [:]
+}
+
 
 protocol GamesManagerProtocol {
     func fetchNextGames(stateId: Int?, completion: @escaping (Result<[Game], Error>) -> Void)
@@ -16,7 +23,6 @@ protocol GamesManagerProtocol {
 final class GamesManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
-    private var operations: [String: any APIOperationProtocol] = [:]
 }
 
 // MARK: - GamesManagerProtocol
@@ -31,12 +37,12 @@ extension GamesManager: GamesManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.gamesManagerOprations[operationId] = operation
         
         
         operation.execute(dispatcher: dispatcher) {  result, error in
                
-            self.operations.removeValue(forKey: operationId)
+            Oprtaions.gamesManagerOprations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -59,12 +65,12 @@ extension GamesManager: GamesManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.gamesManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) { result, error in
             
                
-            self.operations.removeValue(forKey: operationId)
+            Oprtaions.gamesManagerOprations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -87,10 +93,10 @@ extension GamesManager: GamesManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.gamesManagerOprations[operationId] = operation
         
         operation.execute(dispatcher: dispatcher) {  result, error in
-            self.operations.removeValue(forKey: operationId)
+            Oprtaions.gamesManagerOprations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))
@@ -114,7 +120,7 @@ extension GamesManager: GamesManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        operations[operationId] = operation
+        Oprtaions.gamesManagerOprations[operationId] = operation
 
 //        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
 //            
@@ -132,7 +138,7 @@ extension GamesManager: GamesManagerProtocol {
         performRequest(request) {  result in
         
                
-            self.operations.removeValue(forKey: operationId)
+            Oprtaions.gamesManagerOprations.removeValue(forKey: operationId)
          
             switch result {
             case .success(let data):

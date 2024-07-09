@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+
 protocol APIOperationProtocol {
     func cancel()
     func execute(dispatcher: RequestDispatcherProtocol, completion: ((Any?, Error?) -> Void)?)
@@ -39,3 +41,4 @@ extension APIOperation {
             }
         }
 }
+
