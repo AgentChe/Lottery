@@ -37,7 +37,7 @@ class SettingsWebViewController: UIViewController, WKNavigationDelegate {
         
         // Настройка и добавление activityIndicator
         activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.color = .gray
+        activityIndicator.color = Appearance.main300
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(activityIndicator)
         NSLayoutConstraint.activate([

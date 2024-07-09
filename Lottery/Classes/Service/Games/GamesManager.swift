@@ -63,10 +63,10 @@ extension GamesManager: GamesManagerProtocol {
         let operationId = UUID().uuidString
         operations[operationId] = operation
         
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            guard let strongSelf = self else { return }
+        operation.execute(dispatcher: dispatcher) { result, error in
+            
                
-               strongSelf.operations.removeValue(forKey: operationId)
+            self.operations.removeValue(forKey: operationId)
             
             if let error = error {
                 completion(.failure(error))

@@ -130,6 +130,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
         dateLabel.text = formattedDate.uppercased()
         
         pencilEditImageView.image = UIImage(named: "TicketLuckyNumbersEditCell.PencilImage".localized)
+        pencilEditImageView.isHidden = true
         collectionViewHeightConstraint.isActive = false
         
         // Get the number of cells in the last row
@@ -215,7 +216,7 @@ private extension TicketLuckyNumbersEditCell {
         addSubview(logoImageView)
         addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
-        dateLabelContainer.addSubview(pencilEditImageView)
+      //  dateLabelContainer.addSubview(pencilEditImageView)
         addSubview(collectionView)
         addSubview(plusButton) // Add Plus Button to the view hierarchy
         
@@ -242,19 +243,14 @@ private extension TicketLuckyNumbersEditCell {
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
             dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
-            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.scale),
-            dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale),
+            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50.scale),
+            dateLabelContainer.widthAnchor.constraint(equalToConstant: 92.scale),
             dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale),
             
-            dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -10.scale),
+            dateLabel.centerXAnchor.constraint(equalTo: dateLabelContainer.centerXAnchor, constant: 20.scale),
             dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
             dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor, constant: 10.scale),
             dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
-            
-            pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -33.scale),
-            pencilEditImageView.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
-            pencilEditImageView.widthAnchor.constraint(equalToConstant: 24.scale),
-            pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale),
             
             collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 10.scale),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
