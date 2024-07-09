@@ -46,8 +46,41 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         return button
     }()
     @objc func addButtonTapped() {
-
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        scanOnboardingViewController.immediateGameChoose = true
+        scanOnboardingViewController.fromMenu = true
+        let profileManager = ProfileManager()
+        profileManager.getProfile(forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    if let stateId = profile.state {
+                        scanOnboardingViewController.selectedState = stateId
+                        
+                        scanOnboardingViewController.showSelectLotteriesViewController()
+                    } else {
+                        print("State ID is not available in profile")
+                    }
+                case .failure(let error):
+                    print("Failed to fetch profile: \(error)")
+                }
+            }
+        }
+        
+        // Check if the current view controller is embedded in a navigation controller
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(scanOnboardingViewController, animated: false)
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                updateMainViewControllerConstraints(for: mainViewController)
+            }
+        } else {
+            // If not, present the view controller modally as a fallback
+            present(scanOnboardingViewController, animated: true, completion: nil)
+        }
     }
+
+
     private var nextDraws: [Game] = [] {
         didSet {
             nextDraws.sort { $0.date > $1.date }

@@ -106,7 +106,7 @@ private extension ScanSelectLotteryView {
     func setupConstraints() {
         NSLayoutConstraint.activate([
             
-            descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 83.scale),
+            descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 95.scale),
             descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             

@@ -75,7 +75,11 @@ private extension ScanSelectLotteriesViewController {
     }
     @objc private func customBackButtonTapped() {
         // Perform back navigation
-        navigationController?.popViewController(animated: true)
+        if !fromMenu {
+            navigationController?.popViewController(animated: true)
+        } else {
+            navigationController?.popToRootViewController(animated: true)
+        }
     }
     func setupButtons() {
         selectLotteryView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)

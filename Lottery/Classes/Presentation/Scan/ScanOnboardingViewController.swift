@@ -12,6 +12,7 @@ final class ScanOnboardingViewController: UIViewController {
         static let wasViewedKey = "onboarding_view_controller_was_viewed_key"
     }
     var fromMenu: Bool = false
+    var immediateGameChoose: Bool = false
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     var selectedState: Int?
     private var selectedLotteries: [Int] = []
@@ -57,7 +58,8 @@ final class ScanOnboardingViewController: UIViewController {
         let backButton = UIButton(type: .custom)
         
         // Set the custom image for the button
-        if let image = UIImage(named: "Scan.ScanTheTicket") {
+        
+        if let image = UIImage(named: immediateGameChoose ? "Scan.SelectLottery" : "Scan.ScanTheTicket") {
             backButton.setImage(image, for: .normal)
         }
         

@@ -141,6 +141,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     private func navigateToGames() {
         let scanOnboardingViewController = ScanOnboardingViewController.make()
+        scanOnboardingViewController.immediateGameChoose = true
         scanOnboardingViewController.fromMenu = true
         let profileManager = ProfileManager()
         profileManager.getProfile(forceUpdate: false) { [weak self] result in
@@ -149,6 +150,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 case .success(let profile):
                     if let stateId = profile.state {
                         scanOnboardingViewController.selectedState = stateId
+                        
                         scanOnboardingViewController.showSelectLotteriesViewController()
                     } else {
                         print("State ID is not available in profile")
@@ -161,7 +163,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Check if the current view controller is embedded in a navigation controller
         if let navigationController = self.navigationController {
-            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            navigationController.pushViewController(scanOnboardingViewController, animated: false)
             if let navigationController = getRootViewController() as? NavigationController,
                let mainViewController = navigationController.viewControllers.first as? MainViewController {
                 updateMainViewControllerConstraints(for: mainViewController)
