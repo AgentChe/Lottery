@@ -18,7 +18,7 @@ final class SelectLotteryView: UIView {
         let attributedTitle = "Continue".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
-        button.layer.cornerRadius = 20.scale
+        button.layer.cornerRadius = 22.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = true // Initially disabled
         button.alpha = 1.0 //0.5 // Initially pale
@@ -42,7 +42,7 @@ final class SelectLotteryView: UIView {
         button.backgroundColor = .white
         button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
         button.layer.borderWidth = 1.scale
-        button.layer.cornerRadius = 20.scale
+        button.layer.cornerRadius = 22.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -147,7 +147,7 @@ private extension SelectLotteryView {
             continueButton.bottomAnchor.constraint(equalTo: addAnotherGameButton.topAnchor, constant: -10.scale),
             continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            continueButton.heightAnchor.constraint(equalToConstant: 50.scale),
+            continueButton.heightAnchor.constraint(equalToConstant: 44.scale),
             
             // Constraints for preloader
             preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
@@ -156,7 +156,7 @@ private extension SelectLotteryView {
             addAnotherGameButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant:  ScreenSize.isIphoneXFamily ? -50.scale : -20.scale),
             addAnotherGameButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             addAnotherGameButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            addAnotherGameButton.heightAnchor.constraint(equalToConstant: 50.scale)
+            addAnotherGameButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
     }
     

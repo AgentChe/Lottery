@@ -19,7 +19,7 @@ final class ScanSelectStateView: UIView {
         let attributedTitle = "Continue".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
-        button.layer.cornerRadius = 20.scale
+        button.layer.cornerRadius = 22.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false // Initially disabled
         button.alpha = 0.5 // Initially pale
@@ -117,7 +117,7 @@ private extension ScanSelectStateView {
             continueButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -35.scale),
             continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            continueButton.heightAnchor.constraint(equalToConstant: 50.scale),
+            continueButton.heightAnchor.constraint(equalToConstant: 44.scale),
             
             // Constraints for preloader
             preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
