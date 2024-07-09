@@ -330,6 +330,13 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
             cell.indexPath = indexPath
             cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
+            if numbersStringArray.count == 1 {
+                cell.closeButton.alpha = 0
+            }
+            
+            if numbersStringArray.count > 1  {
+                cell.closeButton.alpha = 1
+            }
             
             return cell
         } else {
@@ -352,7 +359,16 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
     }
-    
+  
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if numbersStringArray.count == 1 {
+            return UIEdgeInsets(top: 6.scale,
+                                left: numbersStringArray[0].count == 6 ? 20.scale : 30.scale, bottom: 0.scale,
+                                right:  numbersStringArray[0].count == 6 ? 20.scale : 30.scale)
+        } else {
+            return UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+        }
+    }
     func removeItem(at indexPath: IndexPath) {
         // Check if it's the only row left
         if numbersStringArray.count == 1 && indexPath.section == 0 {

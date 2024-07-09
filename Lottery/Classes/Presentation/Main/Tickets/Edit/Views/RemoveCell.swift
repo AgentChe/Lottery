@@ -18,7 +18,7 @@ class RemoveCell: UICollectionViewCell {
             }
         }
     }
-    private let closeButton: UIButton = {
+     let closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "EditTickets.Close"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

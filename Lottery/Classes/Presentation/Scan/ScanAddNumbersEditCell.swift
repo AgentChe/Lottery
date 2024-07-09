@@ -48,7 +48,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 6.scale
         layout.minimumInteritemSpacing = 6.scale
-        layout.sectionInset = UIEdgeInsets(top: 10.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+        layout.sectionInset = UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -129,7 +129,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
         }
@@ -324,6 +324,14 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
             cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
             
+            if numbersStringArray.count == 1 {
+                cell.closeButton.alpha = 0
+            }
+            
+            if numbersStringArray.count > 1  {
+                cell.closeButton.alpha = 1
+            }
+            
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
@@ -339,6 +347,16 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
                 cell.numberOfCells = numbersStringArray.last?.count
             }
             return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if numbersStringArray.count == 1 {
+            return UIEdgeInsets(top: 6.scale,
+                                left: numbersStringArray[0].count == 6 ? 20.scale : 30.scale, bottom: 0.scale,
+                                right:  numbersStringArray[0].count == 6 ? 20.scale : 30.scale)
+        } else {
+            return UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         }
     }
     
