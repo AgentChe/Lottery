@@ -91,8 +91,13 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
                         self.numbersStringArray = [["", "", "", "", "", ""]]
                     }
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                        logoIamgeLeadingConstraint.isActive = false
+                        logoIamgeWidthConstraint.isActive = false
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
                         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                        logoIamgeLeadingConstraint.isActive = true
+                        logoIamgeWidthConstraint.isActive = true
+                        setNeedsLayout()
                     }
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
                         logoIamgeLeadingConstraint.isActive = false
@@ -106,8 +111,13 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
                 } else {
                     numbersStringArray = convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                        logoIamgeLeadingConstraint.isActive = false
+                        logoIamgeWidthConstraint.isActive = false
                         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
                         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                        logoIamgeLeadingConstraint.isActive = true
+                        logoIamgeWidthConstraint.isActive = true
+                        setNeedsLayout()
                     }
                     if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
                         logoIamgeLeadingConstraint.isActive = false

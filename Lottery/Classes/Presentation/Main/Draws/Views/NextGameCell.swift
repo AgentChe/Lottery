@@ -36,13 +36,19 @@ extension NextGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
         logoImageView.image = UIImage(named: "placeholderImage")
         logoImageView.contentMode = .scaleAspectFit
+         
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
 
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    logoIamgeLeadingConstraint.isActive = false
+                    logoIamgeWidthConstraint.isActive = false
                     logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
                     logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    logoIamgeLeadingConstraint.isActive = true
+                    logoIamgeWidthConstraint.isActive = true
+                    setNeedsLayout()
                     
                 }
                 if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {

@@ -219,17 +219,30 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 print("Ticket updated successfully: \(updatedTicket)")
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
-                    let alert = UIAlertController(
-                           title: "EditTicketViewController.TicketEditedSuccessfully.Title".localized,
-                           message: "EditTicketViewController.TicketEditedSuccessfully.Message".localized,
-                           preferredStyle: .alert
-                       )
+//                    let alert = UIAlertController(
+//                           title: "EditTicketViewController.TicketEditedSuccessfully.Title".localized,
+//                           message: "EditTicketViewController.TicketEditedSuccessfully.Message".localized,
+//                           preferredStyle: .alert
+//                       )
+//
+//                    // Add an OK button to the alert
+//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//
+//                    // Present the alert
+//                    self.present(alert, animated: true, completion: nil)
+                    if let sceneDelegate = UIApplication.shared.connectedScenes
+                        .first?.delegate as? SceneDelegate {
+                        if let rootNavigController = sceneDelegate.getRootViewController() as? NavigationController{
+                            // Do something with the root view controller
+                           let rootViewControllers = rootNavigController.viewControllers
+                            
+                            if let mainViewController = rootViewControllers.first as? MainViewController {
+                            
+                                mainViewController.coordinator.change(tab: .myTickets)
+                            }
+                        }
+                    }
                     
-                    // Add an OK button to the alert
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    
-                    // Present the alert
-                    self.present(alert, animated: true, completion: nil)
                      
                     
                 }

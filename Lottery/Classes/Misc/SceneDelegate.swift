@@ -22,4 +22,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //window?.rootViewController = NavigationController(rootViewController: TicketsViewController())
         window?.makeKeyAndVisible()
     }
+    
+}
+
+extension SceneDelegate {
+    func getRootViewController() -> UIViewController? {
+           return window?.rootViewController
+       }
 }

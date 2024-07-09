@@ -13,7 +13,7 @@ final class MainViewController: UIViewController {
     
     private lazy var disposeBag = DisposeBag()
     
-    private lazy var coordinator = MainViewCoordinator(parentVC: self)
+    lazy var coordinator = MainViewCoordinator(parentVC: self)
     
     private let requestReview: Bool
     
