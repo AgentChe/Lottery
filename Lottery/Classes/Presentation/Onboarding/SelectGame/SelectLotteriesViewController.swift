@@ -62,10 +62,10 @@ private extension SelectLotteriesViewController {
     
     @objc func continueButtonTapped() {
         let selectedLotteries = selectLotteryView.getSelectedLotteries()
-        if selectedLotteries.isEmpty {
-            presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
-            return
-        }
+//        if selectedLotteries.isEmpty {
+//            presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
+//            return
+//        }
         
         // Show preloader and hide button
         selectLotteryView.continueButton.isHidden = true

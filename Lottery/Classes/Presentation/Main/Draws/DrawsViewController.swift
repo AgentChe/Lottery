@@ -5,7 +5,6 @@
 //  Created by Niiaz Khasanov on 6/6/24.
 //
 
-
 import UIKit
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -24,16 +23,36 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         }
         fetchStateAndGames()
     }
+    
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDrawsCollectionView: UICollectionView!
     private var pastDrawsCollectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
-    
+    private var noGamesAddedImageView: UIImageView! // Adding the NoGamesAdded image view
+    private let addButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Go to settings", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.widthAnchor.constraint(equalToConstant: 195.scale).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 44.scale).isActive = true
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    @objc func addButtonTapped() {
+
+    }
     private var nextDraws: [Game] = [] {
         didSet {
             nextDraws.sort { $0.date > $1.date }
+            noGamesAddedImageView.isHidden = !nextDraws.isEmpty
+            addButton.isHidden = !nextDraws.isEmpty
         }
     }
 
@@ -53,6 +72,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupSegmentedControl()
         setupCollectionViews()
         setupScanButton()  // Setup scan button
+        setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
         fetchStateAndGames()
         setupNavigationBarTitle()
@@ -82,6 +102,8 @@ private extension DrawsViewController {
         
         view.addSubview(segmentedControl)
     }
+  
+    
     
     func setupCollectionViews() {
         let nextDrawsCollectionViewLayout = UICollectionViewFlowLayout()
@@ -119,6 +141,16 @@ private extension DrawsViewController {
         
         view.addSubview(scanButton)
     }
+
+    func setupNoGamesAddedImageView() {
+        noGamesAddedImageView = UIImageView(image: UIImage(named: "NextDraws.NoGames"))
+        noGamesAddedImageView.translatesAutoresizingMaskIntoConstraints = false
+        noGamesAddedImageView.contentMode = .scaleAspectFit
+        noGamesAddedImageView.isHidden = true
+        
+        view.addSubview(noGamesAddedImageView)
+        view.addSubview(addButton)
+    }
     
     func setupLayoutConstraints() {
         NSLayoutConstraint.activate([
@@ -140,7 +172,17 @@ private extension DrawsViewController {
             scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
             scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
             scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale)
+            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            
+            noGamesAddedImageView.widthAnchor.constraint(equalToConstant: 344.scale),
+            noGamesAddedImageView.heightAnchor.constraint(equalToConstant: 235.scale),
+            noGamesAddedImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noGamesAddedImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30.scale),
+            
+            addButton.widthAnchor.constraint(equalToConstant: 195.scale),
+            addButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            addButton.topAnchor.constraint(equalTo: noGamesAddedImageView.bottomAnchor, constant: 30.scale)
         ])
     }
 }

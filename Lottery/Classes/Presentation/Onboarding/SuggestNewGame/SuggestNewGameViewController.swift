@@ -65,7 +65,11 @@ private extension SuggestNewGameViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.".localized)
+                    self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.".localized, duration: 0.45)
+                    self?.suggestNewGameView.textField.resignFirstResponder()
+                    delay(0.7) {
+                        self?.dismiss(animated: true)
+                    }
                 case .failure(let error):
                     self?.presentTryAgainViewController(with: error, gameTitle: gameTitle)
                 }
@@ -73,7 +77,7 @@ private extension SuggestNewGameViewController {
         }
     }
     
-    func showToast(message: String) {
+    func showToast(message: String, duration: CGFloat = 3.0) {
         var style = ToastStyle()
         style.backgroundColor = Appearance.mono200
         style.messageColor = .white
@@ -81,7 +85,7 @@ private extension SuggestNewGameViewController {
         style.horizontalPadding = 24.0.scale
         style.verticalPadding = 24.0.scale
         style.titleFont = Fonts.Inter.medium(size: 16.scale)
-        self.view.makeToast(message, duration: 3.0, position: .top, style: style)
+        self.view.makeToast(message, duration: duration, position: .top, style: style)
     }
     
     func presentTryAgainViewController(with error: Error, gameTitle: String) {

@@ -33,9 +33,10 @@ class LotteryCell: UITableViewCell {
     }
     
     private func setupView() {
+        backgroundColor = Appearance.main500
         contentView.addSubview(lotteryLabel)
         contentView.addSubview(accessoryImageView)
-        
+         
         NSLayoutConstraint.activate([
             lotteryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.scale),
             lotteryLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -57,6 +58,7 @@ class LotteryCell: UITableViewCell {
         accessoryImageView.image = UIImage(named: isSelected ? "Game.Selected" : "Game.NotSelected")
         
         contentView.backgroundColor = Appearance.main500
+        
         separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
     }
 }

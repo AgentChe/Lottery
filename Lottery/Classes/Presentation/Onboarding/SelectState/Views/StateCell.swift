@@ -32,6 +32,7 @@ class StateCell: UITableViewCell {
     }
     
     private func setupView() {
+        backgroundColor = Appearance.main500
         contentView.addSubview(stateLabel)
         contentView.addSubview(accessoryImageView)
         

@@ -20,8 +20,8 @@ final class SelectLotteryView: UIView {
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.isEnabled = false // Initially disabled
-        button.alpha = 0.5 // Initially pale
+        button.isEnabled = true // Initially disabled
+        button.alpha = 1.0 //0.5 // Initially pale
         return button
     }()
     
@@ -167,8 +167,8 @@ private extension SelectLotteryView {
     }
     
     func updateContinueButtonState() {
-        continueButton.isEnabled = !selectedLotteries.isEmpty
-        continueButton.alpha = selectedLotteries.isEmpty ? 0.5 : 1.0
+        continueButton.isEnabled = true //!selectedLotteries.isEmpty
+        continueButton.alpha = 1.0 //selectedLotteries.isEmpty ? 0.5 : 1.0
     }
 }
 
