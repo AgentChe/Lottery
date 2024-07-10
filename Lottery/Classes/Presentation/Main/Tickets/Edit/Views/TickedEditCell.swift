@@ -453,7 +453,9 @@ extension TicketEditCell: EditNumberCellDelegate {
                    // Get the next cell and make its text field the first responder
                    DispatchQueue.main.async {
                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
-                           nextCell.numberTextField.becomeFirstResponder()
+                           if nextCell.numberTextField.text?.count != 2 {
+                               nextCell.numberTextField.becomeFirstResponder()
+                           }
                        }
                    }
                }

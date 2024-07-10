@@ -25,8 +25,3 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
 }
 
-extension SceneDelegate {
-    func getRootViewController() -> UIViewController? {
-           return window?.rootViewController
-       }
-}
