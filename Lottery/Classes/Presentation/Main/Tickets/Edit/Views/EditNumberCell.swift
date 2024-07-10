@@ -38,7 +38,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         }
     }
     // Replace UILabel with UITextField
-    private let numberTextField: UITextField = {
+     let numberTextField: UITextField = {
         let textField = UITextField()
         textField.textAlignment = .center
         textField.font = UIFont.systemFont(ofSize: 18.scale)

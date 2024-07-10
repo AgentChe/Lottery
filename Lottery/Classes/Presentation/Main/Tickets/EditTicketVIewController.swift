@@ -230,18 +230,19 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
 //
 //                    // Present the alert
 //                    self.present(alert, animated: true, completion: nil)
-                    if let sceneDelegate = UIApplication.shared.connectedScenes
-                        .first?.delegate as? SceneDelegate {
-                        if let rootNavigController = sceneDelegate.getRootViewController() as? NavigationController{
-                            // Do something with the root view controller
-                           let rootViewControllers = rootNavigController.viewControllers
-                            
-                            if let mainViewController = rootViewControllers.first as? MainViewController {
-                            
-                                mainViewController.coordinator.change(tab: .myTickets)
-                            }
-                        }
-                    }
+
+//                    if let sceneDelegate = UIApplication.shared.connectedScenes
+//                        .first?.delegate as? SceneDelegate {
+//                        if let rootNavigController = sceneDelegate.getRootViewController() as? NavigationController{
+//                            // Do something with the root view controller
+//                           let rootViewControllers = rootNavigController.viewControllers
+//                            
+//                            if let mainViewController = rootViewControllers.first as? MainViewController {
+//                            
+//                                mainViewController.coordinator.change(tab: .myTickets)
+//                            }
+//                        }
+//                    }
                     
                      
                     
