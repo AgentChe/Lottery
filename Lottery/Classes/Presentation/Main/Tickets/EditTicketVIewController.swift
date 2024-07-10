@@ -149,17 +149,17 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 print("Ticket deleted successfully")
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
-                    let alert = UIAlertController(
-                        title: "EditTicketViewController.TicketDeletedSuccessfully.Title".localized,
-                        message: "EditTicketViewController.TicketDeletedSuccessfully.Message".localized,
-                        preferredStyle: .alert
-                    )
-                    
-                    // Add an OK button to the alert
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    
-                    // Present the alert
-                    self.present(alert, animated: true, completion: nil)
+//                    let alert = UIAlertController(
+//                        title: "EditTicketViewController.TicketDeletedSuccessfully.Title".localized,
+//                        message: "EditTicketViewController.TicketDeletedSuccessfully.Message".localized,
+//                        preferredStyle: .alert
+//                    )
+//                    
+//                    // Add an OK button to the alert
+//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                    
+//                    // Present the alert
+//                    self.present(alert, animated: true, completion: nil)
                 }
                 
             case .failure(let error):
