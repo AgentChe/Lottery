@@ -185,12 +185,12 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
         
-        let checkTicketViewController = CheckTicketViewController(ticket: ticket)
+        let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
         checkTicketViewController.imageView.image = results.croppedScan.image
         let croppedImageSize = results.croppedScan.image.size
         checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
         if croppedImageSize.width / croppedImageSize.height < 3 {
-            checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckTicketViewController.imageViewTapped))
+            checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
         }
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         navigationController?.pushViewController(checkTicketViewController, animated: true)

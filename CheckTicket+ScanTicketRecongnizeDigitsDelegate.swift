@@ -10,14 +10,14 @@ import VisionKit
 import Vision
 import CoreImage
 
-extension CheckTicketViewController: EditTicketViewControllerDelegate {
+extension CheckScanTicketViewController: EditTicketViewControllerDelegate {
     func updateSizeOfEditCell(numbersStringArray: [[String]]) {
         self.numbersStringArray = numbersStringArray
         collectionView.collectionViewLayout.invalidateLayout()
     }
 }
 
-extension CheckTicketViewController: RecognizedTextDataSource {
+extension CheckScanTicketViewController: RecognizedTextDataSource {
     func processImage(image: UIImage) {
         guard let cgImage = image.cgImage else {
             print("Failed to get cgimage from input image")
@@ -48,7 +48,7 @@ extension CheckTicketViewController: RecognizedTextDataSource {
     }
 }
 
-extension CheckTicketViewController {
+extension CheckScanTicketViewController {
     func fullfillNumbersStringArray(transcript: String, ticket: Ticket) -> [[Int]] {
         if ticket.id != 6 {
             let numbersArray = convertStringToIntArray(transcript)

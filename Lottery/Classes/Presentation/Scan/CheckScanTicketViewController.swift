@@ -13,7 +13,7 @@ protocol RecognizedTextDataSource: AnyObject {
     func addRecognizedText(recognizedText: [VNRecognizedTextObservation])
 }
 
-class CheckTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class CheckScanTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
@@ -297,10 +297,17 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     // Method to update save button state based on validation
-    private func updateSaveButtonState() {
+    func updateSaveButtonState() {
         let allNumbersValid = areAllNumbersValid()
-        saveTicketButton.isEnabled = allNumbersValid
-        saveTicketButton.backgroundColor = allNumbersValid ? Appearance.main100 : .gray // Change the color to gray if not valid
+        
+        if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditScanCell {
+            let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
+            saveTicketButton.isEnabled = isValid
+            saveTicketButton.backgroundColor = isValid ? Appearance.main100 : .gray // Change the color to gray if not valid
+        } else {
+            saveTicketButton.isEnabled = false
+            saveTicketButton.backgroundColor  = .gray
+        }
     }
 
     // Handle keyboard appearance
@@ -331,7 +338,7 @@ class CheckTicketViewController: UIViewController, UICollectionViewDataSource, U
     }
 }
 
-extension CheckTicketViewController {
+extension CheckScanTicketViewController {
 
     func addGaussianBlurEffect(to imageView: UIImageView, withOverlayImage overlayImageName: String, target: Any?, action: Selector?) {
         guard let image = imageView.image else { return }

@@ -22,7 +22,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
     weak var parentvc: AddScanTicketViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
-    private let dateLabel = TickedEditDatePaddedLabel()
+    let dateLabel = TickedEditDatePaddedLabel()
     private let pencilEditImageView = UIImageView()
     
     private var datePickerContainer: UIView?
@@ -118,7 +118,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         let formattedDate = dateFormatter.string(from: Date())
-        dateLabel.text = formattedDate.uppercased()
+        dateLabel.text = "MM/DD/YYY"//formattedDate.uppercased()
         
         pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
         collectionViewHeightConstraint.isActive = false
@@ -298,6 +298,7 @@ private extension ScanAddTicketNumbersEditCell {
         dateLabel.text = formattedDate.uppercased()
         parentvc?.ticket?.date = date.timeIntervalSince1970
         ticket?.date = date.timeIntervalSince1970
+        parentvc?.updateSaveButtonState()
     }
 }
 

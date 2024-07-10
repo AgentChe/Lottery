@@ -19,11 +19,11 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
             delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
-    weak var parentvc: CheckTicketViewController?
+    weak var parentvc: CheckScanTicketViewController?
     weak var delegate: EditTicketViewControllerDelegate?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
-    private let dateLabel = TickedEditDatePaddedLabel() 
+    let dateLabel = TickedEditDatePaddedLabel()
     private let pencilEditImageView = UIImageView()
     
     private var datePickerContainer: UIView?
@@ -309,6 +309,7 @@ private extension TicketEditScanCell {
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
         parentvc?.ticket?.date = date.timeIntervalSince1970
+        parentvc?.updateSaveButtonState()
     }
 }
 
