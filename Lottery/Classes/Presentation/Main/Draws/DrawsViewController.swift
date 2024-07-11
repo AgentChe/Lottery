@@ -359,8 +359,8 @@ private extension DrawsViewController {
                 switch result {
                 case .success(let profile):
                     if let stateId = profile.state {
-                        self?.fetchLotteries(for: stateId)
                         self?.profile = profile
+                        self?.fetchLotteries(for: stateId)
                     } else {
                         print("State ID is not available in profile")
                     }
@@ -377,19 +377,23 @@ private extension DrawsViewController {
                 switch result {
                 case .success(let games):
                     
-                    var selectedGames: [Game] = []
-                    if let profile = self?.profile{
-                        if let profileLotteries = profile.lotteries {
-                            for lottery in profileLotteries {
-                                for game in games {
-                                    if game.lotteryId == lottery {
-                                        selectedGames.append(game)
-                                    }
-                                }
-                            }
-                        }
+//                    var selectedGames: [Game] = []
+//                    if let profile = self?.profile{
+//                        if let profileLotteries = profile.lotteries {
+//                            for lottery in profileLotteries {
+//                                for game in games {
+//                                    if game.lotteryId == lottery {
+//                                        selectedGames.append(game)
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+                    self?.nextDraws = games
+                    if games.count != 0{
+                        self?.noGamesAddedImageView.isHidden = true
+                        self?.addButton.isHidden = true
                     }
-                    self?.nextDraws = selectedGames
                     
                     delay(0.05) {
                         self?.nextDrawsCollectionView.reloadData()
@@ -407,19 +411,19 @@ private extension DrawsViewController {
                 switch result {
                 case .success(let games):
                     
-                    var selectedGames: [Game] = []
-                    if let profile = self?.profile{
-                        if let profileLotteries = profile.lotteries {
-                            for lottery in profileLotteries {
-                                for game in games {
-                                    if game.lotteryId == lottery {
-                                        selectedGames.append(game)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    self?.pastDraws = selectedGames
+//                    var selectedGames: [Game] = []
+//                    if let profile = self?.profile{
+//                        if let profileLotteries = profile.lotteries {
+//                            for lottery in profileLotteries {
+//                                for game in games {
+//                                    if game.lotteryId == lottery {
+//                                        selectedGames.append(game)
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+                    self?.pastDraws = games//selectedGames
                     delay(0.09) {
                         self?.pastDrawsCollectionView.reloadData()
                     }
