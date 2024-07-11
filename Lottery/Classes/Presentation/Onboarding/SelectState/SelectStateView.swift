@@ -65,6 +65,7 @@ final class SelectStateView: UIView {
         tableView.backgroundColor = Appearance.main500
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
+        tableView.separatorStyle = .singleLine
         tableView.separatorColor = .lightGray
         tableView.showsVerticalScrollIndicator = false
         return tableView
@@ -169,6 +170,11 @@ extension SelectStateView: UITableViewDataSource {
         let state = states[indexPath.row]
         let isSelected = selectedState == state.id
         cell.configure(with: state, isSelected: isSelected)
+        cell.selectionStyle = .none
+        
+//        let selectedBackgroundView = UIView()
+//        selectedBackgroundView.backgroundColor = UIColor.clear
+//        cell.selectedBackgroundView = selectedBackgroundView
         
         return cell
     }

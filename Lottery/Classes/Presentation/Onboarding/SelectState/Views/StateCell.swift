@@ -53,7 +53,7 @@ class StateCell: UITableViewCell {
             .font(Fonts.Inter.medium(size: 15.scale))
             .lineHeight(18.scale)
         stateLabel.attributedText = state.name.attributed(with: attrs)
-        
+        backgroundColor = .red
         accessoryImageView.image = UIImage(named: isSelected ? "State.Selected" : "State.NotSelected")
         
         contentView.backgroundColor = Appearance.main500

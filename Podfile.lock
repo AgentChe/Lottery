@@ -132,7 +132,6 @@ DEPENDENCIES:
   - Firebase/Analytics
   - Firebase/Messaging
   - Kingfisher
-  - Kingfisher (~> 7.0)
   - lottie-ios
   - OtterScaleiOS (from `https://github.com/AgentChe/OtterScaleiOS.git`)
   - RxCocoa
@@ -201,6 +200,6 @@ SPEC CHECKSUMS:
   SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
   Toast-Swift: dd369e68ee529f542c65bd0d0c6c50cd743cf6f2
 
-PODFILE CHECKSUM: 3c15696590d175938336b0e6198e63d14842b8d3
+PODFILE CHECKSUM: 90ea409613c53c9fcc18e5b53a6ced6ed7cedbc1
 
 COCOAPODS: 1.15.2
