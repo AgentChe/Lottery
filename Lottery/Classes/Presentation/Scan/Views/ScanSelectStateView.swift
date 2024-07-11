@@ -157,6 +157,8 @@ extension ScanSelectStateView: UITableViewDataSource {
         let isSelected = selectedState == state.id
         cell.configure(with: state, isSelected: isSelected)
         
+        cell.selectionStyle = .none
+        
         return cell
     }
 }

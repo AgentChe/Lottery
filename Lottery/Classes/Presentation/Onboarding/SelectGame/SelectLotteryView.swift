@@ -187,6 +187,7 @@ extension SelectLotteryView: UITableViewDataSource {
         let isSelected = selectedLotteries.contains(indexPath.row)
         cell.configure(with: lottery, isSelected: isSelected)
         
+        cell.selectionStyle = .none 
         return cell
     }
 }
