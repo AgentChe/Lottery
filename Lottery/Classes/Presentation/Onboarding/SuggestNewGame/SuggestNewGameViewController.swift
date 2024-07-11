@@ -68,7 +68,7 @@ private extension SuggestNewGameViewController {
                     self?.showToast(message: "Thanks for adding a new game! We will consider adding it to the list.".localized, duration: 0.45)
                     self?.suggestNewGameView.textField.resignFirstResponder()
                     delay(0.7) {
-                        self?.dismiss(animated: true)
+                        self?.dismissViewController() 
                     }
                 case .failure(let error):
                     self?.presentTryAgainViewController(with: error, gameTitle: gameTitle)
