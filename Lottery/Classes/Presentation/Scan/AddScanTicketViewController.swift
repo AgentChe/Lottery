@@ -31,6 +31,15 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         return button
     }()
     
+    // Add an activity indicator
+    let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
     
@@ -84,6 +93,11 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
+        
+        // Add activity indicator to save button
+        saveTicketButton.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: saveTicketButton.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: saveTicketButton.centerYAnchor).isActive = true
         
         setupConstraints()
         updateSaveButtonState() // Initial check to set the button state based on initial data
@@ -141,6 +155,10 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     }
     
     @objc func saveTicketButtonTapped() {
+        // Hide the title and show the activity indicator
+        saveTicketButton.setTitle("", for: .normal)
+        activityIndicator.startAnimating()
+
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
         for section in numbersStringArray {
@@ -164,28 +182,16 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
             
             let ticketManager = TicketsManager()
             ticketManager.addTicket(lotteryId: lotteryId, pictureUrl: lottery.logoUrl, date: ticket.date, numbers: numbersArray) { result in
+                DispatchQueue.main.async {
+                    // Stop the activity indicator and show the title
+                    self.activityIndicator.stopAnimating()
+                    self.saveTicketButton.setTitle("AddScanTicketViewController.SaveTicket".localized, for: .normal)
+                }
                 switch result {
                 case .success(let updatedTicket):
-                    
-                    
                     DispatchQueue.main.async {
                         self.navigationController?.popToRootViewController(animated: true)
-                        
-//                        if let sceneDelegate = UIApplication.shared.connectedScenes
-//                            .first?.delegate as? SceneDelegate {
-//                            if let rootNavigController = sceneDelegate.getRootViewController() as? NavigationController{
-//                                // Do something with the root view controller
-//                                let rootViewControllers = rootNavigController.viewControllers
-//                                
-//                                if let mainViewController = rootViewControllers.first as? MainViewController {
-//                                    
-//                                    mainViewController.coordinator.change(tab: .myTickets)
-//                                }
-//                            }
-//                        }
                     }
-
-                    
                 case .failure(let error):
                     // Handle failure by presenting an alert to the user
                     print("Failed to update the ticket: \(error)")

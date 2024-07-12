@@ -31,6 +31,15 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         return button
     }()
     
+    // Add an activity indicator
+    let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
     
@@ -76,6 +85,11 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
         
+        // Add activity indicator to save button
+        saveTicketButton.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: saveTicketButton.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: saveTicketButton.centerYAnchor).isActive = true
+        
         setupConstraints()
         updateSaveButtonState() // Initial check to set the button state based on initial data
         
@@ -104,6 +118,10 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     }
     
     @objc func saveTicketButtonTapped() {
+        // Hide the title and show the activity indicator
+        saveTicketButton.setTitle("", for: .normal)
+        activityIndicator.startAnimating()
+
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
         for section in numbersStringArray {
@@ -127,6 +145,11 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         
         let gamesManager = GamesManager()
         gamesManager.addLuckyNumbers(lotteryId: lotteryId, date: date, numbers: numbersArray) { [weak self] result in
+            DispatchQueue.main.async {
+                // Stop the activity indicator and show the title
+                self?.activityIndicator.stopAnimating()
+                self?.saveTicketButton.setTitle("EditLuckyNumbersViewController.SaveButton".localized, for: .normal)
+            }
             switch result {
             case .success(let success):
                 if success {

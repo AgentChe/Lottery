@@ -30,6 +30,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         button.isEnabled = false // Initially disabled
         return button
     }()
+    
     private let deleteTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
@@ -41,6 +42,15 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         button.addTarget(self, action: #selector(deleteTicketButtonTapped), for: .touchUpInside)
         button.isEnabled = true // Initially disabled
         return button
+    }()
+    
+    // Add an activity indicator
+    let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
     }()
     
     // Bottom constraint for the save button
@@ -81,6 +91,11 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         view.addSubview(saveTicketButton)
         view.addSubview(deleteTicketButton)
         
+        // Add activity indicator to save button
+        saveTicketButton.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: saveTicketButton.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: saveTicketButton.centerYAnchor).isActive = true
+
         setupConstraints()
         updateSaveButtonState() // Initial check to set the button state based on initial data
         
@@ -100,11 +115,9 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
             saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale),
             
-            
             deleteTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             deleteTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
             deleteTicketButton.heightAnchor.constraint(equalToConstant: 50.scale)
-            
         ])
         
         // Initialize the bottom constraint
@@ -113,6 +126,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         deleteButtonBottomConstraint  = deleteTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
         deleteButtonBottomConstraint.isActive = true
     }
+
     @objc func deleteTicketButtonTapped() {
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
@@ -149,17 +163,6 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 print("Ticket deleted successfully")
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
-//                    let alert = UIAlertController(
-//                        title: "EditTicketViewController.TicketDeletedSuccessfully.Title".localized,
-//                        message: "EditTicketViewController.TicketDeletedSuccessfully.Message".localized,
-//                        preferredStyle: .alert
-//                    )
-//                    
-//                    // Add an OK button to the alert
-//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                    
-//                    // Present the alert
-//                    self.present(alert, animated: true, completion: nil)
                 }
                 
             case .failure(let error):
@@ -183,7 +186,13 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         }
 
     }
+
     @objc func saveTicketButtonTapped() {
+        // Hide the title and show the activity indicator
+        saveTicketButton.setTitle("", for: .normal)
+        activityIndicator.startAnimating()
+        saveTicketButton.isEnabled = false // Disable the button
+
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
         for section in numbersStringArray {
@@ -213,39 +222,18 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         
         // Call the editTicket method
         ticketsManager.editTicket(id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbersArray) { result in
+            DispatchQueue.main.async {
+                // Stop the activity indicator and show the title
+                self.activityIndicator.stopAnimating()
+                self.saveTicketButton.setTitle("EditTicketViewController.SaveTicket".localized, for: .normal)
+                self.saveTicketButton.isEnabled = true // Re-enable the button
+            }
             switch result {
             case .success(let updatedTicket):
                 // Handle success (e.g., show a success message or pop the view controller)
                 print("Ticket updated successfully: \(updatedTicket)")
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
-//                    let alert = UIAlertController(
-//                           title: "EditTicketViewController.TicketEditedSuccessfully.Title".localized,
-//                           message: "EditTicketViewController.TicketEditedSuccessfully.Message".localized,
-//                           preferredStyle: .alert
-//                       )
-//
-//                    // Add an OK button to the alert
-//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//
-//                    // Present the alert
-//                    self.present(alert, animated: true, completion: nil)
-
-//                    if let sceneDelegate = UIApplication.shared.connectedScenes
-//                        .first?.delegate as? SceneDelegate {
-//                        if let rootNavigController = sceneDelegate.getRootViewController() as? NavigationController{
-//                            // Do something with the root view controller
-//                           let rootViewControllers = rootNavigController.viewControllers
-//                            
-//                            if let mainViewController = rootViewControllers.first as? MainViewController {
-//                            
-//                                mainViewController.coordinator.change(tab: .myTickets)
-//                            }
-//                        }
-//                    }
-                    
-                     
-                    
                 }
                 
             case .failure(let error):
@@ -268,8 +256,6 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             }
         }
     }
-
-
     
     private func setupNavigationBarTitle() {
         guard let backButtonImage = UIImage(named: "EditBackButtonImage") else { return }
@@ -323,7 +309,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
             
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing

@@ -44,6 +44,15 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         button.isEnabled = false // Initially disabled
         return button
     }()
+    
+    // Add an activity indicator
+    let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
 
     let rescanButton: UIButton = {
         let button = UIButton()
@@ -141,6 +150,11 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
         view.addSubview(rescanButton)
+        
+        // Add activity indicator to save button
+        saveTicketButton.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: saveTicketButton.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: saveTicketButton.centerYAnchor).isActive = true
 
         setupConstraints()
         updateSaveButtonState() // Initial check to set the button state based on initial data
@@ -156,7 +170,6 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             rescanButton.alpha = 0
         }
     }
-    
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
@@ -186,6 +199,10 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     }
 
     @objc func saveTicketButtonTapped() {
+        // Hide the title and show the activity indicator
+        saveTicketButton.setTitle("", for: .normal)
+        activityIndicator.startAnimating()
+        
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
         for section in numbersStringArray {
@@ -206,6 +223,11 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
         let ticketsManager = TicketsManager()
         ticketsManager.addTicket(lotteryId: existingTicket.lotteryId, pictureUrl: existingTicket.pictureUrl, date: existingTicket.date, numbers: numbersArray) { result in
+            DispatchQueue.main.async {
+                // Stop the activity indicator and show the title
+                self.activityIndicator.stopAnimating()
+                self.saveTicketButton.setTitle("CheckTicketViewController.SaveTicketButton".localized, for: .normal)
+            }
             switch result {
             case .success(let updatedTicket):
                 print("Ticket added successfully: \(updatedTicket)")
