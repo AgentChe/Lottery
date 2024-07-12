@@ -73,6 +73,7 @@ private extension ScanSelectLotteriesViewController {
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true // Hide the default back button
     }
+   
     @objc private func customBackButtonTapped() {
         // Perform back navigation
         if !fromMenu {
@@ -81,9 +82,9 @@ private extension ScanSelectLotteriesViewController {
             navigationController?.popToRootViewController(animated: true)
         }
     }
+    
     func setupButtons() {
         selectLotteryView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
-        
     }
     
     func fetchLotteries() {

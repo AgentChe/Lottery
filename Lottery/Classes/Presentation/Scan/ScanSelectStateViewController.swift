@@ -10,7 +10,9 @@ import UIKit
 class ScanSelectStateViewController: UIViewController {
     var onContinue: ((Int?) -> Void)?
     private let contentManager: ContentManagerProtocol = ContentManager()
+    private let profileManager: ProfileManagerProtocol = ProfileManager()
     private var states: [State] = []
+    var profile: Profile!
     private let selectStateView = ScanSelectStateView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -18,13 +20,13 @@ class ScanSelectStateViewController: UIViewController {
     }
     
     override func loadView() {
-        view = selectStateView
+        view = selectStateView      
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupButton()
-        fetchStates()
+        fetchProfile()
         setupNavigationBackButton()
         configureNavigationBar()
     }
@@ -36,7 +38,27 @@ private extension ScanSelectStateViewController {
     func setupButton() {
         selectStateView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
     }
-    
+    func fetchProfile() {
+        profileManager.getProfile(forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    if let stateId = profile.state {
+                        self?.profile = profile
+                        self?.selectStateView.selectedState = profile.state
+                        self?.selectStateView.stateTableView.reloadData()
+                        self?.selectStateView.updateContinueButtonState()
+                        self?.fetchStates()
+                    } else {
+                        print("State ID is not available in profile")
+                    }
+                case .failure(let error):
+                    print("Failed to fetch profile: \(error)")
+                }
+            }
+        }
+    }
+
     func fetchStates() {
         contentManager.fetchStates(forceUpdate: true) { [weak self] result in
             switch result {

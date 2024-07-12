@@ -49,7 +49,7 @@ final class ScanSelectStateView: UIView {
         return label
     }()
     
-    private let stateTableView: UITableView = {
+     let stateTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = Appearance.main500
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +60,7 @@ final class ScanSelectStateView: UIView {
     }()
     
     private var states: [State] = []
-    private var selectedState: Int?
+    var selectedState: Int?
     
     // MARK: - Initializers
     
@@ -72,6 +72,15 @@ final class ScanSelectStateView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    func updateContinueButtonState() {
+        if selectedState != nil {
+            continueButton.isEnabled = true
+            continueButton.alpha = 1.0
+        } else {
+            continueButton.isEnabled = false
+            continueButton.alpha = 0.5
+        }
     }
 }
 
@@ -131,15 +140,7 @@ private extension ScanSelectStateView {
         stateTableView.register(StateCell.self, forCellReuseIdentifier: "StateCell")
     }
     
-    func updateContinueButtonState() {
-        if selectedState != nil {
-            continueButton.isEnabled = true
-            continueButton.alpha = 1.0
-        } else {
-            continueButton.isEnabled = false
-            continueButton.alpha = 0.5
-        }
-    }
+   
 }
 
 // MARK: - UITableViewDataSource
