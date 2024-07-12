@@ -18,6 +18,9 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
+            if numbersStringArray.count == 0 {
+                presentRecognitionErrorAlert(on: self)
+            }
             updateSaveButtonState()
             collectionView.collectionViewLayout.invalidateLayout()
         }
@@ -28,8 +31,8 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     var textRecognitionRequest = VNRecognizeTextRequest()
     var resultsViewController: (UIViewController & RecognizedTextDataSource)?
-
-    private let saveTicketButton: UIButton = {
+   
+    let saveTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("CheckTicketViewController.SaveTicketButton".localized, for: .normal)
         button.backgroundColor = Appearance.main100
@@ -42,7 +45,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         return button
     }()
 
-    private let rescanButton: UIButton = {
+    let rescanButton: UIButton = {
         let button = UIButton()
         button.setTitle("CheckTicketViewController.RescanButton".localized, for: .normal)
         button.backgroundColor = .white
@@ -70,7 +73,13 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
-
+    var badRecognition: Bool = false
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if badRecognition {
+            self.presentRecognitionErrorAlert(on: self)
+        }
+    }
     // Custom initializer
     init(ticket: Ticket) {
         super.init(nibName: nil, bundle: nil)
@@ -87,6 +96,10 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
                 DispatchQueue.main.async {
                     resultsViewController.addRecognizedText(recognizedText: requestResults)
                 }
+            } else {
+               
+                self.badRecognition = true
+                self.presentRecognitionErrorAlert(on: self)
             }
         }
 
@@ -135,7 +148,15 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         // Add keyboard observers
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        if badRecognition {
+            imageView.alpha = 0
+            collectionView.alpha = 0
+            saveTicketButton.alpha = 0
+            rescanButton.alpha = 0
+        }
     }
+    
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
@@ -215,7 +236,14 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     @objc func rescanButtonTapped() {
         // Handle the rescan button tap
         print("Rescan button tapped")
-        navigationController?.popViewController(animated: true)
+        
+        if let viewControllers = navigationController?.viewControllers {
+            let targetIndex = viewControllers.count - 3
+            if targetIndex >= 0 {
+                let targetViewController = viewControllers[targetIndex]
+                navigationController?.popToViewController(targetViewController, animated: true)
+            }
+        }
     }
 
     private func setupNavigationBarTitle() {
@@ -235,6 +263,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     @objc func handleBackButton() {
         navigationController?.popViewController(animated: true)
+        
     }
 
     private func setupNavigationBar() {

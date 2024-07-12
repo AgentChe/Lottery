@@ -41,7 +41,7 @@ extension CheckScanTicketViewController: RecognizedTextDataSource {
                 transcript += numbersOnly
             }
         }
-        print("Text recognized is:", transcript)
+        
         if let ticket = ticket {
             fullfillNumbersStringArray(transcript: transcript, ticket: ticket)
         }
@@ -75,6 +75,10 @@ extension CheckScanTicketViewController {
                     }
                 }
             } else {
+                imageView.alpha = 0
+                collectionView.alpha = 0
+                saveTicketButton.alpha = 0
+                rescanButton.alpha = 0
                 presentRecognitionErrorAlert(on: self)
             }
         }
@@ -86,9 +90,21 @@ extension CheckScanTicketViewController {
                 print("2by2 array: \(convertToFormattedStringArray(stringArray: digitsStringArray))")
                 numbersStringArray = [convertToFormattedStringArray(stringArray: digitsStringArray)]
             } else {
+                imageView.alpha = 0
+                collectionView.alpha = 0
+                saveTicketButton.alpha = 0
+                rescanButton.alpha = 0
                 presentRecognitionErrorAlert(on: self)
             }
         }
+        if numbersStringArray == [] {
+            imageView.alpha = 0
+            collectionView.alpha = 0
+            saveTicketButton.alpha = 0
+            rescanButton.alpha = 0
+            presentRecognitionErrorAlert(on: self)
+        }
+        
         collectionView.reloadData()
         return [[]]
     }

@@ -9,7 +9,16 @@ import UIKit
 protocol RemoveCellDelegate: AnyObject {
     func removeItem(at indexPath: IndexPath)
 }
+class CustomCloseButton: UIButton {
+    var removeCell: RemoveCell!
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        print("CustomCloseButton tocuhesBegan")
+        removeCell.closeButtonTapped()
+    }
+}
 class RemoveCell: UICollectionViewCell {
+  
     weak var delegate: RemoveCellDelegate?
     var numberOfCells: Int? {
         didSet {
@@ -18,24 +27,31 @@ class RemoveCell: UICollectionViewCell {
             }
         }
     }
-     let closeButton: UIButton = {
-        let button = UIButton()
+     let closeButton: CustomCloseButton = {
+        let button = CustomCloseButton()
+      
         button.setImage(UIImage(named: "EditTickets.Close"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .center
-        button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+        //button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         return button
     }()
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        print("RemoveCell tocuhesBegan")
+    }
+    
     var indexPath: IndexPath!
     
-    @objc private func closeButtonTapped() {
+    @objc  func closeButtonTapped() {
         delegate?.removeItem(at: indexPath)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        closeButton.removeCell = self
     }
     
     required init?(coder: NSCoder) {

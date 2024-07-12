@@ -20,7 +20,7 @@ class ScanSelectStateViewController: UIViewController {
     }
     
     override func loadView() {
-        view = selectStateView      
+        view = selectStateView
     }
     
     override func viewDidLoad() {

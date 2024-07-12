@@ -15,6 +15,11 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
             delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
+   
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        print("TicketLuckyNumbersEditCell tocuhesBegan")
+    }
     
     weak var delegate: EditTicketViewControllerDelegate?
     weak var parentVC: EditLuckyNumbersViewController?

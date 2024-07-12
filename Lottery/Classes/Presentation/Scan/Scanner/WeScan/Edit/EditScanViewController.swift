@@ -186,6 +186,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
         
         let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
+
         checkTicketViewController.imageView.image = results.croppedScan.image
         let croppedImageSize = results.croppedScan.image.size
         checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
