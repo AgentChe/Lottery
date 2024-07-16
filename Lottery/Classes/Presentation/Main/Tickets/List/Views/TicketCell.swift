@@ -155,6 +155,9 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         let now = Date() // Current date as Date object
         let ticketDate = Date(timeIntervalSince1970: ticket.date) // Convert TimeInterval to Date
         let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateStyle = .medium
         
         // Compare dates and set the title accordingly

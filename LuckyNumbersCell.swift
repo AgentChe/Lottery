@@ -113,9 +113,14 @@ class LuckyNumbersCell: UICollectionViewCell {
                 case .success(let success):
                     if success {
                         // Handle success case
-                        print("LuckyNumbersCell.RemoveButton".localized)
-                        DispatchQueue.main.async {
-                            self?.delegate?.fetchLotteries(for: nil)
+                        let gamesManager = GamesManager()
+                        gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                            print("LuckyNumbersCell.RemoveButton".localized)
+                            DispatchQueue.main.async {
+                                self?.delegate?.fetchLotteries(for: nil)
+                            }
+                        }
+                        gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
                         }
                     } else {
                         DispatchQueue.main.async {

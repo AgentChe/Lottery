@@ -108,7 +108,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupScanButton()  // Setup scan button
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
-        fetchStateAndGames()
         setupNavigationBarTitle()
     }
 }
@@ -354,7 +353,9 @@ private extension DrawsViewController {
     }
    
     func fetchStateAndGames() {
+       
         profileManager.getProfile(forceUpdate: false) { [weak self] result in
+           
             DispatchQueue.main.async {
                 switch result {
                 case .success(let profile):
@@ -372,7 +373,8 @@ private extension DrawsViewController {
     }
     
     func fetchNextGames(for stateId: Int) {
-        gamesManager.fetchNextGames(stateId: stateId) { [weak self] result in
+        
+        gamesManager.fetchNextGames(stateId: stateId, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
@@ -406,7 +408,7 @@ private extension DrawsViewController {
     }
     
     func fetchPastGames(for stateId: Int) {
-        gamesManager.fetchPastGames(stateId: stateId) { [weak self] result in
+        gamesManager.fetchPastGames(stateId: stateId, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
@@ -435,6 +437,7 @@ private extension DrawsViewController {
     }
     
     func fetchLotteries(for stateId: Int) {
+        
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {

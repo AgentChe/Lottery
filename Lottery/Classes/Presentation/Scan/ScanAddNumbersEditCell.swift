@@ -51,6 +51,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         layout.sectionInset = UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
@@ -150,22 +151,24 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
 private extension ScanAddTicketNumbersEditCell {
     @objc private func plusButtonTapped() {
         guard var ticket = self.ticket else { return }
-        
+
         let numberOfElementsInLastSection = numbersStringArray.last?.count ?? 5
         let newEmptySection = Array(repeating: "", count: numberOfElementsInLastSection)
-        
+
+        // Update the data source
         numbersStringArray.append(newEmptySection)
         
         self.ticket = ticket
-        
+
+        // Adjust the collection view height constraint based on the new data
         collectionViewHeightConstraint.isActive = false
         if let firstNumberArray = numbersStringArray.first {
             let numberOfCells = firstNumberArray.count + 1
             // Calculate the available width based on the given constraints
             let totalWidth: CGFloat = 343.scale
             let sideMargins: CGFloat = 40.scale
-            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
-            
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
+
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
@@ -174,11 +177,25 @@ private extension ScanAddTicketNumbersEditCell {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
         }
         collectionViewHeightConstraint.isActive = true
-        
-        collectionView.reloadData()
-        
+
+        // Disable animations
+        UIView.performWithoutAnimation {
+            // Perform batch updates to add the new section
+            collectionView.performBatchUpdates({
+                collectionView.insertSections(IndexSet(integer: numbersStringArray.count - 1))
+            }, completion: { _ in
+                // Scroll to the new section, make sure it's within bounds
+                let newSectionIndex = self.numbersStringArray.count - 1
+                if newSectionIndex < self.collectionView.numberOfSections {
+                    self.collectionView.scrollToItem(at: IndexPath(item: 0, section: newSectionIndex), at: .centeredVertically, animated: false)
+                }
+            })
+        }
+
         delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
     }
+
+    
     
     
     func setupUI() {
@@ -388,7 +405,7 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
                 // Calculate the width for each cell
                 let availableWidth = totalWidth - sideMargins - cellSpacing
                 let cellWidth = availableWidth / CGFloat(numberOfCells)
-                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 10).scale)
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
             } else {
                 collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
             }
@@ -453,47 +470,50 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
 
 extension ScanAddTicketNumbersEditCell: EditNumberCellDelegate {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
-           guard indexPath.section < numbersStringArray.count,
-                 indexPath.item < numbersStringArray[indexPath.section].count else { return }
-           
-           // Update the number in the array if it contains exactly two digits
-           if number.count == 2 {
-               numbersStringArray[indexPath.section][indexPath.item] = number
-               
-               // Find the next index path
-               var nextItem = indexPath.item + 1
-               var nextSection = indexPath.section
-               
-               if nextItem >= numbersStringArray[indexPath.section].count {
-                   // Move to the next section if available
-                   nextItem = 0
-                   nextSection += 1
-               }
-               
-               // Check if the next section exists
-               if nextSection < numbersStringArray.count {
-                   let nextIndexPath = IndexPath(item: nextItem, section: nextSection)
-                   
-                   // Scroll to the next cell and make its text field the first responder
-                   collectionView.scrollToItem(at: nextIndexPath, at: .centeredVertically, animated: true)
-                   
-                   // Select the next cell
-                   collectionView.selectItem(at: nextIndexPath, animated: true, scrollPosition: [])
-                   
-                   // Get the next cell and make its text field the first responder
-                   DispatchQueue.main.async {
-                       if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
-                           if nextCell.numberTextField.text?.count != 2 {
-                               nextCell.numberTextField.becomeFirstResponder()
-                           }
-                       }
-                   }
-               }
-           } else {
-               // Update the number in the array without moving to the next cell
-               numbersStringArray[indexPath.section][indexPath.item] = number
-           }
-       }
+        guard indexPath.section < numbersStringArray.count,
+              indexPath.item < numbersStringArray[indexPath.section].count else { return }
+
+        // Update the number in the array if it contains exactly two digits
+        if number.count == 2 {
+            numbersStringArray[indexPath.section][indexPath.item] = number
+
+            // Find the next index path
+            var nextItem = indexPath.item + 1
+            var nextSection = indexPath.section
+
+            if nextItem >= numbersStringArray[indexPath.section].count {
+                // Move to the next section if available
+                nextItem = 0
+                nextSection += 1
+            }
+
+            // Check if the next section exists
+            if nextSection < numbersStringArray.count {
+                let nextIndexPath = IndexPath(item: nextItem, section: nextSection)
+
+                // Scroll to the next cell and make its text field the first responder
+                if nextIndexPath.section < collectionView.numberOfSections,
+                   nextIndexPath.item < collectionView.numberOfItems(inSection: nextIndexPath.section) {
+                    collectionView.scrollToItem(at: nextIndexPath, at: .centeredVertically, animated: true)
+
+                    // Select the next cell
+                    collectionView.selectItem(at: nextIndexPath, animated: true, scrollPosition: [])
+
+                    // Get the next cell and make its text field the first responder
+                    DispatchQueue.main.async {
+                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
+                            if nextCell.numberTextField.text?.count != 2 {
+                                nextCell.numberTextField.becomeFirstResponder()
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            // Update the number in the array without moving to the next cell
+            numbersStringArray[indexPath.section][indexPath.item] = number
+        }
+    }
        
        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
            if indexPath.item < (numbersStringArray[safe: indexPath.section]?.count ?? 0) {

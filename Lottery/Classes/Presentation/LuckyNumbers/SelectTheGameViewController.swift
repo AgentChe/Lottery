@@ -157,6 +157,8 @@ extension SelectTheGameViewController: UICollectionViewDataSource, UICollectionV
         // Convert Date to String
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM dd, yyyy" // Use the desired date format
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Set timezone if needed
         let dateString = dateFormatter.string(from: date)
         
         cell.configure(with: dateString,
@@ -212,7 +214,7 @@ extension SelectTheGameViewController {
     }
     
     func fetchNextGames(for stateId: Int) {
-        gamesManager.fetchNextGames(stateId: stateId) { [weak self] result in
+        gamesManager.fetchNextGames(stateId: stateId, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):

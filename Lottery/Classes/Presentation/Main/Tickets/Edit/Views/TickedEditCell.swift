@@ -423,47 +423,50 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
 
 extension TicketEditCell: EditNumberCellDelegate {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
-           guard indexPath.section < numbersStringArray.count,
-                 indexPath.item < numbersStringArray[indexPath.section].count else { return }
-           
-           // Update the number in the array if it contains exactly two digits
-           if number.count == 2 {
-               numbersStringArray[indexPath.section][indexPath.item] = number
-               
-               // Find the next index path
-               var nextItem = indexPath.item + 1
-               var nextSection = indexPath.section
-               
-               if nextItem >= numbersStringArray[indexPath.section].count {
-                   // Move to the next section if available
-                   nextItem = 0
-                   nextSection += 1
-               }
-               
-               // Check if the next section exists
-               if nextSection < numbersStringArray.count {
-                   let nextIndexPath = IndexPath(item: nextItem, section: nextSection)
-                   
-                   // Scroll to the next cell and make its text field the first responder
-                   collectionView.scrollToItem(at: nextIndexPath, at: .centeredVertically, animated: true)
-                   
-                   // Select the next cell
-                   collectionView.selectItem(at: nextIndexPath, animated: true, scrollPosition: [])
-                   
-                   // Get the next cell and make its text field the first responder
-                   DispatchQueue.main.async {
-                       if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
-                           if nextCell.numberTextField.text?.count != 2 {
-                               nextCell.numberTextField.becomeFirstResponder()
-                           }
-                       }
-                   }
-               }
-           } else {
-               // Update the number in the array without moving to the next cell
-               numbersStringArray[indexPath.section][indexPath.item] = number
-           }
-       }
+        guard indexPath.section < numbersStringArray.count,
+              indexPath.item < numbersStringArray[indexPath.section].count else { return }
+
+        // Update the number in the array if it contains exactly two digits
+        if number.count == 2 {
+            numbersStringArray[indexPath.section][indexPath.item] = number
+
+            // Find the next index path
+            var nextItem = indexPath.item + 1
+            var nextSection = indexPath.section
+
+            if nextItem >= numbersStringArray[indexPath.section].count {
+                // Move to the next section if available
+                nextItem = 0
+                nextSection += 1
+            }
+
+            // Check if the next section exists
+            if nextSection < numbersStringArray.count {
+                let nextIndexPath = IndexPath(item: nextItem, section: nextSection)
+
+                // Scroll to the next cell and make its text field the first responder
+                if nextIndexPath.section < collectionView.numberOfSections,
+                   nextIndexPath.item < collectionView.numberOfItems(inSection: nextIndexPath.section) {
+                    collectionView.scrollToItem(at: nextIndexPath, at: .centeredVertically, animated: true)
+
+                    // Select the next cell
+                    collectionView.selectItem(at: nextIndexPath, animated: true, scrollPosition: [])
+
+                    // Get the next cell and make its text field the first responder
+                    DispatchQueue.main.async {
+                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
+                            if nextCell.numberTextField.text?.count != 2 {
+                                nextCell.numberTextField.becomeFirstResponder()
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            // Update the number in the array without moving to the next cell
+            numbersStringArray[indexPath.section][indexPath.item] = number
+        }
+    }
        
        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
            if indexPath.item < (numbersStringArray[safe: indexPath.section]?.count ?? 0) {

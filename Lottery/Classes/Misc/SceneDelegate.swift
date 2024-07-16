@@ -14,7 +14,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else {
             return
         }
-        
+        let gamesManager = GamesManager()
+        gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+        }
+        gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
+        }
         window = UIWindow(windowScene: windowScene)
         //window?.rootViewController = OnboardingViewController.make()
         window?.rootViewController = SplashViewController.make()

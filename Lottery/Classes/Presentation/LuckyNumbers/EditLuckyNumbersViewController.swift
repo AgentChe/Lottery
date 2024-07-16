@@ -153,9 +153,15 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             switch result {
             case .success(let success):
                 if success {
-                    DispatchQueue.main.async {
-                        self?.navigationController?.popToRootViewController(animated: true)
+                    let gamesManager = GamesManager()
+                    gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                        DispatchQueue.main.async {
+                            self?.navigationController?.popToRootViewController(animated: true)
+                        }
                     }
+                    gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                    }
+                    
                 } else {
                     DispatchQueue.main.async {
                         self?.showErrorAlert(message: "EditLuckyNumbersViewController.ErrorMessage".localized)
