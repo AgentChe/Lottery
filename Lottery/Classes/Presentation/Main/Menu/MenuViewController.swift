@@ -11,7 +11,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     // Define the menu items
     private let menuItems = [
-        NSLocalizedString("Menu.Games", comment: "Games"),
+       // NSLocalizedString("Menu.Games", comment: "Games"),
         NSLocalizedString("Menu.State", comment: "State"),
         NSLocalizedString("Menu.TermsOfUse", comment: "Terms of Use"),
         NSLocalizedString("Menu.PrivacyPolicy", comment: "Privacy Policy"),

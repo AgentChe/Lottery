@@ -15,7 +15,7 @@ class ScanSelectLotteriesViewController: UIViewController {
     private var lotteries: [Lottery] = []
     private let stateId: Int?
 
-    private lazy var selectLotteryView = ScanSelectLotteryView(fromMenu: self.fromMenu)
+    lazy var selectLotteryView = ScanSelectLotteryView(fromMenu: self.fromMenu)
 
     // Custom initializer to accept stateId
     init(stateId: Int?, fromMenu: Bool = false) {
@@ -77,11 +77,11 @@ private extension ScanSelectLotteriesViewController {
    
     @objc private func customBackButtonTapped() {
         // Perform back navigation
-        if !fromMenu {
+      //  if !fromMenu {
             navigationController?.popViewController(animated: true)
-        } else {
-            navigationController?.popToRootViewController(animated: true)
-        }
+//        } else {
+//            navigationController?.popToRootViewController(animated: true)
+//        }
     }
     
     func setupButtons() {
@@ -91,7 +91,7 @@ private extension ScanSelectLotteriesViewController {
     
     func fetchLotteries() {
         if fromMenu {
-            contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+            contentManager.fetchLotteries(forceUpdate: false, stateId: stateId) { [weak self] result in
                 switch result {
                 case .success(let lotteries):
                     self?.lotteries = lotteries
@@ -115,14 +115,21 @@ private extension ScanSelectLotteriesViewController {
     
     @objc func continueButtonTapped() {
         let selectedLotteries = selectLotteryView.getSelectedLotteries()
-        if selectedLotteries.isEmpty {
-            presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
-            return
+        if !fromMenu {
+            if selectedLotteries.isEmpty {
+                presentTryAgainViewController(with: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please select at least one game."]))
+                return
+            }
         }
-        
         // Show preloader and hide button
 //        selectLotteryView.continueButton.isHidden = true
-//        selectLotteryView.preloader.startAnimating()
+        selectLotteryView.preloader.startAnimating()
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        let attributedTitle = "".localized.attributed(with: attrs)
+        
+        selectLotteryView.continueButton.setAttributedTitle(attributedTitle, for: .normal)
         var neededLotteries : [Lottery] = []
         for i in 0..<lotteries.count {
             for selectedLottery in selectedLotteries {

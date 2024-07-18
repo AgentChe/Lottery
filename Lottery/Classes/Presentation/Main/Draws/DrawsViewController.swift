@@ -260,7 +260,7 @@ extension DrawsViewController {
         if collectionView == nextDrawsCollectionView {
             return nextDraws.count
         } else {
-            return pastDraws.count > 100 ? 100 : pastDraws.count
+            return pastDraws.count //> 100 ? 100 : pastDraws.count
         }
     }
     

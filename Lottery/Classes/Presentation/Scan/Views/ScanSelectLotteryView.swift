@@ -12,7 +12,7 @@ final class ScanSelectLotteryView: UIView {
     
     // MARK: - UI Components
     var fromMenu = false
-    let continueButton: UIButton = {
+    lazy var continueButton: UIButton = {
         let button = UIButton()
         let attrs = TextAttributes()
             .textColor(.white)
@@ -22,8 +22,8 @@ final class ScanSelectLotteryView: UIView {
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 22.scale
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.isEnabled = false // Initially disabled
-        button.alpha = 0.5 // Initially pale
+        button.isEnabled = fromMenu ? true : false // Initially disabled
+        button.alpha = fromMenu ? 1:0.5 // Initially pale
         return button
     }()
     let profileManager = ProfileManager()
@@ -31,6 +31,7 @@ final class ScanSelectLotteryView: UIView {
         let preloader = UIActivityIndicatorView(style: .medium)
         preloader.translatesAutoresizingMaskIntoConstraints = false
         preloader.hidesWhenStopped = true
+        preloader.color = Appearance.mono100
         return preloader
     }()
     
@@ -226,8 +227,13 @@ private extension ScanSelectLotteryView {
     }
     
     func updateContinueButtonState() {
-        continueButton.isEnabled = !selectedLotteries.isEmpty
-        continueButton.alpha = selectedLotteries.isEmpty ? 0.5 : 1.0
+        if !fromMenu {
+            continueButton.isEnabled = !selectedLotteries.isEmpty
+            continueButton.alpha = selectedLotteries.isEmpty ? 0.5 : 1.0
+        } else {
+            continueButton.isEnabled = true
+            continueButton.alpha =  1.0
+        }
     }
 }
 

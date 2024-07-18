@@ -102,7 +102,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scanButtonIsTapped = false
-        navigationController?.navigationBar.barTintColor = .red
+        navigationController?.navigationBar.barTintColor = Appearance.main400
         navigationController?.navigationBar.isTranslucent = false
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {

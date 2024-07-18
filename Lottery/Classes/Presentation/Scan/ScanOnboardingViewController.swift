@@ -16,6 +16,7 @@ final class ScanOnboardingViewController: UIViewController {
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     var selectedState: Int?
     private var selectedLotteries: [Int] = []
+    var selectGameVC: ScanSelectLotteriesViewController!
     //private var stateId: Int?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,7 +106,7 @@ final class ScanOnboardingViewController: UIViewController {
     
     func showSelectLotteriesViewController() {
         guard let selectedState = selectedState else { return } // Ensure we have a stateId
-        let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: fromMenu)
+        selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: fromMenu)
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedLotteries = selectedGames
@@ -114,7 +115,6 @@ final class ScanOnboardingViewController: UIViewController {
                 self.completeOnboarding()
             } else {
                 saveProfile()
-                
             }
         }
         
@@ -179,6 +179,8 @@ final class ScanOnboardingViewController: UIViewController {
                     let nextStep = self?.determineNextStep() ?? .main
                     self?.goToNext(at: nextStep)
                 } else {
+                    self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
+                    self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
                     let rootViewController =  self?.navigationController?.viewControllers.first
                     self?.navigationController?.popToRootViewController(animated: true)
                     //                    delay(0.7) {

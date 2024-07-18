@@ -271,7 +271,11 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.navigationItem.leftBarButtonItem = barButtonItem
     }
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.setNeedsDisplay()
+    }
     @objc func handleBackButton() {
         navigationController?.popViewController(animated: true)
     }
@@ -280,7 +284,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.tintColor = Appearance.mono200
+        navigationController?.navigationBar.tintColor = .red//Appearance.mono200
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
 

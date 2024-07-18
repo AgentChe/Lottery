@@ -30,7 +30,12 @@ class ScanSelectStateViewController: UIViewController {
         setupNavigationBackButton()
         configureNavigationBar()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        selectStateView.continueButton.isHidden = false
+    }
 }
+
 
 // MARK: - Private Methods
 
@@ -71,7 +76,7 @@ private extension ScanSelectStateViewController {
     }
 
     func fetchStates() {
-        contentManager.fetchStates(forceUpdate: true) { [weak self] result in
+        contentManager.fetchStates(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let states):
