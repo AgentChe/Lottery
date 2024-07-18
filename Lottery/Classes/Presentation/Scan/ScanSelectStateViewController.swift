@@ -38,7 +38,12 @@ private extension ScanSelectStateViewController {
     func setupButton() {
         selectStateView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
     }
+    
     func fetchProfile() {
+        // Start both preloaders
+        selectStateView.preloader.startAnimating()
+        selectStateView.middlePreloader.startAnimating()
+        
         profileManager.getProfile(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -50,9 +55,15 @@ private extension ScanSelectStateViewController {
                         self?.selectStateView.updateContinueButtonState()
                         self?.fetchStates()
                     } else {
+                        // Stop both preloaders if state ID is not available
+                        self?.selectStateView.preloader.stopAnimating()
+                        self?.selectStateView.middlePreloader.stopAnimating()
                         print("State ID is not available in profile")
                     }
                 case .failure(let error):
+                    // Stop both preloaders on failure
+                    self?.selectStateView.preloader.stopAnimating()
+                    self?.selectStateView.middlePreloader.stopAnimating()
                     print("Failed to fetch profile: \(error)")
                 }
             }
@@ -61,12 +72,20 @@ private extension ScanSelectStateViewController {
 
     func fetchStates() {
         contentManager.fetchStates(forceUpdate: true) { [weak self] result in
-            switch result {
-            case .success(let states):
-                self?.states = states
-                self?.selectStateView.updateStates(states)
-            case .failure(let error):
-                self?.presentTryAgainViewController(with: error)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let states):
+                    self?.states = states
+                    self?.selectStateView.updateStates(states)
+                    // Stop both preloaders on success
+                    self?.selectStateView.preloader.stopAnimating()
+                    self?.selectStateView.middlePreloader.stopAnimating()
+                case .failure(let error):
+                    // Stop both preloaders on failure
+                    self?.selectStateView.preloader.stopAnimating()
+                    self?.selectStateView.middlePreloader.stopAnimating()
+                    self?.presentTryAgainViewController(with: error)
+                }
             }
         }
     }
@@ -78,7 +97,7 @@ private extension ScanSelectStateViewController {
         }
         
         // Show preloader and hide button
-        // selectStateView.continueButton.isHidden = true
+        selectStateView.continueButton.isHidden = true
         selectStateView.preloader.startAnimating()
         onContinue?(selectedState)
         selectStateView.preloader.stopAnimating()

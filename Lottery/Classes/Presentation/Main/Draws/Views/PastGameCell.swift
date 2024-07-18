@@ -118,7 +118,7 @@ extension PastGameCell {
             if lottery.id == game.lotteryId {
                 
                 logoImageView.kf.setImage(with: lottery.logoUrl)
-                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto")  {
                     logoIamgeLeadingConstraint.isActive = false
                     logoIamgeWidthConstraint.isActive = false
                     logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
@@ -128,7 +128,7 @@ extension PastGameCell {
                     setNeedsLayout()
                     
                 }
-                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
                     logoIamgeLeadingConstraint.isActive = false
                     logoIamgeWidthConstraint.isActive = false
                     logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)

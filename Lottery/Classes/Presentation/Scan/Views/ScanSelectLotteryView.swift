@@ -59,8 +59,27 @@ final class ScanSelectLotteryView: UIView {
         return tableView
     }()
     
+    let addAnotherGameButton: UIButton = {
+        let button = UIButton()
+        let attrs = TextAttributes()
+            .textColor(Appearance.mono200)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        let attributedTitle = "Add another game".localized.attributed(with: attrs)
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.backgroundColor = .white
+        button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
+        button.layer.borderWidth = 1.scale
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private var lotteries: [Lottery] = []
-    private var selectedLotteries: Set<Int> = []
+    private var selectedLotteries: Set<Int> = [] {
+        didSet {
+            updateContinueButtonState()
+        }
+    }
     
     // MARK: - Initializers
     
@@ -91,7 +110,14 @@ final class ScanSelectLotteryView: UIView {
             }
         }
     }
-    
+    init(fromMenu: Bool = false, frame: CGRect = .zero) {
+            self.fromMenu = fromMenu
+            super.init(frame: frame)
+            setupView()
+            setupTableView()
+            getAlreadySelectedLotteriesId()
+        }
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -132,33 +158,65 @@ private extension ScanSelectLotteryView {
         addSubview(gameTableView)
         addSubview(continueButton)
         addSubview(preloader) // Add preloader to the view
+        if fromMenu {
+            addSubview(addAnotherGameButton)
+        }
         setupConstraints()
         
         
     }
     
     func setupConstraints() {
-        NSLayoutConstraint.activate([
-            
-            descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 95.scale),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            
-            gameTableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
-            gameTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            gameTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gameTableView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.scale),
-            
-            continueButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
-            continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            continueButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            
-            // Constraints for preloader
-            preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
-            preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
-         
-        ])
+        if fromMenu {
+            NSLayoutConstraint.activate([
+                
+                descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 95.scale),
+                descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
+                descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+                
+                gameTableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
+                gameTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                gameTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                gameTableView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.scale),
+                
+                continueButton.bottomAnchor.constraint(equalTo: addAnotherGameButton.topAnchor, constant: -10.scale),
+                continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
+                continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+                continueButton.heightAnchor.constraint(equalToConstant: 44.scale),
+                
+                // Constraints for preloader
+                preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
+                preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
+                
+                addAnotherGameButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant:  ScreenSize.isIphoneXFamily ? -50.scale : -20.scale),
+                addAnotherGameButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
+                addAnotherGameButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+                addAnotherGameButton.heightAnchor.constraint(equalToConstant: 44.scale)
+                
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                  
+                  descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 95.scale),
+                  descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
+                  descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+                  
+                  gameTableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
+                  gameTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                  gameTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                  gameTableView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.scale),
+                  
+                  continueButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50.scale),
+                  continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
+                  continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+                  continueButton.heightAnchor.constraint(equalToConstant: 44.scale),
+                  
+                  // Constraints for preloader
+                  preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
+                  preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
+               
+              ])
+        }
     }
     
     func setupTableView() {

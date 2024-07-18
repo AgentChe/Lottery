@@ -15,12 +15,12 @@ class ScanSelectLotteriesViewController: UIViewController {
     private var lotteries: [Lottery] = []
     private let stateId: Int?
 
-    private let selectLotteryView = ScanSelectLotteryView()
+    private lazy var selectLotteryView = ScanSelectLotteryView(fromMenu: self.fromMenu)
 
     // Custom initializer to accept stateId
-    init(stateId: Int?) {
+    init(stateId: Int?, fromMenu: Bool = false) {
         self.stateId = stateId
-        
+        self.fromMenu = fromMenu
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -86,6 +86,7 @@ private extension ScanSelectLotteriesViewController {
     
     func setupButtons() {
         selectLotteryView.continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
+        selectLotteryView.addAnotherGameButton.addTarget(self, action: #selector(addAnotherGameButtonTapped), for: .touchUpInside)
     }
     
     func fetchLotteries() {
@@ -136,7 +137,12 @@ private extension ScanSelectLotteriesViewController {
         let selectedLotteryIdsArray  = neededLotteries.map { $0.id }
         onContinue?(selectedLotteryIdsArray)
     }
-    
+ 
+    @objc func addAnotherGameButtonTapped() {
+        let suggestNewGameVC = SuggestNewGameViewController()
+        suggestNewGameVC.modalPresentationStyle = .fullScreen
+        present(suggestNewGameVC, animated: true, completion: nil)
+    }
 
     
     func presentTryAgainViewController(with error: Error) {

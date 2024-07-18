@@ -4,6 +4,7 @@
 //
 //  Created by Niiaz Khasanov on 6/21/24.
 //
+
 import UIKit
 
 final class ScanSelectStateView: UIView {
@@ -33,7 +34,12 @@ final class ScanSelectStateView: UIView {
         return preloader
     }()
     
-
+    let middlePreloader: UIActivityIndicatorView = {
+        let preloader = UIActivityIndicatorView(style: .medium)
+        preloader.translatesAutoresizingMaskIntoConstraints = false
+        preloader.hidesWhenStopped = true
+        return preloader
+    }()
     
     private let descriptionLabel: UILabel = {
         let attrs = TextAttributes()
@@ -49,7 +55,7 @@ final class ScanSelectStateView: UIView {
         return label
     }()
     
-     let stateTableView: UITableView = {
+    let stateTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = Appearance.main500
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -107,13 +113,13 @@ private extension ScanSelectStateView {
         addSubview(stateTableView)
         addSubview(continueButton)
         addSubview(preloader) // Add preloader to the view
+        addSubview(middlePreloader) // Add middle preloader to the view
         setupConstraints()
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
           
-            
             descriptionLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10.scale),
             descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.scale),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
@@ -130,7 +136,11 @@ private extension ScanSelectStateView {
             
             // Constraints for preloader
             preloader.centerXAnchor.constraint(equalTo: continueButton.centerXAnchor),
-            preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor)
+            preloader.centerYAnchor.constraint(equalTo: continueButton.centerYAnchor),
+
+            // Constraints for middle preloader
+            middlePreloader.centerXAnchor.constraint(equalTo: centerXAnchor),
+            middlePreloader.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     
@@ -139,8 +149,6 @@ private extension ScanSelectStateView {
         stateTableView.delegate = self
         stateTableView.register(StateCell.self, forCellReuseIdentifier: "StateCell")
     }
-    
-   
 }
 
 // MARK: - UITableViewDataSource
