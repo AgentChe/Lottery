@@ -23,6 +23,8 @@ class SelectStateViewController: UIViewController {
         super.viewDidLoad()
         setupButton()
         fetchStates()
+        
+        AmplitudeManager.shared.logEvent(name: "Choose State Screen")
     }
 }
 

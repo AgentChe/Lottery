@@ -37,6 +37,8 @@ class SelectLotteriesViewController: UIViewController {
         super.viewDidLoad()
         setupButtons()
         fetchLotteries()
+        
+        AmplitudeManager.shared.logEvent(name: "Choose Game Screen")
     }
 }
 

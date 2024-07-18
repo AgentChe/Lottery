@@ -7,23 +7,22 @@
 
 import Foundation
 
-// TODO: заменить по готовности доки
 final class GlobalDefinitions {
-    static let domain = "http://178.57.217.33:8000"
+    static let domain = "https://lottery.camplain-apps.com"
     static let apiKey = "CVW34OdTfiTKzKHCMAI0unHpotOOSePkXRG10rehoSRfyv0aKaAWApHydxhFaYftyfoXFuW3utyhrZSQtqjcWl994tPfd4QHu5jfdxQP5cDDRMXvz0H2iHw6TXdO9WUL"
     
     static let otterScaleHost = "https://api.korrekted.com"
-    static let otterScaleApiKey = "i9upCYSnV2mW4aM3"
+    static let otterScaleApiKey = "3mpDyKfrgqTq0ceJ"
     
-    static let applicationTag = "WHIP"
-    static let amplitudeApiKey = "d4ad5c33d23d7a891e9c68de9471f36b"
+    static let applicationTag = "LOTTERY"
+    static let amplitudeApiKey = "d433d2c66723aeefd10c5b65f91c1fa3"
     
-    static let termsOfUseUrl = URL(string: "https://sergei-mobile.com/eula.html")!
-    static let privacyPolicyUrl = URL(string: "https://sergei-mobile.com/policy.html")!
-    static let contactUsUrl = URL(string: "https://sergei-mobile.com/contact.html")!
+    static let termsOfUseUrl = URL(string: "https://camplain-apps.com/terms-of-use.html")!
+    static let privacyPolicyUrl = URL(string: "https://camplain-apps.com/privacy-policy.html")!
+    static let contactUsUrl = URL(string: "https://camplain-apps.com/contacts.html")!
     
     enum Paygate {
-        static let defaultLifetime = "train.chair.endless"
-        static let defaultMonthly = "train.chair.monthly"
+        static let defaultLifetime = ""
+        static let defaultMonthly = ""
     }
 }

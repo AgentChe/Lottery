@@ -2,12 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb358327083778594</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lotterytrackerapp</string>
+			</array>
+		</dict>
+	</array>
 	<key>FacebookAppID</key>
-	<string></string>
+	<string>358327083778594</string>
 	<key>FacebookClientToken</key>
-	<string></string>
+	<string>09cc69fb0331a2326177eb3035da5fb1</string>
 	<key>FacebookDisplayName</key>
-	<string></string>
+	<string>Lottery Tracker</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -41,6 +60,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>branch_key</key>
-	<string></string>
+	<string>key_live_mCfSKv2q1vQQaPVRzV1nWnoeqCc4xYYj</string>
 </dict>
 </plist>

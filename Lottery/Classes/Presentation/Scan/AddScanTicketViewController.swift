@@ -107,7 +107,12 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         setupNavigationBackButton()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.barTintColor = Appearance.main400
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.setNeedsDisplay()
+    }
     func setupNavigationBackButton() {
         // Create a custom back button
         let backButton = UIButton(type: .custom)

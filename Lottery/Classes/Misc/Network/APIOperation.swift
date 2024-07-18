@@ -36,9 +36,9 @@ extension APIOperation {
     }
     
     func execute(dispatcher: RequestDispatcherProtocol, completion: ((Any?, Error?) -> Void)? = nil) {
-            task = dispatcher.execute(endPoint: endPoint) { result, error in
-                completion?(result, error)
-            }
+        task = dispatcher.execute(endPoint: endPoint) { result, error in
+            completion?(result, error)
         }
+    }
 }
 
