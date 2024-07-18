@@ -54,6 +54,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isScrollEnabled = false 
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         
@@ -117,7 +118,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+    
         let formattedDate = dateFormatter.string(from: Date())
         dateLabel.text = "MM/DD/YYY"//formattedDate.uppercased()
         
@@ -387,6 +388,8 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
     
     func removeItem(at indexPath: IndexPath) {
         // Check if it's the only row left
+        collectionView.isUserInteractionEnabled = false
+        plusButton.isUserInteractionEnabled = false
         if numbersStringArray.count == 1 && indexPath.section == 0 {
             presentDeleteConfirmationAlert()
         } else {
@@ -412,6 +415,10 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
             collectionViewHeightConstraint.isActive = true
             
             collectionView.reloadData()
+            delay(0.03) {
+                self.collectionView.isUserInteractionEnabled = true
+                self.plusButton.isUserInteractionEnabled = true
+            }
         }
     }
     private func presentDeleteConfirmationAlert() {

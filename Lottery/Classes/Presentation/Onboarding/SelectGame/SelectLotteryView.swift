@@ -104,7 +104,11 @@ final class SelectLotteryView: UIView {
 
 extension SelectLotteryView {
     func getSelectedLotteries() -> [Int] {
-        return Array(selectedLotteries)
+        var selectedIds : [Int] = []
+        for sl in Array(selectedLotteries) {
+            selectedIds.append(lotteries[sl].id)
+        }
+        return selectedIds
     }
     
     func updateGames(_ lotteries: [Lottery]) {

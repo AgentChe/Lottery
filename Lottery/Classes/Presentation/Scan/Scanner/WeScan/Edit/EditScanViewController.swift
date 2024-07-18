@@ -33,7 +33,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         return quadView
     }()
 
-    private lazy var nextButton: UIBarButtonItem = {
+    private lazy var nextButton:  UIBarButtonItem = {
         let title = "EditScanViewController.NextButton".localized
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(pushReviewController))
         button.tintColor = navigationController?.navigationBar.tintColor

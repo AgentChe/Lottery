@@ -66,7 +66,7 @@ extension NextGameCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Set timezone if needed
+        
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
         dateLabel.text = formattedDate.uppercased() // Convert to uppercase
 

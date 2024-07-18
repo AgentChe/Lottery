@@ -19,6 +19,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
         }
+      
+        let contentManager = ContentManager()
+        contentManager.fetchLotteries(forceUpdate: true)  { [weak self] result in
+        }
+        
         window = UIWindow(windowScene: windowScene)
         //window?.rootViewController = OnboardingViewController.make()
         window?.rootViewController = SplashViewController.make()

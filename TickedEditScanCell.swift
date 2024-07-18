@@ -52,8 +52,10 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
      
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.layer.masksToBounds = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         
@@ -106,7 +108,6 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = "MM/DD/YYY"//formattedDate.uppercased()
         
@@ -335,7 +336,7 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
                                 left: numbersStringArray[0].count == 6 ? 20.scale : 30.scale, bottom: 0.scale,
                                 right:  numbersStringArray[0].count == 6 ? 20.scale : 30.scale)
         } else {
-            return UIEdgeInsets(top: 10.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+            return UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         }
     }
     
@@ -376,6 +377,8 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
    
     func removeItem(at indexPath: IndexPath) {
         // Check if it's the only row left
+        collectionView.isUserInteractionEnabled = false
+        plusButton.isUserInteractionEnabled = false
         if numbersStringArray.count == 1 && indexPath.section == 0 {
             presentDeleteConfirmationAlert()
         } else {
@@ -396,11 +399,16 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
                 let cellWidth = availableWidth / CGFloat(numberOfCells)
                 collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
             } else {
-              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 6).scale)
+              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10).scale)
               }
             collectionViewHeightConstraint.isActive = true
             
             collectionView.reloadData()
+            delay(0.03) {
+                self.collectionView.isUserInteractionEnabled = true
+                self.plusButton.isUserInteractionEnabled = true
+            }
+          
         }
     }
     private func presentDeleteConfirmationAlert() {

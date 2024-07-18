@@ -79,7 +79,7 @@ extension ContentManager: ContentManagerProtocol {
         
         operation.execute(dispatcher: dispatcher) {  result, error in
             Opertaions.contentManagerOprations.removeValue(forKey: operationId)
-            
+            print("fetchLotteries!")
             DispatchQueue.main.async {
                 if let error = error {
                     completion(.failure(error))

@@ -90,15 +90,18 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-
+    var scanButtonIsTapped: Bool = false
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.navigationBar.barTintColor = .clear
-        navigationController?.navigationBar.isTranslucent = true
+        if scanButtonIsTapped {
+            self.navigationController?.navigationBar.barTintColor = .clear
+            self.navigationController?.navigationBar.isTranslucent = true
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        scanButtonIsTapped = false
         navigationController?.navigationBar.barTintColor = .red
         navigationController?.navigationBar.isTranslucent = false
         if let navigationController = getRootViewController() as? NavigationController,
@@ -217,6 +220,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     @objc func scanButtonTapped() {
+        scanButtonIsTapped = true
         let scanOnboardingViewController = ScanOnboardingViewController.make()
         
         // Check if the current view controller is embedded in a navigation controller

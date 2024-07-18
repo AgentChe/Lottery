@@ -93,7 +93,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = formattedDate.uppercased()
         

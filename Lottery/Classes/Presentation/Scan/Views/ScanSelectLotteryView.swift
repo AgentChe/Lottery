@@ -26,7 +26,7 @@ final class ScanSelectLotteryView: UIView {
         button.alpha = 0.5 // Initially pale
         return button
     }()
-    
+    let profileManager = ProfileManager()
     let preloader: UIActivityIndicatorView = {
         let preloader = UIActivityIndicatorView(style: .medium)
         preloader.translatesAutoresizingMaskIntoConstraints = false
@@ -64,11 +64,43 @@ final class ScanSelectLotteryView: UIView {
     
     // MARK: - Initializers
     
+     func getAlreadySelectedLotteriesId() {
+        if fromMenu {
+            profileManager.getProfile(forceUpdate: false) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let profile):
+                        if let selfLotteries = self?.lotteries {
+                            if let pLotteriesIds = profile.lotteries {
+                                for i in 0..<selfLotteries.count {
+                                    for plotteryId in pLotteriesIds {
+                                        if selfLotteries[i].id == plotteryId {
+                                            self?.selectedLotteries.insert(i)
+                                        }
+                                    }
+                                }
+                            }
+                            self?.gameTableView.reloadData()
+                        } else {
+                            print("Lotteries are not available in profile")
+                        }
+                    case .failure(let error):
+                        print("Failed to fetch profile: \(error)")
+                    }
+                }
+            }
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
         setupTableView()
+        
+        getAlreadySelectedLotteriesId()
+        
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -101,6 +133,8 @@ private extension ScanSelectLotteryView {
         addSubview(continueButton)
         addSubview(preloader) // Add preloader to the view
         setupConstraints()
+        
+        
     }
     
     func setupConstraints() {

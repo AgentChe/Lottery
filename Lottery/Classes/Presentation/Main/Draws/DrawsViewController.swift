@@ -374,7 +374,7 @@ private extension DrawsViewController {
     
     func fetchNextGames(for stateId: Int) {
         
-        gamesManager.fetchNextGames(stateId: stateId, forceUpdate: false) { [weak self] result in
+        gamesManager.fetchNextGames(stateId: nil, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
@@ -408,7 +408,7 @@ private extension DrawsViewController {
     }
     
     func fetchPastGames(for stateId: Int) {
-        gamesManager.fetchPastGames(stateId: stateId, forceUpdate: false) { [weak self] result in
+        gamesManager.fetchPastGames(stateId: nil, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):

@@ -44,6 +44,7 @@ class ScanSelectLotteriesViewController: UIViewController {
         fetchLotteries()
         setupNavigationBackButton()
         selectLotteryView.fromMenu = fromMenu
+        selectLotteryView.getAlreadySelectedLotteriesId()
     }
 }
 
@@ -88,13 +89,25 @@ private extension ScanSelectLotteriesViewController {
     }
     
     func fetchLotteries() {
-        contentManager.fetchLotteries(forceUpdate: true, stateId: stateId) { [weak self] result in
-            switch result {
-            case .success(let lotteries):
-                self?.lotteries = lotteries
-                self?.selectLotteryView.updateGames(lotteries)
-            case .failure(let error):
-                self?.presentTryAgainViewController(with: error)
+        if fromMenu {
+            contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    self?.selectLotteryView.updateGames(lotteries)
+                case .failure(let error):
+                    self?.presentTryAgainViewController(with: error)
+                }
+            }
+        } else {
+            contentManager.fetchLotteries(forceUpdate: false, stateId: stateId) { [weak self] result in
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    self?.selectLotteryView.updateGames(lotteries)
+                case .failure(let error):
+                    self?.presentTryAgainViewController(with: error)
+                }
             }
         }
     }

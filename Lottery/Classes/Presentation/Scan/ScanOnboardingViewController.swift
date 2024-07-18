@@ -173,7 +173,7 @@ final class ScanOnboardingViewController: UIViewController {
             return
         }
         
-        profileManager.setProfile(lotteries: selectedLotteries, state: stateId, forceUpdate: true) { [weak self] result in
+        profileManager.setProfile(lotteries: selectedLotteries, state: stateId, forceUpdate: false) { [weak self] result in
             switch result {
             case .success:
                 if !(self?.fromMenu ?? false) {

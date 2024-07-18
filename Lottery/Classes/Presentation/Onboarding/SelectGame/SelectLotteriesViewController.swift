@@ -49,7 +49,7 @@ private extension SelectLotteriesViewController {
     }
     
     func fetchLotteries() {
-        contentManager.fetchLotteries(forceUpdate: true, stateId: nil) { [weak self] result in
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             switch result {
             case .success(let lotteries):
                 self?.lotteries = lotteries
