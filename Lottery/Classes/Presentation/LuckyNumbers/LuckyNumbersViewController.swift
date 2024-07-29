@@ -225,11 +225,16 @@ final class LuckyNumbersViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        let selectTheGameViewController = SelectTheGameViewController()
-        if let navigationController = navigationController {
-            navigationController.pushViewController(selectTheGameViewController, animated: true)
+        if SessionManager().hasActiveSubscriptions() {
+            let selectTheGameViewController = SelectTheGameViewController()
+            if let navigationController = navigationController {
+                navigationController.pushViewController(selectTheGameViewController, animated: true)
+            } else {
+                present(selectTheGameViewController, animated: true, completion: nil)
+            }
         } else {
-            present(selectTheGameViewController, animated: true, completion: nil)
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
         }
     }
 }

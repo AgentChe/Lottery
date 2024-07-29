@@ -220,20 +220,25 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     @objc func scanButtonTapped() {
-        scanButtonIsTapped = true
-        let scanOnboardingViewController = ScanOnboardingViewController.make()
-        
-        // Check if the current view controller is embedded in a navigation controller
-        if let navigationController = self.navigationController {
-            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+        if SessionManager().hasActiveSubscriptions() {
+            scanButtonIsTapped = true
+            let scanOnboardingViewController = ScanOnboardingViewController.make()
             
-            if let navigationController = getRootViewController() as? NavigationController,
-               let mainViewController = navigationController.viewControllers.first as? MainViewController {
-                updateMainViewControllerConstraints(for: mainViewController)
+            // Check if the current view controller is embedded in a navigation controller
+            if let navigationController = self.navigationController {
+                navigationController.pushViewController(scanOnboardingViewController, animated: true)
+                
+                if let navigationController = getRootViewController() as? NavigationController,
+                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                    updateMainViewControllerConstraints(for: mainViewController)
+                }
+            } else {
+                // If not, present the view controller modally as a fallback
+                present(scanOnboardingViewController, animated: true, completion: nil)
             }
         } else {
-            // If not, present the view controller modally as a fallback
-            present(scanOnboardingViewController, animated: true, completion: nil)
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
         }
     }
 

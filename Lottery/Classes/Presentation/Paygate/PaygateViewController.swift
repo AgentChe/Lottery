@@ -1,21 +1,20 @@
 //
 //  PaygateViewController.swift
-//  Soccer
+//  CodeChallenge
 //
-//  Created by Андрей Чернышев on 02.09.2022.
+//  Created by Андрей Чернышев on 20.02.2024.
 //
 
 import UIKit
 import RxSwift
 import RxCocoa
 
-// TODO: актуализировать после создания макета (моя задача)
 final class PaygateViewController: UIViewController {
-    private lazy var mainView =  PaygateView()
-    
-    private lazy var disposeBag = DisposeBag()
+    private lazy var mainView = PaygateView()
     
     private lazy var viewModel = PaygateViewModel()
+    
+    private lazy var disposeBag = DisposeBag()
     
     private let didClose: (() -> Void)?
     
@@ -32,81 +31,85 @@ final class PaygateViewController: UIViewController {
     override func loadView() {
         view = mainView
     }
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .darkContent
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         AmplitudeManager.shared
-            .logEvent(name: "Paygate Screen", parameters: [:])
-        
-        viewModel.products
-            .drive(Binder(self) { base, products in
-                base.mainView.leftOptionButton.info = products.first
-                base.mainView.rightOptionButton.info = products.last
-            })
-            .disposed(by: disposeBag)
+            .logEvent(name: "Paygate Screen")
         
         Observable
             .merge(
-                mainView.termsOfServiceButton.rx.tap.map { GlobalDefinitions.termsOfUseUrl },
-                mainView.privacyPolicyButton.rx.tap.map { GlobalDefinitions.privacyPolicyUrl }
+                mainView.product1Button.rx.tap.map { (true, false) },
+                mainView.product2Button.rx.tap.map { (false, true) },
+                mainView.enableTrialButton.rx.tap
+                    .compactMap { [weak self] in
+                        let isEnable = self?.mainView.enableTrialButton.isEnable ?? false
+                        let newValue = !isEnable
+                        return (!newValue, newValue)
+                    }
             )
-            .bind(to: Binder(self) { base, url in
-                UIApplication.shared.open(url)
+            .startWith((false, true))
+            .bind(to: Binder(mainView) { base, args in
+                base.product1Button.marked = args.0
+                base.product2Button.marked = args.1
+                base.enableTrialButton.isEnable = args.1
+                
+                let buyTitle = args.0 ? "Paygate.Continue".localized : "Paygate.TryFreeSubscribe".localized
+                base.setup(buyTitle: buyTitle)
+                
+                let info = args.0 ? "Paygate.CancelAnytime".localized : "Paygate.NoPaymentNow".localized
+                base.infoView.setup(text: info.uppercased())
+                
+                base.bestOfferView.update(marked: args.0)
             })
             .disposed(by: disposeBag)
         
-        mainView.restoreButton.rx.tap
-            .bind(to: viewModel.restore)
-            .disposed(by: disposeBag)
+        let didBuy = mainView.buyButton.rx.tap
+            .compactMap { [weak self] void -> String? in
+                guard let self else {
+                    return nil
+                }
+                
+                let id = [
+                    self.mainView.product1Button,
+                    self.mainView.product2Button
+                ].first(where: { $0.marked })?.product?.id
+                
+                return id
+            }
+            .asSignal(onErrorSignalWith: .never())
         
-        mainView.closeButton.rx.tap
-            .bind(to: Binder(self) { base, void in
-                base.dismiss()
-            })
-            .disposed(by: disposeBag)
+        let output = viewModel.configure(input: PaygateViewModel.Input(
+            didTapClose: mainView.closeButton.rx.tap.asSignal(),
+            didTapBuy: didBuy,
+            didTapRestore: mainView.actionsView.restoreButton.rx.tap.asSignal(),
+            didTapTermsOfUse: mainView.actionsView.termsOfUseButton.rx.tap.asSignal(),
+            didTapPrivacyPolicy: mainView.actionsView.privacyPolicyButton.rx.tap.asSignal()
+        ))
         
-        Signal
-            .merge(
-                viewModel.buyed,
-                viewModel.restored
-            )
-            .emit(to: Binder(self) { base, result in
-                result ? base.dismiss() : base.showError()
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel.activityIndicator
+        output.activity
             .drive(Binder(self) { base, activity in
                 base.activity(activity)
             })
             .disposed(by: disposeBag)
         
-        mainView.continueButton.rx.tap
-            .bind(to: Binder(self) { base, void in
-                let id = [
-                    base.mainView.leftOptionButton,
-                    base.mainView.rightOptionButton
-                ].first(where: { $0.isChecked })?.info?.productId
-                
-                guard let id = id else {
-                    return
-                }
-                
-                base.viewModel.buy.accept(id)
+        output.route
+            .drive(Binder(self) { base, route in
+                base.route(route)
             })
             .disposed(by: disposeBag)
         
-        mainView.leftOptionButton.isChecked = true
+        output.products
+            .drive(Binder(mainView) { base, products in
+                base.product1Button.product = products.yearly
+                base.product2Button.product = products.weekly
+            })
+            .disposed(by: disposeBag)
     }
-    
-   
 }
 
-// MARK: Make
+// MARK: Public
 extension PaygateViewController {
     static func make(didClose: (() -> Void)? = nil) -> PaygateViewController {
         let vc = PaygateViewController(didClose: didClose)
@@ -117,19 +120,31 @@ extension PaygateViewController {
 
 // MARK: Private
 private extension PaygateViewController {
-    func dismiss() {
-        dismiss(animated: true) { [weak self] in
-            self?.didClose?()
-        }
-    }
-    
     func activity(_ activity: Bool) {
         activity ? mainView.preloader.startAnimating() : mainView.preloader.stopAnimating()
         
-        mainView.leftOptionButton.isHidden = activity
-        mainView.rightOptionButton.isHidden = activity
-        mainView.continueButton.isHidden = activity
-        mainView.restoreButton.isHidden = activity
+        [
+            mainView.product1Button,
+            mainView.product2Button,
+            mainView.enableTrialButton,
+            mainView.buyButton,
+            mainView.actionsView,
+            mainView.closeButton,
+            mainView.bestOfferView
+        ].forEach { $0.isHidden = activity }
+    }
+    
+    func route(_ route: PaygateViewModel.Route) {
+        switch route {
+        case .dismiss:
+            dismiss(animated: true) { [weak self] in
+                self?.didClose?()
+            }
+        case .error:
+            showError()
+        case .open(let url):
+            UIApplication.shared.open(url)
+        }
     }
     
     func showError() {
