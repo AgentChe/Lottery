@@ -134,6 +134,7 @@
 		A3FF558B2C0CC3AA00E81771 /* SelectLotteriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558A2C0CC3AA00E81771 /* SelectLotteriesViewController.swift */; };
 		A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */; };
 		A3FF558F2C0CC3EF00E81771 /* SelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */; };
+		DE0FEF662C6CBB52003A803F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE0FEF652C6CBB52003A803F /* GoogleService-Info.plist */; };
 		DE42B1122BFF39C000FF61B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE42B1112BFF39C000FF61B0 /* Assets.xcassets */; };
 		DE42B1152BFF39C000FF61B0 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = DE42B1142BFF39C000FF61B0 /* Base */; };
 		DE42B1892BFF3CB200FF61B0 /* AmplitudeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE42B11D2BFF3CB100FF61B0 /* AmplitudeManager.swift */; };
@@ -365,6 +366,7 @@
 		A3FF558C2C0CC3C100E81771 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		A3FF558E2C0CC3EF00E81771 /* SelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStateView.swift; sourceTree = "<group>"; };
 		A7729D0A1077521A8B7DD161 /* Pods-Lottery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.debug.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.debug.xcconfig"; sourceTree = "<group>"; };
+		DE0FEF652C6CBB52003A803F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE42B1052BFF39BE00FF61B0 /* Lottery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lottery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE42B1112BFF39C000FF61B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE42B1142BFF39C000FF61B0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -970,6 +972,7 @@
 				DE42B1112BFF39C000FF61B0 /* Assets.xcassets */,
 				DE42B1132BFF39C000FF61B0 /* LaunchScreen.storyboard */,
 				DE42B1162BFF39C000FF61B0 /* Info.plist */,
+				DE0FEF652C6CBB52003A803F /* GoogleService-Info.plist */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -1487,6 +1490,7 @@
 				DE42B1DA2BFF3CB900FF61B0 /* Localizable.strings in Resources */,
 				DE42B1152BFF39C000FF61B0 /* Base in Resources */,
 				A32749512C29859400E9F79A /* flashUnavailable.png in Resources */,
+				DE0FEF662C6CBB52003A803F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1897,7 +1901,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -1913,7 +1917,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1937,7 +1941,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -1953,7 +1957,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
