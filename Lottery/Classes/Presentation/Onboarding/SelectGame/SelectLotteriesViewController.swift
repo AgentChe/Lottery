@@ -35,6 +35,9 @@ class SelectLotteriesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        RequestReview.request()
+        
         setupButtons()
         fetchLotteries()
         
