@@ -234,6 +234,7 @@
 		DE5BF9532C57B9F50095D8AB /* PaygateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5BF9472C57B9F50095D8AB /* PaygateView.swift */; };
 		DE5BF9542C57B9F50095D8AB /* PaygateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5BF9482C57B9F50095D8AB /* PaygateViewController.swift */; };
 		DE5BF9552C57B9F50095D8AB /* PaygateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5BF9492C57B9F50095D8AB /* PaygateViewModel.swift */; };
+		DED8FB1A2C762796001DAAE2 /* TicketUploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8FB192C762796001DAAE2 /* TicketUploadImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -468,6 +469,7 @@
 		DE5BF9472C57B9F50095D8AB /* PaygateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaygateView.swift; sourceTree = "<group>"; };
 		DE5BF9482C57B9F50095D8AB /* PaygateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaygateViewController.swift; sourceTree = "<group>"; };
 		DE5BF9492C57B9F50095D8AB /* PaygateViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaygateViewModel.swift; sourceTree = "<group>"; };
+		DED8FB192C762796001DAAE2 /* TicketUploadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketUploadImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -494,6 +496,7 @@
 		A32748B82C25D71E00E9F79A /* Scan */ = {
 			isa = PBXGroup;
 			children = (
+				DED8FB192C762796001DAAE2 /* TicketUploadImage.swift */,
 				A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */,
 				A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */,
 				A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */,
@@ -1615,6 +1618,7 @@
 				DE42B2102BFF583A00FF61B0 /* SyncTokensRequest.swift in Sources */,
 				A3FF555D2C07E11200E81771 /* FetchStatesRequest.swift in Sources */,
 				A3B3C7B52C29BCC5009EA452 /* ScanMenuViewController.swift in Sources */,
+				DED8FB1A2C762796001DAAE2 /* TicketUploadImage.swift in Sources */,
 				A32749482C29859400E9F79A /* UIImage+Utils.swift in Sources */,
 				DE5BF9532C57B9F50095D8AB /* PaygateView.swift in Sources */,
 				A3FF557D2C08B8A600E81771 /* AddLotteryRequest.swift in Sources */,
@@ -1899,11 +1903,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lottery/Info.plist;
@@ -1917,11 +1919,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Lottery AppStore";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1939,11 +1940,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lottery/Info.plist;
@@ -1957,11 +1956,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Lottery AppStore";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

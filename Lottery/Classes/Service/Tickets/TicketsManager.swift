@@ -31,8 +31,7 @@ extension TicketsManager: TicketsManagerProtocol {
         let operationId = UUID().uuidString
         Opertaions.ticketsManagerOprations[operationId] = operation
         
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            
+        operation.execute(dispatcher: dispatcher) { result, error in
             Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
             
             if let error = error {
@@ -56,28 +55,15 @@ extension TicketsManager: TicketsManagerProtocol {
         let operationId = UUID().uuidString
         Opertaions.ticketsManagerOprations[operationId] = operation
         
-//        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-//            
-//            self?.operations.removeValue(forKey: operationId)
-//            
-//            
-//            if let error = error {
-//                completion(.failure(error))
-//            } else if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
-//                completion(.success(ticket))
-//            } else {
-//                completion(.failure(ContentError(.notContent)))
-//            }
-//        }
-        performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
+        performRequest(request) { (result: Result<LotteryResponse, Error>) in
             Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
             switch result {
             case .success(let ticketResponse):
-                let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
+                let ticket = ticketResponse.ticket()
                 completion(.success(ticket ))
                 
                 
-            case .failure(let error):
+            case .failure:
                 completion(.failure(ContentError(.notContent)))
             }
         }  
@@ -94,27 +80,15 @@ extension TicketsManager: TicketsManagerProtocol {
         let operationId = UUID().uuidString
         Opertaions.ticketsManagerOprations[operationId] = operation
         
-//        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-//            
-//            self?.operations.removeValue(forKey: operationId)
-//            
-//            if let error = error {
-//                completion(.failure(error))
-//            } else if let ticketDict = result as? [String: Any], let ticket = Ticket(response: ticketDict) {
-//                completion(.success(ticket))
-//            } else {
-//                completion(.failure(ContentError(.notContent)))
-//            }
-//        }
-        performRequest(request) { [weak self] (result: Result<LotteryResponse, Error>) in
+        performRequest(request) { (result: Result<LotteryResponse, Error>) in
             Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
             switch result {
             case .success(let ticketResponse):
-                let ticket = Ticket(id: ticketResponse.id, lotteryId: ticketResponse.lotteryId, pictureUrl: URL(string: ticketResponse.pictureUrl), date: ticketResponse.date, numbers: ticketResponse.numbers)
+                let ticket = ticketResponse.ticket()
                 completion(.success(ticket ))
                 
                 
-            case .failure(let error):
+            case .failure:
                 completion(.failure(ContentError(.notContent)))
             }
         }
@@ -131,7 +105,7 @@ extension TicketsManager: TicketsManagerProtocol {
           
         Opertaions.ticketsManagerOprations[operationId] = APIOperation(endPoint: request)
           
-          performRequest(request) { [weak self] (result: Result<ResultResponse, Error>) in
+          performRequest(request) { (result: Result<ResultResponse, Error>) in
               Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
               
               switch result {
@@ -204,9 +178,22 @@ extension TicketsManager {
 struct LotteryResponse: Codable {
     let id: Int
     let lotteryId: Int
-    let pictureUrl: String
+    let image_url: String?
     let date: Double
     let numbers: [[Int]]
+    
+    func ticket() -> Ticket {
+        Ticket(
+            id: id,
+            lotteryId: lotteryId,
+            pictureUrl: {
+                guard let path = image_url else { return nil }
+                return URL(string: path)
+            }(),
+            date: date,
+            numbers: numbers
+        )
+    }
 }
 struct ResultResponse: Codable {
     let result: Bool

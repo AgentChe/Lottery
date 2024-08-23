@@ -187,6 +187,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
 
+        checkTicketViewController.image = results.originalScan.image
         checkTicketViewController.imageView.image = results.croppedScan.image
         let croppedImageSize = results.croppedScan.image.size
         checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit

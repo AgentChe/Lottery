@@ -183,10 +183,9 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         existingTicket.numbers = numbersArray
         if let lottery = lottery, let ticket = ticket {
             let lotteryId = lottery.id
-            let date = ticket.date
             
             let ticketManager = TicketsManager()
-            ticketManager.addTicket(lotteryId: lotteryId, pictureUrl: lottery.logoUrl, date: ticket.date, numbers: numbersArray) { result in
+            ticketManager.addTicket(lotteryId: lotteryId, pictureUrl: nil, date: ticket.date, numbers: numbersArray) { result in
                 DispatchQueue.main.async {
                     // Stop the activity indicator and show the title
                     self.activityIndicator.stopAnimating()

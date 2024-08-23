@@ -22,14 +22,19 @@ struct AddTicketRequest: EndPoint {
     }
     
     var parameters: [String : Any] {
-        [
+        var params: [String: Any] = [
             "api_key": GlobalDefinitions.apiKey,
             "user_token": userToken,
             "lotteryId": lotteryId,
-            "pictureUrl": pictureUrl?.absoluteString as Any,
             "date": date,
             "numbers": numbers
         ]
+        
+        if let pictureUrl = pictureUrl?.absoluteString {
+            params["image_url"] = pictureUrl
+        }
+        
+        return params
     }
     
     var headers: [String : String] {

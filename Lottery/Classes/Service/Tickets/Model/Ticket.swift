@@ -13,7 +13,6 @@ struct Ticket: Codable {
     var date: TimeInterval
     var numbers: [[Int]]
 
-    // Existing initializer
     init?(response: Any) {
         guard let dict = response as? [String: Any],
               let id = dict["id"] as? Int,
@@ -24,7 +23,7 @@ struct Ticket: Codable {
         }
         self.id = id
         self.lotteryId = lotteryId
-        self.pictureUrl = URL(string: dict["pictureUrl"] as? String ?? "")
+        self.pictureUrl = URL(string: dict["image_url"] as? String ?? "")
         self.date = date
         self.numbers = numbers
     }

@@ -14,7 +14,7 @@ protocol RecognizedTextDataSource: AnyObject {
 }
 
 class CheckScanTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    var image: UIImage?
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -31,6 +31,9 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     var textRecognitionRequest = VNRecognizeTextRequest()
     var resultsViewController: (UIViewController & RecognizedTextDataSource)?
+    
+    private let ticketsManager = TicketsManager()
+    private let uploadImage = TicketUploadImage()
    
     let saveTicketButton: UIButton = {
         let button = UIButton()
@@ -215,43 +218,48 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             numbersArray.append(intSection)
         }
 
-        // Ensure we have a ticket to modify
         guard var existingTicket = ticket else { return }
 
-        // Update the ticket's numbers
         existingTicket.numbers = numbersArray
-
-        let ticketsManager = TicketsManager()
-        ticketsManager.addTicket(lotteryId: existingTicket.lotteryId, pictureUrl: existingTicket.pictureUrl, date: existingTicket.date, numbers: numbersArray) { result in
-            DispatchQueue.main.async {
-                // Stop the activity indicator and show the title
-                self.activityIndicator.stopAnimating()
-                self.saveTicketButton.setTitle("CheckTicketViewController.SaveTicketButton".localized, for: .normal)
-            }
-            switch result {
-            case .success(let updatedTicket):
-                print("Ticket added successfully: \(updatedTicket)")
+        
+        func addTicket(id: Int, pictureUrl: URL? = nil, date: TimeInterval, numbers: [[Int]]) {
+            ticketsManager.addTicket(lotteryId: id, pictureUrl: pictureUrl, date: date, numbers: numbers) { result in
                 DispatchQueue.main.async {
-                    self.navigationController?.popToRootViewController(animated: true)
+                    // Stop the activity indicator and show the title
+                    self.activityIndicator.stopAnimating()
+                    self.saveTicketButton.setTitle("CheckTicketViewController.SaveTicketButton".localized, for: .normal)
                 }
+                switch result {
+                case .success(let updatedTicket):
+                    DispatchQueue.main.async {
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }
 
-            case .failure(let error):
-                // Handle failure by presenting an alert to the user
-                print("Failed to update the ticket: \(error)")
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(
-                        title: "CheckTicketViewController.UpdateFailedTitle".localized,
-                        message: String(format: "CheckTicketViewController.UpdateFailedMessage".localized, error.localizedDescription),
-                        preferredStyle: .alert
-                    )
+                case .failure(let error):
+                    // Handle failure by presenting an alert to the user
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(
+                            title: "CheckTicketViewController.UpdateFailedTitle".localized,
+                            message: String(format: "CheckTicketViewController.UpdateFailedMessage".localized, error.localizedDescription),
+                            preferredStyle: .alert
+                        )
 
-                    // Add an OK button to the alert
-                    alert.addAction(UIAlertAction(title: "CheckTicketViewController.OKButton".localized, style: .default, handler: nil))
+                        // Add an OK button to the alert
+                        alert.addAction(UIAlertAction(title: "CheckTicketViewController.OKButton".localized, style: .default, handler: nil))
 
-                    // Present the alert
-                    self.present(alert, animated: true, completion: nil)
+                        // Present the alert
+                        self.present(alert, animated: true, completion: nil)
+                    }
                 }
             }
+        }
+
+        if let image {
+            uploadImage.upload(image: image) { url in
+                addTicket(id: existingTicket.lotteryId, pictureUrl: url, date: existingTicket.date, numbers: numbersArray)
+            }
+        } else {
+            addTicket(id: existingTicket.lotteryId, date: existingTicket.date, numbers: numbersArray)
         }
     }
 
