@@ -30,8 +30,8 @@ class PastGameCell: UICollectionViewCell {
         label.attributedText = attributedText
         return label
     }()
-    var myLuckyNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
-    var winningNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
+    var myLuckyNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
+    var winningNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
      let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "PastGameCell.MyLuckyNumbers".localized
@@ -152,25 +152,25 @@ extension PastGameCell {
         
          
      
-        myLuckyNumbersCollectionViewHeghitConstraint.isActive = false
+        myLuckyNumbersCollectionViewHeightConstraint.isActive = false
         if myLuckyNumbers.isEmpty {
             let cellHeight = 150.scale
-            myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            myLuckyNumbersCollectionViewHeightConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         } else {
             let cellHeight =  CGFloat(max(0, myLuckyNumbers.count )) * CGFloat(40 + 10.scale) + 0.scale
-            myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            myLuckyNumbersCollectionViewHeightConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         }
-        myLuckyNumbersCollectionViewHeghitConstraint.isActive = true
+        myLuckyNumbersCollectionViewHeightConstraint.isActive = true
         
-        winningNumbersCollectionViewHeghitConstraint.isActive = false
+        winningNumbersCollectionViewHeightConstraint.isActive = false
         if winningNumbers.isEmpty {
             let cellHeight = 50.scale
-            winningNumbersCollectionViewHeghitConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            winningNumbersCollectionViewHeightConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         } else {
             let cellHeight =  CGFloat(max(0, winningNumbers.count )) * CGFloat(40 + 10.scale) + 0.scale
-            winningNumbersCollectionViewHeghitConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            winningNumbersCollectionViewHeightConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         }
-        winningNumbersCollectionViewHeghitConstraint.isActive = true
+        winningNumbersCollectionViewHeightConstraint.isActive = true
         setNeedsLayout()
         // Reload collection views with new data
         winningNumbersCollectionView.reloadData()
@@ -213,8 +213,8 @@ private extension PastGameCell {
     }
     
     func setupLayoutConstraints() {
-        myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
-      winningNumbersCollectionViewHeghitConstraint = winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
+        myLuckyNumbersCollectionViewHeightConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
+      winningNumbersCollectionViewHeightConstraint = winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
         logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
         logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
@@ -237,7 +237,7 @@ private extension PastGameCell {
             winningNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            winningNumbersCollectionViewHeghitConstraint,
+            winningNumbersCollectionViewHeightConstraint,
             
             // Winning Numbers Title Label
             winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 30.scale),
@@ -254,7 +254,7 @@ private extension PastGameCell {
             myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
             myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            myLuckyNumbersCollectionViewHeghitConstraint,
+            myLuckyNumbersCollectionViewHeightConstraint,
             
             // My Lucky Numbers Title Label
             myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.scale),

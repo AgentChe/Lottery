@@ -98,6 +98,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var pastDraws: [Game] = [] {
         didSet {
             pastDraws.sort { $0.date > $1.date }
+            nextDrawsCollectionView.reloadData()
         }
     }
     private var lotteries: [Lottery] = []
@@ -233,7 +234,18 @@ extension DrawsViewController {
         var cellHeight: CGFloat
         
         if collectionView == nextDrawsCollectionView {
-            return CGSize(width: cellWidth, height: 147.scale)
+            let game = nextDraws[indexPath.item]
+            for lottery in lotteries {
+                if lottery.id == game.lotteryId {
+                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
+                        return CGSize(width: cellWidth, height: 204.scale)
+                    } else {
+                        return CGSize(width: cellWidth, height: 232.scale)
+                    }
+                }
+            }
+            return CGSize(width: cellWidth, height: 232.scale)
+        
         } else {
             // For Past Draws
             let game = pastDraws[indexPath.item]
@@ -273,6 +285,13 @@ extension DrawsViewController {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             let game = nextDraws[indexPath.item]
+            for pastDraw in self.pastDraws {
+                if pastDraw.lotteryId == game.lotteryId {
+                    cell.winningNumbers = pastDraw.winningNumbers ?? []
+                    cell.winningNumbersCollectionView.reloadData()
+                }
+            }
+            
             cell.configure(game: game, lotteries: lotteries)
             cell.layer.cornerRadius = 20.scale
             return cell
@@ -506,4 +525,10 @@ private extension DrawsViewController {
         }
     }
    
+}
+
+private extension DrawsViewController {
+    func doesURLContain(_ urlString: String, word: String) -> Bool {
+        return urlString.lowercased().contains(word)
+    }
 }
