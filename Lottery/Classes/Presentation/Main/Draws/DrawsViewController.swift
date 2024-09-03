@@ -123,9 +123,9 @@ private extension DrawsViewController {
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = Appearance.main400
-        segmentedControl.cornerRadius = 38.scale
-        segmentedControl.buttonPadding = 10.scale
-        segmentedControl.buttonCornerRadius = 32.scale
+        segmentedControl.cornerRadius = 24.scale
+        segmentedControl.buttonPadding = 5.scale
+        segmentedControl.buttonCornerRadius = 20.scale
         segmentedControl.numberOfSegments = 2
         segmentedControl.segmentsTitle = "\("DrawsViewController.NextDraws".localized),\("DrawsViewController.PastDraws".localized)"
         segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
@@ -194,8 +194,8 @@ private extension DrawsViewController {
         NSLayoutConstraint.activate([
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            segmentedControl.widthAnchor.constraint(equalToConstant: 343.scale),
-            segmentedControl.heightAnchor.constraint(equalToConstant: 80.scale),
+            segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
             
             nextDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 0),
             nextDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
