@@ -251,11 +251,24 @@ extension DrawsViewController {
             let game = pastDraws[indexPath.item]
             cellHeight = 176.scale  // Default height
             if let myLuckyNumbers = game.myLuckyNumbers, let winningNumbers = game.winningNumbers {
-                if myLuckyNumbers.isEmpty {
-                    cellHeight = 150.scale
-                } else {
-                    cellHeight = 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 10.scale) + 90.scale
+                for lottery in lotteries {
+                    if lottery.id == game.lotteryId {
+                        if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
+                            if myLuckyNumbers.isEmpty {
+                                cellHeight = 150.scale + 80.scale
+                            } else {
+                                cellHeight = 70.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
+                            }
+                        } else {
+                            if myLuckyNumbers.isEmpty {
+                                cellHeight = 150.scale + 108.scale
+                            } else {
+                                cellHeight = 98.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
+                            }
+                        }
+                    }
                 }
+            
             }
         }
         
@@ -300,6 +313,7 @@ extension DrawsViewController {
             let game = pastDraws[indexPath.item]
             cell.configure(game: game, lotteries: lotteries)
             cell.layer.cornerRadius = 20.scale
+            cell.layer.masksToBounds = true
             if let myLuckyNumbers = game.myLuckyNumbers {
                 if myLuckyNumbers.isEmpty {
                     cell.dashedLineImageView.alpha = 0

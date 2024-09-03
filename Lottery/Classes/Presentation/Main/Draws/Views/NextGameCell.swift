@@ -63,8 +63,8 @@ class NextGameCell: UICollectionViewCell {
     private let jackpotTitleLabel = UILabel()
     
     
-    var logoIamgeLeadingConstraint: NSLayoutConstraint!
-    var logoIamgeWidthConstraint: NSLayoutConstraint!
+    var logoImageLeadingConstraint: NSLayoutConstraint!
+    var logoImageWidthConstraint: NSLayoutConstraint!
     var logoImageTopConstraint: NSLayoutConstraint!
     var jackpotTitleTopConstraint: NSLayoutConstraint!
 
@@ -127,15 +127,16 @@ extension NextGameCell {
             }
             dateLabel.alpha = 0
             dateContainerImageView.alpha = 1
+
             
         } else {
             let jackpotTextAttributes = TextAttributes()
-                .font(Fonts.Inter.medium(size: 24.scale))
+                .font(Fonts.Inter.medium(size: 14.scale))
                 .textColor(Appearance.main300)
                 .letterSpacing(1.5)
                 .textAlignment(.center)
 
-            let jackpotText = "JACKPOT".attributed(with: jackpotTextAttributes)
+            let jackpotText = "UNDETERMINED".attributed(with: jackpotTextAttributes)
             jackpotLabel.attributedText = jackpotText
             jackpotLabel.translatesAutoresizingMaskIntoConstraints = false
             
@@ -149,70 +150,74 @@ extension NextGameCell {
 
                 logoImageView.kf.setImage(with: lottery.logoUrl)
                 if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
                     logoImageTopConstraint.isActive = false
                     jackpotTitleTopConstraint.isActive = false
                
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -25.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -25.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
                     logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
                     jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 13.scale)
                     
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
                     logoImageTopConstraint.isActive = true
                     jackpotTitleTopConstraint.isActive = true
                     setNeedsLayout()
+                    jackpotTitleLabel.alpha = 1
                     
                 }
                if doesURLContain(lottery.logoUrl.absoluteString, word: "lotto") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
                    logoImageTopConstraint.isActive = false
                    jackpotTitleTopConstraint.isActive = false
                  
-                   logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -32.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                   logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -32.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 13.scale)
                 
-                   logoIamgeLeadingConstraint.isActive = true
-                   logoIamgeWidthConstraint.isActive = true
+                   logoImageLeadingConstraint.isActive = true
+                   logoImageWidthConstraint.isActive = true
                    logoImageTopConstraint.isActive = true
                    jackpotTitleTopConstraint.isActive = true
                     setNeedsLayout()
-                    
+                   jackpotTitleLabel.alpha = 1
                 }
                 if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
                     logoImageTopConstraint.isActive = false
                     jackpotTitleTopConstraint.isActive = false
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 155.scale)
+                
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 155.scale)
                     logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 5.scale)
                     jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 3.scale)
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
+                  
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
                     logoImageTopConstraint.isActive = true
                     jackpotTitleTopConstraint.isActive = true
                     setNeedsLayout()
+                    jackpotTitleLabel.alpha = 1
                 }
                 
                 if  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
                     logoImageTopConstraint.isActive = false
                     jackpotTitleTopConstraint.isActive = false
                     
                     logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 8.scale)
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 80.scale)
-                    jackpotTitleLabel.alpha = 0
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 80.scale)
+                    
                     jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: -10.scale)
                     
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
                     logoImageTopConstraint.isActive = true
                     jackpotTitleTopConstraint.isActive = true
                     
@@ -221,6 +226,7 @@ extension NextGameCell {
                     jackpotLabel.text = game.jackpot != "" ? "\(game.jackpot) per day" : "UNDETERMINED"
                     dateContainerImageView.alpha = 0
                     dateLabel.alpha = 1
+                    jackpotTitleLabel.alpha = 0
                 }
                 
             }
@@ -304,8 +310,8 @@ private extension NextGameCell {
     }
     
     func setupLayoutConstraints() {
-        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
-        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+        logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -10.scale)
+        logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
         jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 10.scale)
         
@@ -322,8 +328,8 @@ private extension NextGameCell {
             whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.size.height == 232.scale ? 144.scale : 116.scale),
             
             logoImageTopConstraint,
-            logoIamgeLeadingConstraint,
-            logoIamgeWidthConstraint,
+            logoImageLeadingConstraint,
+            logoImageWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 48.scale),
         
           
@@ -337,7 +343,7 @@ private extension NextGameCell {
             jackpotLabel.heightAnchor.constraint(equalToConstant: 30.scale),
             
           
-            dateLabel.bottomAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: -22.scale),
+            dateLabel.centerYAnchor.constraint(equalTo: jackpotLabel.centerYAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.scale),
             dateLabel.heightAnchor.constraint(equalToConstant: 13.scale),
             
@@ -354,12 +360,14 @@ private extension NextGameCell {
             dateMiniLabel.topAnchor.constraint(equalTo: dateContainerImageView.topAnchor, constant: 22.scale),
             dateMiniLabel.heightAnchor.constraint(equalToConstant: 16.scale),
             
+            
+            
             winningNumbersCollectionView.bottomAnchor.constraint(equalTo: latestWinningNumbersLabel.topAnchor, constant: -10.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            latestWinningNumbersLabel.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -10.scale),
+            latestWinningNumbersLabel.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -13.scale),
             latestWinningNumbersLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             latestWinningNumbersLabel.heightAnchor.constraint(equalToConstant: 14.scale)
            
@@ -405,14 +413,13 @@ extension NextGameCell:  UICollectionViewDataSource, UICollectionViewDelegateFlo
         
         if indexPath.item == lastIndex {
             cell.numberLabel.text = String(number)
-            cell.backgroundColor = Appearance.main100
-            cell.numberLabel.textColor = Appearance.mono100
-            cell.layer.borderColor = UIColor.clear.cgColor
+            cell.backgroundViewContainer.backgroundColor = Appearance.main100
+            cell.backgroundViewContainer.alpha = 1
+            
         } else {
             cell.numberLabel.text = String(number)
-            cell.backgroundColor = Appearance.mono100
-            cell.numberLabel.textColor = Appearance.mono200
-            cell.layer.borderColor = Appearance.main500.cgColor
+            cell.backgroundViewContainer.backgroundColor = Appearance.mono100
+            cell.backgroundViewContainer.alpha = 0.5
         }
     }
     private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
