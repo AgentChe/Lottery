@@ -47,9 +47,17 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     private func setupInitialViewController() {
         let welcomeVC = WelcomeViewController()
         welcomeVC.onContinue = { [weak self] in
-            self?.showSelectStateViewController()
+            self?.showScanScratchViewController()
         }
         setViewControllers([welcomeVC], animated: false)
+    }
+    
+    private func showScanScratchViewController() {
+        let scanScratchViewController = ScanScratchViewController()
+        scanScratchViewController.onContinue = { [weak self] in
+            self?.showSelectStateViewController()
+        }
+        pushViewController(scanScratchViewController, animated: false)
     }
     
     private func showSelectStateViewController() {
@@ -106,7 +114,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     }
     
     private func updateProgress() {
-        let totalSteps = 3
+        let totalSteps = 4
         let currentStep = viewControllers.count
         let progress = Float(currentStep) / Float(totalSteps)
         progressView.setProgress(progress, animated: true)

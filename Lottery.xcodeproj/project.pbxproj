@@ -88,6 +88,8 @@
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
+		A3A376B82C86F0520050E706 /* ScanScratchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A376B72C86F0520050E706 /* ScanScratchOnboardingViewController.swift */; };
+		A3A376BA2C86F0610050E706 /* ScanScratchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A376B92C86F0610050E706 /* ScanScratchView.swift */; };
 		A3AE80142C2B63BB00E5B473 /* CheckScanTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80132C2B63BB00E5B473 /* CheckScanTicketViewController.swift */; };
 		A3AE80172C2C577200E5B473 /* LuckyNumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */; };
 		A3AE80192C2C5D6900E5B473 /* SelectTheGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */; };
@@ -320,6 +322,8 @@
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
+		A3A376B72C86F0520050E706 /* ScanScratchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanScratchOnboardingViewController.swift; sourceTree = "<group>"; };
+		A3A376B92C86F0610050E706 /* ScanScratchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanScratchView.swift; sourceTree = "<group>"; };
 		A3AE80132C2B63BB00E5B473 /* CheckScanTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckScanTicketViewController.swift; sourceTree = "<group>"; };
 		A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersViewController.swift; sourceTree = "<group>"; };
 		A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTheGameViewController.swift; sourceTree = "<group>"; };
@@ -714,6 +718,15 @@
 				A39B2B392C0F5B880024FC9F /* LotteryCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A3A376B62C86EFA30050E706 /* ScanScratch */ = {
+			isa = PBXGroup;
+			children = (
+				A3A376B72C86F0520050E706 /* ScanScratchOnboardingViewController.swift */,
+				A3A376B92C86F0610050E706 /* ScanScratchView.swift */,
+			);
+			path = ScanScratch;
 			sourceTree = "<group>";
 		};
 		A3AE80152C2C575600E5B473 /* LuckyNumbers */ = {
@@ -1147,6 +1160,7 @@
 				DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */,
 				DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */,
 				A3C5CEBE2C0CD7CD00C43681 /* Welcome */,
+				A3A376B62C86EFA30050E706 /* ScanScratch */,
 				A3C5CEBF2C0CD7E100C43681 /* SelectState */,
 				A3C5CEC02C0CD80600C43681 /* SelectGame */,
 				A3CF29572C0D52C800DF735A /* SuggestNewGame */,
@@ -1609,6 +1623,7 @@
 				A32749452C29859400E9F79A /* CIImage+Utils.swift in Sources */,
 				A32749722C29859400E9F79A /* ImageCollectionViewCell.swift in Sources */,
 				A3FD9EAF2C120A62000FAD68 /* SelectLotteryView.swift in Sources */,
+				A3A376B82C86F0520050E706 /* ScanScratchOnboardingViewController.swift in Sources */,
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
 				A32749362C29859400E9F79A /* EditScanCornerView.swift in Sources */,
 				A3FD9EAC2C11F98C000FAD68 /* rootVCGetter.swift in Sources */,
@@ -1633,6 +1648,7 @@
 				A32749492C29859400E9F79A /* CaptureDevice.swift in Sources */,
 				A3CF295B2C0D567B00DF735A /* SuggestNewGameView.swift in Sources */,
 				DE42B1932BFF3CB200FF61B0 /* GradientView.swift in Sources */,
+				A3A376BA2C86F0610050E706 /* ScanScratchView.swift in Sources */,
 				DE42B2072BFF50E300FF61B0 /* URLRequest+EndPoint.swift in Sources */,
 				DE42B1B62BFF3CB200FF61B0 /* MainView.swift in Sources */,
 				A32749782C29859400E9F79A /* ImageScannerController.swift in Sources */,
@@ -1903,11 +1919,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
+				DEVELOPMENT_TEAM = 2NVL5EUMWM;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lottery/Info.plist;
@@ -1925,7 +1939,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Lottery AppStore";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1943,11 +1956,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
+				DEVELOPMENT_TEAM = 2NVL5EUMWM;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lottery/Info.plist;
@@ -1965,7 +1976,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Lottery AppStore";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
