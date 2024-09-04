@@ -10,13 +10,18 @@ import UIKit
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
     var games: [Game] = []
-  
+    private var previousVC: UIViewController?
     var menuButton: UIButton!
     private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
     let maxUpperMenuHeight: CGFloat = 165.scale // Maximum height of upperMenuView
     let minUpperMenuHeight: CGFloat = 115.scale
+    
+    lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
+    lazy var myTicketsVC = NavigationController(rootViewController: myTicketsController)
+    private lazy var luckyNumbersController = LuckyNumbersViewController()
+    private lazy var myTicketsController = TicketsViewController()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -32,7 +37,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         }
         fetchStateAndGames()
     }
-    
+  
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
     private var contentManager: ContentManagerProtocol = ContentManager()
@@ -208,6 +213,7 @@ private extension DrawsViewController {
           if let image = UIImage(named: "upperMenuButtonImageView") {
               upperMenuView.image = image
           }
+          upperMenuView.isUserInteractionEnabled = true
           upperMenuView.translatesAutoresizingMaskIntoConstraints = false
           view.addSubview(upperMenuView)
           
@@ -216,6 +222,9 @@ private extension DrawsViewController {
           let button2 = createButton(imageName: "NumbersButtonImage")
           let button3 = createButton(imageName: "MyTicketsButtonImage")
           
+        button1.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
+        button2.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
+        button3.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
           // Add labels for the buttons
           let label1 = createLabel(text: "Scan")
           let label2 = createLabel(text: "Numbers")
@@ -287,6 +296,31 @@ private extension DrawsViewController {
           ])
       }
       
+    @objc func numbersButtonTapped() {
+        print("Numbers button tapped")
+        
+        // Push the luckyNumbersVC when Numbers button is tapped
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(luckyNumbersController, animated: true)
+        } else {
+            // Present modally if not embedded in a navigation controller
+            present(luckyNumbersVC, animated: true, completion: nil)
+        }
+    }
+
+    // Action method for the My Tickets button (pushes myTicketsVC)
+    @objc func myTicketsButtonTapped() {
+        print("My Tickets button tapped")
+        
+        // Push the myTicketsVC when My Tickets button is tapped
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(myTicketsController, animated: true)
+        } else {
+            // Present modally if not embedded in a navigation controller
+            present(myTicketsVC, animated: true, completion: nil)
+        }
+      }
+    
       // Helper function to create a circular button with an image
       func createButton(imageName: String) -> UIButton {
           let button = UIButton(type: .custom)
