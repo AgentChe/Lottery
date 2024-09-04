@@ -167,7 +167,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 segmentTopConstraint.constant = segmentTopConstraint.constant - abs(deltaY)
             } else {
                 if UIApplication.shared.statusBarFrame.height < 40 {
-                    segmentTopConstraint.constant = 100.scale
+                    segmentTopConstraint.constant = 80.scale
                 } else {
                     segmentTopConstraint.constant = 100.scale
                 }
