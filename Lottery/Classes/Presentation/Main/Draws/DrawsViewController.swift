@@ -12,7 +12,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     var games: [Game] = []
   
     
-    private var upperMenuView: UIView!
+    private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
     let maxUpperMenuHeight: CGFloat = 90.scale // Maximum height of upperMenuView
@@ -140,38 +140,47 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             initialContentOffset = currentOffset
             hasRecordedInitialOffset = true
         }
-        print("currentOffset: \(currentOffset), \(initialContentOffset)")
+        
         
         guard currentOffset >= initialContentOffset else {
-            print("RETURN")
-            segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight
+            if UIApplication.shared.statusBarFrame.height > 40 {
+                segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 20.scale
+            } else {
+                segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 10.scale
+            }
             return
         }
         
         
         let deltaY = currentOffset - previousScrollOffset
-        print("delta \(deltaY)")
+        
         if deltaY > 0 { //shrink
             
             upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
           
-            print("segmentTopConstraint.constant \( segmentTopConstraint.constant) \(initialContentOffset), \( currentOffset)")
+
             
             if initialContentOffset < currentOffset && currentOffset < 17.scale{
                 segmentTopConstraint.constant = segmentTopConstraint.constant - abs(deltaY)
             } else {
                 if UIApplication.shared.statusBarFrame.height < 40 {
                     segmentTopConstraint.constant = 20.scale
+                } else {
+                    segmentTopConstraint.constant = 0.scale
                 }
             }
         } else if deltaY < 0 {
             upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
          
             if  currentOffset < 17.scale {
-                if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight {
+                if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight  + ( (UIApplication.shared.statusBarFrame.height < 40) ? 0.scale : 20.scale) {
                     segmentTopConstraint.constant = segmentTopConstraint.constant + abs(deltaY)
                 } else {
-                    segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight
+                    if UIApplication.shared.statusBarFrame.height > 40 {
+                        segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 20.scale
+                    } else {
+                        segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 10.scale
+                    }
                 }
             }
             
@@ -185,7 +194,13 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 // MARK: - UI Setup
 private extension DrawsViewController {
     func setupUpperMenuView() {
-          upperMenuView = UIView()
+          upperMenuView = UIImageView()
+        upperMenuView.contentMode = .scaleAspectFill
+        upperMenuView.layer.masksToBounds = true
+        if let image = UIImage(named: "nextDrawCashAndPowerBcg") {
+            
+            upperMenuView.image = image
+        }
           upperMenuView.backgroundColor = .red
           upperMenuView.translatesAutoresizingMaskIntoConstraints = false
           view.addSubview(upperMenuView)
@@ -280,7 +295,11 @@ private extension DrawsViewController {
     
 
     func setupLayoutConstraints() {
-        segmentTopConstraint = segmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: upperMenuHeightConstraint.constant)
+        if UIApplication.shared.statusBarFrame.height > 40 {
+            segmentTopConstraint = segmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: upperMenuHeightConstraint.constant + 20.scale)
+        } else {
+            segmentTopConstraint = segmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: upperMenuHeightConstraint.constant + 10.scale)
+        }
         NSLayoutConstraint.activate([
             segmentTopConstraint,
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
