@@ -198,7 +198,7 @@ private extension DrawsViewController {
           upperMenuView = UIImageView()
           upperMenuView.contentMode = .scaleAspectFill
           upperMenuView.layer.masksToBounds = true
-          if let image = UIImage(named: "nextDrawCashAndPowerBcg") {
+          if let image = UIImage(named: "upperMenuButtonImageView") {
               upperMenuView.image = image
           }
           upperMenuView.translatesAutoresizingMaskIntoConstraints = false
