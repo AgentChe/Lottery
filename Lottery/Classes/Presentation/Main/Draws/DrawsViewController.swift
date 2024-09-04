@@ -15,8 +15,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
-    let maxUpperMenuHeight: CGFloat = 90.scale // Maximum height of upperMenuView
-    let minUpperMenuHeight: CGFloat = 60.scale
+    let maxUpperMenuHeight: CGFloat = 165.scale // Maximum height of upperMenuView
+    let minUpperMenuHeight: CGFloat = 115.scale
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -194,22 +194,42 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 // MARK: - UI Setup
 private extension DrawsViewController {
     func setupUpperMenuView() {
+          // Set up upperMenuView as an image view
           upperMenuView = UIImageView()
-        upperMenuView.contentMode = .scaleAspectFill
-        upperMenuView.layer.masksToBounds = true
-        if let image = UIImage(named: "nextDrawCashAndPowerBcg") {
-            
-            upperMenuView.image = image
-        }
-          upperMenuView.backgroundColor = .red
+          upperMenuView.contentMode = .scaleAspectFill
+          upperMenuView.layer.masksToBounds = true
+          if let image = UIImage(named: "nextDrawCashAndPowerBcg") {
+              upperMenuView.image = image
+          }
           upperMenuView.translatesAutoresizingMaskIntoConstraints = false
           view.addSubview(upperMenuView)
           
+          // Add buttons with respective images
+          let button1 = createButton(imageName: "ScanButtonImage")
+          let button2 = createButton(imageName: "NumbersButtonImage")
+          let button3 = createButton(imageName: "MyTicketsButtonImage")
+          
+          // Add labels for the buttons
+          let label1 = createLabel(text: "Scan")
+          let label2 = createLabel(text: "Numbers")
+          let label3 = createLabel(text: "My tickets")
+          
+          // Add the menu button
+          let menuButton = createMenuButton(imageName: "whiteBurger")
+          
+          upperMenuView.addSubview(button1)
+          upperMenuView.addSubview(button2)
+          upperMenuView.addSubview(button3)
+          upperMenuView.addSubview(label1)
+          upperMenuView.addSubview(label2)
+          upperMenuView.addSubview(label3)
+          upperMenuView.addSubview(menuButton) // Adding menu button
+
+          // Set up constraints for upperMenuView
           if #available(iOS 11.0, *) {
               let window = UIApplication.shared.keyWindow
               let topPadding = window?.safeAreaInsets.top ?? 0
 
-              // Initialize upperMenuView height with maxUpperMenuHeight
               upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
 
               NSLayoutConstraint.activate([
@@ -219,7 +239,101 @@ private extension DrawsViewController {
                   upperMenuHeightConstraint
               ])
           }
+          
+          // Set constraints for the buttons and labels with reduced horizontal spacing
+          NSLayoutConstraint.activate([
+              // Button 1
+              button1.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
+              button1.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+              button1.widthAnchor.constraint(equalToConstant: 68.scale),
+              button1.heightAnchor.constraint(equalToConstant: 68.scale),
+              
+              // Label 1
+              label1.centerXAnchor.constraint(equalTo: button1.centerXAnchor),
+              label1.topAnchor.constraint(equalTo: button1.bottomAnchor, constant: 4.scale),
+              
+              // Button 2 (center button)
+              button2.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor, constant: 0),
+              button2.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+              button2.widthAnchor.constraint(equalToConstant: 68.scale),
+              button2.heightAnchor.constraint(equalToConstant: 68.scale),
+              
+              // Label 2
+              label2.centerXAnchor.constraint(equalTo: button2.centerXAnchor),
+              label2.topAnchor.constraint(equalTo: button2.bottomAnchor, constant: 4.scale),
+              
+              // Button 3
+              button3.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
+              button3.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+              button3.widthAnchor.constraint(equalToConstant: 68.scale),
+              button3.heightAnchor.constraint(equalToConstant: 68.scale),
+              
+              // Label 3
+              label3.centerXAnchor.constraint(equalTo: button3.centerXAnchor),
+              label3.topAnchor.constraint(equalTo: button3.bottomAnchor, constant: 4.scale),
+              
+              // Menu Button
+              menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -26.scale),
+              menuButton.topAnchor.constraint(equalTo: button3.topAnchor, constant: -50.scale),
+              menuButton.widthAnchor.constraint(equalToConstant: 24.scale),
+              menuButton.heightAnchor.constraint(equalToConstant: 24.scale)
+          ])
       }
+      
+      // Helper function to create a circular button with an image
+      func createButton(imageName: String) -> UIButton {
+          let button = UIButton(type: .custom)
+          button.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
+          button.layer.cornerRadius = 34.scale // Half of the width and height to make it circular
+          button.clipsToBounds = true
+          
+          // Create an image view for the button image
+          let imageView = UIImageView(image: UIImage(named: imageName))
+          imageView.contentMode = .scaleAspectFit
+          imageView.translatesAutoresizingMaskIntoConstraints = false
+          button.addSubview(imageView)
+          
+          // Set imageView constraints to center it within the button
+          NSLayoutConstraint.activate([
+              imageView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+              imageView.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+              imageView.widthAnchor.constraint(equalToConstant: 24.scale), // Adjust size of the image
+              imageView.heightAnchor.constraint(equalToConstant: 24.scale)
+          ])
+          
+          button.translatesAutoresizingMaskIntoConstraints = false
+          return button
+      }
+      
+      // Helper function to create the menu button with an image
+      func createMenuButton(imageName: String) -> UIButton {
+          let button = UIButton(type: .custom)
+          
+          // Set the button's image
+          let menuImage = UIImage(named: imageName)
+          button.setImage(menuImage, for: .normal)
+          
+          // Configure button appearance
+          button.tintColor = .white
+          button.translatesAutoresizingMaskIntoConstraints = false
+          return button
+      }
+      
+      // Helper function to create a label with specific styles
+      func createLabel(text: String) -> UILabel {
+          let label = UILabel()
+          label.text = text
+          label.font = Fonts.Inter.medium(size: 14.scale)
+          label.textColor = .white
+          label.textAlignment = .center
+          label.backgroundColor = .clear // Transparent background
+          label.layer.cornerRadius = 5.scale
+          label.clipsToBounds = true
+          label.translatesAutoresizingMaskIntoConstraints = false
+          return label
+      }
+
+
     func setupSegmentedControl() {
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
@@ -654,3 +768,4 @@ private extension DrawsViewController {
         return urlString.lowercased().contains(word)
     }
 }
+
