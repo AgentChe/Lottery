@@ -10,6 +10,14 @@ import UIKit
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
     var games: [Game] = []
+  
+    
+    private var upperMenuView: UIView!
+    private var upperMenuHeightConstraint: NSLayoutConstraint!
+    private var segmentTopConstraint : NSLayoutConstraint!
+    let maxUpperMenuHeight: CGFloat = 90.scale // Maximum height of upperMenuView
+    let minUpperMenuHeight: CGFloat = 60.scale
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -109,17 +117,94 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
-        setupSegmentedControl()
+      
         setupCollectionViews()
+        setupSegmentedControl()
+        setupUpperMenuView()
         setupScanButton()  // Setup scan button
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
-        setupNavigationBarTitle()
+               
+       // setupNavigationBarTitle()
+    }
+     
+    private var previousScrollOffset: CGFloat = .zero
+    private var initialContentOffset: CGFloat = 0.0 // To store the initial contentOffset
+       private var hasRecordedInitialOffset = false // Flag to track the first scroll event
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let currentOffset = scrollView.contentOffset.y
+        let window = UIApplication.shared.keyWindow
+        let topPadding = window?.safeAreaInsets.top ?? 0
+        
+        if !hasRecordedInitialOffset {
+            initialContentOffset = currentOffset
+            hasRecordedInitialOffset = true
+        }
+        print("currentOffset: \(currentOffset), \(initialContentOffset)")
+        
+        guard currentOffset >= initialContentOffset else {
+            print("RETURN")
+            segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight
+            return
+        }
+        
+        
+        let deltaY = currentOffset - previousScrollOffset
+        print("delta \(deltaY)")
+        if deltaY > 0 { //shrink
+            
+            upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
+          
+            print("segmentTopConstraint.constant \( segmentTopConstraint.constant) \(initialContentOffset), \( currentOffset)")
+            
+            if initialContentOffset < currentOffset && currentOffset < 17.scale{
+                segmentTopConstraint.constant = segmentTopConstraint.constant - abs(deltaY)
+            } else {
+                if UIApplication.shared.statusBarFrame.height < 40 {
+                    segmentTopConstraint.constant = 20.scale
+                }
+            }
+        } else if deltaY < 0 {
+            upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
+         
+            if  currentOffset < 17.scale {
+                if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight {
+                    segmentTopConstraint.constant = segmentTopConstraint.constant + abs(deltaY)
+                } else {
+                    segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight
+                }
+            }
+            
+        }
+        
+        view.layoutIfNeeded()
+        previousScrollOffset = currentOffset
     }
 }
 
 // MARK: - UI Setup
 private extension DrawsViewController {
+    func setupUpperMenuView() {
+          upperMenuView = UIView()
+          upperMenuView.backgroundColor = .red
+          upperMenuView.translatesAutoresizingMaskIntoConstraints = false
+          view.addSubview(upperMenuView)
+          
+          if #available(iOS 11.0, *) {
+              let window = UIApplication.shared.keyWindow
+              let topPadding = window?.safeAreaInsets.top ?? 0
+
+              // Initialize upperMenuView height with maxUpperMenuHeight
+              upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
+
+              NSLayoutConstraint.activate([
+                  upperMenuView.topAnchor.constraint(equalTo: view.topAnchor),
+                  upperMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                  upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                  upperMenuHeightConstraint
+              ])
+          }
+      }
     func setupSegmentedControl() {
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
@@ -154,6 +239,7 @@ private extension DrawsViewController {
         nextDrawsCollectionView.register(NextGameCell.self, forCellWithReuseIdentifier: "NextGameCell")
         nextDrawsCollectionView.showsVerticalScrollIndicator = false
         nextDrawsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        nextDrawsCollectionView.layer.masksToBounds = false
         view.addSubview(nextDrawsCollectionView)
         
         let pastDrawsCollectionViewLayout = UICollectionViewFlowLayout()
@@ -164,6 +250,7 @@ private extension DrawsViewController {
         pastDrawsCollectionView.register(PastGameCell.self, forCellWithReuseIdentifier: "PastGameCell")
         pastDrawsCollectionView.showsVerticalScrollIndicator = false
         pastDrawsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        pastDrawsCollectionView.layer.masksToBounds = false
         view.addSubview(pastDrawsCollectionView)
         
         pastDrawsCollectionView.isHidden = true
@@ -191,14 +278,16 @@ private extension DrawsViewController {
         view.addSubview(addButton)
     }
     
+
     func setupLayoutConstraints() {
+        segmentTopConstraint = segmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: upperMenuHeightConstraint.constant)
         NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
+            segmentTopConstraint,
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
             
-            nextDrawsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 0),
+            nextDrawsCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             nextDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             nextDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
@@ -280,7 +369,7 @@ extension DrawsViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 50.scale, left: 0, bottom: 10.scale, right: 0) // Adjust insets as needed
+        return UIEdgeInsets(top:  upperMenuHeightConstraint.constant, left: 0, bottom: 10.scale, right: 0) // Adjust insets as needed
     }
 }
 
