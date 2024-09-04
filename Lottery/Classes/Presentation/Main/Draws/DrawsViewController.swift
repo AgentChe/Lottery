@@ -11,7 +11,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     var profile: Profile!
     var games: [Game] = []
   
-    
+    var menuButton: UIButton!
     private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
@@ -153,27 +153,34 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         
         
         let deltaY = currentOffset - previousScrollOffset
-        
+        print("currentOffset \(currentOffset),init: \(initialContentOffset), \(segmentTopConstraint.constant)")
+        print(currentOffset < 40.scale)
         if deltaY > 0 { //shrink
-            
+            if upperMenuHeightConstraint.constant < topPadding + maxUpperMenuHeight - 10.scale {
+                menuButton.alpha = 0
+            }
             upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
           
 
             
-            if initialContentOffset < currentOffset && currentOffset < 17.scale{
+            if initialContentOffset < currentOffset && currentOffset < 50.scale{
                 segmentTopConstraint.constant = segmentTopConstraint.constant - abs(deltaY)
             } else {
                 if UIApplication.shared.statusBarFrame.height < 40 {
-                    segmentTopConstraint.constant = 20.scale
+                    segmentTopConstraint.constant = 100.scale
                 } else {
-                    segmentTopConstraint.constant = 0.scale
+                    segmentTopConstraint.constant = 100.scale
                 }
             }
         } else if deltaY < 0 {
+            if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 15.scale{
+                menuButton.alpha = 1
+            }
             upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
-         
-            if  currentOffset < 17.scale {
+       
+            if  currentOffset < 50.scale {
                 if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight  + ( (UIApplication.shared.statusBarFrame.height < 40) ? 0.scale : 20.scale) {
+                    print("here \( segmentTopConstraint.constant)")
                     segmentTopConstraint.constant = segmentTopConstraint.constant + abs(deltaY)
                 } else {
                     if UIApplication.shared.statusBarFrame.height > 40 {
@@ -215,7 +222,7 @@ private extension DrawsViewController {
           let label3 = createLabel(text: "My tickets")
           
           // Add the menu button
-          let menuButton = createMenuButton(imageName: "whiteBurger")
+         menuButton = createMenuButton(imageName: "whiteBurger")
           
           upperMenuView.addSubview(button1)
           upperMenuView.addSubview(button2)
