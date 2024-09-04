@@ -67,6 +67,8 @@ class NextGameCell: UICollectionViewCell {
     var logoImageWidthConstraint: NSLayoutConstraint!
     var logoImageTopConstraint: NSLayoutConstraint!
     var jackpotTitleTopConstraint: NSLayoutConstraint!
+    var whiteBcgHeightConstraint: NSLayoutConstraint!
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -154,16 +156,20 @@ extension NextGameCell {
                     logoImageWidthConstraint.isActive = false
                     logoImageTopConstraint.isActive = false
                     jackpotTitleTopConstraint.isActive = false
+                    whiteBcgHeightConstraint.isActive = false
+                    
                
                     logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -25.scale)
                     logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
                     logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
                     jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 13.scale)
+                    whiteBcgHeightConstraint =             whiteBackgroundView.heightAnchor.constraint(equalToConstant: 144.scale)
                     
                     logoImageLeadingConstraint.isActive = true
                     logoImageWidthConstraint.isActive = true
                     logoImageTopConstraint.isActive = true
                     jackpotTitleTopConstraint.isActive = true
+                    whiteBcgHeightConstraint.isActive = true
                     setNeedsLayout()
                     jackpotTitleLabel.alpha = 1
                     
@@ -173,15 +179,18 @@ extension NextGameCell {
                     logoImageWidthConstraint.isActive = false
                    logoImageTopConstraint.isActive = false
                    jackpotTitleTopConstraint.isActive = false
+                   whiteBcgHeightConstraint.isActive = false
                  
                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -32.scale)
                     logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 13.scale)
+                   whiteBcgHeightConstraint =             whiteBackgroundView.heightAnchor.constraint(equalToConstant: 144.scale)
                 
                    logoImageLeadingConstraint.isActive = true
                    logoImageWidthConstraint.isActive = true
                    logoImageTopConstraint.isActive = true
                    jackpotTitleTopConstraint.isActive = true
+                   whiteBcgHeightConstraint.isActive = true
                     setNeedsLayout()
                    jackpotTitleLabel.alpha = 1
                 }
@@ -190,16 +199,19 @@ extension NextGameCell {
                     logoImageWidthConstraint.isActive = false
                     logoImageTopConstraint.isActive = false
                     jackpotTitleTopConstraint.isActive = false
+                    whiteBcgHeightConstraint.isActive = false
                 
                     logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
                     logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 155.scale)
                     logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 5.scale)
                     jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 3.scale)
-                  
+                    whiteBcgHeightConstraint =             whiteBackgroundView.heightAnchor.constraint(equalToConstant: 116.scale)
+                    
                     logoImageLeadingConstraint.isActive = true
                     logoImageWidthConstraint.isActive = true
                     logoImageTopConstraint.isActive = true
                     jackpotTitleTopConstraint.isActive = true
+                    whiteBcgHeightConstraint.isActive = true
                     setNeedsLayout()
                     jackpotTitleLabel.alpha = 1
                 }
@@ -209,17 +221,20 @@ extension NextGameCell {
                     logoImageWidthConstraint.isActive = false
                     logoImageTopConstraint.isActive = false
                     jackpotTitleTopConstraint.isActive = false
+                    whiteBcgHeightConstraint.isActive = false
                     
                     logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 8.scale)
                     logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
                     logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 80.scale)
                     
                     jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: -10.scale)
+                    whiteBcgHeightConstraint =             whiteBackgroundView.heightAnchor.constraint(equalToConstant: 116.scale)
                     
                     logoImageLeadingConstraint.isActive = true
                     logoImageWidthConstraint.isActive = true
                     logoImageTopConstraint.isActive = true
                     jackpotTitleTopConstraint.isActive = true
+                    whiteBcgHeightConstraint.isActive = true
                     
                     setNeedsLayout()
                     
@@ -315,6 +330,8 @@ private extension NextGameCell {
         logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
         jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 10.scale)
         
+        whiteBcgHeightConstraint =             whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.size.height == 232.scale ? 144.scale : 116.scale)
+        
         NSLayoutConstraint.activate([
             // Set backgroundImageView constraints to cover the entire cell
             backgroundImageView.topAnchor.constraint(equalTo: topAnchor),
@@ -325,7 +342,7 @@ private extension NextGameCell {
             // Set whiteBackgroundView constraints to cover the entire cell
             whiteBackgroundView.topAnchor.constraint(equalTo: topAnchor),
             whiteBackgroundView.widthAnchor.constraint(equalToConstant: 343.scale),
-            whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.size.height == 232.scale ? 144.scale : 116.scale),
+            whiteBcgHeightConstraint,
             
             logoImageTopConstraint,
             logoImageLeadingConstraint,
