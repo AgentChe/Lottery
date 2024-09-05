@@ -106,6 +106,7 @@
 		A3EF372D2C17BC8D00753C41 /* SettingsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */; };
 		A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37302C184DD600753C41 /* TicketsViewController.swift */; };
 		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
+		A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -340,6 +341,7 @@
 		A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWebViewController.swift; sourceTree = "<group>"; };
 		A3EF37302C184DD600753C41 /* TicketsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsViewController.swift; sourceTree = "<group>"; };
 		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
+		A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScanOptionView.swift; sourceTree = "<group>"; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -833,6 +835,7 @@
 			children = (
 				A3FD9EA42C11C9EE000FAD68 /* Views */,
 				A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */,
+				A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */,
 			);
 			path = Draws;
 			sourceTree = "<group>";
@@ -1712,6 +1715,7 @@
 				A3668DC12C1C89F100754446 /* EditNumberCell.swift in Sources */,
 				DE42B1BE2BFF3CB200FF61B0 /* OnboardingViewController.swift in Sources */,
 				DE42B1A42BFF3CB200FF61B0 /* PushNotificationsAuthorizationStatus.swift in Sources */,
+				A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */,
 				A3FF55832C08C02100E81771 /* SetProfileRequest.swift in Sources */,
 				A3FF556D2C07E51E00E81771 /* GamesManager.swift in Sources */,
 				DE42B19F2BFF3CB200FF61B0 /* UITapGestureRecognizer+Extension.swift in Sources */,

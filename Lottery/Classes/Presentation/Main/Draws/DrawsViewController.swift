@@ -10,8 +10,12 @@ import UIKit
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
     var games: [Game] = []
+    var dimView: UIView!
     private var previousVC: UIViewController?
     var menuButton: UIButton!
+    var scanOptionButton: UIButton!
+    var luckyNumbersButton: UIButton!
+    var ticketsButton: UIButton!
     private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
@@ -218,13 +222,13 @@ private extension DrawsViewController {
         view.addSubview(upperMenuView)
         
         // Add buttons with respective images
-        let button1 = createButton(imageName: "ScanButtonImage")
-        let button2 = createButton(imageName: "NumbersButtonImage")
-        let button3 = createButton(imageName: "MyTicketsButtonImage")
+        scanOptionButton = createButton(imageName: "ScanButtonImage")
+        luckyNumbersButton = createButton(imageName: "NumbersButtonImage")
+        ticketsButton = createButton(imageName: "MyTicketsButtonImage")
         menuButton = createMenuButton(imageName: "whiteBurger")
-        button1.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
-        button2.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
-        button3.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
+        scanOptionButton.addTarget(self, action: #selector(chooseScanOption), for: .touchUpInside)
+        luckyNumbersButton.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
+        ticketsButton.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
         
         // Add labels for the buttons
@@ -236,9 +240,9 @@ private extension DrawsViewController {
         
         
         
-        upperMenuView.addSubview(button1)
-        upperMenuView.addSubview(button2)
-        upperMenuView.addSubview(button3)
+        upperMenuView.addSubview(scanOptionButton)
+        upperMenuView.addSubview(luckyNumbersButton)
+        upperMenuView.addSubview(ticketsButton)
         upperMenuView.addSubview(menuButton)
         upperMenuView.addSubview(label1)
         upperMenuView.addSubview(label2)
@@ -263,42 +267,98 @@ private extension DrawsViewController {
         // Set constraints for the buttons and labels with reduced horizontal spacing
         NSLayoutConstraint.activate([
             // Button 1
-            button1.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
-            button1.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            button1.widthAnchor.constraint(equalToConstant: 68.scale),
-            button1.heightAnchor.constraint(equalToConstant: 68.scale),
+            scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
+            scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
             
             // Label 1
-            label1.centerXAnchor.constraint(equalTo: button1.centerXAnchor),
-            label1.topAnchor.constraint(equalTo: button1.bottomAnchor, constant: 4.scale),
+            label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
+            label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
             
             // Button 2 (center button)
-            button2.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor, constant: 0),
-            button2.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            button2.widthAnchor.constraint(equalToConstant: 68.scale),
-            button2.heightAnchor.constraint(equalToConstant: 68.scale),
+            luckyNumbersButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor, constant: 0),
+            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
             
             // Label 2
-            label2.centerXAnchor.constraint(equalTo: button2.centerXAnchor),
-            label2.topAnchor.constraint(equalTo: button2.bottomAnchor, constant: 4.scale),
+            label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
+            label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
             
             // Button 3
-            button3.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
-            button3.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            button3.widthAnchor.constraint(equalToConstant: 68.scale),
-            button3.heightAnchor.constraint(equalToConstant: 68.scale),
+            ticketsButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
+            ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
             
             // Label 3
-            label3.centerXAnchor.constraint(equalTo: button3.centerXAnchor),
-            label3.topAnchor.constraint(equalTo: button3.bottomAnchor, constant: 4.scale),
+            label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
+            label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
             
             // Menu Button
             menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
-            menuButton.topAnchor.constraint(equalTo: button3.topAnchor, constant: -66.scale),
+            menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
             menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
             menuButton.heightAnchor.constraint(equalToConstant: 60.scale)
         ])
     }
+    @objc func chooseScanOption() {
+          // Create the dim view to darken the background
+          dimView = UIView(frame: self.view.bounds)
+          dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+          dimView.alpha = 0 // Initially invisible
+          view.addSubview(dimView)
+
+          // Add tap gesture to dismiss the scan option when tapping the dimmed area
+          let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissScanOption))
+          dimView.addGestureRecognizer(tapGesture)
+
+          let chooseScanOptionView = ChooseScanOptionView()
+
+          // Set initial off-screen position (bottom of the screen)
+          chooseScanOptionView.translatesAutoresizingMaskIntoConstraints = false
+          view.addSubview(chooseScanOptionView)
+          
+          // Set constraints for the width and height of ChooseScanOptionView
+          NSLayoutConstraint.activate([
+              chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+              chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+              chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),  // Adjust height as needed
+              chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)  // Start off-screen
+          ])
+          
+          view.layoutIfNeeded()
+
+          // Animate the dim view and the ChooseScanOptionView upwards onto the screen
+          UIView.animate(withDuration: 0.3) {
+              self.dimView.alpha = 1 // Make the dim view visible
+              chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -200.scale)  // Move up onto the screen
+              self.view.layoutIfNeeded()
+          }
+
+          // Add a dismiss action for dismissButton
+          chooseScanOptionView.dismissButton.addTarget(self, action: #selector(dismissChooseScanOptionView(_:)), for: .touchUpInside)
+      }
+
+      @objc func dismissChooseScanOptionView(_ sender: UIButton) {
+          if let chooseScanOptionView = sender.superview as? ChooseScanOptionView {
+              // Animate the view back down off-screen
+              UIView.animate(withDuration: 0.3, animations: {
+                  chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
+                  self.dimView.alpha = 0 // Fade out the dim view
+              }, completion: { _ in
+                  chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
+                  self.dimView.removeFromSuperview() // Remove the dim view after animation
+              })
+          }
+      }
+
+      @objc func dismissScanOption() {
+          // Call the dismiss function when the dim view is tapped
+          dismissChooseScanOptionView(scanOptionButton)
+      }
+
     
     @objc func numbersButtonTapped() {
         print("Numbers button tapped")
