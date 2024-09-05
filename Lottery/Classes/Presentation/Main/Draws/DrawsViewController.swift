@@ -130,7 +130,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupCollectionViews()
         setupSegmentedControl()
         setupUpperMenuView()
-        setupScanButton()  // Setup scan button
+        //setupScanButton()  // Setup scan button
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
         
@@ -542,10 +542,10 @@ private extension DrawsViewController {
             pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             pastDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
             
-            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
-            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
-            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+//            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
+//            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
+//            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
+//            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
             
             noGamesAddedImageView.widthAnchor.constraint(equalToConstant: 344.scale),
             noGamesAddedImageView.heightAnchor.constraint(equalToConstant: 235.scale),
