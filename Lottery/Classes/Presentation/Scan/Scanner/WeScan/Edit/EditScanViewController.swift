@@ -15,6 +15,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     var lotteryId: Int!
     var continueButton: UIButton!
     var retakeButton: UIButton!
+    private var dimView: DimViewWithProgressBar?
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -108,8 +109,13 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         setupNavigationBackButton()
         setupButtons()
         setupConstraints()
+        
     }
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showDimView()
+        dimView?.alpha = 0
+    }
     private func setupButtons() {
         continueButton = UIButton(type: .system)
         continueButton.setTitle("EditScanViewController.ContinueButton".localized, for: .normal)
@@ -139,6 +145,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     }
 
     @objc func continueButtonTapped() {
+        dimView?.alpha = 1
         guard let quad = quadView.quad,
               let ciImage = CIImage(image: image) else {
             if let imageScannerController = navigationController as? ImageScannerController {
@@ -194,16 +201,29 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         if croppedImageSize.width / croppedImageSize.height < 3 {
             checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
         }
+       
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
-        navigationController?.pushViewController(checkTicketViewController, animated: true)
+       
+        delay(0.6) {
+            self.navigationController?.pushViewController(checkTicketViewController, animated: true)
+            self.hideDimView()
+        }
     }
-
+    func showDimView() {
+           dimView = DimViewWithProgressBar(frame: view.bounds)
+           if let dimView = dimView {
+               view.addSubview(dimView)
+           }
+       }
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         adjustQuadViewConstraints()
         displayQuad()
     }
-
+    func hideDimView() {
+            dimView?.stopLoading()
+            dimView = nil
+        }
     override public func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.tintAdjustmentMode = .normal

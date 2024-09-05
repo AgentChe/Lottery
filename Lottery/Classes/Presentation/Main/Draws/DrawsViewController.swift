@@ -208,7 +208,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 }
 
 // MARK: - UI Setup
-private extension DrawsViewController {
+ extension DrawsViewController {
     func setupUpperMenuView() {
         // Set up upperMenuView as an image view
         upperMenuView = UIImageView()
@@ -318,12 +318,13 @@ private extension DrawsViewController {
 
           // Set initial off-screen position (bottom of the screen)
           chooseScanOptionView.translatesAutoresizingMaskIntoConstraints = false
-          view.addSubview(chooseScanOptionView)
+        chooseScanOptionView.layer.cornerRadius = 20.scale
+        view.addSubview(chooseScanOptionView)
           
           // Set constraints for the width and height of ChooseScanOptionView
           NSLayoutConstraint.activate([
-              chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-              chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+              chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
               chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),  // Adjust height as needed
               chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)  // Start off-screen
           ])
@@ -333,7 +334,7 @@ private extension DrawsViewController {
           // Animate the dim view and the ChooseScanOptionView upwards onto the screen
           UIView.animate(withDuration: 0.3) {
               self.dimView.alpha = 1 // Make the dim view visible
-              chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -200.scale)  // Move up onto the screen
+              chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)  // Move up onto the screen
               self.view.layoutIfNeeded()
           }
 
@@ -359,7 +360,19 @@ private extension DrawsViewController {
           dismissChooseScanOptionView(scanOptionButton)
       }
 
-    
+    func dismissAndPresentScanDraw(chooseScanOptionView: UIView) {
+        
+        // Animate the view back down off-screen
+        UIView.animate(withDuration: 0.3, animations: {
+            chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
+            self.dimView.alpha = 0 // Fade out the dim view
+        }, completion: { _ in
+            chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
+            self.dimView.removeFromSuperview() // Remove the dim view after animation
+            self.scanButtonTapped()
+        })
+        
+    }
     @objc func numbersButtonTapped() {
         print("Numbers button tapped")
         
@@ -827,7 +840,7 @@ private extension DrawsViewController {
 }
 private extension DrawsViewController {
     @objc func scanButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+     //   if SessionManager().hasActiveSubscriptions() {
             let scanOnboardingViewController = ScanOnboardingViewController.make()
             
             // Check if the current view controller is embedded in a navigation controller
@@ -845,10 +858,11 @@ private extension DrawsViewController {
                 // If not, present the view controller modally as a fallback
                 present(scanOnboardingViewController, animated: true, completion: nil)
             }
-        } else {
-            let vc = PaygateViewController.make()
-            present(vc, animated: true)
-        }
+//        }
+//    else {
+//            let vc = PaygateViewController.make()
+//            present(vc, animated: true)
+//        }
     }
     
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {

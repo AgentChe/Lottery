@@ -107,6 +107,7 @@
 		A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37302C184DD600753C41 /* TicketsViewController.swift */; };
 		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
 		A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */; };
+		A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -342,6 +343,7 @@
 		A3EF37302C184DD600753C41 /* TicketsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsViewController.swift; sourceTree = "<group>"; };
 		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
 		A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScanOptionView.swift; sourceTree = "<group>"; };
+		A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimViewWithProgressBar.swift; sourceTree = SOURCE_ROOT; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 		A32748B82C25D71E00E9F79A /* Scan */ = {
 			isa = PBXGroup;
 			children = (
+				A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */,
 				DED8FB192C762796001DAAE2 /* TicketUploadImage.swift */,
 				A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */,
 				A37557FA2C345B270028DB95 /* TickedEditScanCell.swift */,
@@ -1565,6 +1568,7 @@
 			files = (
 				A3668DB42C1B366C00754446 /* TickedEditCell.swift in Sources */,
 				DE42B19E2BFF3CB200FF61B0 /* UIEdgeInsets+Extension.swift in Sources */,
+				A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */,
 				A3FF557B2C07E65000E81771 /* TicketsManager.swift in Sources */,
 				DE42B1D12BFF3CB200FF61B0 /* IAPActionResult.swift in Sources */,
 				A3EF372D2C17BC8D00753C41 /* SettingsWebViewController.swift in Sources */,
