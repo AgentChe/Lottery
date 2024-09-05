@@ -23,7 +23,7 @@ class ChooseScanOptionView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-
+    
     let scanScratchButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Scan scratch-off ticket", for: .normal)
@@ -36,7 +36,7 @@ class ChooseScanOptionView: UIView {
         button.layer.borderColor = Appearance.main500.cgColor
         return button
     }()
-
+    
     let dismissButton: UIButton = {
         let button = UIButton(type: .system)
         if let closeImage = UIImage(named: "dismissChooseScan")?.withRenderingMode(.alwaysTemplate) {
@@ -47,18 +47,18 @@ class ChooseScanOptionView: UIView {
         button.backgroundColor = .clear
         return button
     }()
-
+    
     // Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
     }
-
+    
     private func setupView() {
         // Set background color of the main view
         self.backgroundColor = Appearance.main400
@@ -68,11 +68,11 @@ class ChooseScanOptionView: UIView {
         addSubview(scanDrawButton)
         addSubview(scanScratchButton)
         addSubview(dismissButton)
-
+        
         // Add button actions
         scanDrawButton.addTarget(self, action: #selector(scanDrawButtonTapped), for: .touchUpInside)
         scanScratchButton.addTarget(self, action: #selector(scanScratchButtonTapped), for: .touchUpInside)
-
+        
         // Set up layout constraints for chooseOptionLabel
         NSLayoutConstraint.activate([
             chooseOptionLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 26.scale),
@@ -86,7 +86,7 @@ class ChooseScanOptionView: UIView {
             scanDrawButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
             scanDrawButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
-
+        
         // Set up layout constraints for scanScratchButton
         NSLayoutConstraint.activate([
             scanScratchButton.topAnchor.constraint(equalTo: scanDrawButton.bottomAnchor, constant: 13.scale),
@@ -94,7 +94,7 @@ class ChooseScanOptionView: UIView {
             scanScratchButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
             scanScratchButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
-
+        
         // Set up layout constraints for dismissButton
         NSLayoutConstraint.activate([
             dismissButton.centerYAnchor.constraint(equalTo: chooseOptionLabel.centerYAnchor),
@@ -103,17 +103,22 @@ class ChooseScanOptionView: UIView {
             dismissButton.heightAnchor.constraint(equalToConstant: 15.scale)
         ])
     }
-
+    
     // Action for scan draw button
     @objc private func scanDrawButtonTapped() {
         if let drawsViewController = parentViewController as? DrawsViewController {
             drawsViewController.dismissAndPresentScanDraw(chooseScanOptionView: self)
+            drawsViewController.isDrawScan = true
+            drawsViewController.isScratchScan = nil
         }
     }
-
+    
     // Action for scan scratch-off button
     @objc private func scanScratchButtonTapped() {
-        print("Scan scratch-off ticket button tapped")
-        // Add your action logic here
+        if let drawsViewController = parentViewController as? DrawsViewController {
+            drawsViewController.dismissAndPresentScanDraw(chooseScanOptionView: self)
+            drawsViewController.isDrawScan = nil
+            drawsViewController.isScratchScan = true
+        }
     }
 }

@@ -11,6 +11,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     var profile: Profile!
     var games: [Game] = []
     var dimView: UIView!
+    var isDrawScan: Bool?
+    var isScratchScan: Bool?
     private var previousVC: UIViewController?
     var menuButton: UIButton!
     var scanOptionButton: UIButton!

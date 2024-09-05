@@ -146,6 +146,25 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     }
     var weDo: Bool = true
     @objc func continueButtonTapped() {
+        if let navigController = (parent?.parent as? MainViewController)?.children.first as? NavigationController {
+            print("navigController: ",navigController.children)
+            var drawsViewController: DrawsViewController!
+            for child in navigController.children {
+                if child.isKind(of: DrawsViewController.self) {
+                    drawsViewController = child as! DrawsViewController
+                    if drawsViewController.isDrawScan != nil {
+                       drawsScanMagic()
+                    }
+                    if drawsViewController.isScratchScan != nil {
+                        
+                    }
+                }
+            }
+        }
+      
+    }
+    
+    func drawsScanMagic() {
         dimView?.alpha = 1
         guard let quad = quadView.quad,
               let ciImage = CIImage(image: image) else {
@@ -205,6 +224,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
        
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         touchDown.isEnabled = false
+       
         delay(0.8) {
             self.continueButton.isUserInteractionEnabled = false
             if self.weDo {
