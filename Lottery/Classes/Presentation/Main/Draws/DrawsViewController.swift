@@ -178,7 +178,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 }
             }
         } else if deltaY < 0 {
-            if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 15.scale{
+            if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale{
                 menuButton.alpha = 1
             }
             upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
