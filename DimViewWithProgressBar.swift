@@ -33,6 +33,28 @@ class DimViewWithProgressBar: UIView {
         return view
     }()
     
+    // Create a button below the progress label
+    private let actionButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Cancel", for: .normal)
+        button.setTitleColor( Appearance.mono200, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.backgroundColor = Appearance.mono100
+        button.layer.cornerRadius = 20.scale
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    @objc func cancel() {
+        
+        if let pvc = parentViewController as? EditScanViewController {
+            pvc.weDo = false
+            pvc.touchDown.isEnabled = true
+            pvc.continueButton.isUserInteractionEnabled = false
+        }
+        stopLoading()
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -81,6 +103,15 @@ class DimViewWithProgressBar: UIView {
             progressLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             progressLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 100) // Beneath the circle
         ])
+        
+        // Add the action button
+        addSubview(actionButton)
+        NSLayoutConstraint.activate([
+            actionButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            actionButton.topAnchor.constraint(equalTo: progressLabel.bottomAnchor, constant: 30.scale),
+            actionButton.widthAnchor.constraint(equalToConstant: 200.scale),
+            actionButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        ])
     }
     
     private func setupAnimations() {
@@ -120,5 +151,8 @@ class DimViewWithProgressBar: UIView {
     func stopLoading() {
         progressLayer.removeAllAnimations()
         removeFromSuperview()
+        if let pvc = parentViewController as? EditScanViewController {
+            pvc.continueButton.isUserInteractionEnabled = true
+        }
     }
 }

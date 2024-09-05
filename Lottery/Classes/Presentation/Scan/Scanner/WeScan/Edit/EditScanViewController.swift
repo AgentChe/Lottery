@@ -87,7 +87,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    var touchDown:UILongPressGestureRecognizer!
     override public func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -101,7 +101,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
 
         zoomGestureController = ZoomGestureController(image: image, quadView: quadView)
 
-        let touchDown = UILongPressGestureRecognizer(target: zoomGestureController, action: #selector(zoomGestureController.handle(pan:)))
+         touchDown = UILongPressGestureRecognizer(target: zoomGestureController, action: #selector(zoomGestureController.handle(pan:)))
         touchDown.minimumPressDuration = 0
         touchDown.delegate = self
         view.addGestureRecognizer(touchDown)
@@ -115,6 +115,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         super.viewWillAppear(animated)
         showDimView()
         dimView?.alpha = 0
+        weDo = true
     }
     private func setupButtons() {
         continueButton = UIButton(type: .system)
@@ -143,7 +144,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     @objc func retakeButtonTapped() {
         self.navigationController?.popViewController(animated: true)
     }
-
+    var weDo: Bool = true
     @objc func continueButtonTapped() {
         dimView?.alpha = 1
         guard let quad = quadView.quad,
@@ -203,15 +204,27 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         }
        
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
-       
-        delay(0.6) {
-            self.navigationController?.pushViewController(checkTicketViewController, animated: true)
-            self.hideDimView()
+        touchDown.isEnabled = false
+        delay(0.8) {
+            self.continueButton.isUserInteractionEnabled = false
+            if self.weDo {
+                self.navigationController?.pushViewController(checkTicketViewController, animated: true)
+                self.hideDimView()
+                self.touchDown.isEnabled = true
+                self.continueButton.isUserInteractionEnabled = true
+            } else {
+                self.weDo = true
+                self.showDimView()
+                self.dimView?.alpha = 0
+                self.continueButton.isUserInteractionEnabled = true
+
+            }
         }
     }
     func showDimView() {
            dimView = DimViewWithProgressBar(frame: view.bounds)
            if let dimView = dimView {
+               dimView.isUserInteractionEnabled = true
                view.addSubview(dimView)
            }
        }
