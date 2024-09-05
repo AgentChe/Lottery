@@ -135,7 +135,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
      
     private var previousScrollOffset: CGFloat = .zero
     private var initialContentOffset: CGFloat = 0.0 // To store the initial contentOffset
-       private var hasRecordedInitialOffset = false // Flag to track the first scroll event
+    private var hasRecordedInitialOffset = false // Flag to track the first scroll event
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let window = UIApplication.shared.keyWindow
@@ -165,8 +166,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 menuButton.alpha = 0
             }
             upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
-          
-
+            
             
             if initialContentOffset < currentOffset && currentOffset < 50.scale{
                 segmentTopConstraint.constant = segmentTopConstraint.constant - abs(deltaY)
@@ -182,9 +182,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 menuButton.alpha = 1
             }
             upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
-       
+            
             if  currentOffset < 50.scale {
-                if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight  + ( (UIApplication.shared.statusBarFrame.height < 40) ? 0.scale : 20.scale) {
+                if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight  + ( (UIApplication.shared.statusBarFrame.height < 40) ? 10.scale : 20.scale) {
                     print("here \( segmentTopConstraint.constant)")
                     segmentTopConstraint.constant = segmentTopConstraint.constant + abs(deltaY)
                 } else {
