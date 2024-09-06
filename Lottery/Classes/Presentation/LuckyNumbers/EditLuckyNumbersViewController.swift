@@ -8,7 +8,15 @@
 import UIKit
 
 class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+    private let label: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = Appearance.main300
+        label.font = Fonts.Inter.medium(size: 14.scale)
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -39,7 +47,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         indicator.hidesWhenStopped = true
         return indicator
     }()
-
+    
     // Bottom constraint for the save button
     private var saveButtonBottomConstraint: NSLayoutConstraint!
     
@@ -51,7 +59,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         self.ticket = ticket
         self.game = game
         self.lotteries = lotteries
-
+        
         numbersStringArray = convertIntArrayToStringArray(game.myLuckyNumbers ?? [])
     }
     
@@ -69,6 +77,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         view.backgroundColor = Appearance.main400
         setupNavigationBar()
         setupNavigationBarTitle()
+        
+        label.text = "You can add additional row of lucky numbers by tapping plus button"
+        view.addSubview(label)
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -102,7 +113,13 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.widthAnchor.constraint(equalToConstant: 343.scale),
+            label.heightAnchor.constraint(equalToConstant: 48.scale),
+            
+            // CollectionView constraints
+            collectionView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10.scale),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -121,7 +138,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         // Hide the title and show the activity indicator
         saveTicketButton.setTitle("", for: .normal)
         activityIndicator.startAnimating()
-
+        
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
         for section in numbersStringArray {
@@ -174,7 +191,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             }
         }
     }
-   
+    
     func showErrorAlert(message: String) {
         let alertController = UIAlertController(title: "EditLuckyNumbersViewController.ErrorTitle".localized, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK".localized, style: .default, handler: nil)
@@ -183,7 +200,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     }
     
     private func setupNavigationBarTitle() {
-        guard let backButtonImage = UIImage(named: "LuckyNumbers.Header") else { return }
+        guard let backButtonImage = UIImage(named: "luckyNumberEmptyHeader") else { return }
         
         let backButton = UIButton(type: .custom)
         backButton.setImage(backButtonImage, for: .normal)
