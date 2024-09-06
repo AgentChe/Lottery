@@ -18,6 +18,33 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private var noScratchOffsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
 
+    private let scanScratchOffTicketButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Scan scratch-off ticket", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
+        button.isEnabled = true // Initially disabled
+        button.isHidden = true
+        return button
+    }()
+    
+    private let scanLotteryTicketButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Scan lottery ticket", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
+        button.isEnabled = true // Initially disabled
+        button.isHidden = true
+        return button
+    }()
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     
@@ -27,7 +54,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         setupNoTicketsImageView()
         setupNoScratchOffsImageView()
         setupNavigationBarTitle()
-        
+        view.addSubview(scanScratchOffTicketButton)
+        view.addSubview(scanLotteryTicketButton)
    
         setupTicketsCollectionView()
         setupScratchoffsCollectionView()
@@ -62,6 +90,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             // Mock data fetch for scratch-offs, implement real logic as needed
             // scratchoffs = [ScratchOff]  // Fetch scratch-offs data here
         noScratchOffsImageView.alpha = 0
+        scanScratchOffTicketButton.isHidden = true
             scratchoffsCollectionView.reloadData()
         
     }
@@ -72,11 +101,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
               scratchoffsCollectionView.isHidden = true
               noScratchOffsImageView.alpha = 0
               noTicketsImageView.alpha = 1
+              scanLotteryTicketButton.isHidden = false
+              scanScratchOffTicketButton.isHidden = true
+              
           } else {
               ticketsCollectionView.isHidden = true
               scratchoffsCollectionView.isHidden = false
               noTicketsImageView.alpha = 0
               noScratchOffsImageView.alpha = 1
+              scanLotteryTicketButton.isHidden = true
+              scanScratchOffTicketButton.isHidden = false
           }
       }
    
@@ -142,6 +176,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         noTicketsImageView.contentMode = .scaleAspectFit
         
         view.addSubview(noTicketsImageView)
+        
+        
     }
     private func setupNoScratchOffsImageView() {
         noScratchOffsImageView = UIImageView(image: UIImage(named: "NoScratchoffs"))
@@ -149,6 +185,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         noScratchOffsImageView.contentMode = .scaleAspectFit
         
         view.addSubview(noScratchOffsImageView)
+        
+        
     }
 
     private func setupLayoutConstraints() {
@@ -181,7 +219,22 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
              noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
              noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
              noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+             noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+         
+             scanScratchOffTicketButton.topAnchor.constraint(equalTo: noScratchOffsImageView.bottomAnchor, constant: 20.scale),
+             scanScratchOffTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+             scanScratchOffTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+             scanScratchOffTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
+             
+             
+             
+             scanLotteryTicketButton.topAnchor.constraint(equalTo: noTicketsImageView.bottomAnchor, constant: 20.scale),
+             scanLotteryTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+             scanLotteryTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+             scanLotteryTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            
+             
+             
          ])
      }
     var scanButtonIsTapped: Bool = false
@@ -242,17 +295,21 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                     if self?.tickets.count != 0 {
                         self?.ticketsCollectionView.isHidden = false
                         self?.noTicketsImageView.isHidden = true
+                        self?.scanLotteryTicketButton.isHidden = true
                     } else {
                         self?.ticketsCollectionView.isHidden = true
                         self?.noTicketsImageView.isHidden = false
+                        self?.scanLotteryTicketButton.isHidden = false
                     }
                 case .failure:
                     if self?.tickets.count != 0 {
                         self?.ticketsCollectionView.isHidden = false
                         self?.noTicketsImageView.isHidden = true
+                        self?.scanLotteryTicketButton.isHidden = true
                     } else {
                         self?.ticketsCollectionView.isHidden = true
                         self?.noTicketsImageView.isHidden = false
+                        self?.scanLotteryTicketButton.isHidden = false
                     }
                     self?.showError()
                 }

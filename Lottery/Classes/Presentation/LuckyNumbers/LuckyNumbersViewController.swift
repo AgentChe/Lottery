@@ -223,6 +223,8 @@ final class LuckyNumbersViewController: UIViewController {
             addLuckyNumbersButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
             addLuckyNumbersButton.heightAnchor.constraint(equalToConstant: 44.scale),
             addLuckyNumbersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
+            
+            
         ])
     }
     
