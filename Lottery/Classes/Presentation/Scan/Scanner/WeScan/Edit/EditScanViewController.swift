@@ -16,6 +16,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     var continueButton: UIButton!
     var retakeButton: UIButton!
     private var dimView: DimViewWithProgressBar?
+    private let ticketUploadImageForScratchScan = TicketUploadImageForScratchScan()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -156,14 +157,100 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                        drawsScanMagic()
                     }
                     if drawsViewController.isScratchScan != nil {
-                        
+                        scratchOffsScanMagic()
                     }
                 }
             }
         }
       
     }
-    
+    func scratchOffsScanMagic() {
+        dimView?.alpha = 1
+        guard let quad = quadView.quad,
+              let ciImage = CIImage(image: image) else {
+            if let imageScannerController = navigationController as? ImageScannerController {
+                let error = ImageScannerControllerError.ciImageCreation
+                imageScannerController.imageScannerDelegate?.imageScannerController(imageScannerController, didFailWithError: error)
+            }
+            return
+        }
+        let cgOrientation = CGImagePropertyOrientation(image.imageOrientation)
+        let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
+        let scaledQuad = quad.scale(quadView.bounds.size, image.size)
+        self.quad = scaledQuad
+        
+        var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: image.size.height)
+        cartesianScaledQuad.reorganize()
+        
+        let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
+            "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
+            "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
+            "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
+            "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
+        ])
+        
+        var finalImage: UIImage? = UIImage.from(ciImage: filteredImage)
+        let finalImageGray = filteredImage.applyingGrayscaleFilter()
+        
+        let enhancedScan = finalImage.flatMap { ImageScannerScan(image: $0) }
+        
+        let results = ImageScannerResults(
+            detectedRectangle: scaledQuad,
+            originalScan: ImageScannerScan(image: image),
+            croppedScan: ImageScannerScan(image: finalImage ?? UIImage()),
+            enhancedScan: enhancedScan
+        )
+        
+        let resultsGray = ImageScannerResults(
+            detectedRectangle: scaledQuad,
+            originalScan: ImageScannerScan(image: image),
+            croppedScan: ImageScannerScan(image: finalImageGray ?? UIImage()),
+            enhancedScan: enhancedScan
+        )
+        
+        ImageManager.shared.addImageScans(results)
+        
+        let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
+        
+        let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
+
+        checkTicketViewController.image = results.originalScan.image
+        checkTicketViewController.imageView.image = results.croppedScan.image
+        let croppedImageSize = results.croppedScan.image.size
+        checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
+        if croppedImageSize.width / croppedImageSize.height < 3 {
+            checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
+        }
+       
+       // checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
+        
+        ticketUploadImageForScratchScan.upload(image: results.croppedScan.image) { ticketUploadResponse in
+            if let response = ticketUploadResponse {
+                let analyze = response.scratchOff.analyze
+                let imageURL = response.imageUrl
+                
+            }
+        }
+        
+        let checkScratchoffViewController = CheckScratchOffTicketViewController()
+        touchDown.isEnabled = false
+       
+        delay(0.8) {
+            self.continueButton.isUserInteractionEnabled = false
+            if self.weDo {
+                self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+                self.hideDimView()
+                self.touchDown.isEnabled = true
+                self.continueButton.isUserInteractionEnabled = true
+            } else {
+                self.weDo = true
+                self.showDimView()
+                self.dimView?.alpha = 0
+                self.continueButton.isUserInteractionEnabled = true
+
+            }
+        }
+    }
     func drawsScanMagic() {
         dimView?.alpha = 1
         guard let quad = quadView.quad,

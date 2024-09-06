@@ -34,6 +34,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     
     private let ticketsManager = TicketsManager()
     private let uploadImage = TicketUploadImage()
+ 
    
     let saveTicketButton: UIButton = {
         let button = UIButton()

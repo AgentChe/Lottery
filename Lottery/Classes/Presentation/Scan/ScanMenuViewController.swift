@@ -65,6 +65,21 @@ final class ScanMenuViewController: UIViewController {
         setupConstraints()
         
         setupNavigationBackButton()
+        if let navigController = (parent?.parent as? MainViewController)?.children.first as? NavigationController {
+            print("navigController: ",navigController.children)
+            var drawsViewController: DrawsViewController!
+            for child in navigController.children {
+                if child.isKind(of: DrawsViewController.self) {
+                    drawsViewController = child as! DrawsViewController
+                    if drawsViewController.isDrawScan != nil {
+                        addTicketButton.alpha = 1
+                    }
+                    if drawsViewController.isScratchScan != nil {
+                        addTicketButton.alpha = 0
+                    }
+                }
+            }
+        }
     }
     
     func setupNavigationBackButton() {
