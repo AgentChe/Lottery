@@ -10,50 +10,107 @@ import UIKit
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
     private var tickets = [Ticket]()
-    private var collectionView: UICollectionView!
+    private var scratchoffs = [ScratchOff]()
+    private var ticketsCollectionView: UICollectionView!
+    private var scratchoffsCollectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
     private var noTicketsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
 
+    
+    private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
+        setupNoTicketsImageView()
+      
         setupNavigationBarTitle()
         setupNavigationBarAppearance()
-        setupNoTicketsImageView()
-        setupCollectionView()
+   
+        setupTicketsCollectionView()
+        setupScratchoffsCollectionView()
         setupScanButton()  // Setup scan button
+        setupSegmentedControl()
+        
         setupLayoutConstraints()  // Apply layout constraints including scan button and no tickets image view
         fetchTickets()
     }
-    
+    // MARK: - Segmented Control Setup
+      private func setupSegmentedControl() {
+          segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
+          segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
+          segmentedControl.currentIndexBackgroundColor = Appearance.main400
+          segmentedControl.cornerRadius = 20.scale
+          segmentedControl.buttonPadding = 5.scale
+          segmentedControl.buttonCornerRadius = 17.scale
+          segmentedControl.numberOfSegments = 2
+          segmentedControl.segmentsTitle = "Draws,Scratch-offs"
+          segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
+          segmentedControl.layer.borderColor = UIColor.clear.cgColor
+          
+          segmentedControl.didTapSegment = { [weak self] index in
+              self?.segmentedControlChanged(index: index)
+          }
+          
+          segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+          view.addSubview(segmentedControl)
+      }
+      
+      // Function to switch between collection views based on the selected segment
+      private func segmentedControlChanged(index: Int) {
+          if index == 0 {
+              ticketsCollectionView.isHidden = false
+              scratchoffsCollectionView.isHidden = true
+          } else {
+              ticketsCollectionView.isHidden = true
+              scratchoffsCollectionView.isHidden = false
+          }
+      }
     private func setupNavigationBarAppearance() {
         setupNavigationBarTitle()
     }
+    private func setupScratchoffsCollectionView() {
+           let layout = UICollectionViewFlowLayout()
+           layout.scrollDirection = .vertical
+           layout.minimumLineSpacing = 20.scale
+           layout.minimumInteritemSpacing = 20.scale
+           layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale)
 
-    private func setupCollectionView() {
+           scratchoffsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+           scratchoffsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+           scratchoffsCollectionView.dataSource = self
+           scratchoffsCollectionView.delegate = self
+           scratchoffsCollectionView.backgroundColor = .clear
+           scratchoffsCollectionView.register(ScratchOffCell.self, forCellWithReuseIdentifier: "ScratchOffCell") // Use a custom cell
+           scratchoffsCollectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
+
+           view.addSubview(scratchoffsCollectionView)
+           scratchoffsCollectionView.isHidden = true // Initially hidden
+       }
+    private func setupTicketsCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20.scale
         layout.minimumInteritemSpacing = 20.scale
         layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale)
 
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .clear
-        collectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
+        ticketsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        ticketsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        ticketsCollectionView.dataSource = self
+        ticketsCollectionView.delegate = self
+        ticketsCollectionView.backgroundColor = .clear
+        ticketsCollectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
 
-        collectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
+        ticketsCollectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
 
-        view.addSubview(collectionView)
+        view.addSubview(ticketsCollectionView)
 
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ticketsCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 
@@ -65,7 +122,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         scanButton.translatesAutoresizingMaskIntoConstraints = false
         scanButton.backgroundColor = .clear
         scanButton.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
-        
+        scanButton.alpha = 0
         view.addSubview(scanButton)
     }
 
@@ -78,18 +135,33 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     private func setupLayoutConstraints() {
-        NSLayoutConstraint.activate([
-            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
-            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
-            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+         NSLayoutConstraint.activate([
+             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
+             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
+             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
 
-            noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
-            noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
-            noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
+             ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
+             ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+             
+             scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
+             scratchoffsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             scratchoffsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             scratchoffsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+             scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
+             scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
+             scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
+             scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+
+             noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
+             noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
+             noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+         ])
+     }
     var scanButtonIsTapped: Bool = false
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -147,20 +219,20 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 switch result {
                 case .success(let tickets):
                     self?.tickets = tickets.sorted(by: { $0.date > $1.date })
-                    self?.collectionView.reloadData()
+                    self?.ticketsCollectionView.reloadData()
                     if self?.tickets.count != 0 {
-                        self?.collectionView.isHidden = false
+                        self?.ticketsCollectionView.isHidden = false
                         self?.noTicketsImageView.isHidden = true
                     } else {
-                        self?.collectionView.isHidden = true
+                        self?.ticketsCollectionView.isHidden = true
                         self?.noTicketsImageView.isHidden = false
                     }
                 case .failure:
                     if self?.tickets.count != 0 {
-                        self?.collectionView.isHidden = false
+                        self?.ticketsCollectionView.isHidden = false
                         self?.noTicketsImageView.isHidden = true
                     } else {
-                        self?.collectionView.isHidden = true
+                        self?.ticketsCollectionView.isHidden = true
                         self?.noTicketsImageView.isHidden = false
                     }
                     self?.showError()
@@ -178,18 +250,26 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tickets.count
-    }
+          if collectionView == ticketsCollectionView {
+              return tickets.count
+          } else if collectionView == scratchoffsCollectionView {
+              return scratchoffs.count
+          }
+          return 0
+      }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
-        cell.configure(with: tickets[indexPath.item])
-        cell.delegate = self
-        cell.numbersCollectionView.reloadData()
-        cell.setNeedsDisplay()
-        return cell
-    }
-
+      func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+          if collectionView == ticketsCollectionView {
+              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
+              cell.configure(with: tickets[indexPath.item])
+              cell.delegate = self
+              return cell
+          } else {
+              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScratchOffCell", for: indexPath) as! ScratchOffCell
+              cell.configure(with: scratchoffs[indexPath.item]) // Assuming a `configure` method
+              return cell
+          }
+      }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let ticket = tickets[indexPath.item]
         let ticketDate = Date(timeIntervalSince1970: ticket.date)
@@ -213,7 +293,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     // MARK: - TicketCellDelegate Method
     func editButtonTapped(for cell: TicketCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        guard let indexPath = ticketsCollectionView.indexPath(for: cell) else { return }
         let ticket = tickets[indexPath.item]
         let editVC = EditTicketViewController(ticket: ticket)
         navigationController?.pushViewController(editVC, animated: true)

@@ -110,6 +110,7 @@
 		A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */; };
 		A3FC079F2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079E2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift */; };
 		A3FC07A12C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */; };
+		A3FC07A32C8AB54300A668C5 /* ScratchOffCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -348,6 +349,7 @@
 		A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimViewWithProgressBar.swift; sourceTree = SOURCE_ROOT; };
 		A3FC079E2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketUploadImageForScratchScan.swift; sourceTree = SOURCE_ROOT; };
 		A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckScratchOffTicketVIewContorller.swift; sourceTree = SOURCE_ROOT; };
+		A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchOffCell.swift; sourceTree = "<group>"; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -690,6 +692,7 @@
 			children = (
 				A3EF372F2C184DCA00753C41 /* Views */,
 				A3EF37302C184DD600753C41 /* TicketsViewController.swift */,
+				A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -1769,6 +1772,7 @@
 				DE42B19C2BFF3CB200FF61B0 /* UIColor+Extension.swift in Sources */,
 				A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */,
 				DE5BF94F2C57B9F50095D8AB /* PaygateEnableTrialButton.swift in Sources */,
+				A3FC07A32C8AB54300A668C5 /* ScratchOffCell.swift in Sources */,
 				DE42B1AF2BFF3CB200FF61B0 /* TextAttributes.swift in Sources */,
 				DE42B1D52BFF3CB200FF61B0 /* PurchaseValidationObserver.swift in Sources */,
 				DE42B1B42BFF3CB200FF61B0 /* GlobalDefinitions.swift in Sources */,
