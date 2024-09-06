@@ -27,7 +27,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         setupNoTicketsImageView()
         setupNoScratchOffsImageView()
         setupNavigationBarTitle()
-        setupNavigationBarAppearance()
+        
    
         setupTicketsCollectionView()
         setupScratchoffsCollectionView()
@@ -79,9 +79,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
               noScratchOffsImageView.alpha = 1
           }
       }
-    private func setupNavigationBarAppearance() {
-        setupNavigationBarTitle()
-    }
+   
     private func setupScratchoffsCollectionView() {
            let layout = UICollectionViewFlowLayout()
            layout.scrollDirection = .vertical
@@ -198,8 +196,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scanButtonIsTapped = false
-        navigationController?.navigationBar.barTintColor = Appearance.main400
-        navigationController?.navigationBar.isTranslucent = false
+       // navigationController?.navigationBar.barTintColor = Appearance.main400
+       // navigationController?.navigationBar.isTranslucent = false
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
@@ -208,35 +206,32 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     private func setupNavigationBarTitle() {
-        let titleLabel = UILabel()
-        titleLabel.text = "TicketsViewController.MyTickets".localized
-        titleLabel.textColor = Appearance.mono200
-        titleLabel.font = Fonts.Inter.bold(size: 20.scale)
+        // Create a custom back button
+        let backButton = UIButton(type: .custom)
         
-        titleLabel.sizeToFit()
-        
-        let leftBarItem = UIBarButtonItem(customView: titleLabel)
-        navigationItem.leftBarButtonItem = leftBarItem
-        
-        if let menuImage = UIImage(named: "Menu") {
-            let menuImageView = UIImageView(image: menuImage)
-            menuImageView.contentMode = .scaleAspectFit
-            
-            let titleHeight = titleLabel.intrinsicContentSize.height
-            menuImageView.frame = CGRect(x: 0, y: 0, width: titleHeight, height: titleHeight)
-            
-            let menuContainerView = UIView(frame: menuImageView.frame)
-            menuContainerView.addSubview(menuImageView)
-            
-            let rightBarItem = UIBarButtonItem(customView: menuContainerView)
-            navigationItem.rightBarButtonItem = rightBarItem
-            
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMenuTap))
-            menuContainerView.isUserInteractionEnabled = true
-            menuContainerView.addGestureRecognizer(tapGesture)
+        // Set the custom image for the button
+        if let image = UIImage(named: "TicketsNavBackButton") {
+            backButton.setImage(image, for: .normal)
         }
+        
+        // Set the frame or size of the button as needed
+        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.imageView?.contentMode = .scaleAspectFit
+        
+        // Add a target to handle back navigation
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        
+        // Create a UIBarButtonItem with the custom button
+        let backButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Replace the default back button with the custom button
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true // Hide the default back button
     }
-
+    @objc private func customBackButtonTapped() {
+        // Perform back navigation
+        navigationController?.popViewController(animated: true)
+    }
     private func fetchTickets() {
         ticketsManager.listTickets() { [weak self] result in
             DispatchQueue.main.async {
