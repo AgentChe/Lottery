@@ -15,6 +15,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private var scratchoffsCollectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
     private var noTicketsImageView: UIImageView! // Adding the no tickets image view
+    private var noScratchOffsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
 
     
@@ -24,7 +25,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
         setupNoTicketsImageView()
-      
+        setupNoScratchOffsImageView()
         setupNavigationBarTitle()
         setupNavigationBarAppearance()
    
@@ -35,6 +36,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         setupLayoutConstraints()  // Apply layout constraints including scan button and no tickets image view
         fetchTickets()
+        fetchScratchoffs()
     }
     // MARK: - Segmented Control Setup
       private func setupSegmentedControl() {
@@ -56,15 +58,25 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
           segmentedControl.translatesAutoresizingMaskIntoConstraints = false
           view.addSubview(segmentedControl)
       }
-      
+    private func fetchScratchoffs() {
+            // Mock data fetch for scratch-offs, implement real logic as needed
+            // scratchoffs = [ScratchOff]  // Fetch scratch-offs data here
+        noScratchOffsImageView.alpha = 0
+            scratchoffsCollectionView.reloadData()
+        
+    }
       // Function to switch between collection views based on the selected segment
       private func segmentedControlChanged(index: Int) {
           if index == 0 {
               ticketsCollectionView.isHidden = false
               scratchoffsCollectionView.isHidden = true
+              noScratchOffsImageView.alpha = 0
+              noTicketsImageView.alpha = 1
           } else {
               ticketsCollectionView.isHidden = true
               scratchoffsCollectionView.isHidden = false
+              noTicketsImageView.alpha = 0
+              noScratchOffsImageView.alpha = 1
           }
       }
     private func setupNavigationBarAppearance() {
@@ -133,6 +145,13 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         view.addSubview(noTicketsImageView)
     }
+    private func setupNoScratchOffsImageView() {
+        noScratchOffsImageView = UIImageView(image: UIImage(named: "NoScratchoffs"))
+        noScratchOffsImageView.translatesAutoresizingMaskIntoConstraints = false
+        noScratchOffsImageView.contentMode = .scaleAspectFit
+        
+        view.addSubview(noScratchOffsImageView)
+    }
 
     private func setupLayoutConstraints() {
          NSLayoutConstraint.activate([
@@ -159,7 +178,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
              noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
              noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
              noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+             
+             noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
+             noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
+             noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
          ])
      }
     var scanButtonIsTapped: Bool = false
