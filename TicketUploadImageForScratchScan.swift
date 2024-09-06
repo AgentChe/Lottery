@@ -12,35 +12,35 @@ struct ScratchOff {
     let title: String
     let company: String
     let analyze: String
-}
-
-struct TicketUploadResponse {
     let imageUrl: String
     let detected: Int
-    let scratchOff: ScratchOff
 }
 
-extension TicketUploadResponse {
+extension ScratchOff {
     init?(json: [String: Any]) {
         guard
-            let imageUrl = json["image_url"] as? String,
-            let detected = json["detected"] as? Int,
-            let scratchOffDict = json["ticket_data"] as? [String: Any],
-            let raw = scratchOffDict["raw"] as? String,
-            let title = scratchOffDict["title"] as? String,
-            let company = scratchOffDict["company"] as? String,
-            let analyze = scratchOffDict["analyze"] as? String
+            let raw = json["raw"] as? String,                     // Extract raw directly
+            let title = json["title"] as? String,                 // Extract title directly
+            let company = json["company"] as? String,             // Extract company directly
+            let analyze = json["analyze"] as? String,             // Extract analyze directly
+            let imageUrl = json["image_url"] as? String,          // Extract image_url directly
+            let detected = json["detected"] as? Int               // Extract detected directly
         else {
             return nil
         }
-        
-        let scratchOff = ScratchOff(raw: raw, title: title, company: company, analyze: analyze)
+
+        // Assign values to properties
+        self.raw = raw
+        self.title = title
+        self.company = company
+        self.analyze = analyze
         self.imageUrl = imageUrl
         self.detected = detected
-        self.scratchOff = scratchOff
     }
 }
-struct TicketUploadImageForScratchScan {
+
+
+struct ScanScratchManager {
     let session: URLSession
     
     init() {
@@ -55,8 +55,9 @@ struct TicketUploadImageForScratchScan {
         session = URLSession(configuration: config, delegate: nil, delegateQueue: queue)
     }
     
-    func upload(image: UIImage, completion: ((TicketUploadResponse?) -> Void)? = nil) {
-        guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/upload"), let png = image.jpegData(compressionQuality: 0.5) else {
+    func upload(image: UIImage, completion: ((ScratchOff?) -> Void)? = nil) {
+        guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/upload"),
+              let imageData = image.jpegData(compressionQuality: 0.5) else {
             completion?(nil)
             return
         }
@@ -69,27 +70,26 @@ struct TicketUploadImageForScratchScan {
         request.addValue(GlobalDefinitions.apiKey, forHTTPHeaderField: "api_key")
         request.addValue(SessionManager().getSession()?.userToken ?? "", forHTTPHeaderField: "user_token")
         
-        var data = Data()
-        data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"image\"; filename=\"\(UUID().uuidString).jpeg\"\r\n".data(using: .utf8)!)
-        data.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
-        data.append(png)
-        data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        var bodyData = Data()
+        bodyData.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+        bodyData.append("Content-Disposition: form-data; name=\"image\"; filename=\"\(UUID().uuidString).jpeg\"\r\n".data(using: .utf8)!)
+        bodyData.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+        bodyData.append(imageData)
+        bodyData.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
         
-        session.uploadTask(with: request, from: data) { data, response, error in
-            let ticketResponse: TicketUploadResponse? = {
-                guard
-                    let data = data,
-                    let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-                else { return nil }
-                
-                return TicketUploadResponse(json: json)
-            }()
-            completion?(ticketResponse)
+        session.uploadTask(with: request, from: bodyData) { data, response, error in
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+                completion?(nil)
+                return
+            }
+            
+            let scratchOff = ScratchOff(json: json)
+            completion?(scratchOff)
         }.resume()
     }
     
-    func fetchScratchOffsList(completion: @escaping ([TicketUploadResponse]?) -> Void) {
+    func fetchScratchOffsList(completion: @escaping ([ScratchOff]?) -> Void) {
         guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/list") else {
             completion(nil)
             return
@@ -101,20 +101,18 @@ struct TicketUploadImageForScratchScan {
         request.addValue(SessionManager().getSession()?.userToken ?? "", forHTTPHeaderField: "user_token")
         
         session.dataTask(with: request) { data, response, error in
-            let scratchOffList: [TicketUploadResponse]? = {
-                guard
-                    let data = data,
-                    let jsonArray = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]]
-                else { return nil }
-                
-                return jsonArray.compactMap { TicketUploadResponse(json: $0) }
-            }()
+            guard let data = data,
+                  let jsonArray = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]] else {
+                completion(nil)
+                return
+            }
             
+            let scratchOffList = jsonArray.compactMap { ScratchOff(json: $0) }
             completion(scratchOffList)
         }.resume()
     }
     
-    func saveScratchOff(ticket: TicketUploadResponse, completion: ((Bool) -> Void)? = nil) {
+    func saveScratchOff(ticket: ScratchOff, completion: ((Bool) -> Void)? = nil) {
         guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/save") else {
             completion?(false)
             return
@@ -126,16 +124,13 @@ struct TicketUploadImageForScratchScan {
         request.addValue(GlobalDefinitions.apiKey, forHTTPHeaderField: "api_key")
         request.addValue(SessionManager().getSession()?.userToken ?? "", forHTTPHeaderField: "user_token")
         
-        // Prepare JSON data from TicketUploadResponse
         let jsonDict: [String: Any] = [
             "image_url": ticket.imageUrl,
             "detected": ticket.detected,
-            "ticket_data": [
-                "raw": ticket.scratchOff.raw,
-                "title": ticket.scratchOff.title,
-                "company": ticket.scratchOff.company,
-                "analyze": ticket.scratchOff.analyze
-            ]
+            "raw": ticket.raw,
+            "title": ticket.title,
+            "company": ticket.company,
+            "analyze": ticket.analyze
         ]
         
         guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonDict, options: []) else {
@@ -146,7 +141,8 @@ struct TicketUploadImageForScratchScan {
         request.httpBody = jsonData
         
         session.dataTask(with: request) { data, response, error in
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, error == nil else {
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200, error == nil else {
                 completion?(false)
                 return
             }
@@ -154,19 +150,5 @@ struct TicketUploadImageForScratchScan {
             completion?(true)
         }.resume()
     }
-//   example of use:
-//    let ticketUploadResponse = TicketUploadResponse(
-//        imageUrl: "https://example.com/image.jpg",
-//        detected: 1,
-//        scratchOff: ScratchOff(raw: "raw_data", title: "Title", company: "Company", analyze: "Analysis")
-//    )
-//
-//    let api = TicketUploadImageForScratchScan()
-//    api.saveScratchOff(ticket: ticketUploadResponse) { success in
-//        if success {
-//            print("Ticket saved successfully!")
-//        } else {
-//            print("Failed to save the ticket.")
-//        }
-//    }
+
 }

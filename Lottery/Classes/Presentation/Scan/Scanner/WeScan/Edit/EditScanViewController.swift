@@ -16,7 +16,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     var continueButton: UIButton!
     var retakeButton: UIButton!
     private var dimView: DimViewWithProgressBar?
-    private let ticketUploadImageForScratchScan = TicketUploadImageForScratchScan()
+    private let scanScratchManager = ScanScratchManager()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -224,9 +224,9 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
        
        // checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         
-        ticketUploadImageForScratchScan.upload(image: results.croppedScan.image) { ticketUploadResponse in
-            if let response = ticketUploadResponse {
-                let analyze = response.scratchOff.analyze
+        scanScratchManager.upload(image: results.croppedScan.image) { scratchoff in
+            if let response = scratchoff {
+                let analyze = response.analyze
                 let imageURL = response.imageUrl
                 
             }
