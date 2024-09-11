@@ -39,7 +39,7 @@ class CheckScratchOffTicketViewController: UIViewController {
         return label
     }()
     
-    private let saveTicketButton: UIButton = {
+     let saveTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("CheckTicketViewController.SaveTicketButton".localized, for: .normal)
         button.backgroundColor = Appearance.main100
@@ -51,7 +51,7 @@ class CheckScratchOffTicketViewController: UIViewController {
         return button
     }()
     
-    private let rescanButton: UIButton = {
+     let rescanButton: UIButton = {
         let button = UIButton()
         button.setTitle("CheckTicketViewController.RescanButton".localized, for: .normal)
         button.backgroundColor = .white
@@ -89,21 +89,22 @@ class CheckScratchOffTicketViewController: UIViewController {
         if scratchOff == nil {
             showAlertAndPop()
         } else {
-            if scratchOff?.detected == 1 {
-                if let url = URL(string: scratchOff?.imageUrl ?? "") {
-                    lotteryImageView.kf.setImage(with: url)
-                }
-                analyzeLabel.text = scratchOff?.analyze ?? ""
-                
-                let font = Fonts.Inter.medium(size: 15.scale)
-                let expectedLabelSize = calculateLabelHeight(for: scratchOff?.analyze ?? "", with: font, width: view.frame.width - 32.scale)
-                
-                analyzeLabelHeightConstraint?.isActive = false
-                analyzeLabelHeightConstraint?.constant = expectedLabelSize.height + 50.scale
-                analyzeLabelHeightConstraint?.isActive = true
-                view.setNeedsLayout()
+            
+            if let url = URL(string: scratchOff?.imageUrl ?? "") {
+                lotteryImageView.kf.setImage(with: url)
             }
+            analyzeLabel.text = scratchOff?.analyze ?? ""
+            
+            let font = Fonts.Inter.medium(size: 15.scale)
+            let expectedLabelSize = calculateLabelHeight(for: scratchOff?.analyze ?? "", with: font, width: view.frame.width - 32.scale)
+            
+            analyzeLabelHeightConstraint?.isActive = false
+            analyzeLabelHeightConstraint?.constant = expectedLabelSize.height + 50.scale
+            analyzeLabelHeightConstraint?.isActive = true
+            view.setNeedsLayout()
+            
         }
+        view.backgroundColor = Appearance.main400
     }
     
     private func showAlertAndPop() {

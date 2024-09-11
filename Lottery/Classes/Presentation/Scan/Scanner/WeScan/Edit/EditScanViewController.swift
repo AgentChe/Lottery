@@ -332,18 +332,20 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         touchDown.isEnabled = false
         
         delay(0.8) {
-            self.continueButton.isUserInteractionEnabled = false
-            if self.weDo {
-                self.navigationController?.pushViewController(checkTicketViewController, animated: true)
-                self.hideDimView()
-                self.touchDown.isEnabled = true
-                self.continueButton.isUserInteractionEnabled = true
-            } else {
-                self.weDo = true
-                self.showDimView()
-                self.dimView?.alpha = 0
-                self.continueButton.isUserInteractionEnabled = true
-                
+            DispatchQueue.main.async {
+                self.continueButton.isUserInteractionEnabled = false
+                if self.weDo {
+                    self.navigationController?.pushViewController(checkTicketViewController, animated: true)
+                    self.hideDimView()
+                    self.touchDown.isEnabled = true
+                    self.continueButton.isUserInteractionEnabled = true
+                } else {
+                    self.weDo = true
+                    self.showDimView()
+                    self.dimView?.alpha = 0
+                    self.continueButton.isUserInteractionEnabled = true
+                    
+                }
             }
         }
     }

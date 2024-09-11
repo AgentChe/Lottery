@@ -9,14 +9,29 @@ import UIKit
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
-    private var tickets = [Ticket]()
-    private var scratchoffs = [ScratchOff]()
+    private var tickets = [Ticket]() {
+        didSet {
+            if tickets.count > 0 {
+                self.noTicketsImageView.isHidden = true
+                self.scanLotteryTicketButton.isHidden = true
+            }
+        }
+    }
+    private var scratchoffs = [ScratchOff]() {
+        didSet {
+            self.scratchoffs = scratchoffs ?? []
+            self.noScratchOffsImageView.alpha = 0
+            self.scanScratchOffTicketButton.isHidden = true
+            self.scratchoffsCollectionView.reloadData()
+        }
+    }
     private var ticketsCollectionView: UICollectionView!
     private var scratchoffsCollectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
     private var noTicketsImageView: UIImageView! // Adding the no tickets image view
     private var noScratchOffsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
+    let scanScratchManager : ScanScratchManager = ScanScratchManager()
 
     private let scanScratchOffTicketButton: UIButton = {
         let button = UIButton()
@@ -56,15 +71,19 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         setupNavigationBarTitle()
         view.addSubview(scanScratchOffTicketButton)
         view.addSubview(scanLotteryTicketButton)
-   
+        
+
         setupTicketsCollectionView()
         setupScratchoffsCollectionView()
         setupScanButton()  // Setup scan button
         setupSegmentedControl()
         
         setupLayoutConstraints()  // Apply layout constraints including scan button and no tickets image view
+        noScratchOffsImageView.isHidden = true
+        scanScratchOffTicketButton.isHidden = true
         fetchTickets()
         fetchScratchoffs()
+        
     }
     // MARK: - Segmented Control Setup
       private func setupSegmentedControl() {
@@ -89,9 +108,20 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private func fetchScratchoffs() {
             // Mock data fetch for scratch-offs, implement real logic as needed
             // scratchoffs = [ScratchOff]  // Fetch scratch-offs data here
-        noScratchOffsImageView.alpha = 0
-        scanScratchOffTicketButton.isHidden = true
-            scratchoffsCollectionView.reloadData()
+        scanScratchManager.list { scratchoffs in
+            DispatchQueue.main.async {
+                self.scratchoffs = scratchoffs ?? []
+                if self.segmentedControl.currentIndex == 1 {
+                    if scratchoffs?.count ?? 0 > 0 {
+                        self.noScratchOffsImageView.isHidden = true
+                        self.scanScratchOffTicketButton.isHidden = true
+                        self.scratchoffsCollectionView.reloadData()
+                    } else {
+                        
+                    }
+                }
+            }
+        }
         
     }
       // Function to switch between collection views based on the selected segment
@@ -99,18 +129,20 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
           if index == 0 {
               ticketsCollectionView.isHidden = false
               scratchoffsCollectionView.isHidden = true
-              noScratchOffsImageView.alpha = 0
-              noTicketsImageView.alpha = 1
+              noScratchOffsImageView.isHidden = false
+              noTicketsImageView.isHidden = true
               scanLotteryTicketButton.isHidden = false
               scanScratchOffTicketButton.isHidden = true
+             fetchTickets()
               
           } else {
               ticketsCollectionView.isHidden = true
               scratchoffsCollectionView.isHidden = false
-              noTicketsImageView.alpha = 0
-              noScratchOffsImageView.alpha = 1
+              noTicketsImageView.isHidden = true
+             noScratchOffsImageView.isHidden = true
               scanLotteryTicketButton.isHidden = true
-              scanScratchOffTicketButton.isHidden = false
+             scanScratchOffTicketButton.isHidden = false
+              fetchScratchoffs()
           }
       }
    
@@ -146,7 +178,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         ticketsCollectionView.backgroundColor = .clear
         ticketsCollectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
 
-        ticketsCollectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
+        ticketsCollectionView.contentInset = UIEdgeInsets(top: 102.scale, left: 0, bottom: 30.scale, right: 0)
 
         view.addSubview(ticketsCollectionView)
 
@@ -255,6 +287,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
             fetchTickets()
+            fetchScratchoffs()
         }
     }
 
@@ -292,24 +325,28 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 case .success(let tickets):
                     self?.tickets = tickets.sorted(by: { $0.date > $1.date })
                     self?.ticketsCollectionView.reloadData()
-                    if self?.tickets.count != 0 {
-                        self?.ticketsCollectionView.isHidden = false
-                        self?.noTicketsImageView.isHidden = true
-                        self?.scanLotteryTicketButton.isHidden = true
-                    } else {
-                        self?.ticketsCollectionView.isHidden = true
-                        self?.noTicketsImageView.isHidden = false
-                        self?.scanLotteryTicketButton.isHidden = false
+                    if self?.segmentedControl.currentIndex == 0 {
+                        if self?.tickets.count != 0 {
+                            self?.ticketsCollectionView.isHidden = false
+                            self?.noTicketsImageView.isHidden = true
+                            self?.scanLotteryTicketButton.isHidden = true
+                        } else {
+                            self?.ticketsCollectionView.isHidden = true
+                            self?.noTicketsImageView.isHidden = false
+                            self?.scanLotteryTicketButton.isHidden = false
+                        }
                     }
                 case .failure:
-                    if self?.tickets.count != 0 {
-                        self?.ticketsCollectionView.isHidden = false
-                        self?.noTicketsImageView.isHidden = true
-                        self?.scanLotteryTicketButton.isHidden = true
-                    } else {
-                        self?.ticketsCollectionView.isHidden = true
-                        self?.noTicketsImageView.isHidden = false
-                        self?.scanLotteryTicketButton.isHidden = false
+                    if self?.segmentedControl.currentIndex == 0 {
+                        if self?.tickets.count != 0 {
+                            self?.ticketsCollectionView.isHidden = false
+                            self?.noTicketsImageView.isHidden = true
+                            self?.scanLotteryTicketButton.isHidden = true
+                        } else {
+                            self?.ticketsCollectionView.isHidden = true
+                            self?.noTicketsImageView.isHidden = false
+                            self?.scanLotteryTicketButton.isHidden = false
+                        }
                     }
                     self?.showError()
                 }
@@ -347,20 +384,37 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
           }
       }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let ticket = tickets[indexPath.item]
-        let ticketDate = Date(timeIntervalSince1970: ticket.date)
-        let now = Date()
-        let numbersCount = ticket.numbers.count
-
-        let isNextDraw = ticketDate > now
-        let baseHeight: CGFloat = isNextDraw ? 266.scale : 210.scale
-        let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
-
-        let cellHeight = baseHeight + additionalHeight
-
-        return CGSize(width: view.frame.width - 20.scale, height: cellHeight)
+        if collectionView == ticketsCollectionView {
+            let ticket = tickets[indexPath.item]
+            let ticketDate = Date(timeIntervalSince1970: ticket.date)
+            let now = Date()
+            let numbersCount = ticket.numbers.count
+            
+            let isNextDraw = ticketDate > now
+            let baseHeight: CGFloat = isNextDraw ? 266.scale : 210.scale
+            let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
+            
+            let cellHeight = baseHeight + additionalHeight
+            
+            return CGSize(width: view.frame.width - 20.scale, height: cellHeight)
+        } else {
+            
+            return CGSize(width: view.frame.width - 20.scale, height: 312.scale)
+        }
     }
-
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == scratchoffsCollectionView {
+            // Get the selected scratch-off item
+            let selectedScratchOff = scratchoffs[indexPath.item]
+            
+            // Initialize the CheckScratchOffTicketViewController with the selected scratch-off item
+            let checkScratchoffViewController = CheckScratchOffTicketViewController(scratchOff: selectedScratchOff)
+            checkScratchoffViewController.saveTicketButton.isHidden = true
+            checkScratchoffViewController.rescanButton.isHidden = true
+            // Push the CheckScratchOffTicketViewController onto the navigation stack
+            self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+        }
+    }
     func showError() {
         let alert = UIAlertController(title: "TicketsViewController.ErrorTitle".localized, message: "TicketsViewController.ErrorMessage".localized, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK".localized, style: .default, handler: nil))
