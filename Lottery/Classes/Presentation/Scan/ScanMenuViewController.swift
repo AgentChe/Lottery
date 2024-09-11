@@ -79,7 +79,15 @@ final class ScanMenuViewController: UIViewController {
                     }
                 }
             }
+            
         }
+        
+        if stateId == 999 && lotteryId == 999 {
+            addTicketButton.alpha = 0
+        } else {
+            addTicketButton.alpha = 1
+        }
+        
     }
     
     func setupNavigationBackButton() {

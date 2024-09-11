@@ -452,8 +452,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
   //      if SessionManager().hasActiveSubscriptions() {
             
             let scanViewController = ScanMenuViewController()
-            scanViewController.stateId = 2
-            scanViewController.lotteryId = 3
+            scanViewController.stateId = 999
+            scanViewController.lotteryId = 999
             
             if let navigationController = navigationController {
                 navigationController.pushViewController(scanViewController, animated: true)
@@ -467,7 +467,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 //        }
     }
     @objc func scanButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+      //  if SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             let scanOnboardingViewController = ScanOnboardingViewController.make()
             
@@ -483,10 +483,10 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 // If not, present the view controller modally as a fallback
                 present(scanOnboardingViewController, animated: true, completion: nil)
             }
-        } else {
-            let vc = PaygateViewController.make()
-            present(vc, animated: true)
-        }
+//        } else {
+//            let vc = PaygateViewController.make()
+//            present(vc, animated: true)
+//        }
     }
 
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {

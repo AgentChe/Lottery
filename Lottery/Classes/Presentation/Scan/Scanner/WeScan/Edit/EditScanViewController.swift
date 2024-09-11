@@ -163,6 +163,12 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             }
         }
         
+        if lotteryId == 999 && stateId == 999 {
+            scratchOffsScanMagic()
+        } else {
+            drawsScanMagic()
+        }
+        
     }
     func scratchOffsScanMagic() {
         dimView?.alpha = 1
