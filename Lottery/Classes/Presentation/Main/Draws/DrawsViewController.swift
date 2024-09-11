@@ -843,23 +843,37 @@ private extension DrawsViewController {
 private extension DrawsViewController {
     @objc func scanButtonTapped() {
      //   if SessionManager().hasActiveSubscriptions() {
-            let scanOnboardingViewController = ScanOnboardingViewController.make()
-            
-            // Check if the current view controller is embedded in a navigation controller
-            if let navigationController = self.navigationController {
-                
-                navigationController.pushViewController(scanOnboardingViewController, animated: true)
-                
-                if let navigationController = getRootViewController() as? NavigationController,
-                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
-                    
-                    updateMainViewControllerConstraints(for: mainViewController)
-                    
-                }
-            } else {
-                // If not, present the view controller modally as a fallback
-                present(scanOnboardingViewController, animated: true, completion: nil)
-            }
+        
+        
+        let scanViewController = ScanMenuViewController()
+        scanViewController.stateId = 2
+        scanViewController.lotteryId = 3
+        
+        if let navigationController = navigationController {
+            navigationController.pushViewController(scanViewController, animated: true)
+        } else {
+            // If not in a navigation controller, present it modally
+            present(scanViewController, animated: true, completion: nil)
+        }
+        
+        
+//            let scanOnboardingViewController = ScanOnboardingViewController.make()
+//            
+//            // Check if the current view controller is embedded in a navigation controller
+//            if let navigationController = self.navigationController {
+//                
+//                navigationController.pushViewController(scanOnboardingViewController, animated: true)
+//                
+//                if let navigationController = getRootViewController() as? NavigationController,
+//                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
+//                    
+//                    updateMainViewControllerConstraints(for: mainViewController)
+//                    
+//                }
+//            } else {
+//                // If not, present the view controller modally as a fallback
+//                present(scanOnboardingViewController, animated: true, completion: nil)
+//            }
 //        }
 //    else {
 //            let vc = PaygateViewController.make()
