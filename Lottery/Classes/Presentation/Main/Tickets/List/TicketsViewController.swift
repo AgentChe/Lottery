@@ -146,15 +146,29 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
               scanScratchOffTicketButton.isHidden = true
               noTicketsImageView.isHidden = false
               scanLotteryTicketButton.isHidden = false
+              if tickets.count > 0 {
+                  noTicketsImageView.isHidden = true
+                  scanLotteryTicketButton.isHidden = true
+                  noScratchOffsImageView.isHidden = true
+                  scanScratchOffTicketButton.isHidden = true
+              }
              fetchTickets()
               
           } else {
+             
               ticketsCollectionView.isHidden = true
               scratchoffsCollectionView.isHidden = false
               noTicketsImageView.isHidden = true
               scanLotteryTicketButton.isHidden = true
               noScratchOffsImageView.isHidden = false
               scanScratchOffTicketButton.isHidden = false
+              
+              if scratchoffs.count > 0 {
+                  noTicketsImageView.isHidden = true
+                  scanLotteryTicketButton.isHidden = true
+                  noScratchOffsImageView.isHidden = true
+                  scanScratchOffTicketButton.isHidden = true
+              }
               fetchScratchoffs()
           }
       }
