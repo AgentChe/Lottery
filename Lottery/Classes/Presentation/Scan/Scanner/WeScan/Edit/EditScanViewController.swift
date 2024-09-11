@@ -16,7 +16,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     var continueButton: UIButton!
     var retakeButton: UIButton!
     private var dimView: DimViewWithProgressBar?
-    private let scanScratchManager = ScanScratchManager()
+    let scanScratchManager = ScanScratchManager()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -34,14 +34,14 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         quadView.translatesAutoresizingMaskIntoConstraints = false
         return quadView
     }()
-
+    
     private lazy var nextButton:  UIBarButtonItem = {
         let title = "EditScanViewController.NextButton".localized
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(pushReviewController))
         button.tintColor = navigationController?.navigationBar.tintColor
         return button
     }()
-
+    
     private lazy var cancelButton: UIBarButtonItem = {
         let title = "EditScanViewController.CancelButton".localized
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(cancelButtonTapped))
@@ -59,7 +59,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-     
+    
     private lazy var maskView: UIView = {
         let view = UIView()
         view.backgroundColor = .red
@@ -76,15 +76,15 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     private var zoomGestureController: ZoomGestureController!
     private var quadViewWidthConstraint = NSLayoutConstraint()
     private var quadViewHeightConstraint = NSLayoutConstraint()
-
+    
     // MARK: - Life Cycle
-
+    
     init(image: UIImage, quad: Quadrilateral?, rotateImage: Bool = true) {
         self.image = rotateImage ? image.applyingPortraitOrientation() : image
         self.quad = quad ?? EditScanViewController.defaultQuad(forImage: image)
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -99,10 +99,10 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         } else {
             navigationItem.leftBarButtonItem = nil
         }
-
+        
         zoomGestureController = ZoomGestureController(image: image, quadView: quadView)
-
-         touchDown = UILongPressGestureRecognizer(target: zoomGestureController, action: #selector(zoomGestureController.handle(pan:)))
+        
+        touchDown = UILongPressGestureRecognizer(target: zoomGestureController, action: #selector(zoomGestureController.handle(pan:)))
         touchDown.minimumPressDuration = 0
         touchDown.delegate = self
         view.addGestureRecognizer(touchDown)
@@ -141,7 +141,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         retakeButton.addTarget(self, action: #selector(retakeButtonTapped), for: .touchUpInside)
         view.addSubview(retakeButton)
     }
-
+    
     @objc func retakeButtonTapped() {
         self.navigationController?.popViewController(animated: true)
     }
@@ -154,7 +154,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                 if child.isKind(of: DrawsViewController.self) {
                     drawsViewController = child as! DrawsViewController
                     if drawsViewController.isDrawScan != nil {
-                       drawsScanMagic()
+                        drawsScanMagic()
                     }
                     if drawsViewController.isScratchScan != nil {
                         scratchOffsScanMagic()
@@ -162,7 +162,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                 }
             }
         }
-      
+        
     }
     func scratchOffsScanMagic() {
         dimView?.alpha = 1
@@ -213,43 +213,62 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
         
         let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
-
+        
         checkTicketViewController.image = results.originalScan.image
         checkTicketViewController.imageView.image = results.croppedScan.image
         let croppedImageSize = results.croppedScan.image.size
         checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
         if croppedImageSize.width / croppedImageSize.height < 3 {
-            checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
-        }
-       
-       // checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
-        
-        scanScratchManager.upload(image: results.croppedScan.image) { scratchoff in
-            if let response = scratchoff {
-                let analyze = response.analyze
-                let imageURL = response.imageUrl
-                
-            }
+            checkTicketViewController.addGaussianBlurEffect(
+                to: checkTicketViewController.imageView,
+                withOverlayImage: "Scan.Search",
+                target: checkTicketViewController,
+                action: #selector(CheckScanTicketViewController.imageViewTapped))
         }
         
-        let checkScratchoffViewController = CheckScratchOffTicketViewController()
+        // checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
+        
+        
         touchDown.isEnabled = false
-       
-        delay(0.8) {
-            self.continueButton.isUserInteractionEnabled = false
-            if self.weDo {
-                self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
-                self.hideDimView()
-                self.touchDown.isEnabled = true
-                self.continueButton.isUserInteractionEnabled = true
+        self.continueButton.isUserInteractionEnabled = false
+        
+        scanScratchManager.analyze(image: results.croppedScan.image) { scratchoff in
+            if let response = scratchoff {
+                DispatchQueue.main.async {
+                    if self.weDo {
+                        // Pass the ScratchOff data to the new view controller
+                        let checkScratchoffViewController = CheckScratchOffTicketViewController(scratchOff: response)
+                        self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+                        self.hideDimView()
+                        self.touchDown.isEnabled = true
+                        self.continueButton.isUserInteractionEnabled = true
+                    } else {
+                        self.weDo = true
+                    
+                        self.hideDimView()
+                        self.showDimView()
+                        self.dimView?.alpha = 0
+                        self.continueButton.isUserInteractionEnabled = true
+                    }
+                }
             } else {
-                self.weDo = true
-                self.showDimView()
-                self.dimView?.alpha = 0
-                self.continueButton.isUserInteractionEnabled = true
-
+                DispatchQueue.main.async {
+                    self.weDo = true
+                    self.dimView?.progressLabel.text = "Scan unsuccesfull. Try again."
+                    self.dimView?.setNeedsDisplay()
+                    self.dimView?.setNeedsLayout()
+                    self.dimView?.layoutIfNeeded()
+                    delay(1) {
+                        self.hideDimView()
+                        self.showDimView()
+                        self.dimView?.alpha = 0
+                        
+                        self.continueButton.isUserInteractionEnabled = true
+                    }
+                }
             }
         }
+
     }
     func drawsScanMagic() {
         dimView?.alpha = 1
@@ -300,7 +319,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
         
         let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
-
+        
         checkTicketViewController.image = results.originalScan.image
         checkTicketViewController.imageView.image = results.croppedScan.image
         let croppedImageSize = results.croppedScan.image.size
@@ -308,10 +327,10 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         if croppedImageSize.width / croppedImageSize.height < 3 {
             checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
         }
-       
+        
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         touchDown.isEnabled = false
-       
+        
         delay(0.8) {
             self.continueButton.isUserInteractionEnabled = false
             if self.weDo {
@@ -324,26 +343,26 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                 self.showDimView()
                 self.dimView?.alpha = 0
                 self.continueButton.isUserInteractionEnabled = true
-
+                
             }
         }
     }
     func showDimView() {
-           dimView = DimViewWithProgressBar(frame: view.bounds)
-           if let dimView = dimView {
-               dimView.isUserInteractionEnabled = true
-               view.addSubview(dimView)
-           }
-       }
+        dimView = DimViewWithProgressBar(frame: view.bounds)
+        if let dimView = dimView {
+            dimView.isUserInteractionEnabled = true
+            view.addSubview(dimView)
+        }
+    }
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         adjustQuadViewConstraints()
         displayQuad()
     }
     func hideDimView() {
-            dimView?.stopLoading()
-            dimView = nil
-        }
+        dimView?.stopLoading()
+        dimView = nil
+    }
     override public func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.tintAdjustmentMode = .normal
@@ -362,11 +381,11 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true
     }
-
+    
     @objc private func customBackButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
-
+    
     private func setupViews() {
         view.addSubview(imageView)
         view.addSubview(quadView)
@@ -375,7 +394,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         view.backgroundColor = Appearance.mono200
         imageView.mask = maskView
     }
-
+    
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             cornerImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
@@ -399,7 +418,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -25.scale : -22.scale),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
-
+        
         quadViewWidthConstraint = quadView.widthAnchor.constraint(equalToConstant: 0.0)
         quadViewHeightConstraint = quadView.heightAnchor.constraint(equalToConstant: 0.0)
         
@@ -410,13 +429,13 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             quadViewHeightConstraint
         ])
     }
-
+    
     @objc func cancelButtonTapped() {
         if let imageScannerController = navigationController as? ImageScannerController {
             imageScannerController.imageScannerDelegate?.imageScannerControllerDidCancel(imageScannerController)
         }
     }
-
+    
     @objc func pushReviewController() {
         guard let quad = quadView.quad,
               let ciImage = CIImage(image: image) else {
@@ -430,52 +449,52 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let orientedImage = ciImage.oriented(forExifOrientation: Int32(cgOrientation.rawValue))
         let scaledQuad = quad.scale(quadView.bounds.size, image.size)
         self.quad = scaledQuad
-
+        
         var cartesianScaledQuad = scaledQuad.toCartesian(withHeight: image.size.height)
         cartesianScaledQuad.reorganize()
-
+        
         let filteredImage = orientedImage.applyingFilter("CIPerspectiveCorrection", parameters: [
             "inputTopLeft": CIVector(cgPoint: cartesianScaledQuad.bottomLeft),
             "inputTopRight": CIVector(cgPoint: cartesianScaledQuad.bottomRight),
             "inputBottomLeft": CIVector(cgPoint: cartesianScaledQuad.topLeft),
             "inputBottomRight": CIVector(cgPoint: cartesianScaledQuad.topRight)
         ])
-
+        
         let croppedImage = UIImage.from(ciImage: filteredImage)
         let enhancedImage = filteredImage.applyingAdaptiveThreshold()?.withFixedOrientation()
         let enhancedScan = enhancedImage.flatMap { ImageScannerScan(image: $0) }
-
+        
         let results = ImageScannerResults(
             detectedRectangle: scaledQuad,
             originalScan: ImageScannerScan(image: image),
             croppedScan: ImageScannerScan(image: croppedImage),
             enhancedScan: enhancedScan
         )
-
+        
         let reviewViewController = ReviewViewController(results: results)
         navigationController?.pushViewController(reviewViewController, animated: true)
     }
-
+    
     private func displayQuad() {
         let imageSize = image.size
         let imageFrame = CGRect(
             origin: quadView.frame.origin,
             size: CGSize(width: quadViewWidthConstraint.constant, height: quadViewHeightConstraint.constant)
         )
-
+        
         let scaleTransform = CGAffineTransform.scaleTransform(forSize: imageSize, aspectFillInSize: imageFrame.size)
         let transforms = [scaleTransform]
         let transformedQuad = quad.applyTransforms(transforms)
-
+        
         quadView.drawQuadrilateral(quad: transformedQuad, animated: false)
     }
-
+    
     private func adjustQuadViewConstraints() {
         let frame = AVMakeRect(aspectRatio: image.size, insideRect: imageView.bounds)
         quadViewWidthConstraint.constant = frame.size.width
         quadViewHeightConstraint.constant = frame.size.height
     }
-
+    
     private static func defaultQuad(forImage image: UIImage) -> Quadrilateral {
         let topLeft = CGPoint(x: image.size.width * 0.05, y: image.size.height * 0.05)
         let topRight = CGPoint(x: image.size.width * 0.95, y: image.size.height * 0.05)
@@ -483,7 +502,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         let bottomLeft = CGPoint(x: image.size.width * 0.05, y: image.size.height * 0.95)
         return Quadrilateral(topLeft: topLeft, topRight: topRight, bottomRight: bottomRight, bottomLeft: bottomLeft)
     }
-
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view != continueButton && touch.view != retakeButton
     }

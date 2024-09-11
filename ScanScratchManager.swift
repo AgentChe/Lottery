@@ -55,8 +55,8 @@ struct ScanScratchManager {
         session = URLSession(configuration: config, delegate: nil, delegateQueue: queue)
     }
     
-    func upload(image: UIImage, completion: ((ScratchOff?) -> Void)? = nil) {
-        guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/upload"),
+    func analyze(image: UIImage, completion: ((ScratchOff?) -> Void)? = nil) {
+        guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/analyze"),
               let imageData = image.jpegData(compressionQuality: 0.5) else {
             completion?(nil)
             return
@@ -79,15 +79,24 @@ struct ScanScratchManager {
         
         session.uploadTask(with: request, from: bodyData) { data, response, error in
             guard let data = data,
-                  let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+                  let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+                  let imageUrl = json["image_url"] as? String,
+                  let detected = json["detected"] as? Int,
+                  let ticketData = json["ticket_data"] as? [String: Any],
+                  let raw = ticketData["raw"] as? String,
+                  let title = ticketData["title"] as? String,
+                  let company = ticketData["company"] as? String,
+                  let analyze = ticketData["analyze"] as? String else {
                 completion?(nil)
                 return
             }
-            
-            let scratchOff = ScratchOff(json: json)
+
+            // Create the ScratchOff instance with the parsed data
+            let scratchOff = ScratchOff(raw: raw, title: title, company: company, analyze: analyze, imageUrl: imageUrl, detected: detected)
             completion?(scratchOff)
         }.resume()
     }
+
     
     func fetchScratchOffsList(completion: @escaping ([ScratchOff]?) -> Void) {
         guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/list") else {

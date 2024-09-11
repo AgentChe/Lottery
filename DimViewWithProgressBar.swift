@@ -16,7 +16,7 @@ class DimViewWithProgressBar: UIView {
     private var animateStart = false
     private var animateEnd = true
     
-    private let progressLabel: UILabel = {
+     let progressLabel: UILabel = {
         let label = UILabel()
         label.text = "Loading..."
         label.textColor = .white
@@ -51,6 +51,13 @@ class DimViewWithProgressBar: UIView {
             pvc.weDo = false
             pvc.touchDown.isEnabled = true
             pvc.continueButton.isUserInteractionEnabled = false
+            
+            let session = pvc.scanScratchManager.session
+            DispatchQueue.main.async {
+                session.getAllTasks { tasks in
+                    tasks.forEach { $0.cancel() }
+                }
+            }
         }
         stopLoading()
     }
@@ -150,9 +157,9 @@ class DimViewWithProgressBar: UIView {
     
     func stopLoading() {
         progressLayer.removeAllAnimations()
-        removeFromSuperview()
         if let pvc = parentViewController as? EditScanViewController {
             pvc.continueButton.isUserInteractionEnabled = true
         }
+        removeFromSuperview()
     }
 }

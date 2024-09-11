@@ -1,23 +1,5 @@
 import UIKit
-class PaddedLabel: UILabel {
-    
-    var textInsets = UIEdgeInsets(top: 20.scale, left: 16.scale, bottom: 16.scale, right: 16.scale) {
-        didSet {
-            setNeedsDisplay() // Redraw the label with the new insets
-        }
-    }
-    
-    override func drawText(in rect: CGRect) {
-        let insetRect = rect.inset(by: textInsets)
-        super.drawText(in: insetRect)
-    }
-    
-    override var intrinsicContentSize: CGSize {
-        let size = super.intrinsicContentSize
-        return CGSize(width: size.width + textInsets.left + textInsets.right,
-                      height: size.height + textInsets.top + textInsets.bottom)
-    }
-}
+import Kingfisher
 
 class CheckScratchOffTicketViewController: UIViewController {
     
@@ -33,31 +15,29 @@ class CheckScratchOffTicketViewController: UIViewController {
         return view
     }()
     
-    private let imageView: UIImageView = {
+    private let lotteryImageView: UIImageView = {
         let imageView = UIImageView()
         if let image = UIImage(named: "pastDrawDefBcg") {
             imageView.image = image
         }
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleToFill
         imageView.layer.cornerRadius = 15.scale
         imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let textLabel: PaddedLabel = {
+    private let analyzeLabel: PaddedLabel = {
         let label = PaddedLabel()
         label.numberOfLines = 0
         label.backgroundColor = Appearance.mono100
         label.textAlignment = .left
-        label.text = "To implement the /scratchoffs/list endpoint and retrieve an array of the same objects..."
         label.font = Fonts.Inter.medium(size: 14.scale)
         label.layer.cornerRadius = 10.scale
         label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
@@ -68,7 +48,6 @@ class CheckScratchOffTicketViewController: UIViewController {
         button.layer.cornerRadius = 25.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(saveTicketButtonTapped), for: .touchUpInside)
-        button.isEnabled = true // Initially disabled
         return button
     }()
     
@@ -86,26 +65,87 @@ class CheckScratchOffTicketViewController: UIViewController {
         return button
     }()
     
+    private var scratchOff: ScratchOff?
+    private var analyzeLabelHeightConstraint: NSLayoutConstraint?
+
+    init(scratchOff: ScratchOff?) {
+        self.scratchOff = scratchOff
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
+        setupNavigationBackButton()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(lotteryImageTapped))
+        lotteryImageView.isUserInteractionEnabled = true
+        lotteryImageView.addGestureRecognizer(tapGesture)
+        
+        if scratchOff == nil {
+            showAlertAndPop()
+        } else {
+            if scratchOff?.detected == 1 {
+                if let url = URL(string: scratchOff?.imageUrl ?? "") {
+                    lotteryImageView.kf.setImage(with: url)
+                }
+                analyzeLabel.text = scratchOff?.analyze ?? ""
+                
+                let font = Fonts.Inter.medium(size: 15.scale)
+                let expectedLabelSize = calculateLabelHeight(for: scratchOff?.analyze ?? "", with: font, width: view.frame.width - 32.scale)
+                
+                analyzeLabelHeightConstraint?.isActive = false
+                analyzeLabelHeightConstraint?.constant = expectedLabelSize.height + 50.scale
+                analyzeLabelHeightConstraint?.isActive = true
+                view.setNeedsLayout()
+            }
+        }
+    }
+    
+    private func showAlertAndPop() {
+        let alertController = UIAlertController(title: "Error", message: "Scan unsuccessful. Try again.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(okAction)
+        
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    private func setupNavigationBackButton() {
+        let backButton = UIButton(type: .custom)
+        if let image = UIImage(named: "analyzeResultIImage") {
+            backButton.setImage(image, for: .normal)
+        }
+        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.imageView?.contentMode = .scaleAspectFit
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        let backButtonItem = UIBarButtonItem(customView: backButton)
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true
+    }
+    
+    @objc private func customBackButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupUI() {
         view.backgroundColor = .clear
         
-        // Add scrollView and contentView
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        // Add imageView, titleLabel, and buttons to contentView
-        contentView.addSubview(imageView)
-        contentView.addSubview(textLabel)
+        contentView.addSubview(lotteryImageView)
+        contentView.addSubview(analyzeLabel)
         contentView.addSubview(saveTicketButton)
         contentView.addSubview(rescanButton)
         
-        // Constraints for scrollView and contentView
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -119,24 +159,24 @@ class CheckScratchOffTicketViewController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
-        // Constraints for imageView
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.scale),
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
-            imageView.widthAnchor.constraint(equalToConstant: 140.scale),
-            imageView.heightAnchor.constraint(equalToConstant: 174.scale) // Adjust as necessary
+            lotteryImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.scale),
+            lotteryImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
+            lotteryImageView.widthAnchor.constraint(equalToConstant: 140.scale),
+            lotteryImageView.heightAnchor.constraint(equalToConstant: 174.scale)
         ])
         
-        // Constraints for titleLabel (dynamic height)
+        analyzeLabelHeightConstraint = analyzeLabel.heightAnchor.constraint(equalToConstant: 50.scale)
+        analyzeLabelHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
-            textLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20.scale),
-            textLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
-            textLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale)
+            analyzeLabel.topAnchor.constraint(equalTo: lotteryImageView.bottomAnchor, constant: 20.scale),
+            analyzeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
+            analyzeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale)
         ])
         
-        // Constraints for buttons
         NSLayoutConstraint.activate([
-            saveTicketButton.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 40.scale),
+            saveTicketButton.topAnchor.constraint(equalTo: analyzeLabel.bottomAnchor, constant: 40.scale),
             saveTicketButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
             saveTicketButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale),
             saveTicketButton.heightAnchor.constraint(equalToConstant: 50.scale),
@@ -145,13 +185,11 @@ class CheckScratchOffTicketViewController: UIViewController {
             rescanButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
             rescanButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale),
             rescanButton.heightAnchor.constraint(equalToConstant: 50.scale),
-            rescanButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.scale) // To ensure scrollable content
+            rescanButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.scale)
         ])
     }
     
-    // Button actions
     @objc private func saveTicketButtonTapped() {
-        // Handle save button tap
         if let viewControllers = navigationController?.viewControllers {
             let targetIndex = viewControllers.count - 3
             if targetIndex >= 0 {
@@ -161,12 +199,73 @@ class CheckScratchOffTicketViewController: UIViewController {
         }
     }
     
-    @objc private func rescanButtonTapped() {    
+    @objc private func rescanButtonTapped() {
         if let viewControllers = navigationController?.viewControllers {
             let targetIndex = viewControllers.count - 3
             if targetIndex >= 0 {
                 let targetViewController = viewControllers[targetIndex]
                 navigationController?.popToViewController(targetViewController, animated: true)
+            }
+        }
+    }
+    
+    private func calculateLabelHeight(for text: String, with font: UIFont, width: CGFloat) -> CGSize {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = text.boundingRect(with: constraintRect,
+                                            options: .usesLineFragmentOrigin,
+                                            attributes: [.font: font],
+                                            context: nil)
+        return boundingBox.size
+    }
+    
+    @objc private func lotteryImageTapped() {
+        guard let image = lotteryImageView.image else { return }
+        
+        let dimmedBackgroundView = UIView(frame: view.bounds)
+        dimmedBackgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        dimmedBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        dimmedBackgroundView.alpha = 0
+        
+        let enlargedImageView = UIImageView(image: image)
+        enlargedImageView.contentMode = .scaleAspectFit
+        enlargedImageView.translatesAutoresizingMaskIntoConstraints = false
+        enlargedImageView.isUserInteractionEnabled = true
+        enlargedImageView.layer.cornerRadius = 15.scale
+        enlargedImageView.layer.masksToBounds = true
+        
+        view.addSubview(dimmedBackgroundView)
+        view.addSubview(enlargedImageView)
+        
+        NSLayoutConstraint.activate([
+            dimmedBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            dimmedBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            dimmedBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            dimmedBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            enlargedImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            enlargedImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            enlargedImageView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
+            enlargedImageView.heightAnchor.constraint(equalToConstant: view.frame.height * 0.6)
+        ])
+        
+        UIView.animate(withDuration: 0.3) {
+            dimmedBackgroundView.alpha = 1
+        }
+        
+        let tapOutsideGesture = UITapGestureRecognizer(target: self, action: #selector(dismissEnlargedImageView(_:)))
+        dimmedBackgroundView.addGestureRecognizer(tapOutsideGesture)
+    }
+
+    @objc private func dismissEnlargedImageView(_ sender: UITapGestureRecognizer) {
+        if let dimmedBackgroundView = sender.view, let enlargedImageView = view.subviews.last(where: { $0 is UIImageView }) {
+            UIView.animate(withDuration: 0.1, animations: {
+                dimmedBackgroundView.alpha = 0
+                enlargedImageView.alpha = 0
+            }) { _ in
+                dimmedBackgroundView.removeFromSuperview()
+                enlargedImageView.removeFromSuperview()
             }
         }
     }

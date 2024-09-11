@@ -108,9 +108,10 @@
 		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
 		A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */; };
 		A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */; };
-		A3FC079F2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079E2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift */; };
+		A3FC079F2C8A287100A668C5 /* ScanScratchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */; };
 		A3FC07A12C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */; };
 		A3FC07A32C8AB54300A668C5 /* ScratchOffCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */; };
+		A3FC07A52C9172E700A668C5 /* PaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -347,9 +348,10 @@
 		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
 		A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScanOptionView.swift; sourceTree = "<group>"; };
 		A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimViewWithProgressBar.swift; sourceTree = SOURCE_ROOT; };
-		A3FC079E2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketUploadImageForScratchScan.swift; sourceTree = SOURCE_ROOT; };
+		A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanScratchManager.swift; sourceTree = SOURCE_ROOT; };
 		A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckScratchOffTicketVIewContorller.swift; sourceTree = SOURCE_ROOT; };
 		A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchOffCell.swift; sourceTree = "<group>"; };
+		A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedLabel.swift; sourceTree = "<group>"; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -511,7 +513,8 @@
 			isa = PBXGroup;
 			children = (
 				A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */,
-				A3FC079E2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift */,
+				A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */,
+				A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */,
 				A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */,
 				DED8FB192C762796001DAAE2 /* TicketUploadImage.swift */,
 				A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */,
@@ -1644,11 +1647,12 @@
 				DE42B1962BFF3CB200FF61B0 /* Spinner.swift in Sources */,
 				A32749362C29859400E9F79A /* EditScanCornerView.swift in Sources */,
 				A3FD9EAC2C11F98C000FAD68 /* rootVCGetter.swift in Sources */,
-				A3FC079F2C8A287100A668C5 /* TicketUploadImageForScratchScan.swift in Sources */,
+				A3FC079F2C8A287100A668C5 /* ScanScratchManager.swift in Sources */,
 				DE42B1B32BFF3CB200FF61B0 /* Appearance.swift in Sources */,
 				A32749402C29859400E9F79A /* CGAffineTransform+Utils.swift in Sources */,
 				A327496C2C29859400E9F79A /* CaptureSessionManager.swift in Sources */,
 				DE42B2102BFF583A00FF61B0 /* SyncTokensRequest.swift in Sources */,
+				A3FC07A52C9172E700A668C5 /* PaddedLabel.swift in Sources */,
 				A3FF555D2C07E11200E81771 /* FetchStatesRequest.swift in Sources */,
 				A3B3C7B52C29BCC5009EA452 /* ScanMenuViewController.swift in Sources */,
 				DED8FB1A2C762796001DAAE2 /* TicketUploadImage.swift in Sources */,
