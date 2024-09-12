@@ -149,25 +149,35 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     @objc func continueButtonTapped() {
         if let navigController = (parent?.parent as? MainViewController)?.children.first as? NavigationController {
             print("navigController: ",navigController.children)
-            var drawsViewController: DrawsViewController!
+            var drawsViewController: DrawsViewController?
             for child in navigController.children {
                 if child.isKind(of: DrawsViewController.self) {
                     drawsViewController = child as! DrawsViewController
-                    if drawsViewController.isDrawScan != nil {
+                    if drawsViewController?.isDrawScan != false {
                         drawsScanMagic()
                     }
-                    if drawsViewController.isScratchScan != nil {
+                    if drawsViewController?.isScratchScan != false {
                         scratchOffsScanMagic()
                     }
                 }
             }
+          
+            if drawsViewController == nil {
+                if lotteryId == 999 && stateId == 999 {
+                    scratchOffsScanMagic()
+                } else {
+                    
+                    drawsScanMagic()
+                }
+            }
+            if drawsViewController != nil {
+                if lotteryId != 999 && stateId != 999 && drawsViewController?.isDrawScan == false && drawsViewController?.isScratchScan == false {
+                    drawsScanMagic()
+                }
+            }
         }
         
-        if lotteryId == 999 && stateId == 999 {
-            scratchOffsScanMagic()
-        } else {
-            drawsScanMagic()
-        }
+      
         
     }
     func scratchOffsScanMagic() {
@@ -244,7 +254,10 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                     if self.weDo {
                         // Pass the ScratchOff data to the new view controller
                         let checkScratchoffViewController = CheckScratchOffTicketViewController(scratchOff: response)
-                        self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+                        if self.navigationController?.topViewController != checkScratchoffViewController { 
+                            self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+                        }
+                        
                         self.hideDimView()
                         self.touchDown.isEnabled = true
                         self.continueButton.isUserInteractionEnabled = true
@@ -341,19 +354,24 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             DispatchQueue.main.async {
                 self.continueButton.isUserInteractionEnabled = false
                 if self.weDo {
-                    self.navigationController?.pushViewController(checkTicketViewController, animated: true)
                     self.hideDimView()
                     self.touchDown.isEnabled = true
                     self.continueButton.isUserInteractionEnabled = true
+                    
+                    // Prevent multiple pushes
+                    if self.navigationController?.topViewController != checkTicketViewController {
+                        self.navigationController?.pushViewController(checkTicketViewController, animated: true)
+                    }
+                    
                 } else {
                     self.weDo = true
                     self.showDimView()
                     self.dimView?.alpha = 0
                     self.continueButton.isUserInteractionEnabled = true
-                    
                 }
             }
         }
+
     }
     func showDimView() {
         dimView = DimViewWithProgressBar(frame: view.bounds)

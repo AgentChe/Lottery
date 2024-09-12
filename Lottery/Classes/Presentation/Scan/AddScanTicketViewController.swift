@@ -72,7 +72,19 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationItem.leftBarButtonItem = nil
+         navigationItem.rightBarButtonItem = nil
+         navigationItem.titleView = nil
+
+         // Make the navigation bar transparent
+         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+         navigationController?.navigationBar.shadowImage = UIImage()
+         navigationController?.navigationBar.isTranslucent = true
+         navigationController?.navigationBar.backgroundColor = .clear
+         navigationController?.navigationBar.isUserInteractionEnabled = false
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400

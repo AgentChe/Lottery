@@ -109,7 +109,7 @@ class ChooseScanOptionView: UIView {
         if let drawsViewController = parentViewController as? DrawsViewController {
             drawsViewController.dismissAndPresentScanDraw(chooseScanOptionView: self)
             drawsViewController.isDrawScan = true
-            drawsViewController.isScratchScan = nil
+            drawsViewController.isScratchScan = false
         }
     }
     
@@ -117,7 +117,7 @@ class ChooseScanOptionView: UIView {
     @objc private func scanScratchButtonTapped() {
         if let drawsViewController = parentViewController as? DrawsViewController {
             drawsViewController.dismissAndPresentScanDraw(chooseScanOptionView: self)
-            drawsViewController.isDrawScan = nil
+            drawsViewController.isDrawScan = false
             drawsViewController.isScratchScan = true
         }
     }

@@ -216,6 +216,7 @@ extension LuckyNumbersCell {
 private extension LuckyNumbersCell {
     func setupUI() {
         backgroundColor = .white
+       
         
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -324,6 +325,7 @@ extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegate
             if indexPath.item == lastIndex {
                 cell.backgroundColor = Appearance.main100
                 cell.setNumberLabelColor(Appearance.mono100)
+                cell.layer.borderColor = Appearance.main100.cgColor
             } else {
                 cell.setNumberLabelColor(Appearance.mono200)
                 cell.backgroundColor = Appearance.mono100
@@ -334,6 +336,7 @@ extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegate
             if indexPath.item == 0 || indexPath.item == 1 {
                 cell.backgroundColor = Appearance.main100
                 cell.setNumberLabelColor(Appearance.mono100)
+                cell.layer.borderColor = Appearance.main100.cgColor
             }
             if indexPath.item == 2 || indexPath.item == 3 {
                 cell.backgroundColor = Appearance.mono100

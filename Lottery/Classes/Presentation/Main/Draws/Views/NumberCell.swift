@@ -47,6 +47,8 @@ class NumberCell: UICollectionViewCell {
             numberLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             numberLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
+        
+        layer.borderWidth = 1.scale
     }
     
     required init?(coder: NSCoder) {

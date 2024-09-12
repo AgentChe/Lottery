@@ -492,6 +492,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 if let navigationController = getRootViewController() as? NavigationController,
                    let mainViewController = navigationController.viewControllers.first as? MainViewController {
                     updateMainViewControllerConstraints(for: mainViewController)
+                    
                 }
             } else {
                 // If not, present the view controller modally as a fallback

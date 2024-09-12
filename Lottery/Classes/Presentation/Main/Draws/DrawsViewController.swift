@@ -11,8 +11,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     var profile: Profile!
     var games: [Game] = []
     var dimView: UIView!
-    var isDrawScan: Bool?
-    var isScratchScan: Bool?
+    var isDrawScan: Bool = false
+    var isScratchScan: Bool = false
     private var previousVC: UIViewController?
     var menuButton: UIButton!
     var scanOptionButton: UIButton!
@@ -41,7 +41,10 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
             
         }
-        fetchStateAndGames()
+       setupNavigationBarTitle()
+       fetchStateAndGames()
+        isDrawScan = false
+        isScratchScan = false
     }
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
@@ -136,7 +139,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
         
-         setupNavigationBarTitle()
+       //  setupNavigationBarTitle()
     }
     
     private var previousScrollOffset: CGFloat = .zero
@@ -681,44 +684,20 @@ extension DrawsViewController {
 // MARK: - Private Extension
 private extension DrawsViewController {
     func setupNavigationBarTitle() {
-        // Create the title label
-        let titleLabel = UILabel()
-        titleLabel.text = ""// "DrawsViewController.AllGamesTitle".localized
-        titleLabel.textColor = Appearance.mono200
-        titleLabel.font = Fonts.Inter.bold(size: 20.scale)
-        
-        // Set intrinsic size for proper layout
-        titleLabel.sizeToFit()
-        
-        // Create a UIBarButtonItem with the custom label
-        let leftBarItem = UIBarButtonItem(customView: titleLabel)
-        
-        navigationItem.leftBarButtonItem = leftBarItem
-        
-        // Create a right bar button item for the menu
-        if let menuImage = UIImage(named: "Me nu") {
-            // Create the UIImageView with aspect fit
-            let menuImageView = UIImageView(image: menuImage)
-            menuImageView.contentMode = .scaleAspectFit
-            
-            // Set the height of the image view to match the title label's height
-            let titleHeight = titleLabel.intrinsicContentSize.height
-            menuImageView.frame = CGRect(x: 0, y: 0, width: titleHeight, height: titleHeight)
-            
-            // Wrap the image view in a UIView to manage its layout
-            let menuContainerView = UIView(frame: menuImageView.frame)
-            menuContainerView.addSubview(menuImageView)
-            
-            // Create the UIBarButtonItem with the custom view
-            let rightBarItem = UIBarButtonItem(customView: menuContainerView)
-            navigationItem.rightBarButtonItem = rightBarItem
-            
-            // Add tap gesture to the image view for menu action
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMenuTap))
-            menuContainerView.isUserInteractionEnabled = true
-            menuContainerView.addGestureRecognizer(tapGesture)
-        }
+        // Remove all elements from the navigation bar
+        navigationItem.leftBarButtonItem = nil
+        navigationItem.rightBarButtonItem = nil
+        navigationItem.titleView = nil
+
+        // Make the navigation bar transparent
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.navigationBar.isUserInteractionEnabled = false
+
+        // Optional: If you want to hide the navigation bar completely
+        // navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     @objc func handleMenuTap() {
