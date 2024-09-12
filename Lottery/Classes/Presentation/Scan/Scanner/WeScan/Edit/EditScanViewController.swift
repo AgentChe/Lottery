@@ -155,9 +155,11 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                     drawsViewController = child as! DrawsViewController
                     if drawsViewController?.isDrawScan != false {
                         drawsScanMagic()
+                        return
                     }
                     if drawsViewController?.isScratchScan != false {
                         scratchOffsScanMagic()
+                        return
                     }
                 }
             }
@@ -165,15 +167,24 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             if drawsViewController == nil {
                 if lotteryId == 999 && stateId == 999 {
                     scratchOffsScanMagic()
+                    return
                 } else {
                     
                     drawsScanMagic()
+                    return
                 }
             }
             if drawsViewController != nil {
-                if lotteryId != 999 && stateId != 999 && drawsViewController?.isDrawScan == false && drawsViewController?.isScratchScan == false {
+                
+                if lotteryId == 999 && stateId == 999 && drawsViewController?.isDrawScan == false && drawsViewController?.isScratchScan == false {
+                    scratchOffsScanMagic()
+                    return
+                } else {
                     drawsScanMagic()
                 }
+//                if lotteryId == 888 && stateId == 888 && drawsViewController?.isDrawScan == false && drawsViewController?.isScratchScan == false {
+//                    scratchOffsScanMagic()
+//                }
             }
         }
         
@@ -350,8 +361,8 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         touchDown.isEnabled = false
         
-        delay(0.8) {
-            DispatchQueue.main.async {
+    //    delay(0.8) {
+      //      DispatchQueue.main.async {
                 self.continueButton.isUserInteractionEnabled = false
                 if self.weDo {
                     self.hideDimView()
@@ -369,8 +380,8 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                     self.dimView?.alpha = 0
                     self.continueButton.isUserInteractionEnabled = true
                 }
-            }
-        }
+   //         }
+   //     }
 
     }
     func showDimView() {

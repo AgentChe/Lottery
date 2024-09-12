@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
@@ -282,25 +283,26 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
             
             // Button 2 (center button)
-            luckyNumbersButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor, constant: 0),
-            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
-            luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
-            
-            // Label 2
-            label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
-            label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
-            
-            // Button 3
-            ticketsButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
+            ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor, constant: 0),
             ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
             ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
             ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
+           
+            label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
+            label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
             
-            // Label 3
+        
+            
+            // Button 3
+            luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
+            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
+          
             label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
             label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
             
+            //
             // Menu Button
             menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
             menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
@@ -364,7 +366,19 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
           // Call the dismiss function when the dim view is tapped
           dismissChooseScanOptionView(scanOptionButton)
       }
-
+     func dismissAndPresentreScanDraw(chooseScanOptionView: UIView) {
+         
+         // Animate the view back down off-screen
+         UIView.animate(withDuration: 0.3, animations: {
+             chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
+             self.dimView.alpha = 0 // Fade out the dim view
+         }, completion: { _ in
+             chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
+             self.dimView.removeFromSuperview() // Remove the dim view after animation
+             self.rescanButtonTapped()
+         })
+         
+     }
     func dismissAndPresentScanDraw(chooseScanOptionView: UIView) {
         
         // Animate the view back down off-screen
@@ -822,32 +836,89 @@ private extension DrawsViewController {
 private extension DrawsViewController {
     @objc func scanButtonTapped() {
      //   if SessionManager().hasActiveSubscriptions() {
+            let scanOnboardingViewController = ScanOnboardingViewController.make()
+            
+            // Check if the current view controller is embedded in a navigation controller
+            if let navigationController = self.navigationController {
+                
+                navigationController.pushViewController(scanOnboardingViewController, animated: true)
+                
+                if let navigationController = getRootViewController() as? NavigationController,
+                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                    
+                    updateMainViewControllerConstraints(for: mainViewController)
+                    
+                }
+//            } else {
+//                // If not, present the view controller modally as a fallback
+//                present(scanOnboardingViewController, animated: true, completion: nil)
+//            }
+        } else {
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
+        }
+    }
+    
+    @objc func rescanButtonTapped() {
+     //   if SessionManager().hasActiveSubscriptions() {
         
         
         let scanViewController = ScanMenuViewController()
-        scanViewController.stateId = 2
-        scanViewController.lotteryId = 3
+        scanViewController.stateId = 888
+        scanViewController.lotteryId = 888
         
-        if let navigationController = navigationController {
-            navigationController.pushViewController(scanViewController, animated: true)
-        } else {
-            // If not in a navigation controller, present it modally
-            present(scanViewController, animated: true, completion: nil)
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch cameraAuthorizationStatus {
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if granted {
+                        print("Camera access granted.")
+                        let scanViewController = ScanViewController()
+                        scanViewController.stateId = 888
+                        scanViewController.lotteryId = 888
+                        if let navigationController = self.navigationController {
+                            navigationController.pushViewController(scanViewController, animated: true)
+                        } else {
+                            self.present(scanViewController, animated: true, completion: nil)
+                        }
+                    } else {
+                        print("Camera access denied.")
+                    }
+                }
+            }
+        case .restricted, .denied:
+            self.showCameraAccessDeniedAlert()
+        case .authorized:
+            DispatchQueue.main.async {
+                let scanViewController = ScanViewController()
+                scanViewController.stateId = 888
+                scanViewController.lotteryId = 888
+                if let navigationController = self.navigationController {
+                    navigationController.pushViewController(scanViewController, animated: true)
+                } else {
+                    self.present(scanViewController, animated: true, completion: nil)
+                }
+            }
+        @unknown default:
+            fatalError("Unknown camera authorization status.")
         }
         
         
 //            let scanOnboardingViewController = ScanOnboardingViewController.make()
-//            
+//
 //            // Check if the current view controller is embedded in a navigation controller
 //            if let navigationController = self.navigationController {
-//                
+//
 //                navigationController.pushViewController(scanOnboardingViewController, animated: true)
-//                
+//
 //                if let navigationController = getRootViewController() as? NavigationController,
 //                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
-//                    
+//
 //                    updateMainViewControllerConstraints(for: mainViewController)
-//                    
+//
 //                }
 //            } else {
 //                // If not, present the view controller modally as a fallback
@@ -859,7 +930,21 @@ private extension DrawsViewController {
 //            present(vc, animated: true)
 //        }
     }
-    
+    func showCameraAccessDeniedAlert() {
+        let alert = UIAlertController(
+            title: "ScanMenuViewController.CameraAccessNeededTitle".localized,
+            message: "ScanMenuViewController.CameraAccessNeededMessage".localized,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.OpenSettingsButton".localized, style: .default, handler: { _ in
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView

@@ -16,7 +16,7 @@ final class ScanScratchView: UIView {
         let attrs = TextAttributes()
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
-        let attributedTitle = "Start".localized.attributed(with: attrs)
+        let attributedTitle = "Continue".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale

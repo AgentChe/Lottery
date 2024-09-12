@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
@@ -465,20 +466,64 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     @objc func scanScratchButtonTapped() {
   //      if SessionManager().hasActiveSubscriptions() {
             
-            let scanViewController = ScanMenuViewController()
-            scanViewController.stateId = 999
-            scanViewController.lotteryId = 999
-            
-            if let navigationController = navigationController {
-                navigationController.pushViewController(scanViewController, animated: true)
-            } else {
-                // If not in a navigation controller, present it modally
-                present(scanViewController, animated: true, completion: nil)
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch cameraAuthorizationStatus {
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if granted {
+                        print("Camera access granted.")
+                        let scanViewController = ScanViewController()
+                        scanViewController.stateId = 999
+                        scanViewController.lotteryId = 999
+                        if let navigationController = self.navigationController {
+                            navigationController.pushViewController(scanViewController, animated: true)
+                        } else {
+                            self.present(scanViewController, animated: true, completion: nil)
+                        }
+                    } else {
+                        print("Camera access denied.")
+                    }
+                }
             }
+        case .restricted, .denied:
+            self.showCameraAccessDeniedAlert()
+        case .authorized:
+            DispatchQueue.main.async {
+                let scanViewController = ScanViewController()
+                scanViewController.stateId = 999
+                scanViewController.lotteryId = 999
+                if let navigationController = self.navigationController {
+                    navigationController.pushViewController(scanViewController, animated: true)
+                } else {
+                    self.present(scanViewController, animated: true, completion: nil)
+                }
+            }
+        @unknown default:
+            fatalError("Unknown camera authorization status.")
+        }
+        
 //        } else {
 //            let vc = PaygateViewController.make()
 //            present(vc, animated: true)
 //        }
+    }
+    func showCameraAccessDeniedAlert() {
+        let alert = UIAlertController(
+            title: "ScanMenuViewController.CameraAccessNeededTitle".localized,
+            message: "ScanMenuViewController.CameraAccessNeededMessage".localized,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.OpenSettingsButton".localized, style: .default, handler: { _ in
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
       //  if SessionManager().hasActiveSubscriptions() {

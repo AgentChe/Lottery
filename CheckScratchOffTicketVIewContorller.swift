@@ -146,6 +146,7 @@ class CheckScratchOffTicketViewController: UIViewController {
         contentView.addSubview(analyzeLabel)
         contentView.addSubview(saveTicketButton)
         contentView.addSubview(rescanButton)
+        rescanButton.alpha = 0
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

@@ -116,7 +116,7 @@ class ChooseScanOptionView: UIView {
     // Action for scan scratch-off button
     @objc private func scanScratchButtonTapped() {
         if let drawsViewController = parentViewController as? DrawsViewController {
-            drawsViewController.dismissAndPresentScanDraw(chooseScanOptionView: self)
+            drawsViewController.dismissAndPresentreScanDraw(chooseScanOptionView: self)
             drawsViewController.isDrawScan = false
             drawsViewController.isScratchScan = true
         }
