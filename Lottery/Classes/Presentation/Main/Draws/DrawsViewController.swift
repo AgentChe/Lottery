@@ -46,6 +46,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
        fetchStateAndGames()
         isDrawScan = false
         isScratchScan = false
+        
+        view.setNeedsUpdateConstraints()
+        view.updateConstraintsIfNeeded()
     }
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
