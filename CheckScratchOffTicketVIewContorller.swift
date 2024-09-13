@@ -35,6 +35,7 @@ class CheckScratchOffTicketViewController: UIViewController {
         label.font = Fonts.Inter.medium(size: 14.scale)
         label.layer.cornerRadius = 10.scale
         label.layer.masksToBounds = true
+        label.textColor = Appearance.mono200
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -103,7 +104,7 @@ class CheckScratchOffTicketViewController: UIViewController {
             let expectedLabelSize = calculateLabelHeight(for: scratchOff?.analyze ?? "", with: font, width: view.frame.width - 32.scale)
             
             analyzeLabelHeightConstraint?.isActive = false
-            analyzeLabelHeightConstraint?.constant = expectedLabelSize.height + 50.scale
+            analyzeLabelHeightConstraint?.constant = expectedLabelSize.height + 44.scale
             analyzeLabelHeightConstraint?.isActive = true
             view.setNeedsLayout()
             

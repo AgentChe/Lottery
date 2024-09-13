@@ -8,7 +8,7 @@
 import UIKit
 class PaddedLabel: UILabel {
     
-    var textInsets = UIEdgeInsets(top: 20.scale, left: 16.scale, bottom: 16.scale, right: 16.scale) {
+    var textInsets = UIEdgeInsets(top: 10.scale, left: 16.scale, bottom: 16.scale, right: 10.scale) {
         didSet {
             setNeedsDisplay() // Redraw the label with the new insets
         }
