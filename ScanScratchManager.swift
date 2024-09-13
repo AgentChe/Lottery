@@ -201,7 +201,7 @@ struct ScanScratchManager {
            request.httpMethod = "POST"
            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
            
-           // Prepare the body data
+           
            let body: [String: Any] = [
                "api_key": GlobalDefinitions.apiKey,
                "user_token": SessionManager().getSession()?.userToken ?? "anon_id",
@@ -214,10 +214,10 @@ struct ScanScratchManager {
                ]
            ]
            
-           // Convert the body dictionary to JSON data
+           
            request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
            
-           // Send the request
+           
            URLSession.shared.dataTask(with: request) { data, response, error in
                if let error = error {
                    print("Error occurred: \(error.localizedDescription)")

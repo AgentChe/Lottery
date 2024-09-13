@@ -86,8 +86,12 @@ class CheckScratchOffTicketViewController: UIViewController {
         lotteryImageView.isUserInteractionEnabled = true
         lotteryImageView.addGestureRecognizer(tapGesture)
         
-        if scratchOff == nil {
+        if scratchOff?.analyze == nil || scratchOff?.analyze == "" {
+            saveTicketButton.isHidden = true
+            lotteryImageView.isHidden = true
+            analyzeLabel.isHidden = true
             showAlertAndPop()
+            
         } else {
             
             if let url = URL(string: scratchOff?.imageUrl ?? "") {
