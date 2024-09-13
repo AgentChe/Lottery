@@ -192,15 +192,40 @@ class CheckScratchOffTicketViewController: UIViewController {
     }
     
     @objc private func saveTicketButtonTapped() {
-        if let viewControllers = navigationController?.viewControllers {
-            let targetIndex = viewControllers.count - 3
-            if targetIndex >= 0 {
-                let targetViewController = viewControllers[targetIndex]
-                navigationController?.popToViewController(targetViewController, animated: true)
+        guard let scratchOff = scratchOff else {
+            let alertController = UIAlertController(title: "Error", message: "No ticket data available to save.", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default)
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true, completion: nil)
+            return
+        }
+
+        // Initialize the ScanScratchManager
+        let scanManager = ScanScratchManager()
+
+        // Call the save function from ScanScratchManager
+        scanManager.save(scratchOff: scratchOff) { [weak self] success in
+            DispatchQueue.main.async {
+                if success {
+                    // If the save is successful, pop to the desired view controller
+                    if let viewControllers = self?.navigationController?.viewControllers {
+                        let targetIndex = viewControllers.count - 3
+                        if targetIndex >= 0 {
+                            let targetViewController = viewControllers[targetIndex]
+                            self?.navigationController?.popToViewController(targetViewController, animated: true)
+                        }
+                    }
+                } else {
+                    // Show a specific alert in case of failure to save
+                    let alertController = UIAlertController(title: "Save Error", message: "Failed to save the ticket. Please try again.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default)
+                    alertController.addAction(okAction)
+                    self?.present(alertController, animated: true, completion: nil)
+                }
             }
         }
     }
-    
+
     @objc private func rescanButtonTapped() {
         if let viewControllers = navigationController?.viewControllers {
             let targetIndex = viewControllers.count - 3

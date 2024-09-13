@@ -190,7 +190,61 @@ struct ScanScratchManager {
             }
         }.resume()
     }
-
+    
+    func save(scratchOff: ScratchOff, completion: ((Bool) -> Void)? = nil) {
+           guard let url = URL(string: "https://lottery.camplain-apps.com/api/scratchoffs/save") else {
+               completion?(false)
+               return
+           }
+           
+           var request = URLRequest(url: url)
+           request.httpMethod = "POST"
+           request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+           
+           // Prepare the body data
+           let body: [String: Any] = [
+               "api_key": GlobalDefinitions.apiKey,
+               "user_token": SessionManager().getSession()?.userToken ?? "anon_id",
+               "image_url": scratchOff.imageUrl,
+               "ticket_data": [
+                   "raw": scratchOff.raw,
+                   "title": scratchOff.title,
+                   "company": scratchOff.company,
+                   "analyze": scratchOff.analyze
+               ]
+           ]
+           
+           // Convert the body dictionary to JSON data
+           request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
+           
+           // Send the request
+           URLSession.shared.dataTask(with: request) { data, response, error in
+               if let error = error {
+                   print("Error occurred: \(error.localizedDescription)")
+                   completion?(false)
+                   return
+               }
+               
+               guard let data = data else {
+                   print("No data received")
+                   completion?(false)
+                   return
+               }
+               
+               do {
+                   // Parse the response JSON
+                   if let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+                      let result = json["result"] as? Bool {
+                       completion?(result)
+                   } else {
+                       completion?(false)
+                   }
+               } catch {
+                   print("JSON parsing error: \(error.localizedDescription)")
+                   completion?(false)
+               }
+           }.resume()
+       }
 
 
 
