@@ -21,9 +21,8 @@ final class GlobalDefinitions {
     static let privacyPolicyUrl = URL(string: "https://camplain-apps.com/privacy-policy.html")!
     static let contactUsUrl = URL(string: "https://camplain-apps.com/contacts.html")!
     
-    // TODO: заменить
     enum Paygate {
-        static let defaultLifetime = "app.iphone.tracker.yearly"
-        static let defaultMonthly = "app.iphone.tracker.weekly"
+        static let defaultLifetime = "app.iphone.tracker.lifetime"
+        static let defaultMonthly = "app.iphone.tracker.monthly"
     }
 }
