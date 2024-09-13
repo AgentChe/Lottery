@@ -34,6 +34,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     
     private let ticketsManager = TicketsManager()
     private let uploadImage = TicketUploadImage()
+ 
    
     let saveTicketButton: UIButton = {
         let button = UIButton()
@@ -97,7 +98,16 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.numbersStringArray = [[]]
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
 
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = Appearance.main400
+        collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
+        
         textRecognitionRequest = VNRecognizeTextRequest { request, error in
             guard let resultsViewController = self.resultsViewController else {
                 print("resultsViewController is not set")
@@ -137,15 +147,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         setupNavigationBar()
         setupNavigationBarTitle()
 
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = Appearance.main400
-        collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
+ 
 
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
 
@@ -202,65 +204,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     }
 
     @objc func saveTicketButtonTapped() {
-        // Hide the title and show the activity indicator
-        saveTicketButton.setTitle("", for: .normal)
-        activityIndicator.startAnimating()
-        
-        // Convert numbersStringArray to [[Int]]
-        var numbersArray: [[Int]] = []
-        for section in numbersStringArray {
-            var intSection: [Int] = []
-            for numberString in section {
-                if let number = Int(numberString) {
-                    intSection.append(number)
-                }
-            }
-            numbersArray.append(intSection)
-        }
-
-        guard var existingTicket = ticket else { return }
-
-        existingTicket.numbers = numbersArray
-        
-        func addTicket(id: Int, pictureUrl: URL? = nil, date: TimeInterval, numbers: [[Int]]) {
-            ticketsManager.addTicket(lotteryId: id, pictureUrl: pictureUrl, date: date, numbers: numbers) { result in
-                DispatchQueue.main.async {
-                    // Stop the activity indicator and show the title
-                    self.activityIndicator.stopAnimating()
-                    self.saveTicketButton.setTitle("CheckTicketViewController.SaveTicketButton".localized, for: .normal)
-                }
-                switch result {
-                case .success(let updatedTicket):
-                    DispatchQueue.main.async {
-                        self.navigationController?.popToRootViewController(animated: true)
-                    }
-
-                case .failure(let error):
-                    // Handle failure by presenting an alert to the user
-                    DispatchQueue.main.async {
-                        let alert = UIAlertController(
-                            title: "CheckTicketViewController.UpdateFailedTitle".localized,
-                            message: String(format: "CheckTicketViewController.UpdateFailedMessage".localized, error.localizedDescription),
-                            preferredStyle: .alert
-                        )
-
-                        // Add an OK button to the alert
-                        alert.addAction(UIAlertAction(title: "CheckTicketViewController.OKButton".localized, style: .default, handler: nil))
-
-                        // Present the alert
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                }
-            }
-        }
-
-        if let image {
-            uploadImage.upload(image: image) { url in
-                addTicket(id: existingTicket.lotteryId, pictureUrl: url, date: existingTicket.date, numbers: numbersArray)
-            }
-        } else {
-            addTicket(id: existingTicket.lotteryId, date: existingTicket.date, numbers: numbersArray)
-        }
+        navigationController?.popViewController(animated: true)
     }
 
     @objc func rescanButtonTapped() {
@@ -357,15 +301,16 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     // Method to update save button state based on validation
     func updateSaveButtonState() {
-        let allNumbersValid = areAllNumbersValid()
-        
-        if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditScanCell {
-            let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
-            saveTicketButton.isEnabled = isValid
-            saveTicketButton.backgroundColor = isValid ? Appearance.main100 : .gray // Change the color to gray if not valid
-        } else {
-            saveTicketButton.isEnabled = false
-            saveTicketButton.backgroundColor  = .gray
+        if let collectionView = collectionView {
+            let allNumbersValid = areAllNumbersValid()
+            if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditScanCell {
+                let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
+                saveTicketButton.isEnabled = isValid
+                saveTicketButton.backgroundColor = isValid ? Appearance.main100 : .gray // Change the color to gray if not valid
+            } else {
+                saveTicketButton.isEnabled = false
+                saveTicketButton.backgroundColor  = .gray
+            }
         }
     }
 

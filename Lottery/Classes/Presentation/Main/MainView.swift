@@ -19,6 +19,7 @@ final class MainView: UIView {
         super.init(frame: frame)
         
         makeConstraints()
+        tabView.alpha = 0
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +39,7 @@ private extension MainView {
         ])
         
         // Create and store the container's bottom constraint
-        containerBottomConstraint = container.bottomAnchor.constraint(equalTo: tabView.topAnchor)
+        containerBottomConstraint = container.bottomAnchor.constraint(equalTo: bottomAnchor)
         containerBottomConstraint?.isActive = true
         
         // Activate constraints for the tabView

@@ -6,54 +6,215 @@
 //
 
 import UIKit
+import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
 
-    private var tickets = [Ticket]()
-    private var collectionView: UICollectionView!
+    private var tickets = [Ticket]() {
+        didSet {
+            if tickets.count > 0 {
+                self.noTicketsImageView.isHidden = true
+                self.scanLotteryTicketButton.isHidden = true
+            }
+        }
+    }
+    private var scratchoffs = [ScratchOff]() {
+        didSet {
+            self.scratchoffs = scratchoffs ?? []
+            self.noScratchOffsImageView.isHidden = true
+            self.scanScratchOffTicketButton.isHidden = true
+            self.scratchoffsCollectionView.reloadData()
+        }
+    }
+    private var ticketsCollectionView: UICollectionView!
+    private var scratchoffsCollectionView: UICollectionView!
     private var scanButton: UIButton! // Adding the scan button
     private var noTicketsImageView: UIImageView! // Adding the no tickets image view
+    private var noScratchOffsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
+    let scanScratchManager : ScanScratchManager = ScanScratchManager()
 
+    private let scanScratchOffTicketButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Scan scratch-off ticket", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(scanScratchButtonTapped), for: .touchUpInside)
+        button.isEnabled = true // Initially disabled
+        button.isHidden = true
+        return button
+    }()
+    
+    private let scanLotteryTicketButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Scan lottery ticket", for: .normal)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.layer.cornerRadius = 22.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
+        button.isEnabled = true // Initially disabled
+        button.isHidden = false
+        return button
+    }()
+    
+    private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
+        
         setupNavigationBarTitle()
-        setupNavigationBarAppearance()
-        setupNoTicketsImageView()
-        setupCollectionView()
-        setupScanButton()  // Setup scan button
-        setupLayoutConstraints()  // Apply layout constraints including scan button and no tickets image view
-        fetchTickets()
-    }
-    
-    private func setupNavigationBarAppearance() {
-        setupNavigationBarTitle()
-    }
 
-    private func setupCollectionView() {
+        setupTicketsCollectionView()
+        setupScratchoffsCollectionView()
+        setupScanButton()  // Setup scan button
+        setupSegmentedControl()
+        
+        setupNoTicketsImageView()
+        setupNoScratchOffsImageView()
+        view.addSubview(scanScratchOffTicketButton)
+        view.addSubview(scanLotteryTicketButton)
+ 
+        setupLayoutConstraints()
+        noScratchOffsImageView.isHidden = true
+        scanScratchOffTicketButton.isHidden = true
+//        noTicketsImageView.isHidden = true
+//        scanLotteryTicketButton.isHidden = true
+       
+        fetchTickets()
+        fetchScratchoffs()
+        view.bringSubviewToFront(scanScratchOffTicketButton)
+        view.bringSubviewToFront(scanLotteryTicketButton)
+        
+    }
+    // MARK: - Segmented Control Setup
+      private func setupSegmentedControl() {
+          segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
+          segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
+          segmentedControl.currentIndexBackgroundColor = Appearance.main400
+          segmentedControl.cornerRadius = 20.scale
+          segmentedControl.buttonPadding = 5.scale
+          segmentedControl.buttonCornerRadius = 17.scale
+          segmentedControl.numberOfSegments = 2
+          segmentedControl.segmentsTitle = "Draws,Scratch-offs"
+          segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
+          segmentedControl.layer.borderColor = UIColor.clear.cgColor
+          
+          segmentedControl.didTapSegment = { [weak self] index in
+              self?.segmentedControlChanged(index: index)
+          }
+          
+          segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+          view.addSubview(segmentedControl)
+      }
+    private func fetchScratchoffs() {
+            // Mock data fetch for scratch-offs, implement real logic as needed
+            // scratchoffs = [ScratchOff]  // Fetch scratch-offs data here
+        scanScratchManager.list { scratchoffs in
+            DispatchQueue.main.async {
+                self.scratchoffs = scratchoffs ?? []
+                if self.segmentedControl.currentIndex == 1 {
+                    if scratchoffs?.count ?? 0 > 0 {
+                        self.noScratchOffsImageView.isHidden = true
+                        self.scanScratchOffTicketButton.isHidden = true
+                        self.noTicketsImageView.isHidden = true
+                        self.scanLotteryTicketButton.isHidden = true
+                        self.scratchoffsCollectionView.reloadData()
+                    } else {
+                        self.noScratchOffsImageView.isHidden = false
+                        self.scanScratchOffTicketButton.isHidden = false
+                        self.noTicketsImageView.isHidden = true
+                        self.scanLotteryTicketButton.isHidden = true
+                        self.view.setNeedsLayout()
+                        self.view.setNeedsDisplay()
+                    }
+                }
+            }
+        }
+        
+    }
+      // Function to switch between collection views based on the selected segment
+      private func segmentedControlChanged(index: Int) {
+          if index == 0 {
+              ticketsCollectionView.isHidden = false
+              scratchoffsCollectionView.isHidden = true
+              noScratchOffsImageView.isHidden = true
+              scanScratchOffTicketButton.isHidden = true
+              noTicketsImageView.isHidden = false
+              scanLotteryTicketButton.isHidden = false
+              if tickets.count > 0 {
+                  noTicketsImageView.isHidden = true
+                  scanLotteryTicketButton.isHidden = true
+                  noScratchOffsImageView.isHidden = true
+                  scanScratchOffTicketButton.isHidden = true
+              }
+             fetchTickets()
+              
+          } else {
+             
+              ticketsCollectionView.isHidden = true
+              scratchoffsCollectionView.isHidden = false
+              noTicketsImageView.isHidden = true
+              scanLotteryTicketButton.isHidden = true
+              noScratchOffsImageView.isHidden = false
+              scanScratchOffTicketButton.isHidden = false
+              
+              if scratchoffs.count > 0 {
+                  noTicketsImageView.isHidden = true
+                  scanLotteryTicketButton.isHidden = true
+                  noScratchOffsImageView.isHidden = true
+                  scanScratchOffTicketButton.isHidden = true
+              }
+              fetchScratchoffs()
+          }
+      }
+   
+    private func setupScratchoffsCollectionView() {
+           let layout = UICollectionViewFlowLayout()
+           layout.scrollDirection = .vertical
+           layout.minimumLineSpacing = 20.scale
+           layout.minimumInteritemSpacing = 20.scale
+           layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale)
+
+           scratchoffsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+           scratchoffsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+           scratchoffsCollectionView.dataSource = self
+           scratchoffsCollectionView.delegate = self
+           scratchoffsCollectionView.backgroundColor = .clear
+           scratchoffsCollectionView.register(ScratchOffCell.self, forCellWithReuseIdentifier: "ScratchOffCell") // Use a custom cell
+           scratchoffsCollectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
+
+           view.addSubview(scratchoffsCollectionView)
+           scratchoffsCollectionView.isHidden = true // Initially hidden
+       }
+    private func setupTicketsCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20.scale
         layout.minimumInteritemSpacing = 20.scale
         layout.itemSize = CGSize(width: view.frame.width - 20.scale, height: 150.scale)
 
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .clear
-        collectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
+        ticketsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        ticketsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        ticketsCollectionView.dataSource = self
+        ticketsCollectionView.delegate = self
+        ticketsCollectionView.backgroundColor = .clear
+        ticketsCollectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
 
-        collectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
+        ticketsCollectionView.contentInset = UIEdgeInsets(top: 102.scale, left: 0, bottom: 30.scale, right: 0)
 
-        view.addSubview(collectionView)
+        view.addSubview(ticketsCollectionView)
 
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ticketsCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 
@@ -65,7 +226,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         scanButton.translatesAutoresizingMaskIntoConstraints = false
         scanButton.backgroundColor = .clear
         scanButton.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
-        
+        scanButton.alpha = 0
         view.addSubview(scanButton)
     }
 
@@ -75,21 +236,67 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         noTicketsImageView.contentMode = .scaleAspectFit
         
         view.addSubview(noTicketsImageView)
+        
+        
+    }
+    private func setupNoScratchOffsImageView() {
+        noScratchOffsImageView = UIImageView(image: UIImage(named: "NoScratchoffs"))
+        noScratchOffsImageView.translatesAutoresizingMaskIntoConstraints = false
+        noScratchOffsImageView.contentMode = .scaleAspectFit
+        
+        view.addSubview(noScratchOffsImageView)
+        
+        
     }
 
     private func setupLayoutConstraints() {
-        NSLayoutConstraint.activate([
-            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
-            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
-            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+         NSLayoutConstraint.activate([
+             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
+             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
+             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
 
-            noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
-            noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
-            noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
+             ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
+             ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+             
+             scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
+             scratchoffsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             scratchoffsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             scratchoffsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+             scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
+             scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
+             scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
+             scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+
+             noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
+             noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
+             noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+             
+             noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
+             noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
+             noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+             noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+         
+             scanScratchOffTicketButton.topAnchor.constraint(equalTo: noScratchOffsImageView.bottomAnchor, constant: 20.scale),
+             scanScratchOffTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+             scanScratchOffTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+             scanScratchOffTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
+             
+             
+             
+             scanLotteryTicketButton.topAnchor.constraint(equalTo: noTicketsImageView.bottomAnchor, constant: 20.scale),
+             scanLotteryTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+             scanLotteryTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+             scanLotteryTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            
+             
+             
+         ])
+     }
     var scanButtonIsTapped: Bool = false
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -102,66 +309,79 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scanButtonIsTapped = false
-        navigationController?.navigationBar.barTintColor = Appearance.main400
-        navigationController?.navigationBar.isTranslucent = false
+       // navigationController?.navigationBar.barTintColor = Appearance.main400
+       // navigationController?.navigationBar.isTranslucent = false
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
             fetchTickets()
+            fetchScratchoffs()
         }
     }
 
     private func setupNavigationBarTitle() {
-        let titleLabel = UILabel()
-        titleLabel.text = "TicketsViewController.MyTickets".localized
-        titleLabel.textColor = Appearance.mono200
-        titleLabel.font = Fonts.Inter.bold(size: 20.scale)
+        // Create a custom back button
+        let backButton = UIButton(type: .custom)
         
-        titleLabel.sizeToFit()
-        
-        let leftBarItem = UIBarButtonItem(customView: titleLabel)
-        navigationItem.leftBarButtonItem = leftBarItem
-        
-        if let menuImage = UIImage(named: "Menu") {
-            let menuImageView = UIImageView(image: menuImage)
-            menuImageView.contentMode = .scaleAspectFit
-            
-            let titleHeight = titleLabel.intrinsicContentSize.height
-            menuImageView.frame = CGRect(x: 0, y: 0, width: titleHeight, height: titleHeight)
-            
-            let menuContainerView = UIView(frame: menuImageView.frame)
-            menuContainerView.addSubview(menuImageView)
-            
-            let rightBarItem = UIBarButtonItem(customView: menuContainerView)
-            navigationItem.rightBarButtonItem = rightBarItem
-            
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMenuTap))
-            menuContainerView.isUserInteractionEnabled = true
-            menuContainerView.addGestureRecognizer(tapGesture)
+        // Set the custom image for the button
+        if let image = UIImage(named: "TicketsNavBackButton") {
+            backButton.setImage(image, for: .normal)
         }
+        
+        // Set the frame or size of the button as needed
+        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.imageView?.contentMode = .scaleAspectFit
+        
+        // Add a target to handle back navigation
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        
+        // Create a UIBarButtonItem with the custom button
+        let backButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Replace the default back button with the custom button
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true // Hide the default back button
     }
-
+    @objc private func customBackButtonTapped() {
+        // Perform back navigation
+        navigationController?.popViewController(animated: true)
+    }
     private func fetchTickets() {
         ticketsManager.listTickets() { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let tickets):
                     self?.tickets = tickets.sorted(by: { $0.date > $1.date })
-                    self?.collectionView.reloadData()
-                    if self?.tickets.count != 0 {
-                        self?.collectionView.isHidden = false
-                        self?.noTicketsImageView.isHidden = true
-                    } else {
-                        self?.collectionView.isHidden = true
-                        self?.noTicketsImageView.isHidden = false
+                    self?.ticketsCollectionView.reloadData()
+                    if self?.segmentedControl.currentIndex == 0 {
+                        self?.noScratchOffsImageView.isHidden = true
+                        self?.scanScratchOffTicketButton.isHidden = true
+                        if self?.tickets.count != 0 {
+                            self?.ticketsCollectionView.isHidden = false
+                            self?.noTicketsImageView.isHidden = true
+                            self?.scanLotteryTicketButton.isHidden = true
+                         
+                          
+
+                        } else {
+                            self?.ticketsCollectionView.isHidden = true
+                            self?.noTicketsImageView.isHidden = false
+                            self?.scanLotteryTicketButton.isHidden = false
+                        }
                     }
                 case .failure:
-                    if self?.tickets.count != 0 {
-                        self?.collectionView.isHidden = false
-                        self?.noTicketsImageView.isHidden = true
-                    } else {
-                        self?.collectionView.isHidden = true
-                        self?.noTicketsImageView.isHidden = false
+                    if self?.segmentedControl.currentIndex == 0 {
+                        self?.noScratchOffsImageView.isHidden = true
+                        self?.scanScratchOffTicketButton.isHidden = true
+                        if self?.tickets.count != 0 {
+                            self?.ticketsCollectionView.isHidden = false
+                            self?.noTicketsImageView.isHidden = true
+                            self?.scanLotteryTicketButton.isHidden = true
+                        } else {
+                            self?.ticketsCollectionView.isHidden = true
+                            self?.noTicketsImageView.isHidden = false
+                            self?.scanLotteryTicketButton.isHidden = false
+                        }
                     }
                     self?.showError()
                 }
@@ -178,33 +398,58 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tickets.count
-    }
+          if collectionView == ticketsCollectionView {
+              return tickets.count
+          } else if collectionView == scratchoffsCollectionView {
+              return scratchoffs.count
+          }
+          return 0
+      }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
-        cell.configure(with: tickets[indexPath.item])
-        cell.delegate = self
-        cell.numbersCollectionView.reloadData()
-        cell.setNeedsDisplay()
-        return cell
-    }
-
+      func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+          if collectionView == ticketsCollectionView {
+              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
+              cell.configure(with: tickets[indexPath.item])
+              cell.delegate = self
+              return cell
+          } else {
+              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScratchOffCell", for: indexPath) as! ScratchOffCell
+              cell.configure(with: scratchoffs[indexPath.item]) // Assuming a `configure` method
+              return cell
+          }
+      }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let ticket = tickets[indexPath.item]
-        let ticketDate = Date(timeIntervalSince1970: ticket.date)
-        let now = Date()
-        let numbersCount = ticket.numbers.count
-
-        let isNextDraw = ticketDate > now
-        let baseHeight: CGFloat = isNextDraw ? 266.scale : 210.scale
-        let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
-
-        let cellHeight = baseHeight + additionalHeight
-
-        return CGSize(width: view.frame.width - 20.scale, height: cellHeight)
+        if collectionView == ticketsCollectionView {
+            let ticket = tickets[indexPath.item]
+            let ticketDate = Date(timeIntervalSince1970: ticket.date)
+            let now = Date()
+            let numbersCount = ticket.numbers.count
+            
+            let isNextDraw = ticketDate > now
+            let baseHeight: CGFloat = isNextDraw ? 266.scale : 210.scale
+            let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
+            
+            let cellHeight = baseHeight + additionalHeight
+            
+            return CGSize(width: view.frame.width - 20.scale, height: cellHeight)
+        } else {
+            
+            return CGSize(width: view.frame.width - 20.scale, height: 312.scale)
+        }
     }
-
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == scratchoffsCollectionView {
+            // Get the selected scratch-off item
+            let selectedScratchOff = scratchoffs[indexPath.item]
+            
+            // Initialize the CheckScratchOffTicketViewController with the selected scratch-off item
+            let checkScratchoffViewController = CheckScratchOffTicketViewController(scratchOff: selectedScratchOff)
+            checkScratchoffViewController.saveTicketButton.isHidden = true
+            checkScratchoffViewController.rescanButton.isHidden = true
+            // Push the CheckScratchOffTicketViewController onto the navigation stack
+            self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+        }
+    }
     func showError() {
         let alert = UIAlertController(title: "TicketsViewController.ErrorTitle".localized, message: "TicketsViewController.ErrorMessage".localized, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK".localized, style: .default, handler: nil))
@@ -213,14 +458,75 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     // MARK: - TicketCellDelegate Method
     func editButtonTapped(for cell: TicketCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        guard let indexPath = ticketsCollectionView.indexPath(for: cell) else { return }
         let ticket = tickets[indexPath.item]
         let editVC = EditTicketViewController(ticket: ticket)
         navigationController?.pushViewController(editVC, animated: true)
     }
-
+    @objc func scanScratchButtonTapped() {
+  //      if SessionManager().hasActiveSubscriptions() {
+            
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch cameraAuthorizationStatus {
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if granted {
+                        print("Camera access granted.")
+                        let scanViewController = ScanViewController()
+                        scanViewController.stateId = 999
+                        scanViewController.lotteryId = 999
+                        if let navigationController = self.navigationController {
+                            navigationController.pushViewController(scanViewController, animated: true)
+                        } else {
+                            self.present(scanViewController, animated: true, completion: nil)
+                        }
+                    } else {
+                        print("Camera access denied.")
+                    }
+                }
+            }
+        case .restricted, .denied:
+            self.showCameraAccessDeniedAlert()
+        case .authorized:
+            DispatchQueue.main.async {
+                let scanViewController = ScanViewController()
+                scanViewController.stateId = 999
+                scanViewController.lotteryId = 999
+                if let navigationController = self.navigationController {
+                    navigationController.pushViewController(scanViewController, animated: true)
+                } else {
+                    self.present(scanViewController, animated: true, completion: nil)
+                }
+            }
+        @unknown default:
+            fatalError("Unknown camera authorization status.")
+        }
+        
+//        } else {
+//            let vc = PaygateViewController.make()
+//            present(vc, animated: true)
+//        }
+    }
+    func showCameraAccessDeniedAlert() {
+        let alert = UIAlertController(
+            title: "ScanMenuViewController.CameraAccessNeededTitle".localized,
+            message: "ScanMenuViewController.CameraAccessNeededMessage".localized,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.OpenSettingsButton".localized, style: .default, handler: { _ in
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
     @objc func scanButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+      //  if SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             let scanOnboardingViewController = ScanOnboardingViewController.make()
             
@@ -231,15 +537,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 if let navigationController = getRootViewController() as? NavigationController,
                    let mainViewController = navigationController.viewControllers.first as? MainViewController {
                     updateMainViewControllerConstraints(for: mainViewController)
+                    
                 }
             } else {
                 // If not, present the view controller modally as a fallback
                 present(scanOnboardingViewController, animated: true, completion: nil)
             }
-        } else {
-            let vc = PaygateViewController.make()
-            present(vc, animated: true)
-        }
+//        } else {
+//            let vc = PaygateViewController.make()
+//            present(vc, animated: true)
+//        }
     }
 
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {

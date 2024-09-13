@@ -32,28 +32,24 @@
 "Main.MyTickets" = "My Tickets";
 
 // MARK: Paygate
-"Paygate.Error.Title" = "Error";
-"Paygate.Error.Text" = "An error occurred during execution. Try later.";
-"Paygate.Error.Button" = "OK";
-"Paygate.Title" = "Upgrade Premium";
-"Paygate.Info1" = "Monitor the main national lottery games";
-"Paygate.Info2" = "Scan and save your tickets";
-"Paygate.Info3" = "Get notified when drawings come\nout";
-"Paygate.EnableFreeTrial" = "Enable Free Trial";
-"Paygate.FreeTrialEnabled" = "Free Trial Enabled";
-"Paygate.Yearly" = "Yearly";
-"Paygate.Yearly.Bottom" = "Just %@/year";
-"Paygate.PerWeek" = "per week";
-"Paygate.FreeTrialDays" = "3-day free trial";
-"Paygate.Then" = "then %@\n";
-"Paygate.Continue" = "Continue";
-"Paygate.TryFreeSubscribe" = "Try Free & Subscribe";
-"Paygate.CancelAnytime" = "Cancel Anytime";
-"Paygate.NoPaymentNow" = "No payment now";
+"Paygate.Title" = "UNLOCK PREMIUM STATUS";
+"Paygate.Cell1" = "Scan scratch-off and draw tickets";
+"Paygate.Cell2" = "Get instant analysis";
+"Paygate.Cell3" = "Stay updated on next and past draws";
+"Paygate.Info" = "Secured by the App Store. Cancel anytime.";
 "Paygate.TermsOfUse" = "Terms of Use";
 "Paygate.PrivacyPolicy" = "Privacy Policy";
-"Paygate.RestorePurchases" = "Restore Purchases";
-"Paygate.BestOffer" = "⭐ Best Offer";
+"Paygate.RestorePurchases" = "Restore Purchase";
+"Paygate.Failed" = "Failed to make purchase";
+"Paygate.Monthly.Name1" = "3 days for free";
+"Paygate.Monthly.Name2" = "Quick prep";
+"Paygate.Monthly.Bottom1" = "After 3-day trial";
+"Paygate.Monthly.Bottom2" = "Trial is over";
+"Paygate.Lifetime.Name" = "Lifetime";
+"Paygate.Lifetime.PriceDescription" = "\nIn terms of 1 year";
+"Paygate.Lifetime.BottomDescription" = "once";
+"Paygate.Discount" = "SAVE %i%%";
+"Paygate.Price.Period" = "month";
 
 // MARK: SuggestNewGame
 "SuggestNewGame.Header" = "SELECT THE GAME";

@@ -22,7 +22,7 @@ final class GlobalDefinitions {
     static let contactUsUrl = URL(string: "https://camplain-apps.com/contacts.html")!
     
     enum Paygate {
-        static let yearly = "app.iphone.tracker.yearly"
-        static let weekly = "app.iphone.tracker.weekly"
+        static let defaultLifetime = "app.iphone.tracker.lifetime"
+        static let defaultMonthly = "app.iphone.tracker.monthly"
     }
 }

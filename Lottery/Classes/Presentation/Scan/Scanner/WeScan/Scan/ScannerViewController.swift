@@ -43,7 +43,17 @@ public final class ScannerViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+    private lazy var instructionLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Make sure the whole ticket is visible within the frame for the best scanning results"
+        label.font = Fonts.Inter.medium(size: 14.scale)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.alpha = 1 // Default alpha
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     private lazy var shutterButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -245,6 +255,13 @@ public final class ScannerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         videoPreviewLayer.frame = view.layer.bounds
+        
+        let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+           if statusBarHeight < 30  {
+               instructionLabel.alpha = 0
+           } else {
+               instructionLabel.alpha = 1
+           }
     }
     
     override public func viewWillDisappear(_ animated: Bool) {
@@ -260,6 +277,8 @@ public final class ScannerViewController: UIViewController {
         if device.torchMode == .on {
             toggleFlash()
         }
+        
+        
     }
     
     // MARK: - Setups
@@ -273,6 +292,7 @@ public final class ScannerViewController: UIViewController {
         view.addSubview(darkBlueBackground)
         applyMaskToDarkBlueBackground()
         view.addSubview(shutterButton)
+        view.addSubview(instructionLabel)
         view.addSubview(activityIndicator)
         
         
@@ -326,7 +346,13 @@ public final class ScannerViewController: UIViewController {
             shutterButton.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 80.0.scale : 50.scale),
             shutterButton.heightAnchor.constraint(equalToConstant:  ScreenSize.isIphoneXFamily ? 80.0.scale : 50.scale)
         ]
-        
+        NSLayoutConstraint.activate([
+            instructionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            instructionLabel.bottomAnchor.constraint(equalTo: shutterButton.topAnchor, constant: -10.scale),
+            instructionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            instructionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale)
+        ])
+
         activityIndicatorConstraints = [
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)

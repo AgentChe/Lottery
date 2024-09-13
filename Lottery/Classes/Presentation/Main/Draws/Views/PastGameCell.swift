@@ -9,18 +9,29 @@ import UIKit
 import Kingfisher
 
 class PastGameCell: UICollectionViewCell {
+    private var backgroundImageView = UIImageView()
+    private let whiteBackgroundView = UIView()
+    var whiteBackgroundTopConstraint: NSLayoutConstraint!
+    var whiteBackgroundHeightConstraint: NSLayoutConstraint!
+    
     
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
-    var logoIamgeLeadingConstraint: NSLayoutConstraint!
-    var logoIamgeWidthConstraint: NSLayoutConstraint!
+    private let jackpotLabel = UILabel()
+    private let jackpotTitleLabel = UILabel()
+    
+    var logoImageLeadingConstraint: NSLayoutConstraint!
+    var logoImageWidthConstraint: NSLayoutConstraint!
+    var logoImageTopConstraint: NSLayoutConstraint!
+    var jackpotTitleTopConstraint: NSLayoutConstraint!
+    
     private let winningNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "PastGameCell.WinningNumbers".localized
-        label.font = Fonts.Inter.regular(size: 12.5.scale)
-        label.textAlignment = .center
-        label.textColor = Appearance.mono200
+        label.font = Fonts.Inter.bold(size: 12.5.scale)
+        label.textAlignment = .left
+        label.textColor = Appearance.mono100
         label.translatesAutoresizingMaskIntoConstraints = false
         
         // Create an attributed string with increased kerning
@@ -30,14 +41,14 @@ class PastGameCell: UICollectionViewCell {
         label.attributedText = attributedText
         return label
     }()
-    var myLuckyNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
-    var winningNumbersCollectionViewHeghitConstraint: NSLayoutConstraint!
+    var myLuckyNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
+    var winningNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
      let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "PastGameCell.MyLuckyNumbers".localized
-        label.font = Fonts.Inter.regular(size: 12.5.scale)
-        label.textAlignment = .center
-        label.textColor = Appearance.mono200
+        label.font = Fonts.Inter.bold(size: 12.5.scale)
+        label.textAlignment = .left
+        label.textColor = Appearance.mono100
         label.translatesAutoresizingMaskIntoConstraints = false
         
         // Create an attributed string with increased kerning
@@ -114,37 +125,141 @@ extension PastGameCell {
         logoImageView.contentMode = .scaleAspectFit
         myLuckyNumbers = game.myLuckyNumbers ?? []
         winningNumbers = game.winningNumbers ?? []
-        for lottery in lotteries {
-            if lottery.id == game.lotteryId {
-                
-                logoImageView.kf.setImage(with: lottery.logoUrl)
-                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") || doesURLContain(lottery.logoUrl.absoluteString, word: "lotto")  {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
-                    setNeedsLayout()
-                    
-                }
-                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
-                    logoIamgeLeadingConstraint.isActive = false
-                    logoIamgeWidthConstraint.isActive = false
-                    logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
-                    logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 160.scale)
-                    logoIamgeLeadingConstraint.isActive = true
-                    logoIamgeWidthConstraint.isActive = true
-                    setNeedsLayout()
-                }
-                
-            }
+        
+        
+        if let image = UIImage(named:  myLuckyNumbers != [] ? "pastDrawDefBcg" : "pastDrawNoLuckyNumbers") {
+            backgroundImageView.image = image
         }
+       
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
         dateLabel.text = formattedDate.uppercased()
+        
+        jackpotLabel.text = game.jackpot != "" ? formatToMillions(game.jackpot) : "UNDETERMINED"
+        
+        
+        if game.jackpot != "" {
+            jackpotLabel.font = Fonts.Inter.bold(size: 24.scale)// Apply scale to font size
+            jackpotLabel.textAlignment = .center
+            jackpotLabel.textColor = Appearance.mono200
+            jackpotLabel.translatesAutoresizingMaskIntoConstraints = false
+        } else {
+            let jackpotTextAttributes = TextAttributes()
+                .font(Fonts.Inter.medium(size: 14.scale))
+                .textColor(Appearance.main300)
+                .letterSpacing(1.5)
+                .textAlignment(.center)
+
+            let jackpotText = "UNDETERMINED".attributed(with: jackpotTextAttributes)
+            jackpotLabel.attributedText = jackpotText
+            jackpotLabel.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        
+        for lottery in lotteries {
+            if lottery.id == game.lotteryId {
+                
+                logoImageView.kf.setImage(with: lottery.logoUrl)
+                if doesURLContain(lottery.logoUrl.absoluteString, word: "mega") || doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageTopConstraint.isActive = false
+                    jackpotTitleTopConstraint.isActive = false
+                    whiteBackgroundHeightConstraint.isActive = false
+                   
+                    
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -25.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
+                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 13.scale)
+                    whiteBackgroundHeightConstraint = whiteBackgroundView.heightAnchor.constraint(equalToConstant: 144.scale)
+                
+                    
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
+                    logoImageTopConstraint.isActive = true
+                    jackpotTitleTopConstraint.isActive = true
+                    whiteBackgroundHeightConstraint.isActive = true
+                    setNeedsLayout()
+                    jackpotTitleLabel.alpha = 1
+                }
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "lotto")  {
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageTopConstraint.isActive = false
+                    jackpotTitleTopConstraint.isActive = false
+                    whiteBackgroundHeightConstraint.isActive = false
+                 
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -32.scale)
+                     logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 13.scale)
+                    whiteBackgroundHeightConstraint = whiteBackgroundView.heightAnchor.constraint(equalToConstant: 144.scale)
+                   
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
+                    logoImageTopConstraint.isActive = true
+                    jackpotTitleTopConstraint.isActive = true
+                    whiteBackgroundHeightConstraint.isActive = true
+                    setNeedsLayout()
+                    jackpotTitleLabel.alpha = 1
+                    
+                }
+                
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") {
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageTopConstraint.isActive = false
+                    jackpotTitleTopConstraint.isActive = false
+                    whiteBackgroundHeightConstraint.isActive = false
+                  
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 155.scale)
+                    logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 5.scale)
+                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 3.scale)
+                    whiteBackgroundHeightConstraint = whiteBackgroundView.heightAnchor.constraint(equalToConstant: 116.scale)
+                  
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
+                    logoImageTopConstraint.isActive = true
+                    jackpotTitleTopConstraint.isActive = true
+                    whiteBackgroundHeightConstraint.isActive = true
+                    setNeedsLayout()
+                  
+                    jackpotTitleLabel.alpha = 1
+                }
+            
+                if  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
+                    logoImageLeadingConstraint.isActive = false
+                    logoImageWidthConstraint.isActive = false
+                    logoImageTopConstraint.isActive = false
+                    jackpotTitleTopConstraint.isActive = false
+                    whiteBackgroundHeightConstraint.isActive = false
+              
+                    logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 8.scale)
+                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
+                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 80.scale)
+                    
+                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: -10.scale)
+                    whiteBackgroundHeightConstraint = whiteBackgroundView.heightAnchor.constraint(equalToConstant: 116.scale)
+                
+                    logoImageLeadingConstraint.isActive = true
+                    logoImageWidthConstraint.isActive = true
+                    logoImageTopConstraint.isActive = true
+                    jackpotTitleTopConstraint.isActive = true
+                    whiteBackgroundHeightConstraint.isActive = true
+                    setNeedsLayout()
+                
+                    jackpotTitleLabel.alpha = 0
+                    jackpotLabel.text = game.jackpot != "" ? "\(game.jackpot) per day" : "UNDETERMINED"
+
+                }
+                
+            }
+        }
+       
+        
         
         // Assign data to arrays (use the full double array)
         winningNumbers = game.winningNumbers ?? []
@@ -152,25 +267,25 @@ extension PastGameCell {
         
          
      
-        myLuckyNumbersCollectionViewHeghitConstraint.isActive = false
+        myLuckyNumbersCollectionViewHeightConstraint.isActive = false
         if myLuckyNumbers.isEmpty {
             let cellHeight = 150.scale
-            myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            myLuckyNumbersCollectionViewHeightConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         } else {
             let cellHeight =  CGFloat(max(0, myLuckyNumbers.count )) * CGFloat(40 + 10.scale) + 0.scale
-            myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            myLuckyNumbersCollectionViewHeightConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         }
-        myLuckyNumbersCollectionViewHeghitConstraint.isActive = true
+        myLuckyNumbersCollectionViewHeightConstraint.isActive = true
         
-        winningNumbersCollectionViewHeghitConstraint.isActive = false
+        winningNumbersCollectionViewHeightConstraint.isActive = false
         if winningNumbers.isEmpty {
             let cellHeight = 50.scale
-            winningNumbersCollectionViewHeghitConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            winningNumbersCollectionViewHeightConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         } else {
             let cellHeight =  CGFloat(max(0, winningNumbers.count )) * CGFloat(40 + 10.scale) + 0.scale
-            winningNumbersCollectionViewHeghitConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
+            winningNumbersCollectionViewHeightConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         }
-        winningNumbersCollectionViewHeghitConstraint.isActive = true
+        winningNumbersCollectionViewHeightConstraint.isActive = true
         setNeedsLayout()
         // Reload collection views with new data
         winningNumbersCollectionView.reloadData()
@@ -185,83 +300,126 @@ private extension PastGameCell {
     func setupUI() {
         backgroundColor = .white
         
+        // Setup backgroundImageView
+        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImageView.contentMode = .scaleToFill
+        addSubview(backgroundImageView)
+        
+        // Setup whiteBackgroundView
+        whiteBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        whiteBackgroundView.backgroundColor = .white
+        whiteBackgroundView.layer.cornerRadius = 20.scale
+        whiteBackgroundView.layer.borderWidth = 2.scale
+        whiteBackgroundView.layer.borderColor = Appearance.witeBcgBorderColor.cgColor
+        addSubview(whiteBackgroundView)
+        
+        // Existing UI setup
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
-        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
-        dateLabelContainer.layer.shadowOpacity = 0.5
-        dateLabelContainer.layer.shadowRadius = 3.scale
-        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
         dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100
-        dateLabel.layer.cornerRadius = 17.scale
-        dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        let jackpotTitleTextAttributes = TextAttributes()
+            .font(Fonts.Inter.medium(size: 12.scale))
+            .textColor(Appearance.mono200)
+            .letterSpacing(1.5) // Adjust the kerning value as needed
+            .textAlignment(.left)
+
+        // Apply the attributed string to the label
+        jackpotTitleLabel.attributedText = "JACKPOT".attributed(with: jackpotTitleTextAttributes)
+        jackpotTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         addSubview(logoImageView)
-        addSubview(dateLabelContainer)
-        dateLabelContainer.addSubview(dateLabel)
+    
+        whiteBackgroundView.addSubview(dateLabel)
+      
         addSubview(winningNumbersCollectionView)
         addSubview(winningNumbersTitleLabel)
         addSubview(dashedLineImageView)
         addSubview(myLuckyNumbersCollectionView)
         addSubview(myLuckyNumbersTitleLabel)
+        
+        addSubview(jackpotTitleLabel)
+        addSubview(jackpotLabel)
     }
+
     
     func setupLayoutConstraints() {
-        myLuckyNumbersCollectionViewHeghitConstraint =    myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
-      winningNumbersCollectionViewHeghitConstraint = winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
-        logoIamgeLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
-        logoIamgeWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+        myLuckyNumbersCollectionViewHeightConstraint = myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
+        winningNumbersCollectionViewHeightConstraint = winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
+        logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
+        logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
+        logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
+        whiteBackgroundTopConstraint = whiteBackgroundView.topAnchor.constraint(equalTo: topAnchor)
+        whiteBackgroundHeightConstraint =  whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.size.height == 232.scale ? 144.scale : 116.scale)
+        jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 10.scale)
+
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
-            logoIamgeLeadingConstraint,
-            logoIamgeWidthConstraint,
-            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
+            // Background Image Constraints
+            backgroundImageView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
-            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale),
-            dateLabelContainer.widthAnchor.constraint(equalToConstant: 112.scale),
-            dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale),
+            // White Background View Constraints
+            whiteBackgroundTopConstraint,
+            whiteBackgroundView.widthAnchor.constraint(equalToConstant: 343.scale),
+            whiteBackgroundHeightConstraint,
+
+            // Logo Image Constraints
+            logoImageTopConstraint,
+            logoImageLeadingConstraint,
+            logoImageWidthConstraint,
+            logoImageView.heightAnchor.constraint(equalToConstant: 48.scale),
             
-            dateLabel.centerXAnchor.constraint(equalTo: dateLabelContainer.centerXAnchor),
-            dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
-            dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor),
-            dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
+            jackpotTitleTopConstraint,
+            jackpotTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.scale),
+            jackpotTitleLabel.heightAnchor.constraint(equalToConstant: 15.scale),
+          
+            jackpotLabel.topAnchor.constraint(equalTo: jackpotTitleLabel.bottomAnchor, constant: 5.scale),
+            jackpotLabel.leadingAnchor.constraint(equalTo: jackpotTitleLabel.leadingAnchor, constant: 0.scale),
+            jackpotLabel.heightAnchor.constraint(equalToConstant: 30.scale),
             
-            // Winning Numbers CollectionView
-            winningNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20.scale),
+            
+            dateLabel.centerYAnchor.constraint(equalTo: jackpotLabel.centerYAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.scale),
+            dateLabel.heightAnchor.constraint(equalToConstant: 13.scale),
+
+            
+            // Winning Numbers CollectionView Constraints
+            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 20.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            winningNumbersCollectionViewHeghitConstraint,
-            
-            // Winning Numbers Title Label
+            winningNumbersCollectionViewHeightConstraint,
+
+            // Winning Numbers Title Label Constraints
             winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 30.scale),
             winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            
-            // Dashed Line View
+
+            // Dashed Line View Constraints
             dashedLineImageView.topAnchor.constraint(equalTo: winningNumbersTitleLabel.bottomAnchor, constant: 25.scale),
             dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
             dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
             dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
-            
-            // My Lucky Numbers CollectionView
+
+            // My Lucky Numbers CollectionView Constraints
             myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 20.scale),
             myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            myLuckyNumbersCollectionViewHeghitConstraint,
-            
-            // My Lucky Numbers Title Label
+            myLuckyNumbersCollectionViewHeightConstraint,
+
+            // My Lucky Numbers Title Label Constraints
             myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.scale),
             myLuckyNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
         ])
     }
+
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
@@ -318,12 +476,14 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         
         if indexPath.item == lastIndex {
             cell.numberLabel.text = String(number)
-            cell.backgroundColor = Appearance.main100
+            cell.backgroundViewContainer.backgroundColor = Appearance.main100
             cell.numberLabel.textColor = Appearance.mono100
+            cell.backgroundViewContainer.alpha = 1
             cell.layer.borderColor = UIColor.clear.cgColor
         } else {
             cell.numberLabel.text = String(number)
-            cell.backgroundColor = Appearance.mono100
+            cell.backgroundViewContainer.backgroundColor = Appearance.mono100
+            cell.backgroundViewContainer.alpha = 0.5
             cell.numberLabel.textColor = Appearance.mono200
             cell.layer.borderColor = Appearance.main500.cgColor
         }
@@ -341,7 +501,8 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
                 if winNumArray.last != number {
                     cell.numberLabel.textColor = Appearance.main100
                     cell.layer.borderColor = Appearance.main100.cgColor
-                    cell.backgroundColor = Appearance.mono100
+                    cell.backgroundViewContainer.backgroundColor = Appearance.mono100
+                    cell.backgroundViewContainer.alpha = 0.5
                 }
             }
         }
@@ -356,18 +517,25 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         if indexPath.item == lastIndex {
          
         } else {
-            cell.numberLabel.textColor = Appearance.mono200
+            cell.numberLabel.textColor = Appearance.mono100
         }
         
         
         let allNumbers = Set(comparisonArray.flatMap({ $0 }))
         let isHighlight = allNumbers.contains(number)
         cell.configure(with: String(number))
-        cell.backgroundColor = isHighlight ? Appearance.main600 : Appearance.mono100
+        cell.backgroundViewContainer.backgroundColor = isHighlight ? Appearance.main600 : Appearance.mono100
+        if cell.backgroundViewContainer.backgroundColor  == Appearance.main600 {
+            cell.numberLabel.textColor = Appearance.mono200
+        }
+    
+        cell.backgroundViewContainer.alpha = isHighlight ? 1 : 0.5
+       
         cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
       
         if indexPath.item == lastIndex {
-            cell.backgroundColor = Appearance.main100
+            cell.backgroundViewContainer.backgroundColor = Appearance.main100
+            cell.backgroundViewContainer.alpha = 1
             cell.numberLabel.textColor = Appearance.mono100
             cell.layer.borderColor = UIColor.clear.cgColor
         } else {

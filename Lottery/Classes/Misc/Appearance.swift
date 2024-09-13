@@ -21,4 +21,5 @@ struct Appearance {
     static let lightGrayBorderTicket = UIColor(red: 219/255, green: 223/255, blue: 230/255, alpha: 1)
     static let main300Calendar = UIColor(integralRed: 128, green: 139, blue: 150, alpha: 0.35)
     static let mono20 = mono200.withAlphaComponent(0.007)
+    static let witeBcgBorderColor: UIColor = UIColor(red: 178/255, green: 112/255, blue: 157/255, alpha: 1.0)
 }
