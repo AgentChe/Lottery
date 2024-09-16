@@ -226,7 +226,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
            premiumAnimationView = LottieAnimationView(name: "Premium")
            premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
            premiumAnimationView.contentMode = .scaleAspectFit
-           premiumAnimationView.loopMode = .loop // Ensure the animation loops
+           premiumAnimationView.loopMode = .playOnce // Ensure the animation loops
            premiumAnimationView.play() // Start the animation
            
            // Add the animation view to the main view
