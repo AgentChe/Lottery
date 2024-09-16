@@ -40,7 +40,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         NSLayoutConstraint.activate([
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  60.scale),
             progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
-            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12.scale),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: ScreenSize.isIphoneXFamily ? 12.scale : 17.scale),
             progressView.heightAnchor.constraint(equalToConstant: 5)
         ])
     }
@@ -162,7 +162,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         if let image = UIImage(named: "onboardingBackButton") {
             backButton.setImage(image, for: .normal)
         }
-        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.frame = CGRect(x: 0, y: 0.scale, width: 50.scale, height: 45.scale)
         backButton.imageView?.contentMode = .scaleAspectFit
         backButton.addTarget(self, action: #selector(handleBackButtonTap), for: .touchUpInside)
         

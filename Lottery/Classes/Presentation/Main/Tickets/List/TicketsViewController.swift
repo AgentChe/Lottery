@@ -14,6 +14,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         didSet {
             if tickets.count > 0 {
                 self.noTicketsImageView.isHidden = true
+                self.noTicketsLabel.isHidden = true
                 self.scanLotteryTicketButton.isHidden = true
             }
         }
@@ -22,6 +23,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         didSet {
             self.scratchoffs = scratchoffs ?? []
             self.noScratchOffsImageView.isHidden = true
+            self.noScratchoffLabel.isHidden = true
             self.scanScratchOffTicketButton.isHidden = true
             self.scratchoffsCollectionView.reloadData()
         }
@@ -62,6 +64,81 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         return button
     }()
 
+    private let noScratchoffLabel: UILabel = {
+        let label = UILabel()
+
+        // Create the attributed string with two parts: the title and the subtitle
+        let text = NSMutableAttributedString()
+
+        text.append(NSAttributedString(
+            string: NSLocalizedString("No scratch-off tickets\n", comment: "No scratch-off tickets title"), // First part: title
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 16.scale),
+                .foregroundColor: Appearance.mono200
+            ]
+        ))
+
+        text.append(NSAttributedString(
+            string: "\n", // Empty line for spacing
+            attributes: [
+                .font: Fonts.Inter.regular(size: 9.scale),
+                .foregroundColor: Appearance.mono200
+            ]
+        ))
+
+        // Append the second part of the text: subtitle
+        text.append(NSAttributedString(
+            string: NSLocalizedString("Scan a ticket to analyze the\nresult", comment: "Subtitle for no scratch-off tickets"), // Second part: subtitle
+            attributes: [
+                .font: Fonts.Inter.regular(size: 14.scale),
+                .foregroundColor: Appearance.mono200
+            ]
+        ))
+
+        label.attributedText = text
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+
+
+    private let noTicketsLabel: UILabel = {
+        let label = UILabel()
+
+        // Create a paragraph style for line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8.scale // Set the line spacing
+
+        // Create the attributed string with two parts: the title and the subtitle
+        let text = NSMutableAttributedString(
+            string: NSLocalizedString("No saved lottery tickets\n", comment: "No saved lottery tickets title"), // First part: title
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 16.scale),
+                .foregroundColor: Appearance.mono200,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+
+        // Append the second part of the text: subtitle
+        text.append(NSAttributedString(
+            string: NSLocalizedString("Scan a ticket to track the game", comment: "Subtitle for no saved lottery tickets"), // Second part: subtitle
+            attributes: [
+                .font: Fonts.Inter.regular(size: 14.scale),
+                .foregroundColor: Appearance.mono200,
+                .paragraphStyle: paragraphStyle
+            ]
+        ))
+
+        label.attributedText = text
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     
@@ -78,12 +155,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         setupNoTicketsImageView()
         setupNoScratchOffsImageView()
+        view.addSubview(noScratchoffLabel)
+        view.addSubview(noTicketsLabel)
         view.addSubview(scanScratchOffTicketButton)
         view.addSubview(scanLotteryTicketButton)
- 
+        
         setupLayoutConstraints()
         noScratchOffsImageView.isHidden = true
         scanScratchOffTicketButton.isHidden = true
+        noScratchoffLabel.isHidden = true
+        
 //        noTicketsImageView.isHidden = true
 //        scanLotteryTicketButton.isHidden = true
        
@@ -123,12 +204,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                     if scratchoffs?.count ?? 0 > 0 {
                         self.noScratchOffsImageView.isHidden = true
                         self.scanScratchOffTicketButton.isHidden = true
-                        self.noTicketsImageView.isHidden = true
+                        self.noTicketsLabel.isHidden = true
+                        self.noScratchoffLabel.isHidden = true
+                        self.noTicketsLabel.isHidden = true
                         self.scanLotteryTicketButton.isHidden = true
                         self.scratchoffsCollectionView.reloadData()
                     } else {
                         self.noScratchOffsImageView.isHidden = false
                         self.scanScratchOffTicketButton.isHidden = false
+                        self.noTicketsLabel.isHidden = true
+                        self.noScratchoffLabel.isHidden = false
                         self.noTicketsImageView.isHidden = true
                         self.scanLotteryTicketButton.isHidden = true
                         self.view.setNeedsLayout()
@@ -145,11 +230,15 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
               ticketsCollectionView.isHidden = false
               scratchoffsCollectionView.isHidden = true
               noScratchOffsImageView.isHidden = true
+              self.noTicketsLabel.isHidden = false
+              self.noScratchoffLabel.isHidden = true
               scanScratchOffTicketButton.isHidden = true
               noTicketsImageView.isHidden = false
               scanLotteryTicketButton.isHidden = false
               if tickets.count > 0 {
                   noTicketsImageView.isHidden = true
+                  self.noTicketsLabel.isHidden = true
+                  self.noScratchoffLabel.isHidden = true
                   scanLotteryTicketButton.isHidden = true
                   noScratchOffsImageView.isHidden = true
                   scanScratchOffTicketButton.isHidden = true
@@ -161,12 +250,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
               ticketsCollectionView.isHidden = true
               scratchoffsCollectionView.isHidden = false
               noTicketsImageView.isHidden = true
+              self.noTicketsLabel.isHidden = true
+              self.noScratchoffLabel.isHidden = false
               scanLotteryTicketButton.isHidden = true
               noScratchOffsImageView.isHidden = false
               scanScratchOffTicketButton.isHidden = false
               
               if scratchoffs.count > 0 {
                   noTicketsImageView.isHidden = true
+                  self.noTicketsLabel.isHidden = true
+                  self.noScratchoffLabel.isHidden = true
                   scanLotteryTicketButton.isHidden = true
                   noScratchOffsImageView.isHidden = true
                   scanScratchOffTicketButton.isHidden = true
@@ -251,53 +344,59 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     private func setupLayoutConstraints() {
-         NSLayoutConstraint.activate([
-             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
-             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
-             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
+            segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
 
-             ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
-             ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-             ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-             ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-             
-             scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
-             scratchoffsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-             scratchoffsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-             scratchoffsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
+            ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-             scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
-             scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
-             scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-             scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
+            scratchoffsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scratchoffsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scratchoffsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-             noTicketsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
-             noTicketsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
-             noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-             
-             noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 344.scale),
-             noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 209.scale),
-             noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-             noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-         
-             scanScratchOffTicketButton.topAnchor.constraint(equalTo: noScratchOffsImageView.bottomAnchor, constant: 20.scale),
-             scanScratchOffTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
-             scanScratchOffTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
-             scanScratchOffTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
-             
-             
-             
-             scanLotteryTicketButton.topAnchor.constraint(equalTo: noTicketsImageView.bottomAnchor, constant: 20.scale),
-             scanLotteryTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
-             scanLotteryTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
-             scanLotteryTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            
-             
-             
-         ])
-     }
+            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
+            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
+            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
+            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+
+            noTicketsImageView.widthAnchor.constraint(equalToConstant: 130.scale),
+            noTicketsImageView.heightAnchor.constraint(equalToConstant: 130.scale),
+            noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60.scale),
+
+            // Add the noTicketsLabel below the noTicketsImageView
+            noTicketsLabel.topAnchor.constraint(equalTo: noTicketsImageView.bottomAnchor, constant: 30.scale),
+            noTicketsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40.scale),
+            noTicketsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40.scale),
+
+            noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 130.scale),
+            noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 130.scale),
+            noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60.scale),
+
+            noScratchoffLabel.topAnchor.constraint(equalTo: noScratchOffsImageView.bottomAnchor, constant: 23.scale),
+            noScratchoffLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40.scale),
+            noScratchoffLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40.scale),
+
+            scanScratchOffTicketButton.topAnchor.constraint(equalTo: noScratchoffLabel.bottomAnchor, constant: 30.scale),
+            scanScratchOffTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+            scanScratchOffTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+            scanScratchOffTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
+
+            scanLotteryTicketButton.topAnchor.constraint(equalTo: noTicketsLabel.bottomAnchor, constant: 30.scale),
+            scanLotteryTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+            scanLotteryTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+            scanLotteryTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        ])
+    }
+
+
     var scanButtonIsTapped: Bool = false
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -356,10 +455,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                     self?.ticketsCollectionView.reloadData()
                     if self?.segmentedControl.currentIndex == 0 {
                         self?.noScratchOffsImageView.isHidden = true
+                        self?.noScratchoffLabel.isHidden = true
                         self?.scanScratchOffTicketButton.isHidden = true
                         if self?.tickets.count != 0 {
                             self?.ticketsCollectionView.isHidden = false
                             self?.noTicketsImageView.isHidden = true
+                            self?.noTicketsLabel.isHidden = true
                             self?.scanLotteryTicketButton.isHidden = true
                          
                           
@@ -367,20 +468,24 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                         } else {
                             self?.ticketsCollectionView.isHidden = true
                             self?.noTicketsImageView.isHidden = false
+                            self?.noTicketsLabel.isHidden = false
                             self?.scanLotteryTicketButton.isHidden = false
                         }
                     }
                 case .failure:
                     if self?.segmentedControl.currentIndex == 0 {
                         self?.noScratchOffsImageView.isHidden = true
+                        self?.noScratchoffLabel.isHidden = true
                         self?.scanScratchOffTicketButton.isHidden = true
                         if self?.tickets.count != 0 {
                             self?.ticketsCollectionView.isHidden = false
                             self?.noTicketsImageView.isHidden = true
+                            self?.noTicketsLabel.isHidden = true
                             self?.scanLotteryTicketButton.isHidden = true
                         } else {
                             self?.ticketsCollectionView.isHidden = true
                             self?.noTicketsImageView.isHidden = false
+                            self?.noTicketsLabel.isHidden = false
                             self?.scanLotteryTicketButton.isHidden = false
                         }
                     }

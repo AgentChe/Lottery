@@ -120,6 +120,10 @@
 "TicketsViewController.ScanLotteryTicket" = "Scan lottery ticket";
 "TicketsViewController.NoTicketsMessage" = "No tickets available.";
 "TicketsViewController.NoScratchOffsMessage" = "No scratch-offs available.";
+"No scratch-off tickets\n" = "No scratch-off tickets\n";
+"Scan a ticket to analyze the\nresult" = "Scan a ticket to analyze the\nresult";
+"No saved lottery tickets\n" = "No saved lottery tickets\n";
+"Scan a ticket to track the game" = "Scan a ticket to track the game";
 
 
 // MARK: TicketsViewController
