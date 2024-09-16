@@ -25,14 +25,43 @@ final class WelcomeView: UIView {
         return button
     }()
     
-    private let scanAndWinImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ScanAndWin"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+    // Replace ScanAndWinImageView with ScanAndWinLabel
+    private let scanAndWinLabel: UILabel = {
+        let label = UILabel()
+
+        // Create a paragraph style for line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10.scale // Adjust this value to increase or decrease the line spacing
+
+        // Create the attributed string with the desired text
+        let text = NSMutableAttributedString(
+            string: "Scan and win\n",
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 28.scale),
+                .foregroundColor: UIColor.white,
+                .paragraphStyle: paragraphStyle // Apply the paragraph style to this line
+            ]
+        )
+
+        // Append the second part of the text with its own attributes
+        text.append(NSAttributedString(
+            string: "right from your phone",
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 28.scale),
+                .foregroundColor: UIColor.white.withAlphaComponent(0.5),
+                .paragraphStyle: paragraphStyle // Apply the same paragraph style to this line
+            ]
+        ))
+
+        // Set the attributed text to the label
+        label.attributedText = text
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
+
     
-    // Replace logoImageView with LottieAnimationView
     private let animationView: LottieAnimationView = {
         let animationView = LottieAnimationView(name: "Animation01")
         animationView.contentMode = .scaleAspectFit
@@ -72,10 +101,9 @@ private extension WelcomeView {
     func setupView() {
         backgroundColor = Appearance.main400
         
-        // Add the background image view as the first subview (behind all other components)
         addSubview(backgroundImageView)
-        addSubview(scanAndWinImageView)
-        addSubview(animationView) // Add the Lottie animation view
+        addSubview(scanAndWinLabel) // Add the ScanAndWinLabel
+        addSubview(animationView)
         addSubview(descriptionLabel)
         addSubview(startButton)
         
@@ -91,15 +119,15 @@ private extension WelcomeView {
             backgroundImageView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
-        // Set constraints for ScanAndWinImageView
+        // Set constraints for ScanAndWinLabel
         NSLayoutConstraint.activate([
-            scanAndWinImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            scanAndWinImageView.bottomAnchor.constraint(equalTo: animationView.topAnchor, constant: -20.scale),
-            scanAndWinImageView.widthAnchor.constraint(equalToConstant: 311.scale),
-            scanAndWinImageView.heightAnchor.constraint(equalToConstant: 76.scale)
+            scanAndWinLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            scanAndWinLabel.bottomAnchor.constraint(equalTo: animationView.topAnchor, constant: -20.scale),
+            scanAndWinLabel.widthAnchor.constraint(equalToConstant: 311.scale),
+            scanAndWinLabel.heightAnchor.constraint(equalToConstant: 90.scale)
         ])
         
-        // Set constraints for AnimationView (formerly LogoImageView)
+        // Set constraints for AnimationView
         NSLayoutConstraint.activate([
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
             animationView.centerYAnchor.constraint(equalTo: centerYAnchor),

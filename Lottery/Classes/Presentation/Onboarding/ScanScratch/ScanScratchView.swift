@@ -25,15 +25,42 @@ final class ScanScratchView: UIView {
         return button
     }()
     
-    // Add new UIImageView above the animation view
-    private let drawSandScratchOffsImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "draws&scatchoffs"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+    // Replace drawSandScratchOffsImageView with drawsAndScratchLabel
+    private let drawsAndScratchLabel: UILabel = {
+        let label = UILabel()
+
+        // Create a paragraph style for line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10.scale // Adjust this value to increase or decrease the line spacing
+
+        // Create the attributed string with the desired text
+        let text = NSMutableAttributedString(
+            string: "Draws & scratch-offs\n",
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 28.scale),
+                .foregroundColor: UIColor.white,
+                .paragraphStyle: paragraphStyle // Apply the paragraph style to this line
+            ]
+        )
+
+        // Append the second part of the text with its own attributes
+        text.append(NSAttributedString(
+            string: "in one place",
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 28.scale),
+                .foregroundColor: UIColor.white.withAlphaComponent(0.5),
+                .paragraphStyle: paragraphStyle // Apply the same paragraph style to this line
+            ]
+        ))
+
+        // Set the attributed text to the label
+        label.attributedText = text
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
-    // Replace logoImageView with LottieAnimationView
     private let animationView: LottieAnimationView = {
         let animationView = LottieAnimationView(name: "Animation02")
         animationView.contentMode = .scaleAspectFit
@@ -76,7 +103,7 @@ private extension ScanScratchView {
         
         // Add the background image view
         addSubview(backgroundImageView)
-        addSubview(drawSandScratchOffsImageView) // Add the Draw and Scratch Offs ImageView
+        addSubview(drawsAndScratchLabel) // Add the Draws and Scratch Offs label
         addSubview(animationView) // Add the Lottie animation view
         addSubview(descriptionLabel) // Add the description label
         addSubview(startButton)
@@ -93,12 +120,12 @@ private extension ScanScratchView {
             backgroundImageView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
-        // Set constraints for the DrawAndScratchOffsImageView
+        // Set constraints for the DrawsAndScratchLabel
         NSLayoutConstraint.activate([
-            drawSandScratchOffsImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            drawSandScratchOffsImageView.bottomAnchor.constraint(equalTo: animationView.topAnchor, constant: -20.scale),
-            drawSandScratchOffsImageView.widthAnchor.constraint(equalToConstant: 295.scale),
-            drawSandScratchOffsImageView.heightAnchor.constraint(equalToConstant: 76.scale)
+            drawsAndScratchLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            drawsAndScratchLabel.bottomAnchor.constraint(equalTo: animationView.topAnchor, constant: -20.scale),
+            drawsAndScratchLabel.widthAnchor.constraint(equalToConstant: 311.scale),
+            drawsAndScratchLabel.heightAnchor.constraint(equalToConstant: 90.scale)
         ])
         
         // Set constraints for the LottieAnimationView
