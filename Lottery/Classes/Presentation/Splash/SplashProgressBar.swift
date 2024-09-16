@@ -1,16 +1,14 @@
-//
-//  SplashProgressBar.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 9/5/24.
-//
-
 import UIKit
 
 class SplashProgressBar: UIView {
-    
-    private var backgroundLayer = CAShapeLayer()
-    private var progressLayer = CAShapeLayer()
+
+    private let loaderImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "onboardingLoader")
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
     let progressLabel: UILabel = {
         let label = UILabel()
@@ -26,74 +24,39 @@ class SplashProgressBar: UIView {
         super.init(frame: frame)
         backgroundColor = .clear
         setupView()
-        setupAnimations()
+        startLoadingAnimation()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
-        setupAnimations()
+        startLoadingAnimation()
     }
     
     private func setupView() {
-        // Define the radius to fit the circle inside the view's bounds with some padding
-        let radius = (frame.height/2 - 10).scale  // Adjust '10' for desired padding
+        addSubview(loaderImageView)
 
-        // Set up the background circular layer
-        let circularPath = UIBezierPath(arcCenter: .zero, radius: radius, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        NSLayoutConstraint.activate([
+            loaderImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            loaderImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            loaderImageView.widthAnchor.constraint(equalToConstant: 24.scale),
+            loaderImageView.heightAnchor.constraint(equalToConstant: 24.scale)
+        ])
         
-        backgroundLayer.path = circularPath.cgPath
-        backgroundLayer.fillColor = UIColor.clear.cgColor
-        backgroundLayer.strokeColor = UIColor.lightGray.cgColor
-        backgroundLayer.lineWidth = 2.5.scale
-        backgroundLayer.position = CGPoint(x: frame.width / 2 + 0.scale, y: frame.height / 2 - 10.scale)
-        layer.addSublayer(backgroundLayer)
-        
-        // Set up the animated progress circular layer
-        progressLayer.path = circularPath.cgPath
-        progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.strokeColor = Appearance.mono100.cgColor
-        progressLayer.lineWidth = 2.5.scale
-        progressLayer.strokeEnd = 0.scale
-        progressLayer.position = CGPoint(x: frame.width / 2 + 0.scale, y: frame.height / 2 - 10.scale)
-        layer.addSublayer(progressLayer)
-        
-        // Add the progress label
         addSubview(progressLabel)
         NSLayoutConstraint.activate([
             progressLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            progressLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: radius + 10.scale) // Adjust '20' for desired spacing beneath the circle
+            progressLabel.topAnchor.constraint(equalTo: loaderImageView.bottomAnchor, constant: 10.scale)
         ])
     }
-
-    private func setupAnimations() {
-        // Rotation animation
-        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotationAnimation.fromValue = 0
-        rotationAnimation.toValue = 2 * Double.pi
-        rotationAnimation.duration = 0.5
-        rotationAnimation.repeatCount = .infinity
-        progressLayer.add(rotationAnimation, forKey: "rotationAnimation")
-        
-        // Animation to simulate trim (start)
-        let startAnimation = CABasicAnimation(keyPath: "strokeStart")
-        startAnimation.fromValue = 1 / 3
-        startAnimation.toValue = 1 / 9
-        startAnimation.duration = 0.5
-        startAnimation.autoreverses = true
-        startAnimation.repeatCount = .infinity
-        startAnimation.timingFunction = CAMediaTimingFunction(name: .linear)
-        progressLayer.add(startAnimation, forKey: "startAnimation")
-        
-        // Animation to simulate trim (end)
-        let endAnimation = CABasicAnimation(keyPath: "strokeEnd")
-        endAnimation.fromValue = 2 / 5
-        endAnimation.toValue = 1
-        endAnimation.duration = 0.5
-        endAnimation.autoreverses = true
-        endAnimation.repeatCount = .infinity
-        endAnimation.timingFunction = CAMediaTimingFunction(name: .linear)
-        progressLayer.add(endAnimation, forKey: "endAnimation")
+    
+    private func startLoadingAnimation() {
+        let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotation.fromValue = 0
+        rotation.toValue = CGFloat.pi * 2
+        rotation.duration = 0.5
+        rotation.repeatCount = .infinity
+        loaderImageView.layer.add(rotation, forKey: "rotateAnimation")
     }
     
     func updateProgressText(_ text: String) {
@@ -101,8 +64,7 @@ class SplashProgressBar: UIView {
     }
     
     func stopLoading() {
-        progressLayer.removeAllAnimations()
+        loaderImageView.layer.removeAnimation(forKey: "rotateAnimation")
         removeFromSuperview()
     }
 }
-
