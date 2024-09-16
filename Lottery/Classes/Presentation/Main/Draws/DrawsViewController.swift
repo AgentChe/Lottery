@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import Lottie
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
@@ -22,6 +23,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
+    private var premiumAnimationView: LottieAnimationView!
     let maxUpperMenuHeight: CGFloat = 165.scale // Maximum height of upperMenuView
     let minUpperMenuHeight: CGFloat = 115.scale
     
@@ -142,6 +144,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         //setupScanButton()  // Setup scan button
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
+        setupPremiumAnimationView()
         
        //  setupNavigationBarTitle()
     }
@@ -218,6 +221,37 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 
 // MARK: - UI Setup
  extension DrawsViewController {
+     private func setupPremiumAnimationView() {
+           // Initialize the Lottie animation view with the specified JSON file
+           premiumAnimationView = LottieAnimationView(name: "Premium")
+           premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
+           premiumAnimationView.contentMode = .scaleAspectFit
+           premiumAnimationView.loopMode = .loop // Ensure the animation loops
+           premiumAnimationView.play() // Start the animation
+           
+           // Add the animation view to the main view
+           view.addSubview(premiumAnimationView)
+           
+           // Set up the constraints to position the animation at the bottom-right
+           NSLayoutConstraint.activate([
+               premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
+               premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
+               premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale), // Adjust padding as needed
+               premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale) // Adjust bottom padding as needed
+           ])
+           
+           // Make the animation view tappable
+           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
+           premiumAnimationView.isUserInteractionEnabled = true
+           premiumAnimationView.addGestureRecognizer(tapGesture)
+       }
+       
+       // MARK: - Handle Tap Gesture
+       @objc private func handlePremiumAnimationTap() {
+           // Present the PaygateViewController when the animation view is tapped
+           let vc = PaygateViewController.make()
+           present(vc, animated: true)
+       }
     func setupUpperMenuView() {
         // Set up upperMenuView as an image view
         upperMenuView = UIImageView()
@@ -241,9 +275,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
         
         // Add labels for the buttons
-        let label1 = createLabel(text: "Scan")
-        let label2 = createLabel(text: "Numbers")
-        let label3 = createLabel(text: "My tickets")
+        let label1 = createLabel(text: "DrawsViewController.Scan".localized)
+        let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
+        let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
         
         // Add the menu button
         
@@ -671,6 +705,7 @@ extension DrawsViewController {
                 if pastDraw.lotteryId == game.lotteryId {
                     cell.winningNumbers = pastDraw.winningNumbers ?? []
                     cell.winningNumbersCollectionView.reloadData()
+                    
                 }
             }
             
@@ -842,23 +877,24 @@ private extension DrawsViewController {
             let scanOnboardingViewController = ScanOnboardingViewController.make()
             
             // Check if the current view controller is embedded in a navigation controller
-            if let navigationController = self.navigationController {
+        if let navigationController = self.navigationController {
+            
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
                 
-                navigationController.pushViewController(scanOnboardingViewController, animated: true)
+                updateMainViewControllerConstraints(for: mainViewController)
                 
-                if let navigationController = getRootViewController() as? NavigationController,
-                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
-                    
-                    updateMainViewControllerConstraints(for: mainViewController)
-                    
-                }
-//            } else {
-//                // If not, present the view controller modally as a fallback
-//                present(scanOnboardingViewController, animated: true, completion: nil)
-//            }
-        } else {
-            let vc = PaygateViewController.make()
-            present(vc, animated: true)
+            }
+            //            } else {
+            //                // If not, present the view controller modally as a fallback
+            //                present(scanOnboardingViewController, animated: true, completion: nil)
+            //            }
+            //        } else {
+            //            let vc = PaygateViewController.make()
+            //            present(vc, animated: true)
+            //        }
         }
     }
     

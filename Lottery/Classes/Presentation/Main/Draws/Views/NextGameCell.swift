@@ -432,11 +432,13 @@ extension NextGameCell:  UICollectionViewDataSource, UICollectionViewDelegateFlo
             cell.numberLabel.text = String(number)
             cell.backgroundViewContainer.backgroundColor = Appearance.main100
             cell.backgroundViewContainer.alpha = 1
+            cell.layer.borderWidth = 0
             
         } else {
             cell.numberLabel.text = String(number)
             cell.backgroundViewContainer.backgroundColor = Appearance.mono100
             cell.backgroundViewContainer.alpha = 0.5
+            cell.layer.borderWidth = 0
         }
     }
     private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {

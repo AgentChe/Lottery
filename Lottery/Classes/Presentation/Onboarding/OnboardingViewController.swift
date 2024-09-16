@@ -1,9 +1,3 @@
-//  OnboardingViewController.swift
-//  Soccer
-//
-//  Created by Андрей Чернышев on 23.08.2022.
-//
-
 import UIKit
 
 final class OnboardingViewController: UINavigationController, UINavigationControllerDelegate {
@@ -19,29 +13,36 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
-        self.isNavigationBarHidden = true // Hide the navigation bar
         setupProgressView()
         setupInitialViewController()
     }
     
+    var currentStep: Int = 0
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Call the setCustomBackButton method from the OnboardingViewController
+        if let onboardingVC = self.navigationController as? OnboardingViewController {
+            onboardingVC.setCustomBackButton(for: self)
+            self.isNavigationBarHidden = true
+        }
+    }
     private func setupProgressView() {
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.progressTintColor = Appearance.main100
         progressView.trackTintColor = Appearance.main500
         view.addSubview(progressView) // Add to view instead of navigationBar
-        
+        progressView.alpha = 0
         NSLayoutConstraint.activate([
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  60.scale),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12.scale),
             progressView.heightAnchor.constraint(equalToConstant: 5)
         ])
-        
-        updateProgress()
     }
     
     private func setupInitialViewController() {
@@ -54,6 +55,9 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func showScanScratchViewController() {
         let scanScratchViewController = ScanScratchViewController()
+        setCustomBackButton(for: scanScratchViewController)
+        // Set the custom back button
+        self.isNavigationBarHidden = true
         scanScratchViewController.onContinue = { [weak self] in
             self?.showSelectStateViewController()
         }
@@ -62,6 +66,13 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     
     private func showSelectStateViewController() {
         let selectStateVC = SelectStateViewController()
+        progressView.alpha = 1
+        updateProgress()
+        
+        // Set the custom back button
+        setCustomBackButton(for: selectStateVC)
+        self.isNavigationBarHidden = false
+        
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
             self.selectedState = selectedState
@@ -71,15 +82,16 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     }
     
     private func showSelectLotteriesViewController() {
-        guard let selectedState = selectedState else { return } // Ensure we have a stateId
+        guard let selectedState = selectedState else { return }
+        updateProgress()
         let selectGameVC = SelectLotteriesViewController(stateId: selectedState)
+        
+        // Set the custom back button
+        setCustomBackButton(for: selectGameVC)
+        
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedGames = selectedGames
-//            for i in 0..<self.selectedGames.count {
-//                self.selectedGames[i] = self.selectedGames[i] + 1
-//            }
-//             
             self.completeOnboarding()
         }
         pushViewController(selectGameVC, animated: true)
@@ -101,8 +113,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
             case .success:
                 let nextStep = self?.determineNextStep() ?? .main
                 self?.goToNext(at: nextStep)
-            case .failure(let error):
-              //  self?.presentTryAgainViewController(with: error)
+            case .failure:
                 self?.goToNext(at: .main)
             }
         }
@@ -114,8 +125,10 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     }
     
     private func updateProgress() {
-        let totalSteps = 4
-        let currentStep = viewControllers.count
+        let totalSteps = 2
+        currentStep += 1
+        progressView.alpha = 1
+        self.isNavigationBarHidden = false
         let progress = Float(currentStep) / Float(totalSteps)
         progressView.setProgress(progress, animated: true)
     }
@@ -143,8 +156,34 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         self.present(vc, animated: true)
     }
     
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        updateProgress()
+    // Method to set custom back button with UIImage
+    private func setCustomBackButton(for viewController: UIViewController) {
+        let backButton = UIButton(type: .custom)
+        if let image = UIImage(named: "onboardingBackButton") {
+            backButton.setImage(image, for: .normal)
+        }
+        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        backButton.imageView?.contentMode = .scaleAspectFit
+        backButton.addTarget(self, action: #selector(handleBackButtonTap), for: .touchUpInside)
+        
+        let backButtonItem = UIBarButtonItem(customView: backButton)
+        viewController.navigationItem.leftBarButtonItem = backButtonItem
+        viewController.navigationItem.hidesBackButton = true
+    }
+    
+    // Action for the back button
+    @objc private func handleBackButtonTap() {
+        popViewController(animated: true)
+        let totalSteps = 2
+        currentStep -= 1
+        if currentStep <= 0 {
+            progressView.alpha = 0
+            currentStep = 0
+            self.isNavigationBarHidden = true
+            return
+        }
+        let progress = Float(currentStep) / Float(totalSteps)
+        progressView.setProgress(progress, animated: true)
     }
 }
 

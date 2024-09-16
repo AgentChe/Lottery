@@ -36,7 +36,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     private let scanScratchOffTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Scan scratch-off ticket", for: .normal)
+        button.setTitle("TicketsViewController.ScanScratchOffTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -47,10 +47,10 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         button.isHidden = true
         return button
     }()
-    
+
     private let scanLotteryTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Scan lottery ticket", for: .normal)
+        button.setTitle("TicketsViewController.ScanLotteryTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -61,6 +61,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         button.isHidden = false
         return button
     }()
+
     
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     
@@ -451,7 +452,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         }
     }
     func showError() {
-        let alert = UIAlertController(title: "TicketsViewController.ErrorTitle".localized, message: "TicketsViewController.ErrorMessage".localized, preferredStyle: .alert)
+        let alert = UIAlertController(title: "TicketsViewController.ErrorTitle".localized,
+                                      message: "TicketsViewController.ErrorMessage".localized,
+                                      preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK".localized, style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }

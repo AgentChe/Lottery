@@ -26,7 +26,7 @@ class DimViewWithProgressBar: UIView {
         return label
     }()
     
-    private let dimView: UIView = {
+     let dimView: UIView = {
         let view = UIView()
         view.backgroundColor =  UIColor.black.withAlphaComponent(0.5) // Dimmed background
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +34,7 @@ class DimViewWithProgressBar: UIView {
     }()
     
     // Create a button below the progress label
-    private let actionButton: UIButton = {
+     let actionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor( Appearance.mono200, for: .normal)

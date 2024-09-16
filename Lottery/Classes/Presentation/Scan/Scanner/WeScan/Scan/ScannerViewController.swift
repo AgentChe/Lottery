@@ -43,17 +43,19 @@ public final class ScannerViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+   
     private lazy var instructionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Make sure the whole ticket is visible within the frame for the best scanning results"
+        label.text = NSLocalizedString("ScannerViewController.InstructionLabel", comment: "Instruction to ensure the ticket is visible within the frame")
         label.font = Fonts.Inter.medium(size: 14.scale)
         label.textAlignment = .center
         label.textColor = .white
         label.numberOfLines = 0
-        label.alpha = 1 // Default alpha
+        label.alpha = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+
     private lazy var shutterButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +66,7 @@ public final class ScannerViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("wescan.scanning.cancel", tableName: nil, bundle: Bundle(for: ScannerViewController.self), value: "Cancel", comment: "The cancel button"), for: .normal)
+        button.setTitle(NSLocalizedString("ScannerViewController.CancelButton", comment: "Cancel button text"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(cancelImageScannerController), for: .touchUpInside)
         button.alpha = 0
@@ -72,10 +74,9 @@ public final class ScannerViewController: UIViewController {
     }()
     
     private lazy var autoScanButton: UIBarButtonItem = {
-        let title = NSLocalizedString("wescan.scanning.auto", tableName: nil, bundle: Bundle(for: ScannerViewController.self), value: "Auto", comment: "The auto button state")
+        let title = NSLocalizedString("ScannerViewController.AutoScanButton", comment: "Auto scan button")
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(toggleAutoScan))
         button.tintColor = Appearance.mono200
-        
         return button
     }()
     
@@ -83,7 +84,6 @@ public final class ScannerViewController: UIViewController {
         let image = UIImage(systemName: "bolt.fill", named: "flash", in: Bundle(for: ScannerViewController.self), compatibleWith: nil)
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(toggleFlash))
         button.tintColor = Appearance.mono200
-        
         return button
     }()
     
@@ -99,26 +99,25 @@ public final class ScannerViewController: UIViewController {
     }()
     
     private lazy var colorButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(title: "Color", style: .plain, target: self, action: #selector(applyColorFilter))
+        let button = UIBarButtonItem(title: NSLocalizedString("ScannerViewController.ColorFilterButton", comment: "Color filter button"), style: .plain, target: self, action: #selector(applyColorFilter))
         button.tintColor = Appearance.mono200
         return button
     }()
-    
+
     private lazy var grayscaleButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Grayscale", for: .normal)
+        button.setTitle(NSLocalizedString("ScannerViewController.GrayscaleButton", comment: "Grayscale filter button"), for: .normal)
         button.titleLabel?.font = Fonts.Inter.medium(size: 18.scale)
         button.tintColor = Appearance.mono200
         button.addTarget(self, action: #selector(applyGrayscaleFilter), for: .touchUpInside)
         return button
     }()
-    
+
     private lazy var bwButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(title: "B&W", style: .plain, target: self, action: #selector(applyBWFilter))
+        let button = UIBarButtonItem(title: NSLocalizedString("ScannerViewController.BWButton", comment: "Black and white filter button"), style: .plain, target: self, action: #selector(applyBWFilter))
         button.tintColor = Appearance.mono200
         return button
     }()
-    
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.hidesWhenStopped = true
@@ -182,7 +181,7 @@ public final class ScannerViewController: UIViewController {
     }
 
     private func setupSaveButton() {
-        saveButton.setTitle("Save (1)", for: .normal)
+        saveButton.setTitle(NSLocalizedString("ScannerViewController.SaveButton", comment: "Save button text"), for: .normal)
         saveButton.titleLabel?.font = Fonts.Inter.medium(size: 16.scale)
         saveButton.backgroundColor = Appearance.mono200
         saveButton.tintColor = Appearance.mono100
