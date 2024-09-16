@@ -33,9 +33,9 @@ final class WelcomeView: UIView {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 10.scale // Adjust this value to increase or decrease the line spacing
 
-        // Create the attributed string with the desired text
+        // Localize the first part of the text ("Scan and win")
         let text = NSMutableAttributedString(
-            string: "Scan and win\n",
+            string: NSLocalizedString("Scan and win\n", comment: "Scan and win title"),
             attributes: [
                 .font: Fonts.Inter.semiBold(size: 28.scale),
                 .foregroundColor: UIColor.white,
@@ -43,9 +43,9 @@ final class WelcomeView: UIView {
             ]
         )
 
-        // Append the second part of the text with its own attributes
+        // Append the second part of the text ("right from your phone") with localization
         text.append(NSAttributedString(
-            string: "right from your phone",
+            string: NSLocalizedString("right from your phone", comment: "Right from your phone subtitle"),
             attributes: [
                 .font: Fonts.Inter.semiBold(size: 28.scale),
                 .foregroundColor: UIColor.white.withAlphaComponent(0.5),
@@ -60,6 +60,7 @@ final class WelcomeView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+
 
     
     private let animationView: LottieAnimationView = {

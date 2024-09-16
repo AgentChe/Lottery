@@ -72,10 +72,8 @@
 
 // MARK: Welcome
 "Welcome.StartButton" = "Start";
-"Welcome.Title" = "WELCOME TO LOTTERY SCANNER!";
-"Welcome.BulletPoint1" = "Monitor the main national lottery games";
-"Welcome.BulletPoint2" = "Scan and save your tickets";
-"Welcome.BulletPoint3" = "Get notified when drawings come out";
+"Scan and win\n" = "Scan and win\n";
+"right from your phone" = "right from your phone";
 
 // MARK: LuckyNumbersAlert
 "LuckyNumbersAlert.Title" = "Are you sure you want to delete these lucky numbers?";
@@ -239,4 +237,10 @@
 "ChooseScanOptionView.ChooseOptionLabel" = "CHOOSE OPTION";
 "ChooseScanOptionView.ScanDrawButton" = "Scan draw ticket";
 "ChooseScanOptionView.ScanScratchButton" = "Scan scratch-off ticket";
+
+//MARK: ScanScratchView
+"Continue" = "Continue";
+"Draws & scratch-offs\n" = "Draws & scratch-offs\n";
+"in one place" = "in one place";
+"Stay on top of every lottery game's result. Never miss a chance to win!" = "Stay on top of every lottery game's result. Never miss a chance to win!";
 

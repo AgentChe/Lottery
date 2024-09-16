@@ -17,7 +17,9 @@ final class ScanScratchView: UIView {
         let attrs = TextAttributes()
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
-        let attributedTitle = "Continue".localized.attributed(with: attrs)
+        
+        // Localize the button title
+        let attributedTitle = NSLocalizedString("Continue", comment: "Start button title").localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
@@ -33,9 +35,9 @@ final class ScanScratchView: UIView {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 10.scale // Adjust this value to increase or decrease the line spacing
 
-        // Create the attributed string with the desired text
+        // Localize the label's text
         let text = NSMutableAttributedString(
-            string: "Draws & scratch-offs\n",
+            string: NSLocalizedString("Draws & scratch-offs\n", comment: "Title for draws and scratch-offs"),
             attributes: [
                 .font: Fonts.Inter.semiBold(size: 28.scale),
                 .foregroundColor: UIColor.white,
@@ -43,9 +45,9 @@ final class ScanScratchView: UIView {
             ]
         )
 
-        // Append the second part of the text with its own attributes
+        // Append the second part of the text with its own attributes and localization
         text.append(NSAttributedString(
-            string: "in one place",
+            string: NSLocalizedString("in one place", comment: "Subtitle for draws and scratch-offs"),
             attributes: [
                 .font: Fonts.Inter.semiBold(size: 28.scale),
                 .foregroundColor: UIColor.white.withAlphaComponent(0.5),
@@ -77,7 +79,9 @@ final class ScanScratchView: UIView {
             .textColor(Appearance.mono100)
             .font(Fonts.Inter.medium(size: 16.scale))
             .textAlignment(.center)
-        label.attributedText = "Stay on top of every lottery game's result. Never miss a chance to win!".localized.attributed(with: attrs)
+        
+        // Localize the description text
+        label.attributedText = NSLocalizedString("Stay on top of every lottery game's result. Never miss a chance to win!", comment: "Description of lottery benefits").localized.attributed(with: attrs)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

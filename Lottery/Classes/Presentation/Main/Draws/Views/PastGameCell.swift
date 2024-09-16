@@ -484,8 +484,8 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
             cell.numberLabel.text = String(number)
             cell.backgroundViewContainer.backgroundColor = Appearance.mono100
             cell.backgroundViewContainer.alpha = 0.5
-            cell.numberLabel.textColor = Appearance.mono200
-            cell.layer.borderColor = Appearance.main500.cgColor
+            cell.numberLabel.textColor = Appearance.mono100
+            cell.layer.borderColor = UIColor.clear.cgColor//Appearance.main500.cgColor
         }
         if myLuckyNumbers.count != 0 {
             configureCell(cell, withNumber: number, comparisonArray: myLuckyNumbers, indexPath: indexPath)
