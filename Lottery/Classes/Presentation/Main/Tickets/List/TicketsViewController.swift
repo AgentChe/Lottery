@@ -572,7 +572,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         navigationController?.pushViewController(editVC, animated: true)
     }
     @objc func scanScratchButtonTapped() {
-  //      if SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             
         let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         
@@ -613,10 +613,10 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             fatalError("Unknown camera authorization status.")
         }
         
-//        } else {
-//            let vc = PaygateViewController.make()
-//            present(vc, animated: true)
-//        }
+        } else {
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
+        }
     }
     func showCameraAccessDeniedAlert() {
         let alert = UIAlertController(
@@ -634,7 +634,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
-      //  if SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             let scanOnboardingViewController = ScanOnboardingViewController.make()
             
@@ -651,10 +651,10 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 // If not, present the view controller modally as a fallback
                 present(scanOnboardingViewController, animated: true, completion: nil)
             }
-//        } else {
-//            let vc = PaygateViewController.make()
-//            present(vc, animated: true)
-//        }
+        } else {
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
+        }
     }
 
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
