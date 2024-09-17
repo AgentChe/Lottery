@@ -35,13 +35,14 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.progressTintColor = Appearance.main100
         progressView.trackTintColor = Appearance.main500
+        
         view.addSubview(progressView) // Add to view instead of navigationBar
         progressView.alpha = 0
         NSLayoutConstraint.activate([
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  60.scale),
-            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  54.scale),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -54.scale),
             progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: ScreenSize.isIphoneXFamily ? 12.scale : 17.scale),
-            progressView.heightAnchor.constraint(equalToConstant: 5)
+            progressView.heightAnchor.constraint(equalToConstant: 6.scale)
         ])
     }
     

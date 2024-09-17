@@ -683,7 +683,8 @@ extension DrawsViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top:  upperMenuHeightConstraint.constant, left: 0, bottom: 10.scale, right: 0) // Adjust insets as needed
+        let bottomInset: CGFloat =  SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
+        return UIEdgeInsets(top:  upperMenuHeightConstraint.constant, left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
     }
 }
 
