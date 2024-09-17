@@ -115,7 +115,7 @@ private extension SelectStateView {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: ScreenSize.isIphoneXFamily ? 83.scale : 70.scale),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: ScreenSize.isIphoneXFamily ? 100.scale : 70.scale),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
             headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             

@@ -26,8 +26,13 @@ class SelectStateViewController: UIViewController {
         
         AmplitudeManager.shared.logEvent(name: "Choose State Screen")
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        selectStateView.continueButton.isHidden = false
+        selectStateView.preloader.stopAnimating()
+        
+    }
 }
-
 // MARK: - Private Methods
 
 private extension SelectStateViewController {
