@@ -9,12 +9,11 @@ import UIKit
 
 final class SplashView: UIView {
     lazy var imageView = makeImageView()
-    lazy var preloader = makePreloader()
-    lazy var loadingLabel = makeLoadingLabel()
+    lazy var progressBarView = makeProgressBarView()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         makeConstraints()
         initialize()
     }
@@ -34,22 +33,25 @@ private extension SplashView {
 // MARK: Make constraints
 private extension SplashView {
     func makeConstraints() {
+        let window = UIApplication.shared.windows.first { $0.isKeyWindow }
+        let windowWidth = window?.bounds.width ?? UIScreen.main.bounds.width
+        let windowHeight = window?.bounds.height ?? UIScreen.main.bounds.height
+     
         NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 284.scale),
-            imageView.heightAnchor.constraint(equalToConstant: 284.scale),
+            imageView.widthAnchor.constraint(equalToConstant: windowWidth),
+            imageView.heightAnchor.constraint(equalToConstant: windowHeight),
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            preloader.centerXAnchor.constraint(equalTo: centerXAnchor),
-            preloader.bottomAnchor.constraint(equalTo: loadingLabel.topAnchor, constant: -16.scale)
+            progressBarView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            progressBarView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -70.scale),
+            progressBarView.widthAnchor.constraint(equalToConstant: 50.scale), // Set size for progress bar view
+            progressBarView.heightAnchor.constraint(equalToConstant: 50.scale)
         ])
         
-        NSLayoutConstraint.activate([
-            loadingLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            loadingLabel.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -30.scale)
-        ])
+     
     }
 }
 
@@ -58,15 +60,15 @@ private extension SplashView {
     func makeImageView() -> UIImageView {
         let view = UIImageView()
         view.image = UIImage(named: "Splash.Image")
-        view.contentMode = .scaleAspectFit
+        view.contentMode = .scaleAspectFill
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view
     }
     
-    func makePreloader() -> Spinner {
-        let view = Spinner(size: CGSize(width: 32.scale, height: 32.scale))
-        view.startAnimating()
+    func makeProgressBarView() -> SplashProgressBar {
+        let view = SplashProgressBar(frame: CGRect(x: 0, y: 0, width: 44.scale, height: 44.scale))
+     
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view
@@ -84,5 +86,9 @@ private extension SplashView {
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view
+    }
+    
+    func updateProgressText(_ text: String) {
+        progressBarView.updateProgressText(text)
     }
 }

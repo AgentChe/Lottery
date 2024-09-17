@@ -72,10 +72,8 @@
 
 // MARK: Welcome
 "Welcome.StartButton" = "Start";
-"Welcome.Title" = "WELCOME TO LOTTERY SCANNER!";
-"Welcome.BulletPoint1" = "Monitor the main national lottery games";
-"Welcome.BulletPoint2" = "Scan and save your tickets";
-"Welcome.BulletPoint3" = "Get notified when drawings come out";
+"Scan and win\n" = "Scan and win\n";
+"right from your phone" = "right from your phone";
 
 // MARK: LuckyNumbersAlert
 "LuckyNumbersAlert.Title" = "Are you sure you want to delete these lucky numbers?";
@@ -115,10 +113,18 @@
 "EditLuckyNumbersViewController.SuccessMessage" = "Lucky numbers added successfully.";
 
 // MARK: TicketLuckyNumbersEditCell
-"TicketLuckyNumbersEditCell.ErrorTitle" = "Error";
-"TicketLuckyNumbersEditCell.ErrorMessage" = "Failed to add lucky numbers. Please try again.";
-"TicketLuckyNumbersEditCell.PlusButtonImage" = "EditTickets.PlusButtonImage";
-"TicketLuckyNumbersEditCell.PencilImage" = "EditTickets.Pencil";
+"TicketsViewController.MyTickets" = "MY TICKETS";
+"TicketsViewController.ErrorTitle" = "Error";
+"TicketsViewController.ErrorMessage" = "An error occurred. Please try again.";
+"TicketsViewController.ScanScratchOffTicket" = "Scan scratch-off ticket";
+"TicketsViewController.ScanLotteryTicket" = "Scan lottery ticket";
+"TicketsViewController.NoTicketsMessage" = "No tickets available.";
+"TicketsViewController.NoScratchOffsMessage" = "No scratch-offs available.";
+"No scratch-off tickets\n" = "No scratch-off tickets\n";
+"Scan a ticket to analyze the\nresult" = "Scan a ticket to analyze the\nresult";
+"No saved lottery tickets\n" = "No saved lottery tickets\n";
+"Scan a ticket to track the game" = "Scan a ticket to track the game";
+
 
 // MARK: TicketsViewController
 "TicketsViewController.MyTickets" = "MY TICKETS";
@@ -162,6 +168,9 @@
 "DrawsViewController.AllGamesTitle" = "ALL GAMES";
 "DrawsViewController.NextDraws" = "Next Draws";
 "DrawsViewController.PastDraws" = "Past Draws";
+"DrawsViewController.Scan" = "Scan";
+"DrawsViewController.Numbers" = "Numbers";
+"DrawsViewController.MyTickets" = "My tickets";
 
 // MARK: PastGameCell
 "PastGameCell.WinningNumbers" = "WINNING NUMBERS";
@@ -189,6 +198,8 @@
 "EditScanViewController.RetakeButton" = "Retake photo";
 "EditScanViewController.RecognitionError.Title" = "Recognition Error";
 "EditScanViewController.RecognitionError.Message" = "An error occurred during the recognition process. Please try again.";
+"EditScanViewController.ScanUnsuccessfulMessage" = "Scan unsuccessful. Try again.";
+
 
 // MARK: ScanMenuViewController
 "ScanMenuViewController.ScanTicketButton" = "Scan Ticket";
@@ -216,3 +227,24 @@
 
 // MARK: Menu Title
 "Menu.Title" = "MENU";
+
+//MARK: ScannerViewController
+"ScannerViewController.InstructionLabel" = "Make sure the whole ticket is visible within the frame for the best scanning results";
+"ScannerViewController.CancelButton" = "Cancel";
+"ScannerViewController.AutoScanButton" = "Auto";
+"ScannerViewController.ColorFilterButton" = "Color";
+"ScannerViewController.GrayscaleButton" = "Grayscale";
+"ScannerViewController.BWButton" = "B&W";
+"ScannerViewController.SaveButton" = "Save (1)";
+
+//MARK: ChooseScanOption
+"ChooseScanOptionView.ChooseOptionLabel" = "CHOOSE OPTION";
+"ChooseScanOptionView.ScanDrawButton" = "Scan draw ticket";
+"ChooseScanOptionView.ScanScratchButton" = "Scan scratch-off ticket";
+
+//MARK: ScanScratchView
+"Continue" = "Continue";
+"Draws & scratch-offs\n" = "Draws & scratch-offs\n";
+"in one place" = "in one place";
+"Stay on top of every lottery game's result. Never miss a chance to win!" = "Stay on top of every lottery game's result. Never miss a chance to win!";
+

@@ -5,7 +5,8 @@ class ChooseScanOptionView: UIView {
     // Declare buttons and label
     let chooseOptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "CHOOSE OPTION"
+        label.text = NSLocalizedString("ChooseScanOptionView.ChooseOptionLabel", comment: "Choose option label text")
+
         label.font = Fonts.Inter.bold(size: 16.scale) // Update to correct font size and style
         label.textColor = Appearance.mono200 // Change color if needed
         label.textAlignment = .left
@@ -15,7 +16,8 @@ class ChooseScanOptionView: UIView {
     
     let scanDrawButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Scan draw ticket", for: .normal)
+        button.setTitle(NSLocalizedString("ChooseScanOptionView.ScanDrawButton", comment: "Scan draw ticket button title"), for: .normal)
+
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.backgroundColor = Appearance.main100 // Set the Appearance main color
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale) // Set font and size
@@ -26,7 +28,8 @@ class ChooseScanOptionView: UIView {
     
     let scanScratchButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Scan scratch-off ticket", for: .normal)
+        button.setTitle(NSLocalizedString("ChooseScanOptionView.ScanScratchButton", comment: "Scan scratch-off ticket button title"), for: .normal)
+
         button.setTitleColor(Appearance.mono200, for: .normal)
         button.backgroundColor = Appearance.mono100 // Set the Appearance mono color
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale) // Set font and size

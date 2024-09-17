@@ -1,21 +1,23 @@
-//  WelcomeView.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/2/24.
-//
-
 import UIKit
+import Lottie
 
 final class WelcomeView: UIView {
     
     // MARK: - UI Components
+    
+    private let backgroundImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "OnboardingBackground"))
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
     let startButton: UIButton = {
         let button = UIButton()
         let attrs = TextAttributes()
             .textColor(.white)
             .font(Fonts.Inter.medium(size: 17.scale))
-        let attributedTitle = "Start".localized.attributed(with: attrs)
+        let attributedTitle = "Continue".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 20.scale
@@ -23,84 +25,63 @@ final class WelcomeView: UIView {
         return button
     }()
     
-    private let welcomeLabel: UILabel = {
-        let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
-            .font(Fonts.Inter.bold(size: 19.scale))
-            .lineHeight(22.8.scale)
-            .textAlignment(.left)
+    // Replace ScanAndWinImageView with ScanAndWinLabel
+    private let scanAndWinLabel: UILabel = {
         let label = UILabel()
-        label.attributedText = "WELCOME TO LOTTERY SCANNER!".localized.attributed(with: attrs)
+
+        // Create a paragraph style for line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10.scale // Adjust this value to increase or decrease the line spacing
+
+        // Localize the first part of the text ("Scan and win")
+        let text = NSMutableAttributedString(
+            string: NSLocalizedString("Scan and win\n", comment: "Scan and win title"),
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 28.scale),
+                .foregroundColor: UIColor.white,
+                .paragraphStyle: paragraphStyle // Apply the paragraph style to this line
+            ]
+        )
+
+        // Append the second part of the text ("right from your phone") with localization
+        text.append(NSAttributedString(
+            string: NSLocalizedString("right from your phone", comment: "Right from your phone subtitle"),
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 28.scale),
+                .foregroundColor: UIColor.white.withAlphaComponent(0.5),
+                .paragraphStyle: paragraphStyle // Apply the same paragraph style to this line
+            ]
+        ))
+
+        // Set the attributed text to the label
+        label.attributedText = text
         label.numberOfLines = 0
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+
+
     
-    private let bulletPoint1Label: UILabel = {
+    private let animationView: LottieAnimationView = {
+        let animationView = LottieAnimationView(name: "Animation01")
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .playOnce
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        animationView.play() // Starts the animation
+        return animationView
+    }()
+    
+    private let descriptionLabel: UILabel = {
+        let label = UILabel()
         let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
+            .textColor(Appearance.mono100)
             .font(Fonts.Inter.medium(size: 16.scale))
-            .lineHeight(19.2.scale)
-            .textAlignment(.left)
-        let label = UILabel()
-        label.attributedText = "Monitor the main national lottery games".localized.attributed(with: attrs)
+            .textAlignment(.center)
+        label.attributedText = "Follow lottery games, scan tickets, and analyze results, on the go.".localized.attributed(with: attrs)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-  
-    private let bulletPoint1View: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.red
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let bulletPoint2Label: UILabel = {
-        let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
-            .font(Fonts.Inter.medium(size: 16.scale))
-            .lineHeight(19.2.scale)
-            .textAlignment(.left)
-        let label = UILabel()
-        label.attributedText = "Scan and save your tickets".localized.attributed(with: attrs)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let bulletPoint2View: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.red
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let bulletPoint3Label: UILabel = {
-        let attrs = TextAttributes()
-            .textColor(Appearance.mono200)
-            .font(Fonts.Inter.medium(size: 16.scale))
-            .lineHeight(19.2.scale)
-            .textAlignment(.left)
-        let label = UILabel()
-        label.attributedText = "Get notified when drawings come out".localized.attributed(with: attrs)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let bulletPoint3View: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.red
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "Welcome.Games"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
     }()
     
     // MARK: - Initializers
@@ -121,61 +102,54 @@ private extension WelcomeView {
     func setupView() {
         backgroundColor = Appearance.main400
         
-        addSubview(welcomeLabel)
-        addSubview(bulletPoint1View)
-        addSubview(bulletPoint1Label)
-        addSubview(bulletPoint2View)
-        addSubview(bulletPoint2Label)
-        addSubview(bulletPoint3View)
-        addSubview(bulletPoint3Label)
-        addSubview(logoImageView)
+        addSubview(backgroundImageView)
+        addSubview(scanAndWinLabel) // Add the ScanAndWinLabel
+        addSubview(animationView)
+        addSubview(descriptionLabel)
         addSubview(startButton)
         
         setupConstraints()
     }
     
     func setupConstraints() {
+        // Set the background image to cover the full screen
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: topAnchor, constant: ScreenSize.isIphoneXFamily ? 84.scale : 50.scale),
-            welcomeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            welcomeLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            
-            bulletPoint1View.widthAnchor.constraint(equalToConstant: 6.scale),
-            bulletPoint1View.heightAnchor.constraint(equalToConstant: 6.scale),
-            bulletPoint1View.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            bulletPoint1View.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 36.scale),
-            
-            bulletPoint1Label.leadingAnchor.constraint(equalTo: bulletPoint1View.trailingAnchor, constant: 10.scale),
-            bulletPoint1Label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            bulletPoint1Label.centerYAnchor.constraint(equalTo: bulletPoint1View.centerYAnchor),
-            
-            bulletPoint2View.widthAnchor.constraint(equalToConstant: 6.scale),
-            bulletPoint2View.heightAnchor.constraint(equalToConstant: 6.scale),
-            bulletPoint2View.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            bulletPoint2View.topAnchor.constraint(equalTo: bulletPoint1Label.bottomAnchor, constant: 32.scale),
-            
-            bulletPoint2Label.leadingAnchor.constraint(equalTo: bulletPoint2View.trailingAnchor, constant: 10.scale),
-            bulletPoint2Label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            bulletPoint2Label.centerYAnchor.constraint(equalTo: bulletPoint2View.centerYAnchor),
-            
-            bulletPoint3View.widthAnchor.constraint(equalToConstant: 6.scale),
-            bulletPoint3View.heightAnchor.constraint(equalToConstant: 6.scale),
-            bulletPoint3View.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            bulletPoint3View.topAnchor.constraint(equalTo: bulletPoint2Label.bottomAnchor, constant: 32.scale),
-            
-            bulletPoint3Label.leadingAnchor.constraint(equalTo: bulletPoint3View.trailingAnchor, constant: 10.scale),
-            bulletPoint3Label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
-            bulletPoint3Label.centerYAnchor.constraint(equalTo: bulletPoint3View.centerYAnchor),
-            
-            logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            logoImageView.bottomAnchor.constraint(equalTo: startButton.topAnchor, constant: ScreenSize.isIphoneXFamily ? -40.scale : -40.scale),
-            logoImageView.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 343.scale : 343.scale*0.86),
-            logoImageView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 356.scale : 356.scale*0.86),
-            
-            startButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: ScreenSize.isIphoneXFamily ?  -50.scale : -20.scale),
+            backgroundImageView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+        
+        // Set constraints for ScanAndWinLabel
+        NSLayoutConstraint.activate([
+            scanAndWinLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            scanAndWinLabel.bottomAnchor.constraint(equalTo: animationView.topAnchor, constant: -20.scale),
+            scanAndWinLabel.widthAnchor.constraint(equalToConstant: 311.scale),
+            scanAndWinLabel.heightAnchor.constraint(equalToConstant: 90.scale)
+        ])
+        
+        // Set constraints for AnimationView
+        NSLayoutConstraint.activate([
+            animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            animationView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            animationView.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 343.scale : 343.scale * 0.86),
+            animationView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 356.scale : 356.scale * 0.86)
+        ])
+        
+        // Set constraints for DescriptionLabel
+        NSLayoutConstraint.activate([
+            descriptionLabel.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 10.scale),
+            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
+            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+            descriptionLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
+        ])
+        
+        // Set constraints for StartButton
+        NSLayoutConstraint.activate([
+            startButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: ScreenSize.isIphoneXFamily ? -50.scale : -20.scale),
             startButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             startButton.widthAnchor.constraint(equalToConstant: 343.scale),
-            startButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            startButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
     }
 }

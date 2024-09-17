@@ -201,7 +201,7 @@ final class LuckyNumbersViewController: UIViewController {
         view.addSubview(addLuckyNumbersButton)
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 0),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50.scale),
             imageView.widthAnchor.constraint(equalToConstant: 130.scale),
             imageView.heightAnchor.constraint(equalToConstant: 130.scale),
             
@@ -229,17 +229,17 @@ final class LuckyNumbersViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-     //   if SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             let selectTheGameViewController = SelectTheGameViewController()
             if let navigationController = navigationController {
                 navigationController.pushViewController(selectTheGameViewController, animated: true)
             } else {
                 present(selectTheGameViewController, animated: true, completion: nil)
             }
-//        } else {
-//            let vc = PaygateViewController.make()
-//            present(vc, animated: true)
-//        }
+        } else {
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import Lottie
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var profile: Profile!
@@ -22,6 +23,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuView: UIImageView!
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
+    private var premiumAnimationView: LottieAnimationView!
     let maxUpperMenuHeight: CGFloat = 165.scale // Maximum height of upperMenuView
     let minUpperMenuHeight: CGFloat = 115.scale
     
@@ -142,6 +144,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         //setupScanButton()  // Setup scan button
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
+        setupPremiumAnimationView()
         
        //  setupNavigationBarTitle()
     }
@@ -218,6 +221,43 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 
 // MARK: - UI Setup
  extension DrawsViewController {
+     private func setupPremiumAnimationView() {
+           // Initialize the Lottie animation view with the specified JSON file
+           premiumAnimationView = LottieAnimationView(name: "Premium")
+           premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
+           premiumAnimationView.contentMode = .scaleAspectFit
+           premiumAnimationView.loopMode = .playOnce // Ensure the animation loops
+           premiumAnimationView.play() // Start the animation
+           
+           // Add the animation view to the main view
+           view.addSubview(premiumAnimationView)
+           
+           // Set up the constraints to position the animation at the bottom-right
+           NSLayoutConstraint.activate([
+               premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
+               premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
+               premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale), // Adjust padding as needed
+               premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale) // Adjust bottom padding as needed
+           ])
+           
+           // Make the animation view tappable
+           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
+           premiumAnimationView.isUserInteractionEnabled = true
+           premiumAnimationView.addGestureRecognizer(tapGesture)
+         if SessionManager().hasActiveSubscriptions() {
+             premiumAnimationView.alpha = 0
+         } else {
+             premiumAnimationView.alpha = 1
+         }
+         
+       }
+       
+       // MARK: - Handle Tap Gesture
+       @objc private func handlePremiumAnimationTap() {
+           // Present the PaygateViewController when the animation view is tapped
+           let vc = PaygateViewController.make()
+           present(vc, animated: true)
+       }
     func setupUpperMenuView() {
         // Set up upperMenuView as an image view
         upperMenuView = UIImageView()
@@ -241,9 +281,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
         
         // Add labels for the buttons
-        let label1 = createLabel(text: "Scan")
-        let label2 = createLabel(text: "Numbers")
-        let label3 = createLabel(text: "My tickets")
+        let label1 = createLabel(text: "DrawsViewController.Scan".localized)
+        let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
+        let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
         
         // Add the menu button
         
@@ -314,42 +354,47 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         ])
     }
     @objc func chooseScanOption() {
-          // Create the dim view to darken the background
-          dimView = UIView(frame: self.view.bounds)
-          dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-          dimView.alpha = 0 // Initially invisible
-          view.addSubview(dimView)
-
-          // Add tap gesture to dismiss the scan option when tapping the dimmed area
-          let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissScanOption))
-          dimView.addGestureRecognizer(tapGesture)
-
-          let chooseScanOptionView = ChooseScanOptionView()
-
-          // Set initial off-screen position (bottom of the screen)
-          chooseScanOptionView.translatesAutoresizingMaskIntoConstraints = false
-        chooseScanOptionView.layer.cornerRadius = 20.scale
-        view.addSubview(chooseScanOptionView)
-          
-          // Set constraints for the width and height of ChooseScanOptionView
-          NSLayoutConstraint.activate([
-            chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
-              chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
-              chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),  // Adjust height as needed
-              chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)  // Start off-screen
-          ])
-          
-          view.layoutIfNeeded()
-
-          // Animate the dim view and the ChooseScanOptionView upwards onto the screen
-          UIView.animate(withDuration: 0.3) {
-              self.dimView.alpha = 1 // Make the dim view visible
-              chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)  // Move up onto the screen
-              self.view.layoutIfNeeded()
-          }
-
-          // Add a dismiss action for dismissButton
-          chooseScanOptionView.dismissButton.addTarget(self, action: #selector(dismissChooseScanOptionView(_:)), for: .touchUpInside)
+        if SessionManager().hasActiveSubscriptions() {
+            // Create the dim view to darken the background
+            dimView = UIView(frame: self.view.bounds)
+            dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+            dimView.alpha = 0 // Initially invisible
+            view.addSubview(dimView)
+            
+            // Add tap gesture to dismiss the scan option when tapping the dimmed area
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissScanOption))
+            dimView.addGestureRecognizer(tapGesture)
+            
+            let chooseScanOptionView = ChooseScanOptionView()
+            
+            // Set initial off-screen position (bottom of the screen)
+            chooseScanOptionView.translatesAutoresizingMaskIntoConstraints = false
+            chooseScanOptionView.layer.cornerRadius = 20.scale
+            view.addSubview(chooseScanOptionView)
+            
+            // Set constraints for the width and height of ChooseScanOptionView
+            NSLayoutConstraint.activate([
+                chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+                chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
+                chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),  // Adjust height as needed
+                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)  // Start off-screen
+            ])
+            
+            view.layoutIfNeeded()
+            
+            // Animate the dim view and the ChooseScanOptionView upwards onto the screen
+            UIView.animate(withDuration: 0.3) {
+                self.dimView.alpha = 1 // Make the dim view visible
+                chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)  // Move up onto the screen
+                self.view.layoutIfNeeded()
+            }
+            
+            // Add a dismiss action for dismissButton
+            chooseScanOptionView.dismissButton.addTarget(self, action: #selector(dismissChooseScanOptionView(_:)), for: .touchUpInside)
+        } else {
+            let vc = PaygateViewController.make()
+            present(vc, animated: true)
+        }
       }
 
       @objc func dismissChooseScanOptionView(_ sender: UIButton) {
@@ -649,7 +694,8 @@ extension DrawsViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top:  upperMenuHeightConstraint.constant, left: 0, bottom: 10.scale, right: 0) // Adjust insets as needed
+        let bottomInset: CGFloat =  SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
+        return UIEdgeInsets(top:  upperMenuHeightConstraint.constant, left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
     }
 }
 
@@ -671,6 +717,7 @@ extension DrawsViewController {
                 if pastDraw.lotteryId == game.lotteryId {
                     cell.winningNumbers = pastDraw.winningNumbers ?? []
                     cell.winningNumbersCollectionView.reloadData()
+                    
                 }
             }
             
@@ -838,34 +885,23 @@ private extension DrawsViewController {
 }
 private extension DrawsViewController {
     @objc func scanButtonTapped() {
-     //   if SessionManager().hasActiveSubscriptions() {
-            let scanOnboardingViewController = ScanOnboardingViewController.make()
+        
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        
+        if let navigationController = self.navigationController {
             
-            // Check if the current view controller is embedded in a navigation controller
-            if let navigationController = self.navigationController {
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+            
+            if let navigationController = getRootViewController() as? NavigationController,
+               let mainViewController = navigationController.viewControllers.first as? MainViewController {
                 
-                navigationController.pushViewController(scanOnboardingViewController, animated: true)
+                updateMainViewControllerConstraints(for: mainViewController)
                 
-                if let navigationController = getRootViewController() as? NavigationController,
-                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
-                    
-                    updateMainViewControllerConstraints(for: mainViewController)
-                    
-                }
-//            } else {
-//                // If not, present the view controller modally as a fallback
-//                present(scanOnboardingViewController, animated: true, completion: nil)
-//            }
-        } else {
-            let vc = PaygateViewController.make()
-            present(vc, animated: true)
+            }
         }
     }
     
     @objc func rescanButtonTapped() {
-     //   if SessionManager().hasActiveSubscriptions() {
-        
-        
         let scanViewController = ScanMenuViewController()
         scanViewController.stateId = 888
         scanViewController.lotteryId = 888
@@ -908,30 +944,6 @@ private extension DrawsViewController {
         @unknown default:
             fatalError("Unknown camera authorization status.")
         }
-        
-        
-//            let scanOnboardingViewController = ScanOnboardingViewController.make()
-//
-//            // Check if the current view controller is embedded in a navigation controller
-//            if let navigationController = self.navigationController {
-//
-//                navigationController.pushViewController(scanOnboardingViewController, animated: true)
-//
-//                if let navigationController = getRootViewController() as? NavigationController,
-//                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
-//
-//                    updateMainViewControllerConstraints(for: mainViewController)
-//
-//                }
-//            } else {
-//                // If not, present the view controller modally as a fallback
-//                present(scanOnboardingViewController, animated: true, completion: nil)
-//            }
-//        }
-//    else {
-//            let vc = PaygateViewController.make()
-//            present(vc, animated: true)
-//        }
     }
     func showCameraAccessDeniedAlert() {
         let alert = UIAlertController(

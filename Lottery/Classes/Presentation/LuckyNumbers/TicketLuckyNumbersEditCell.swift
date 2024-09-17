@@ -37,7 +37,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
     // Plus Button Declaration
     private let plusButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "TicketLuckyNumbersEditCell.PlusButtonImage".localized), for: .normal)
+        button.setImage(UIImage(named: "EditTickets.PlusButtonImage"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 25.scale // Half the height and width for a circular button
         button.layer.masksToBounds = true

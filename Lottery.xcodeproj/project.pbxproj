@@ -68,6 +68,10 @@
 		A327497D2C29859400E9F79A /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32749302C29859400E9F79A /* ScanViewController.swift */; };
 		A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */; };
 		A3282B192C20A4C4006EED71 /* UIView(helper).swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B182C20A4C4006EED71 /* UIView(helper).swift */; };
+		A35112F12C986AEF0060D261 /* SplashProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35112F02C986AEF0060D261 /* SplashProgressBar.swift */; };
+		A35112F32C9883EA0060D261 /* Animation01.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F22C9883EA0060D261 /* Animation01.json */; };
+		A35112F52C9884D80060D261 /* Animation02.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F42C9884D70060D261 /* Animation02.json */; };
+		A35112F92C98CDF40060D261 /* Premium.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F82C98CDF40060D261 /* Premium.json */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
 		A3668DAD2C19BFCF00754446 /* NotchedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */; };
 		A3668DB22C1A1C9300754446 /* EditTicketVIewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */; };
@@ -306,6 +310,10 @@
 		A32749302C29859400E9F79A /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
 		A3282B182C20A4C4006EED71 /* UIView(helper).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView(helper).swift"; sourceTree = "<group>"; };
+		A35112F02C986AEF0060D261 /* SplashProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashProgressBar.swift; sourceTree = "<group>"; };
+		A35112F22C9883EA0060D261 /* Animation01.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation01.json; sourceTree = "<group>"; };
+		A35112F42C9884D70060D261 /* Animation02.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation02.json; sourceTree = "<group>"; };
+		A35112F82C98CDF40060D261 /* Premium.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Premium.json; sourceTree = "<group>"; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
 		A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedBackgroundView.swift; sourceTree = "<group>"; };
 		A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketVIewController.swift; sourceTree = "<group>"; };
@@ -846,6 +854,7 @@
 			children = (
 				A3FD9EA42C11C9EE000FAD68 /* Views */,
 				A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */,
+				A35112F82C98CDF40060D261 /* Premium.json */,
 				A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */,
 			);
 			path = Draws;
@@ -1172,6 +1181,8 @@
 			children = (
 				DE42B15F2BFF3CB100FF61B0 /* Views */,
 				DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */,
+				A35112F42C9884D70060D261 /* Animation02.json */,
+				A35112F22C9883EA0060D261 /* Animation01.json */,
 				DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */,
 				A3C5CEBE2C0CD7CD00C43681 /* Welcome */,
 				A3A376B62C86EFA30050E706 /* ScanScratch */,
@@ -1196,6 +1207,7 @@
 				DE42B1712BFF3CB100FF61B0 /* Utils */,
 				DE42B1732BFF3CB100FF61B0 /* SplashViewController.swift */,
 				DE42B2132BFF5BEB00FF61B0 /* SplashViewModel.swift */,
+				A35112F02C986AEF0060D261 /* SplashProgressBar.swift */,
 				DE42B1722BFF3CB100FF61B0 /* SplashView.swift */,
 			);
 			path = Splash;
@@ -1505,17 +1517,20 @@
 				A327494B2C29859400E9F79A /* enhance.png in Resources */,
 				A327494C2C29859400E9F79A /* enhance@2x.png in Resources */,
 				A32749552C29859400E9F79A /* rotate@2x.png in Resources */,
+				A35112F52C9884D80060D261 /* Animation02.json in Resources */,
 				DE42B1E42BFF405800FF61B0 /* Inter-Medium.ttf in Resources */,
 				DE42B1E52BFF405800FF61B0 /* Inter-Regular.ttf in Resources */,
 				A32749522C29859400E9F79A /* flashUnavailable@2x.png in Resources */,
 				A32749532C29859400E9F79A /* flashUnavailable@3x.png in Resources */,
 				A32749542C29859400E9F79A /* rotate.png in Resources */,
+				A35112F32C9883EA0060D261 /* Animation01.json in Resources */,
 				A327494F2C29859400E9F79A /* flash@2x.png in Resources */,
 				A327494E2C29859400E9F79A /* flash.png in Resources */,
 				DE42B1E62BFF405800FF61B0 /* Inter-SemiBold.ttf in Resources */,
 				DE42B1122BFF39C000FF61B0 /* Assets.xcassets in Resources */,
 				A32749502C29859400E9F79A /* flash@3x.png in Resources */,
 				A327494D2C29859400E9F79A /* enhance@3x.png in Resources */,
+				A35112F92C98CDF40060D261 /* Premium.json in Resources */,
 				DE42B1DA2BFF3CB900FF61B0 /* Localizable.strings in Resources */,
 				DE42B1152BFF39C000FF61B0 /* Base in Resources */,
 				A32749512C29859400E9F79A /* flashUnavailable.png in Resources */,
@@ -1603,6 +1618,7 @@
 				A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */,
 				A3FF555F2C07E26700E81771 /* FetchLotteriesRequest.swift in Sources */,
 				A327497B2C29859400E9F79A /* ImageManager.swift in Sources */,
+				A35112F12C986AEF0060D261 /* SplashProgressBar.swift in Sources */,
 				A3FF55752C07E5C700E81771 /* AddTicketRequest.swift in Sources */,
 				A3AE80202C2CC82800E5B473 /* TicketLuckyNumbersEditCell.swift in Sources */,
 				DE42B1BC2BFF3CB200FF61B0 /* OSlideView.swift in Sources */,

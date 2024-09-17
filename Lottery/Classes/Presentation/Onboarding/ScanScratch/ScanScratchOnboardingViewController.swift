@@ -14,7 +14,7 @@ class ScanScratchViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
-    
+ 
     override func loadView() {
         view = scanScratchView
     }
