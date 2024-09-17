@@ -244,6 +244,12 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
            premiumAnimationView.isUserInteractionEnabled = true
            premiumAnimationView.addGestureRecognizer(tapGesture)
+         if SessionManager().hasActiveSubscriptions() {
+             premiumAnimationView.alpha = 0
+         } else {
+             premiumAnimationView.alpha = 1
+         }
+         
        }
        
        // MARK: - Handle Tap Gesture
