@@ -162,7 +162,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             initialContentOffset = currentOffset
             hasRecordedInitialOffset = true
         }
-        
+//        if let collectionView = scrollView as? UICollectionView {
+//                collectionView.collectionViewLayout.invalidateLayout()  // Force recalculation of the layout
+//        }
         
         guard currentOffset >= initialContentOffset else {
             if UIApplication.shared.statusBarFrame.height > 40 {
@@ -175,8 +177,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         
         
         let deltaY = currentOffset - previousScrollOffset
-        print("currentOffset \(currentOffset),init: \(initialContentOffset), \(segmentTopConstraint.constant)")
-        print(currentOffset < 40.scale)
+//        print("currentOffset \(currentOffset),init: \(initialContentOffset), \(segmentTopConstraint.constant)")
+//        print(currentOffset < 40.scale)
         if deltaY > 0 { //shrink
             if upperMenuHeightConstraint.constant < topPadding + maxUpperMenuHeight - 10.scale {
                 menuButton.alpha = 0
@@ -670,12 +672,14 @@ extension DrawsViewController {
                         if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 150.scale + 80.scale
+                                
                             } else {
                                 cellHeight = 70.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
                             }
                         } else {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 150.scale + 108.scale
+                                
                             } else {
                                 cellHeight = 98.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
                             }
@@ -712,6 +716,7 @@ extension DrawsViewController {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
+            cell.prepareForReuse()
             let game = nextDraws[indexPath.item]
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
@@ -727,7 +732,9 @@ extension DrawsViewController {
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
+            
             cell.configure(game: game, lotteries: lotteries)
+          //  cell.prepareForReuse()
             cell.layer.cornerRadius = 20.scale
             cell.layer.masksToBounds = true
             if let myLuckyNumbers = game.myLuckyNumbers {
