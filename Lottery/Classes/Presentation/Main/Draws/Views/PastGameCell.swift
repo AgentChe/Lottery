@@ -69,7 +69,7 @@ class PastGameCell: UICollectionViewCell {
     
      lazy var winningNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
+         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 10.scale
         layout.minimumLineSpacing = 14.scale
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
@@ -79,14 +79,20 @@ class PastGameCell: UICollectionViewCell {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.isUserInteractionEnabled = false
+         
+         collectionView.isUserInteractionEnabled = true
+         collectionView.showsVerticalScrollIndicator = false
+         collectionView.showsHorizontalScrollIndicator = false
+         collectionView.layer.masksToBounds = false
+
+         
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
         return collectionView
     }()
     
      lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
+         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 10.scale
        
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
@@ -95,8 +101,13 @@ class PastGameCell: UICollectionViewCell {
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
-         collectionView.isUserInteractionEnabled = false
         collectionView.delegate = self
+         
+         collectionView.isUserInteractionEnabled = true
+         collectionView.showsVerticalScrollIndicator = false
+         collectionView.showsHorizontalScrollIndicator = false
+         collectionView.layer.masksToBounds = false
+
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
          collectionView.layer.masksToBounds = false
         return collectionView
@@ -433,18 +444,10 @@ private extension PastGameCell {
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if collectionView == winningNumbersCollectionView {
-            return UIEdgeInsets(top: 0.scale,
-                                left: winningNumbers.first?.count == 6 ? 0.scale : 58.scale,
-                                bottom: 10.scale,
-                                right:  winningNumbers.first?.count == 6 ? 0.scale : -58.scale)
-        } else {
-            return UIEdgeInsets(top: 0.scale,
-                                left: winningNumbers.first?.count == 6 ? 0.scale : 58.scale,
-                                bottom: 10.scale,
-                                right:  winningNumbers.first?.count == 6 ? 0.scale : -58.scale)
-        }
-        // Adjust insets as needed
+        return UIEdgeInsets(top: 1.scale,
+                            left: 0.scale,
+                            bottom: 10.scale,
+                            right:  0.scale)
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == winningNumbersCollectionView {
