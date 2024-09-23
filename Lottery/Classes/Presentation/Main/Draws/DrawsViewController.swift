@@ -27,6 +27,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     let maxUpperMenuHeight: CGFloat = 165.scale // Maximum height of upperMenuView
     let minUpperMenuHeight: CGFloat = 115.scale
     
+    let segmentedControlBackgroundView = UIView()
+    
     lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
     lazy var myTicketsVC = NavigationController(rootViewController: myTicketsController)
     private lazy var luckyNumbersController = LuckyNumbersViewController()
@@ -162,57 +164,20 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             initialContentOffset = currentOffset
             hasRecordedInitialOffset = true
         }
-//        if let collectionView = scrollView as? UICollectionView {
-//                collectionView.collectionViewLayout.invalidateLayout()  // Force recalculation of the layout
-//        }
-        
-        guard currentOffset >= initialContentOffset else {
-            if UIApplication.shared.statusBarFrame.height > 40 {
-                segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 20.scale
-            } else {
-                segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 10.scale
-            }
-            return
-        }
-        
-        
+
         let deltaY = currentOffset - previousScrollOffset
-//        print("currentOffset \(currentOffset),init: \(initialContentOffset), \(segmentTopConstraint.constant)")
-//        print(currentOffset < 40.scale)
+
         if deltaY > 0 { //shrink
             if upperMenuHeightConstraint.constant < topPadding + maxUpperMenuHeight - 10.scale {
                 menuButton.alpha = 0
             }
             upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
-            
-            
-            if initialContentOffset < currentOffset && currentOffset < 50.scale{
-                segmentTopConstraint.constant = segmentTopConstraint.constant - abs(deltaY)
-            } else {
-                if UIApplication.shared.statusBarFrame.height < 40 {
-                    segmentTopConstraint.constant = 80.scale
-                } else {
-                    segmentTopConstraint.constant = 100.scale
-                }
-            }
+
         } else if deltaY < 0 {
             if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale{
                 menuButton.alpha = 1
             }
             upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
-            
-            if currentOffset < 50.scale {
-                if segmentTopConstraint.constant + abs(deltaY) <= topPadding + maxUpperMenuHeight  + ( (UIApplication.shared.statusBarFrame.height < 40) ? 10.scale : 20.scale) {
-                    print("here \( segmentTopConstraint.constant)")
-                    segmentTopConstraint.constant = segmentTopConstraint.constant + abs(deltaY)
-                } else {
-                    if UIApplication.shared.statusBarFrame.height > 40 {
-                        segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 20.scale
-                    } else {
-                        segmentTopConstraint.constant =  topPadding + maxUpperMenuHeight + 10.scale
-                    }
-                }
-            }
             
         }
         
@@ -228,7 +193,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
            premiumAnimationView = LottieAnimationView(name: "Premium")
            premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
            premiumAnimationView.contentMode = .scaleAspectFit
-           premiumAnimationView.loopMode = .playOnce // Ensure the animation loops
+           premiumAnimationView.loopMode = .loop // Ensure the animation loops
            premiumAnimationView.play() // Start the animation
            
            // Add the animation view to the main view
@@ -529,6 +494,11 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     
     func setupSegmentedControl() {
+        
+        segmentedControlBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControlBackgroundView.backgroundColor = Appearance.main400
+        view.addSubview(segmentedControlBackgroundView)
+        
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = Appearance.main400
@@ -603,13 +573,15 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     
     func setupLayoutConstraints() {
-        if UIApplication.shared.statusBarFrame.height > 40 {
-            segmentTopConstraint = segmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: upperMenuHeightConstraint.constant + 20.scale)
-        } else {
-            segmentTopConstraint = segmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: upperMenuHeightConstraint.constant + 10.scale)
-        }
+       
+    
+     
         NSLayoutConstraint.activate([
-            segmentTopConstraint,
+            segmentedControlBackgroundView.topAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: 0),
+            segmentedControlBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            segmentedControlBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            segmentedControlBackgroundView.heightAnchor.constraint(equalToConstant: 72.scale),
+            segmentedControl.topAnchor.constraint(equalTo: segmentedControlBackgroundView.topAnchor, constant: 16.scale),
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
