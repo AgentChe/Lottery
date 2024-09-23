@@ -396,12 +396,12 @@ private extension NextGameCell {
             
             
             
-            winningNumbersCollectionView.bottomAnchor.constraint(equalTo: latestWinningNumbersLabel.topAnchor, constant: -10.scale),
+            winningNumbersCollectionView.bottomAnchor.constraint(equalTo: latestWinningNumbersLabel.topAnchor, constant: -8.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            latestWinningNumbersLabel.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -13.scale),
+            latestWinningNumbersLabel.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -10.scale),
             latestWinningNumbersLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
             latestWinningNumbersLabel.heightAnchor.constraint(equalToConstant: 14.scale)
             

@@ -643,14 +643,14 @@ extension DrawsViewController {
                     if lottery.id == game.lotteryId {
                         if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
                             if myLuckyNumbers.isEmpty {
-                                cellHeight = 150.scale + 80.scale
+                                cellHeight = 204.scale//150.scale + 80.scale
                                 
                             } else {
                                 cellHeight = 70.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
                             }
                         } else {
                             if myLuckyNumbers.isEmpty {
-                                cellHeight = 150.scale + 108.scale
+                                cellHeight = 232.scale
                                 
                             } else {
                                 cellHeight = 98.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale

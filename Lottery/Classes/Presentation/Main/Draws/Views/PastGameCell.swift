@@ -410,13 +410,13 @@ private extension PastGameCell {
 
             
             // Winning Numbers CollectionView Constraints
-            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 20.scale),
+            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 12.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             winningNumbersCollectionViewHeightConstraint,
 
             // Winning Numbers Title Label Constraints
-            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 30.scale),
+            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 18.scale),
             winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
 
