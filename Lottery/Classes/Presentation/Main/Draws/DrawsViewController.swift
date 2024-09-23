@@ -164,23 +164,28 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             initialContentOffset = currentOffset
             hasRecordedInitialOffset = true
         }
-
+       
         let deltaY = currentOffset - previousScrollOffset
 
         if deltaY > 0 { //shrink
-            if upperMenuHeightConstraint.constant < topPadding + maxUpperMenuHeight - 10.scale {
-                menuButton.alpha = 0
+            if currentOffset >= initialContentOffset {
+                print("@@ \(currentOffset) \(initialContentOffset)")
+                
+                if upperMenuHeightConstraint.constant <  maxUpperMenuHeight + 45.scale - 10.scale {
+                    menuButton.alpha = 0
+                }
+                
+                upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
             }
-            upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
 
-        } else if deltaY < 0 {
+        }
+         if deltaY < 0 {
+            
             if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale{
                 menuButton.alpha = 1
             }
-            upperMenuHeightConstraint.constant = min(topPadding + maxUpperMenuHeight, upperMenuHeightConstraint.constant + abs(deltaY))
-            
+            upperMenuHeightConstraint.constant = min(maxUpperMenuHeight + 45.scale , upperMenuHeightConstraint.constant + abs(deltaY))
         }
-        
         view.layoutIfNeeded()
         previousScrollOffset = currentOffset
     }
@@ -278,6 +283,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 upperMenuHeightConstraint
             ])
+            
+            upperMenuView.alpha = 1
         }
         
         // Set constraints for the buttons and labels with reduced horizontal spacing
@@ -574,8 +581,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     func setupLayoutConstraints() {
        
-    
-     
         NSLayoutConstraint.activate([
             segmentedControlBackgroundView.topAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: 0),
             segmentedControlBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -595,12 +600,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             pastDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             pastDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
-            
-//            scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
-//            scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
-//            scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-//            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            
+
             noGamesAddedImageView.widthAnchor.constraint(equalToConstant: 344.scale),
             noGamesAddedImageView.heightAnchor.constraint(equalToConstant: 235.scale),
             noGamesAddedImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -670,8 +670,13 @@ extension DrawsViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+     
         let bottomInset: CGFloat =  SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
-        return UIEdgeInsets(top:  upperMenuHeightConstraint.constant, left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
+        
+        let window = UIApplication.shared.keyWindow
+        let topPadding = window?.safeAreaInsets.top ?? 0
+        
+        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale  , left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
     }
 }
 

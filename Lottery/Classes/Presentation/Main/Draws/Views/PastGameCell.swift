@@ -494,8 +494,8 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
     
     private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
+    
         let number = winningNumbers[indexPath.section][indexPath.item]
-       
         var lastIndex = winningNumbers[0].count - 1
         
         if indexPath.item == lastIndex {
