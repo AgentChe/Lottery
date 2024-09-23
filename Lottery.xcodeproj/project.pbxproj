@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
+		A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */; };
+		A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */; };
 		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
 		A32748BC2C25E74F00E9F79A /* ScanSelectStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */; };
 		A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */; };
@@ -250,6 +252,8 @@
 /* Begin PBXFileReference section */
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollecitonViewCell.swift; sourceTree = SOURCE_ROOT; };
+		A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoVerticalScrollCollectionView.swift; sourceTree = "<group>"; };
 		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
 		A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateViewController.swift; sourceTree = "<group>"; };
 		A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateView.swift; sourceTree = "<group>"; };
@@ -863,7 +867,9 @@
 		A3FD9EA42C11C9EE000FAD68 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */,
 				A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */,
+				A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */,
 				A3EF37222C174E1D00753C41 /* NumberCell.swift */,
 				A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */,
 				A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */,
@@ -1602,6 +1608,7 @@
 				A32749422C29859400E9F79A /* CGPoint+Utils.swift in Sources */,
 				A32749732C29859400E9F79A /* ScannedResultsViewController.swift in Sources */,
 				A3FF557F2C08B8C400E81771 /* AddLuckyNumbersRequest.swift in Sources */,
+				A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */,
 				DE42B1972BFF3CB200FF61B0 /* TapAreaButton.swift in Sources */,
 				A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */,
 				A3AE801C2C2CA19600E5B473 /* SelectGameCell.swift in Sources */,
@@ -1800,6 +1807,7 @@
 				A3EF372B2C17B9DE00753C41 /* MenuCell.swift in Sources */,
 				A32749752C29859400E9F79A /* CaptureSession+Flash.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
+				A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

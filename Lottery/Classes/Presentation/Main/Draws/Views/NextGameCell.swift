@@ -33,8 +33,7 @@ class NextGameCell: UICollectionViewCell {
     lazy var winningNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 8.scale
-        layout.minimumLineSpacing = 14.scale
+        layout.minimumLineSpacing = 8.scale
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -299,7 +298,7 @@ private extension NextGameCell {
         dateMiniLabel.translatesAutoresizingMaskIntoConstraints = false
         monthMiniLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale) // Apply scale to font size
+        dateLabel.font = Fonts.Inter.medium(size: 12.scale) // Apply scale to font size
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100

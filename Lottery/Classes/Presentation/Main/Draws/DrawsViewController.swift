@@ -503,7 +503,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = Appearance.main400
         segmentedControl.cornerRadius = 24.scale
-        segmentedControl.buttonPadding = 5.scale
+        segmentedControl.buttonPadding = 4.scale
         segmentedControl.buttonCornerRadius = 20.scale
         segmentedControl.numberOfSegments = 2
         segmentedControl.segmentsTitle = "\("DrawsViewController.NextDraws".localized),\("DrawsViewController.PastDraws".localized)"
@@ -646,14 +646,14 @@ extension DrawsViewController {
                                 cellHeight = 204.scale//150.scale + 80.scale
                                 
                             } else {
-                                cellHeight = 70.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
+                                cellHeight = 116.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) + 3.scale
                             }
                         } else {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 232.scale
                                 
                             } else {
-                                cellHeight = 98.scale + 110.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40 + 10.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40 + 14.scale) + 90.scale
+                                cellHeight = 144.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 5.scale
                             }
                         }
                     }
@@ -688,7 +688,7 @@ extension DrawsViewController {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
-            cell.prepareForReuse()
+            
             let game = nextDraws[indexPath.item]
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
@@ -706,10 +706,14 @@ extension DrawsViewController {
             let game = pastDraws[indexPath.item]
             
             cell.configure(game: game, lotteries: lotteries)
-          //  cell.prepareForReuse()
+         
+            //  cell.prepareForReuse()
             cell.layer.cornerRadius = 20.scale
             cell.layer.masksToBounds = true
             if let myLuckyNumbers = game.myLuckyNumbers {
+               
+        
+                
                 if myLuckyNumbers.isEmpty {
                     cell.dashedLineImageView.alpha = 0
                     cell.myLuckyNumbersTitleLabel.alpha = 0

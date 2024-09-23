@@ -29,14 +29,14 @@ class PastGameCell: UICollectionViewCell {
     private let winningNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "PastGameCell.WinningNumbers".localized
-        label.font = Fonts.Inter.bold(size: 12.5.scale)
+        label.font = Fonts.Inter.bold(size: 12.scale)
         label.textAlignment = .left
         label.textColor = Appearance.mono100
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        // Create an attributed string with increased kerning
+        
         let attributedText = NSMutableAttributedString(string: "PastGameCell.WinningNumbers".localized)
-        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
+        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length))
         
         label.attributedText = attributedText
         return label
@@ -46,15 +46,13 @@ class PastGameCell: UICollectionViewCell {
      let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "PastGameCell.MyLuckyNumbers".localized
-        label.font = Fonts.Inter.bold(size: 12.5.scale)
+        label.font = Fonts.Inter.bold(size: 12.scale)
         label.textAlignment = .left
         label.textColor = Appearance.mono100
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        // Create an attributed string with increased kerning
         let attributedText = NSMutableAttributedString(string: "PastGameCell.MyLuckyNumbers".localized)
-        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length)) // Increase kerning as needed
-        
+        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length))
         label.attributedText = attributedText
         
         return label
@@ -70,12 +68,11 @@ class PastGameCell: UICollectionViewCell {
      lazy var winningNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
          layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10.scale
-        layout.minimumLineSpacing = 14.scale
-        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
+        layout.minimumInteritemSpacing = 8.scale
+        layout.minimumLineSpacing = 8.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+         collectionView.backgroundColor = .clear//.red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -85,19 +82,17 @@ class PastGameCell: UICollectionViewCell {
          collectionView.showsHorizontalScrollIndicator = false
          collectionView.layer.masksToBounds = false
 
+         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
          
-        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
         return collectionView
     }()
     
-     lazy var myLuckyNumbersCollectionView: UICollectionView = {
+     lazy var myLuckyNumbersCollectionView: NoVerticalScrollCollectionView = {
         let layout = UICollectionViewFlowLayout()
-         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10.scale
-       
-        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+         layout.scrollDirection = .vertical
+         layout.minimumInteritemSpacing = 8.scale
+         layout.minimumLineSpacing = 8.scale
+        let collectionView = NoVerticalScrollCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
@@ -107,8 +102,8 @@ class PastGameCell: UICollectionViewCell {
          collectionView.showsVerticalScrollIndicator = false
          collectionView.showsHorizontalScrollIndicator = false
          collectionView.layer.masksToBounds = false
-
-        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+         collectionView.register(LuckyNumbersRowCollecitonViewCell.self, forCellWithReuseIdentifier: LuckyNumbersRowCollecitonViewCell.reuseIdentifier)
+       
          collectionView.layer.masksToBounds = false
         return collectionView
     }()
@@ -144,6 +139,11 @@ extension PastGameCell {
         
         if let image = UIImage(named:  myLuckyNumbers != [] ? "pastDrawDefBcg" : "pastDrawNoLuckyNumbers") {
             backgroundImageView.image = image
+            if myLuckyNumbers.count > 5 {
+                if let image = UIImage(named: "OnboardingBackground") {
+                    backgroundImageView.image = image
+                }
+            }
         }
        
         let dateFormatter = DateFormatter()
@@ -410,18 +410,18 @@ private extension PastGameCell {
 
             
             // Winning Numbers CollectionView Constraints
-            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 12.scale),
+            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 8.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             winningNumbersCollectionViewHeightConstraint,
 
             // Winning Numbers Title Label Constraints
-            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 18.scale),
+            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 23.scale),
             winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
 
             // Dashed Line View Constraints
-            dashedLineImageView.topAnchor.constraint(equalTo: winningNumbersTitleLabel.bottomAnchor, constant: 25.scale),
+            dashedLineImageView.topAnchor.constraint(equalTo: winningNumbersTitleLabel.bottomAnchor, constant: 17.scale),
             dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
             dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
             dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
@@ -433,7 +433,7 @@ private extension PastGameCell {
             myLuckyNumbersCollectionViewHeightConstraint,
 
             // My Lucky Numbers Title Label Constraints
-            myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.scale),
+            myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
             myLuckyNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
         ])
@@ -443,17 +443,25 @@ private extension PastGameCell {
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == winningNumbersCollectionView {
+            return  CGSize(width: 40.scale, height: 40.scale)
+        } else {
+            let viewWidth = frame.width
+            return CGSize(width: viewWidth , height: 40.scale)
+        }
+    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 1.scale,
+        return UIEdgeInsets(top: 0.scale,
                             left: 0.scale,
-                            bottom: 10.scale,
+                            bottom: 0.scale,
                             right:  0.scale)
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == winningNumbersCollectionView {
             return winningNumbers.count ?? 0
         } else {
-            return myLuckyNumbers.count ?? 0
+            return myLuckyNumbers != [] ? 1 : 0
         }
     }
     
@@ -461,23 +469,28 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         if collectionView == winningNumbersCollectionView {
             return winningNumbers.first?.count ?? 0
         } else {
-            return myLuckyNumbers.first?.count ?? 0
+            return myLuckyNumbers.count ?? 0
         }
     }
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
-            fatalError("Could not dequeue cell with identifier: NumberCell")
-        }
-        
         if collectionView == winningNumbersCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
+                fatalError("Could not dequeue cell with identifier: NumberCell")
+            }
             configureCellForWinningNumbers(cell, at: indexPath)
-        } else {
-            configureCellForLuckyNumbers(cell, at: indexPath)
+            return cell
+        }
+        if collectionView == myLuckyNumbersCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LuckyNumbersRowCollecitonViewCell.reuseIdentifier, for: indexPath) as? LuckyNumbersRowCollecitonViewCell else {
+                fatalError("Could not dequeue cell with identifier: LuckyNumbersRowCollecitonViewCell")
+            }
+            cell.numbers = myLuckyNumbers[indexPath.item]
+            return cell
         }
         
-        return cell
+        fatalError("Not implemented")
     }
     
     private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
