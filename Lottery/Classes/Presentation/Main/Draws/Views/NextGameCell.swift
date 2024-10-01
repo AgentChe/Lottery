@@ -83,7 +83,7 @@ class NextGameCell: UICollectionViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-        logoImageView.kf.cancelDownloadTask()
+    //    logoImageView.kf.cancelDownloadTask()
     }
     
 }
@@ -91,7 +91,7 @@ class NextGameCell: UICollectionViewCell {
 // MARK: - Public Methods
 extension NextGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
-        logoImageView.image = UIImage(named: "placeholderImage")
+        logoImageView.image = UIImage(named: "")
         logoImageView.contentMode = .scaleAspectFit
         
         

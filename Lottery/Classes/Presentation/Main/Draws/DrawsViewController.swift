@@ -17,6 +17,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     var isScratchScan: Bool = false
     private var previousVC: UIViewController?
     var menuButton: UIButton!
+    var changeStateButton: UIButton!
     var scanOptionButton: UIButton!
     var luckyNumbersButton: UIButton!
     var ticketsButton: UIButton!
@@ -143,11 +144,11 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupCollectionViews()
         setupSegmentedControl()
         setupUpperMenuView()
+        
         //setupScanButton()  // Setup scan button
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
         setupPremiumAnimationView()
-        
        //  setupNavigationBarTitle()
     }
     
@@ -156,6 +157,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var hasRecordedInitialOffset = false // Flag to track the first scroll event
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
         let currentOffset = scrollView.contentOffset.y
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
@@ -169,7 +171,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 
         if deltaY > 0 { //shrink
             if currentOffset >= initialContentOffset {
-                print("@@ \(currentOffset) \(initialContentOffset)")
+               
                 
                 if upperMenuHeightConstraint.constant <  maxUpperMenuHeight + 45.scale - 10.scale {
                     menuButton.alpha = 0
@@ -181,10 +183,10 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         }
          if deltaY < 0 {
             
-            if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale{
+            if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale {
                 menuButton.alpha = 1
             }
-            upperMenuHeightConstraint.constant = min(maxUpperMenuHeight + 45.scale , upperMenuHeightConstraint.constant + abs(deltaY))
+            upperMenuHeightConstraint.constant = min(maxUpperMenuHeight + 45.scale, upperMenuHeightConstraint.constant + abs(deltaY))
         }
         view.layoutIfNeeded()
         previousScrollOffset = currentOffset
@@ -230,105 +232,119 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
            let vc = PaygateViewController.make()
            present(vc, animated: true)
        }
-    func setupUpperMenuView() {
-        // Set up upperMenuView as an image view
-        upperMenuView = UIImageView()
-        upperMenuView.contentMode = .scaleAspectFill
-        upperMenuView.layer.masksToBounds = true
-        if let image = UIImage(named: "upperMenuButtonImageView") {
-            upperMenuView.image = image
-        }
-        upperMenuView.isUserInteractionEnabled = true
-        upperMenuView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(upperMenuView)
-        
-        // Add buttons with respective images
-        scanOptionButton = createButton(imageName: "ScanButtonImage")
-        luckyNumbersButton = createButton(imageName: "NumbersButtonImage")
-        ticketsButton = createButton(imageName: "MyTicketsButtonImage")
-        menuButton = createMenuButton(imageName: "whiteBurger")
-        scanOptionButton.addTarget(self, action: #selector(chooseScanOption), for: .touchUpInside)
-        luckyNumbersButton.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
-        ticketsButton.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
-        menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
-        
-        // Add labels for the buttons
-        let label1 = createLabel(text: "DrawsViewController.Scan".localized)
-        let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
-        let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
-        
-        // Add the menu button
-        
-        
-        
-        upperMenuView.addSubview(scanOptionButton)
-        upperMenuView.addSubview(luckyNumbersButton)
-        upperMenuView.addSubview(ticketsButton)
-        upperMenuView.addSubview(menuButton)
-        upperMenuView.addSubview(label1)
-        upperMenuView.addSubview(label2)
-        upperMenuView.addSubview(label3)
-        
-        
-        // Set up constraints for upperMenuView
-        if #available(iOS 11.0, *) {
-            let window = UIApplication.shared.keyWindow
-            let topPadding = window?.safeAreaInsets.top ?? 0
-            
-            upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
-            
-            NSLayoutConstraint.activate([
-                upperMenuView.topAnchor.constraint(equalTo: view.topAnchor),
-                upperMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                upperMenuHeightConstraint
-            ])
-            
-            upperMenuView.alpha = 1
-        }
-        
-        // Set constraints for the buttons and labels with reduced horizontal spacing
-        NSLayoutConstraint.activate([
-            // Button 1
-            scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
-            scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
-            scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
-            
-            // Label 1
-            label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
-            label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
-            
-            // Button 2 (center button)
-            ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor, constant: 0),
-            ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
-            ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
-           
-            label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
-            label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
-            
-        
-            
-            // Button 3
-            luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
-            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-            luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
-            luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
-          
-            label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
-            label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
-            
-            //
-            // Menu Button
-            menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
-            menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
-            menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
-            menuButton.heightAnchor.constraint(equalToConstant: 60.scale)
-        ])
-    }
+     func setupUpperMenuView() {
+         // Set up upperMenuView as an image view
+         upperMenuView = UIImageView()
+         upperMenuView.contentMode = .scaleAspectFill
+         upperMenuView.layer.masksToBounds = true
+         if let image = UIImage(named: "upperMenuButtonImageView") {
+             upperMenuView.image = image
+         }
+         upperMenuView.isUserInteractionEnabled = true
+         upperMenuView.translatesAutoresizingMaskIntoConstraints = false
+         view.addSubview(upperMenuView)
+         
+         // Add buttons with respective images
+         scanOptionButton = createButton(imageName: "ScanButtonImage")
+         luckyNumbersButton = createButton(imageName: "NumbersButtonImage")
+         ticketsButton = createButton(imageName: "MyTicketsButtonImage")
+         menuButton = createMenuButton(imageName: "whiteBurger")
+         scanOptionButton.addTarget(self, action: #selector(chooseScanOption), for: .touchUpInside)
+         luckyNumbersButton.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
+         ticketsButton.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
+         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
+         
+         // Create and configure the changeStateButton with the image
+         changeStateButton = UIButton(type: .custom)
+         if let changeStateImage = UIImage(named: "changeState") {
+             changeStateButton.setImage(changeStateImage, for: .normal)
+         }
+         changeStateButton.translatesAutoresizingMaskIntoConstraints = false
+         upperMenuView.addSubview(changeStateButton)
+         changeStateButton.addTarget(self, action: #selector(changeStateButtonTapped), for: .touchUpInside)
+         
+         // Add labels for the buttons
+         let label1 = createLabel(text: "DrawsViewController.Scan".localized)
+         let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
+         let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
+         
+         // Add buttons and labels to upperMenuView
+         upperMenuView.addSubview(scanOptionButton)
+         upperMenuView.addSubview(luckyNumbersButton)
+         upperMenuView.addSubview(ticketsButton)
+         upperMenuView.addSubview(menuButton)
+         upperMenuView.addSubview(label1)
+         upperMenuView.addSubview(label2)
+         upperMenuView.addSubview(label3)
+         
+         // Set up constraints for upperMenuView
+         if #available(iOS 11.0, *) {
+             let window = UIApplication.shared.keyWindow
+             let topPadding = window?.safeAreaInsets.top ?? 0
+             
+             upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
+             
+             NSLayoutConstraint.activate([
+                 upperMenuView.topAnchor.constraint(equalTo: view.topAnchor),
+                 upperMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                 upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                 upperMenuHeightConstraint
+             ])
+             
+             upperMenuView.alpha = 1
+         }
+         
+         // Set constraints for the buttons and labels with reduced horizontal spacing
+         NSLayoutConstraint.activate([
+             // Button 1
+             scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
+             scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+             scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
+             scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
+             
+             // Label 1
+             label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
+             label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
+             
+             // Button 2 (center button)
+             ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor),
+             ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+             ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
+             ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
+             
+             label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
+             label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
+             
+             // Button 3
+             luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
+             luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+             luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
+             luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
+             
+             label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
+             label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
+             
+             // Menu Button
+             menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
+             menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
+             menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
+             menuButton.heightAnchor.constraint(equalToConstant: 60.scale),
+             
+             // Change State Button
+             changeStateButton.trailingAnchor.constraint(equalTo: menuButton.trailingAnchor, constant: -16.scale),
+             changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -55.scale),
+             changeStateButton.widthAnchor.constraint(equalToConstant: 82.scale),
+             changeStateButton.heightAnchor.constraint(equalToConstant: 26.scale)
+         ])
+     }
+
+     @objc func changeStateButtonTapped() {
+         print("Change State button tapped")
+         // Add logic for changing state here
+     }
+
     @objc func chooseScanOption() {
-        if SessionManager().hasActiveSubscriptions() {
+        if !SessionManager().hasActiveSubscriptions() {
             // Create the dim view to darken the background
             dimView = UIView(frame: self.view.bounds)
             dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -695,6 +711,12 @@ extension DrawsViewController {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             
             let game = nextDraws[indexPath.item]
+            
+//            for lottery in self.lotteries {
+//                if lottery.id == game.lotteryId {
+//                    print("GAME - \(indexPath.item) - \(game.lotteryId) - \(lottery.name)")
+//                }
+//            }
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
                     cell.winningNumbers = pastDraw.winningNumbers ?? []
@@ -861,7 +883,18 @@ private extension DrawsViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let lotteries):
-                    self?.lotteries = lotteries
+                    self?.lotteries = []
+                    for lottery in lotteries {
+                        if let profile = self?.profile {
+                            if let profileLotteries = profile.lotteries {
+                                if profileLotteries.contains(lottery.id) {
+                                    self?.lotteries.append(lottery)
+                                }
+                            }
+                        }
+                      
+                    }
+                  
                     self?.fetchNextGames(for: stateId)
                     self?.fetchPastGames(for: stateId)
                 case .failure(let error):

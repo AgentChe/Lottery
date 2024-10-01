@@ -57,8 +57,18 @@ private extension SelectLotteriesViewController {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             switch result {
             case .success(let lotteries):
-                self?.lotteries = lotteries
-                self?.selectLotteryView.updateGames(lotteries)
+                for lottery in lotteries {
+                    if let stateId = self?.stateId {
+                        if lottery.avaliable_states.contains(stateId) {
+                            self?.lotteries.append(lottery)
+                        }
+                    }
+                }
+                if let lotteries = self?.lotteries {
+                    self?.selectLotteryView.updateGames(lotteries)
+                }
+
+                
             case .failure(let error):
                 self?.presentTryAgainViewController(with: error)
             }

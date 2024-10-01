@@ -15,6 +15,7 @@ final class ContentManager {
     enum Constants {
         static let stateCacheKey = "states_cache"
         static let lotteryCacheKey = "lotteries_cache"
+        static let lotteryPatternsCacheKey = "lottery_patterns_cache"
     }
     
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
@@ -93,6 +94,41 @@ extension ContentManager: ContentManagerProtocol {
             }
         }
     }
+    
+    func fetchLotteriesPattern(forceUpdate: Bool, completion: @escaping (Result<[LotteryPattern], Error>) -> Void) {
+           
+           
+        if !forceUpdate, let cachedPatterns: [LotteryPattern] = loadFromCache(forKey: Constants.lotteryPatternsCacheKey) {
+               completion(.success(cachedPatterns))
+               return
+           }
+           
+           guard let userToken = sessionManager.getSession()?.userToken else {
+               completion(.failure(ContentError(.notContent)))
+               return
+           }
+           
+           let request = FetchLotteriesPatternRequest(userToken: userToken)
+           let operation = APIOperation(endPoint: request)
+           let operationId = UUID().uuidString
+           Opertaions.contentManagerOprations[operationId] = operation
+           
+           operation.execute(dispatcher: dispatcher) { result, error in
+               Opertaions.contentManagerOprations.removeValue(forKey: operationId)
+               
+               DispatchQueue.main.async {
+                   if let error = error {
+                       completion(.failure(error))
+                   } else if let patternsArray = result as? [[String: Any]] {
+                       let patterns = patternsArray.compactMap { LotteryPattern(response: $0) }
+                       self.saveToCache(data: patterns, forKey: Constants.lotteryPatternsCacheKey)
+                       completion(.success(patterns))
+                   } else {
+                       completion(.failure(ContentError(.notContent)))
+                   }
+               }
+           }
+       }
 }
 
 // MARK: - Private Methods

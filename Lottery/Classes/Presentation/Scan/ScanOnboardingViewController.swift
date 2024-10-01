@@ -114,6 +114,7 @@ final class ScanOnboardingViewController: UIViewController {
             if !fromMenu {
                 self.completeOnboarding()
             } else {
+               
                 saveProfile()
             }
         }
@@ -182,6 +183,29 @@ final class ScanOnboardingViewController: UIViewController {
                     self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
                     self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
                     let rootViewController =  self?.navigationController?.viewControllers.first
+                    Task {
+                        let gamesManager = GamesManager()
+                        
+                        async let nextGamesResult = gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                            
+                        }
+                        async let pastGamesResult = gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                            
+                        }
+                        
+                        // Wait for both results to complete
+                        do {
+                            let nextGames = try await nextGamesResult
+                            let pastGames = try await pastGamesResult
+                            
+                            // Process both results
+                            // Handle nextGames and pastGames here
+                        } catch {
+                            // Handle error
+                            self?.presentTryAgainViewController(with: ContentError(.notContent))
+                            return
+                        }
+                    }
                     self?.navigationController?.popToRootViewController(animated: true)
                     //                    delay(0.7) {
                     //                        rootViewController?.dismiss(animated: true)
