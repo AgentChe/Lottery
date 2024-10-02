@@ -175,6 +175,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 
                 if upperMenuHeightConstraint.constant <  maxUpperMenuHeight + 45.scale - 10.scale {
                     menuButton.alpha = 0
+                    changeStateButton.alpha = 0
                 }
                 
                 upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
@@ -185,6 +186,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             
             if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale {
                 menuButton.alpha = 1
+                changeStateButton.alpha = 1
+                
             }
             upperMenuHeightConstraint.constant = min(maxUpperMenuHeight + 45.scale, upperMenuHeightConstraint.constant + abs(deltaY))
         }
@@ -331,8 +334,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
              menuButton.heightAnchor.constraint(equalToConstant: 60.scale),
              
              // Change State Button
-             changeStateButton.trailingAnchor.constraint(equalTo: menuButton.trailingAnchor, constant: -16.scale),
-             changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -55.scale),
+             changeStateButton.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor, constant: -0.scale),
+             changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -49.scale),
              changeStateButton.widthAnchor.constraint(equalToConstant: 82.scale),
              changeStateButton.heightAnchor.constraint(equalToConstant: 26.scale)
          ])
@@ -341,6 +344,20 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
      @objc func changeStateButtonTapped() {
          print("Change State button tapped")
          // Add logic for changing state here
+         let scanOnboardingViewController = ScanOnboardingViewController.make()
+         scanOnboardingViewController.fromDrawsViewController = true
+         
+         // Check if the current view controller is embedded in a navigation controller
+         if let navigationController = self.navigationController {
+             navigationController.pushViewController(scanOnboardingViewController, animated: true)
+             if let navigationController = getRootViewController() as? NavigationController,
+                let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                 updateMainViewControllerConstraints(for: mainViewController)
+             }
+         } else {
+             // If not, present the view controller modally as a fallback
+             present(scanOnboardingViewController, animated: true, completion: nil)
+         }
      }
 
     @objc func chooseScanOption() {
