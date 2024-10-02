@@ -26,7 +26,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         contentManager.fetchLotteries(forceUpdate: true)  { [weak self] result in
         }
         contentManager.fetchLotteriesPattern(forceUpdate: true) { [weak self] result in
-            print(result)
+            
         }
         
         window = UIWindow(windowScene: windowScene)

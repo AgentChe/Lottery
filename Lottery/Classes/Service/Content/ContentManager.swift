@@ -95,7 +95,7 @@ extension ContentManager: ContentManagerProtocol {
         }
     }
     
-    func fetchLotteriesPattern(forceUpdate: Bool, completion: @escaping (Result<[LotteryPattern], Error>) -> Void) {
+    func fetchLotteriesPattern(forceUpdate: Bool,stateId: Int? = nil, completion: @escaping (Result<[LotteryPattern], Error>) -> Void) {
            
            
         if !forceUpdate, let cachedPatterns: [LotteryPattern] = loadFromCache(forKey: Constants.lotteryPatternsCacheKey) {
@@ -108,7 +108,7 @@ extension ContentManager: ContentManagerProtocol {
                return
            }
            
-           let request = FetchLotteriesPatternRequest(userToken: userToken)
+           let request = FetchLotteriesPatternRequest(stateId: stateId, userToken: userToken)
            let operation = APIOperation(endPoint: request)
            let operationId = UUID().uuidString
            Opertaions.contentManagerOprations[operationId] = operation

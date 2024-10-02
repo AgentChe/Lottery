@@ -6,6 +6,7 @@
 //
 
 struct FetchLotteriesPatternRequest: EndPoint {
+    let stateId: Int?
     let userToken: String
     
     var path: String {
@@ -17,10 +18,14 @@ struct FetchLotteriesPatternRequest: EndPoint {
     }
     
     var parameters: [String: Any] {
-        [
+        var params: [String: Any] = [
             "api_key": GlobalDefinitions.apiKey,
             "user_token": userToken
         ]
+        if let stateId = stateId {
+            params["state_id"] = "\(stateId)"
+        }
+        return params
     }
     
     var headers: [String : String] {
