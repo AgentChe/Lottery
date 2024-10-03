@@ -9,6 +9,7 @@ import Foundation
 protocol ContentManagerProtocol {
     func fetchStates(forceUpdate: Bool, completion: @escaping (Result<[State], Error>) -> Void)
     func fetchLotteries(forceUpdate: Bool, stateId: Int?, completion: @escaping (Result<[Lottery], Error>) -> Void)
+    func fetchLotteriesPattern(forceUpdate: Bool, stateId: Int?, completion: @escaping (Result<[LotteryPattern], Error>) -> Void)
 }
 
 final class ContentManager {

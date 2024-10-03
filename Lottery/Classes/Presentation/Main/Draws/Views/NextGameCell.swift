@@ -12,6 +12,7 @@ import Kingfisher
 class NextGameCell: UICollectionViewCell {
     
     private var backgroundImageView = UIImageView()
+    var bonusIdx: [Int] = []
     private let whiteBackgroundView = UIView()
     private let logoImageView = UIImageView()
     var winningNumbers: [[Int]] = []
@@ -83,7 +84,7 @@ class NextGameCell: UICollectionViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-    //    logoImageView.kf.cancelDownloadTask()
+        //    logoImageView.kf.cancelDownloadTask()
     }
     
 }
@@ -442,9 +443,7 @@ extension NextGameCell:  UICollectionViewDataSource, UICollectionViewDelegateFlo
     private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
         let number = winningNumbers[indexPath.section][indexPath.item]
         
-        var lastIndex = winningNumbers[0].count - 1
-        
-        if indexPath.item == lastIndex {
+        if bonusIdx.contains(indexPath.item){
             cell.numberLabel.text = String(number)
             cell.backgroundViewContainer.backgroundColor = Appearance.main100
             cell.backgroundViewContainer.alpha = 1

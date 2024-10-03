@@ -9,7 +9,10 @@ import UIKit
 
 class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     static let reuseIdentifier = "LuckyNumbersRowCollecitonViewCell"
-    
+    var bonusIdx: [Int] = []
+    var winningNumbers: [[Int]] = []
+    var myLuckyNumbers: [[Int]] = []
+    var indexPath: IndexPath!
     var numbers: [Int] = []
 
     lazy var myLuckyNumbersCollectionView: UICollectionView = {
@@ -27,7 +30,10 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
         return collectionView
     }()
-
+    func config() {
+        numbers = myLuckyNumbers[indexPath.item]
+        myLuckyNumbersCollectionView.reloadData()
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
@@ -59,11 +65,54 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as! NumberCell
         if numbers.count > indexPath.item {
             let number = numbers[indexPath.item]
-            cell.configure(with: "\(number)")
+            configureCell(cell, withNumber: number, comparisonArray: winningNumbers, indexPath: indexPath)
+            if bonusIdx.contains(indexPath.item) {
+                for winNumArray in winningNumbers {
+                    if winNumArray.last != number {
+                        cell.numberLabel.textColor = Appearance.main100
+                        cell.layer.borderColor = Appearance.main100.cgColor
+                        cell.backgroundViewContainer.backgroundColor = Appearance.mono100
+                        cell.backgroundViewContainer.alpha = 0.5
+                    }
+                }
+            }
         }
         return cell
     }
+    private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
+        if comparisonArray.count == 0 {
+            return
 
+        }
+        var lastIndex = comparisonArray[0].count - 1
+        if bonusIdx.contains(indexPath.item) {
+         
+        } else {
+            cell.numberLabel.textColor = Appearance.mono100
+        }
+        
+        
+        let allNumbers = Set(comparisonArray.flatMap({ $0 }))
+        let isHighlight = allNumbers.contains(number)
+        cell.configure(with: String(number))
+        cell.backgroundViewContainer.backgroundColor = isHighlight ? Appearance.main600 : Appearance.mono100
+        if cell.backgroundViewContainer.backgroundColor  == Appearance.main600 {
+            cell.numberLabel.textColor = Appearance.mono200
+        }
+    
+        cell.backgroundViewContainer.alpha = isHighlight ? 1 : 0.5
+       
+        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
+      
+        if bonusIdx.contains(indexPath.item) {
+            cell.backgroundViewContainer.backgroundColor = Appearance.main100
+            cell.backgroundViewContainer.alpha = 1
+            cell.numberLabel.textColor = Appearance.mono100
+            cell.layer.borderColor = UIColor.clear.cgColor
+        } else {
+            
+        }
+    }
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         NotificationCenter.default.post(name: .syncScroll, object: nil, userInfo: ["offset": scrollView.contentOffset])

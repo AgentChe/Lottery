@@ -15,6 +15,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     var dimView: UIView!
     var isDrawScan: Bool = false
     var isScratchScan: Bool = false
+    var lotteryPatterns: [LotteryPattern] = []
     private var previousVC: UIViewController?
     var menuButton: UIButton!
     var changeStateButton: UIButton!
@@ -49,13 +50,33 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         }
        setupNavigationBarTitle()
        fetchStateAndGames()
+       
+    
         isDrawScan = false
         isScratchScan = false
         
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
     }
-    
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: true, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    // Reload any UI or update any data structures as necessary
+                    print("Successfully fetched lottery patterns: \(patterns)")
+                    if let stateId = stateId {
+                        self?.fetchNextGames(for: stateId)
+                        self?.fetchPastGames(for: stateId)
+                    }
+                    
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
     private var contentManager: ContentManagerProtocol = ContentManager()
@@ -734,11 +755,14 @@ extension DrawsViewController {
 //                    print("GAME - \(indexPath.item) - \(game.lotteryId) - \(lottery.name)")
 //                }
 //            }
+            
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
+                    if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == game.lotteryId }.first {
+                        cell.bonusIdx = pattern.bonusIdx
+                    }
                     cell.winningNumbers = pastDraw.winningNumbers ?? []
                     cell.winningNumbersCollectionView.reloadData()
-                    
                 }
             }
             
@@ -748,7 +772,10 @@ extension DrawsViewController {
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
-            
+            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == game.lotteryId }.first {
+                print("BonusIdx:\(pattern.bonusIdx), lotteryId: \(game.lotteryId)")
+                cell.bonusIdx = pattern.bonusIdx
+            }
             cell.configure(game: game, lotteries: lotteries)
          
             //  cell.prepareForReuse()
@@ -911,9 +938,8 @@ private extension DrawsViewController {
                         }
                       
                     }
-                  
-                    self?.fetchNextGames(for: stateId)
-                    self?.fetchPastGames(for: stateId)
+                    self?.fetchLotteriesPatterns(for: stateId)
+                   
                 case .failure(let error):
                     print("Failed to fetch lotteries: \(error)")
                 }

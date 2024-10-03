@@ -69,7 +69,7 @@ extension GamesManager: GamesManagerProtocol {
 
         operation.execute(dispatcher: dispatcher) { result, error in
             Opertaions.gamesManagerOprations.removeValue(forKey: operationId)
-            print("api/nextGames")
+            
             if let error = error {
                 completion(.failure(error))
             } else if let gamesArray = result as? [[String: Any]] {

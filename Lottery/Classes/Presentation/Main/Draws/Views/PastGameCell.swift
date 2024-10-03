@@ -13,7 +13,7 @@ class PastGameCell: UICollectionViewCell {
     private let whiteBackgroundView = UIView()
     var whiteBackgroundTopConstraint: NSLayoutConstraint!
     var whiteBackgroundHeightConstraint: NSLayoutConstraint!
-    
+    var bonusIdx: [Int] = []
     
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
@@ -131,7 +131,7 @@ class PastGameCell: UICollectionViewCell {
 // MARK: - Public Methods
 extension PastGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
-        logoImageView.image = UIImage(named: "placeholderImage")
+        logoImageView.image = UIImage(named: "")
         logoImageView.contentMode = .scaleAspectFit
         myLuckyNumbers = game.myLuckyNumbers ?? []
         winningNumbers = game.winningNumbers ?? []
@@ -473,7 +473,6 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         }
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == winningNumbersCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
@@ -486,7 +485,11 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LuckyNumbersRowCollecitonViewCell.reuseIdentifier, for: indexPath) as? LuckyNumbersRowCollecitonViewCell else {
                 fatalError("Could not dequeue cell with identifier: LuckyNumbersRowCollecitonViewCell")
             }
-            cell.numbers = myLuckyNumbers[indexPath.item]
+            cell.bonusIdx = bonusIdx
+            cell.indexPath = indexPath
+            cell.winningNumbers = winningNumbers
+            cell.myLuckyNumbers = myLuckyNumbers
+            cell.config()
             return cell
         }
         
@@ -498,7 +501,7 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         let number = winningNumbers[indexPath.section][indexPath.item]
         var lastIndex = winningNumbers[0].count - 1
         
-        if indexPath.item == lastIndex {
+        if bonusIdx.contains(indexPath.item){
             cell.numberLabel.text = String(number)
             cell.backgroundViewContainer.backgroundColor = Appearance.main100
             cell.numberLabel.textColor = Appearance.mono100
@@ -557,7 +560,7 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
        
         cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
       
-        if indexPath.item == lastIndex {
+        if bonusIdx.contains(indexPath.item){
             cell.backgroundViewContainer.backgroundColor = Appearance.main100
             cell.backgroundViewContainer.alpha = 1
             cell.numberLabel.textColor = Appearance.mono100
@@ -565,8 +568,6 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
         } else {
             
         }
-        
-      
     }
 }
 

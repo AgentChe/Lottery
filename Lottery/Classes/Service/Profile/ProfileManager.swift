@@ -84,6 +84,8 @@ extension ProfileManager: ProfileManagerProtocol {
             complete(.failure(SignError.tokenNotFound))
             return
         }
+        
+        
 
         let request = GetProfileRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
