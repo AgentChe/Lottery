@@ -10,6 +10,8 @@ import UIKit
 class AddScanTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var lottery: Lottery?
     var ticket: Ticket?
+    private var contentManager: ContentManagerProtocol = ContentManager()
+    var lotteryPatterns: [LotteryPattern] = []
     var numbersStringArray: [[String]] = [] {
         didSet {
             updateSaveButtonState()
@@ -85,12 +87,27 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
          navigationController?.navigationBar.backgroundColor = .clear
          navigationController?.navigationBar.isUserInteractionEnabled = false
     }
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    // Reload any UI or update any data structures as necessary
+                    self?.collectionView.reloadData()
+                    print("Successfully fetched lottery patterns: \(patterns)")
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
         setupNavigationBar()
         setupNavigationBarTitle()
-        
+        fetchLotteriesPatterns()
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         
@@ -272,9 +289,10 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanAddTicketNumbersEditCell", for: indexPath) as! ScanAddTicketNumbersEditCell
         if let ticket = self.ticket, let lottery = self.lottery {
-            
+            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == lottery.id }.first {
+                cell.bonusIdx = pattern.bonusIdx
+            }
             cell.configure(ticket: ticket, lottery: lottery, lotteries: lotteries, numbersStringArray: numbersStringArray)
-            
         }
         cell.delegate = self
         cell.parentvc = self

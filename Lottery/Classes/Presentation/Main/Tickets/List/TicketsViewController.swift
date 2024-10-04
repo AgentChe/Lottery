@@ -634,7 +634,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+        if !SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             let scanOnboardingViewController = ScanOnboardingViewController.make()
             

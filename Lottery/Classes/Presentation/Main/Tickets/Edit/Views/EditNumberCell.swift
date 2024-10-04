@@ -18,6 +18,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
     weak var delegate: EditNumberCellDelegate?
     var indexPath: IndexPath?
+    var bonusIdx: [Int] = []
     var numberOfCells: Int? {
         didSet {
             if let numberOfCells = numberOfCells {
@@ -116,7 +117,7 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         let attributedText = NSAttributedString(string: displayText, attributes: underlineAttribute)
         numberTextField.attributedText = attributedText
         
-        if isLastInRow {
+        if  bonusIdx.contains(indexPath.item) {
             // Apply the special background and text color for the last cell in the row
             backgroundColor = Appearance.main100
             numberTextField.textColor = Appearance.mono100
