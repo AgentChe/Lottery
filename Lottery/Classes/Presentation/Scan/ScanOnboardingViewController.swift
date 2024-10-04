@@ -117,9 +117,7 @@ final class ScanOnboardingViewController: UIViewController {
             if !fromMenu {
                 self.completeOnboarding()
             } else {
-                if fromMenu {
-                    saveProfile(selectedLotteries)
-                }
+                saveProfile(selectedLotteries)
             }
         }
         
@@ -180,20 +178,22 @@ final class ScanOnboardingViewController: UIViewController {
         profileManager.setProfile(lotteries: selectedLotteries, state: stateId, forceUpdate: false) { [weak self] result in
             switch result {
             case .success:
-                if !(self?.fromMenu ?? false) || !(self?.fromDrawsViewController ?? false) {
+                if !(self?.fromMenu ?? false) && !(self?.fromDrawsViewController ?? false) {
                     let nextStep = self?.determineNextStep() ?? .main
                     self?.goToNext(at: nextStep)
                 } else {
-                    self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
-                    self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
+                    if self?.fromMenu == true {
+                        self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
+                        self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
+                    }
                     let rootViewController =  self?.navigationController?.viewControllers.first
                     Task {
                         let gamesManager = GamesManager()
                         
-                        async let nextGamesResult = gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                        async let nextGamesResult = gamesManager.fetchNextGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
                             
                         }
-                        async let pastGamesResult = gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                        async let pastGamesResult = gamesManager.fetchPastGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
                             
                         }
                         

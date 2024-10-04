@@ -174,6 +174,10 @@ extension PastGameCell {
         whiteBackgroundHeightConstraint.isActive = false
         whiteBackgroundHeightConstraint =  whiteBackgroundView.heightAnchor.constraint(equalToConstant: ( game.lotteryId == 1 || game.lotteryId == 4) ? 116.scale : 144.scale)
         whiteBackgroundHeightConstraint.isActive = true
+        
+        jackpotTitleTopConstraint.isActive = false
+        jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 10.scale)
+        jackpotTitleTopConstraint.isActive = true
         setNeedsLayout()
         
         for lottery in lotteries {

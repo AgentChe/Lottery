@@ -50,13 +50,14 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         }
        setupNavigationBarTitle()
        fetchStateAndGames()
-       
+    
     
         isDrawScan = false
         isScratchScan = false
         
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
+        
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: true, stateId: nil) { [weak self] result in
@@ -768,6 +769,7 @@ extension DrawsViewController {
             
             cell.configure(game: game, lotteries: lotteries)
             cell.layer.cornerRadius = 20.scale
+            cell.setNeedsLayout()
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
@@ -793,6 +795,7 @@ extension DrawsViewController {
                     cell.myLuckyNumbersTitleLabel.alpha = 1
                 }
             }
+            cell.setNeedsLayout()
             
             return cell
         }
