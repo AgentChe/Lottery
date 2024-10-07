@@ -186,8 +186,17 @@ final class ScanOnboardingViewController: UIViewController {
                         self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
                         self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
                     }
+                
                     let rootViewController =  self?.navigationController?.viewControllers.first
                     Task {
+                        
+//                        let contentManager = ContentManager()
+//                     async let lotteriesResult =   contentManager.fetchLotteries(forceUpdate: true)  { [weak self] result in
+//                        }
+//                      async let lpResult = contentManager.fetchLotteriesPattern(forceUpdate: true) { [weak self] result in
+//                            
+//                        }
+                        
                         let gamesManager = GamesManager()
                         
                         async let nextGamesResult = gamesManager.fetchNextGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
@@ -201,6 +210,8 @@ final class ScanOnboardingViewController: UIViewController {
                         do {
                             let nextGames = try await nextGamesResult
                             let pastGames = try await pastGamesResult
+                         //   let ltteries = try await lotteriesResult
+                         //   let lp = try await lpResult
                             
                             // Process both results
                             // Handle nextGames and pastGames here

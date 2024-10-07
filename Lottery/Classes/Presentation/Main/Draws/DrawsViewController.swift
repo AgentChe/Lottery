@@ -71,7 +71,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
-        contentManager.fetchLotteriesPattern(forceUpdate: true, stateId: nil) { [weak self] result in
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let patterns):
@@ -398,7 +398,7 @@ extension DrawsViewController {
     }
     
     @objc func chooseScanOption() {
-        if !SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             // Create the dim view to darken the background
             dimView = UIView(frame: self.view.bounds)
             dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -898,7 +898,17 @@ private extension DrawsViewController {
                     //                            }
                     //                        }
                     //                    }
-                    self?.nextDraws = games
+                    self?.nextDraws = []
+                    for game in games {
+                        if let lotteries = self?.profile.lotteries {
+                            for lottery in lotteries{
+                                if  game.lotteryId == lottery {
+                                    self?.nextDraws.append(game)
+                                }
+                            }
+                        }
+                    }
+                    
                     if games.count != 0{
                         self?.noGamesAddedImageView.isHidden = true
                         self?.addButton.isHidden = true
@@ -932,7 +942,16 @@ private extension DrawsViewController {
                     //                            }
                     //                        }
                     //                    }
-                    self?.pastDraws = games//selectedGames
+                    self?.pastDraws = []
+                    for game in games {
+                        if let lotteries = self?.profile.lotteries {
+                            for lottery in lotteries{
+                                if  game.lotteryId == lottery {
+                                    self?.pastDraws.append(game)
+                                }
+                            }
+                        }
+                    }
                     delay(0.09) {
                         self?.pastDrawsCollectionView.reloadData()
                     }
