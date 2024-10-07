@@ -114,6 +114,7 @@
 		A3EF372D2C17BC8D00753C41 /* SettingsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */; };
 		A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37302C184DD600753C41 /* TicketsViewController.swift */; };
 		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
+		A3EF38202CB43D7E00D2C4B1 /* Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */; };
 		A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */; };
 		A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */; };
 		A3FC079F2C8A287100A668C5 /* ScanScratchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */; };
@@ -360,6 +361,7 @@
 		A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWebViewController.swift; sourceTree = "<group>"; };
 		A3EF37302C184DD600753C41 /* TicketsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsViewController.swift; sourceTree = "<group>"; };
 		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
+		A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operations.swift; sourceTree = "<group>"; };
 		A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScanOptionView.swift; sourceTree = "<group>"; };
 		A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimViewWithProgressBar.swift; sourceTree = SOURCE_ROOT; };
 		A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanScratchManager.swift; sourceTree = SOURCE_ROOT; };
@@ -1290,6 +1292,7 @@
 		DE42B1872BFF3CB100FF61B0 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */,
 				A3FF55552C07E09D00E81771 /* Content */,
 				DE42B20B2BFF576700FF61B0 /* Profile */,
 				A3FF55642C07E42000E81771 /* Games */,
@@ -1782,6 +1785,7 @@
 				A32749412C29859400E9F79A /* CGImagePropertyOrientation.swift in Sources */,
 				A3EF37232C174E1D00753C41 /* NumberCell.swift in Sources */,
 				A3FF55732C07E5A300E81771 /* Ticket.swift in Sources */,
+				A3EF38202CB43D7E00D2C4B1 /* Operations.swift in Sources */,
 				A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */,
 				A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,

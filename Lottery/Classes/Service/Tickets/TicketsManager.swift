@@ -29,18 +29,20 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Opertaions.ticketsManagerOprations[operationId] = operation
-        
+        Task {
+                  await Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
+        }
         operation.execute(dispatcher: dispatcher) { result, error in
-            Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
-            
-            if let error = error {
-                completion(.failure(error))
-            } else if let ticketsArray = result as? [[String: Any]] {
-                let tickets = ticketsArray.compactMap { Ticket(response: $0) }
-                completion(.success(tickets))
-            } else {
-                completion(.failure(ContentError(.notContent)))
+            Task {
+                await Operations.shared.removeTicketsManagerOperation(forKey: operationId)
+                if let error = error {
+                    completion(.failure(error))
+                } else if let ticketsArray = result as? [[String: Any]] {
+                    let tickets = ticketsArray.compactMap { Ticket(response: $0) }
+                    completion(.success(tickets))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
+                }
             }
         }
     }
@@ -49,51 +51,66 @@ extension TicketsManager: TicketsManagerProtocol {
             completion(.failure(ContentError(.notContent)))
             return
         }
+        
         let request = AddTicketRequest(userToken: userToken, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Opertaions.ticketsManagerOprations[operationId] = operation
+        
+        // Set the operation in the actor
+        Task {
+            await Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
+        }
         
         performRequest(request) { (result: Result<LotteryResponse, Error>) in
-            Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
+            // Remove the operation from the actor
+            Task {
+                await Operations.shared.removeTicketsManagerOperation(forKey: operationId)
+            }
+            
             switch result {
             case .success(let ticketResponse):
                 let ticket = ticketResponse.ticket()
-                completion(.success(ticket ))
-                
-                
+                completion(.success(ticket))
             case .failure:
                 completion(.failure(ContentError(.notContent)))
             }
-        }  
+        }
     }
     
-    func editTicket(  id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
-        guard let userToken = sessionManager.getSession()?.userToken else {
-            completion(.failure(ContentError(.notContent)))
-            return
-        }
-        let request = EditTicketRequest(userToken: userToken, id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
-        let operation = APIOperation(endPoint: request)
-        
-        let operationId = UUID().uuidString
-        Opertaions.ticketsManagerOprations[operationId] = operation
-        
-        performRequest(request) { (result: Result<LotteryResponse, Error>) in
-            Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
-            switch result {
-            case .success(let ticketResponse):
-                let ticket = ticketResponse.ticket()
-                completion(.success(ticket ))
-                
-                
-            case .failure:
-                completion(.failure(ContentError(.notContent)))
-            }
-        }
-
-    }
+    func editTicket(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
+           guard let userToken = sessionManager.getSession()?.userToken else {
+               completion(.failure(ContentError(.notContent)))
+               return
+           }
+           
+           let request = EditTicketRequest(userToken: userToken, id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
+           let operation = APIOperation(endPoint: request)
+           
+           let operationId = UUID().uuidString
+           
+           // Set the operation in the actor
+           Task {
+               await Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
+           }
+           
+           performRequest(request) { (result: Result<LotteryResponse, Error>) in
+               // Remove the operation from the actor
+               Task {
+                   await Operations.shared.removeTicketsManagerOperation(forKey: operationId)
+               }
+               
+               switch result {
+               case .success(let ticketResponse):
+                   let ticket = ticketResponse.ticket()
+                   completion(.success(ticket))
+               case .failure:
+                   completion(.failure(ContentError(.notContent)))
+               }
+           }
+       }
+    
+    
     func deleteTicket(id: Int, completion: @escaping (Result<ResultResponse, Error>) -> Void) {
           guard let userToken = sessionManager.getSession()?.userToken else {
               completion(.failure(ContentError(.notContent)))
@@ -101,12 +118,19 @@ extension TicketsManager: TicketsManagerProtocol {
           }
           
           let request = DeleteTicketRequest(userToken: userToken, id: id)
+          let operation = APIOperation(endPoint: request)
           let operationId = UUID().uuidString
           
-        Opertaions.ticketsManagerOprations[operationId] = APIOperation(endPoint: request)
+          // Set the operation in the actor
+          Task {
+              await Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
+          }
           
           performRequest(request) { (result: Result<ResultResponse, Error>) in
-              Opertaions.ticketsManagerOprations.removeValue(forKey: operationId)
+              // Remove the operation from the actor
+              Task {
+                  await Operations.shared.removeTicketsManagerOperation(forKey: operationId)
+              }
               
               switch result {
               case .success(let response):
@@ -121,10 +145,7 @@ extension TicketsManager: TicketsManagerProtocol {
               }
           }
       }
-
-    
-    
-}
+  }
 extension TicketsManager {
     private func performRequest<T: EndPoint, U: Codable>(_ endpoint: T, completion: @escaping (Result<U, Error>) -> Void) {
          let baseURL = GlobalDefinitions.domain
