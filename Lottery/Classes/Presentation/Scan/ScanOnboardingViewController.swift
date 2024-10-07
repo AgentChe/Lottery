@@ -210,6 +210,7 @@ final class ScanOnboardingViewController: UIViewController {
                             return
                         }
                     }
+                    
                     self?.navigationController?.popToRootViewController(animated: true)
                     //                    delay(0.7) {
                     //                        rootViewController?.dismiss(animated: true)

@@ -26,7 +26,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
     private var premiumAnimationView: LottieAnimationView!
-    let maxUpperMenuHeight: CGFloat = 165.scale // Maximum height of upperMenuView
+    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 165.scale : 135.scale // Maximum height of upperMenuView
     let minUpperMenuHeight: CGFloat = 115.scale
     
     let segmentedControlBackgroundView = UIView()
@@ -39,24 +39,35 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
+    func findSubviewsConnectedToNavigationBar() -> [UIView] {
+         var connectedSubviews: [UIView] = []
+
+         // Check if the view controller is embedded in a navigation controller
+         if let navigationController = self.navigationController {
+             // Iterate through the subviews of the navigation bar
+            let navigationBarSubviews = navigationController.navigationBar.subviews
+            connectedSubviews.append(contentsOf: navigationBarSubviews)
+             
+             // You may also want to check for other related views (like the toolbar)
+             if let toolbarSubviews = navigationController.toolbar?.subviews {
+                 connectedSubviews.append(contentsOf: toolbarSubviews)
+             }
+         }
+
+         return connectedSubviews
+     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if let navigationController = getRootViewController() as? NavigationController,
-           let mainViewController = navigationController.viewControllers.first as? MainViewController {
-            
-            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
-            
-        }
-       setupNavigationBarTitle()
-       fetchStateAndGames()
-    
-    
+        
+        setupNavigationBarTitle()
+        fetchStateAndGames()
+        
         isDrawScan = false
         isScratchScan = false
         
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
+        scrollViewDidScroll(nextDrawsCollectionView)
         
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
@@ -171,7 +182,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupNoGamesAddedImageView() // Setup NoGamesAdded image view
         setupLayoutConstraints()
         setupPremiumAnimationView()
-       //  setupNavigationBarTitle()
+        //  setupNavigationBarTitle()
     }
     
     private var previousScrollOffset: CGFloat = .zero
@@ -188,12 +199,12 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             initialContentOffset = currentOffset
             hasRecordedInitialOffset = true
         }
-       
+        
         let deltaY = currentOffset - previousScrollOffset
-
+        
         if deltaY > 0 { //shrink
             if currentOffset >= initialContentOffset {
-               
+                
                 
                 if upperMenuHeightConstraint.constant <  maxUpperMenuHeight + 45.scale - 10.scale {
                     menuButton.alpha = 0
@@ -202,9 +213,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 
                 upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
             }
-
+            
         }
-         if deltaY < 0 {
+        if deltaY < 0 {
             
             if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale {
                 menuButton.alpha = 1
@@ -219,169 +230,173 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 }
 
 // MARK: - UI Setup
- extension DrawsViewController {
-     private func setupPremiumAnimationView() {
-           // Initialize the Lottie animation view with the specified JSON file
-           premiumAnimationView = LottieAnimationView(name: "Premium")
-           premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
-           premiumAnimationView.contentMode = .scaleAspectFit
-           premiumAnimationView.loopMode = .loop // Ensure the animation loops
-           premiumAnimationView.play() // Start the animation
-           
-           // Add the animation view to the main view
-           view.addSubview(premiumAnimationView)
-           
-           // Set up the constraints to position the animation at the bottom-right
-           NSLayoutConstraint.activate([
-               premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
-               premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
-               premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale), // Adjust padding as needed
-               premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale) // Adjust bottom padding as needed
-           ])
-           
-           // Make the animation view tappable
-           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
-           premiumAnimationView.isUserInteractionEnabled = true
-           premiumAnimationView.addGestureRecognizer(tapGesture)
-         if SessionManager().hasActiveSubscriptions() {
-             premiumAnimationView.alpha = 0
-         } else {
-             premiumAnimationView.alpha = 1
-         }
-         
-       }
-       
-       // MARK: - Handle Tap Gesture
-       @objc private func handlePremiumAnimationTap() {
-           // Present the PaygateViewController when the animation view is tapped
-           let vc = PaygateViewController.make()
-           present(vc, animated: true)
-       }
-     func setupUpperMenuView() {
-         // Set up upperMenuView as an image view
-         upperMenuView = UIImageView()
-         upperMenuView.contentMode = .scaleAspectFill
-         upperMenuView.layer.masksToBounds = true
-         if let image = UIImage(named: "upperMenuButtonImageView") {
-             upperMenuView.image = image
-         }
-         upperMenuView.isUserInteractionEnabled = true
-         upperMenuView.translatesAutoresizingMaskIntoConstraints = false
-         view.addSubview(upperMenuView)
-         
-         // Add buttons with respective images
-         scanOptionButton = createButton(imageName: "ScanButtonImage")
-         luckyNumbersButton = createButton(imageName: "NumbersButtonImage")
-         ticketsButton = createButton(imageName: "MyTicketsButtonImage")
-         menuButton = createMenuButton(imageName: "whiteBurger")
-         scanOptionButton.addTarget(self, action: #selector(chooseScanOption), for: .touchUpInside)
-         luckyNumbersButton.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
-         ticketsButton.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
-         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
-         
-         // Create and configure the changeStateButton with the image
-         changeStateButton = UIButton(type: .custom)
-         if let changeStateImage = UIImage(named: "changeState") {
-             changeStateButton.setImage(changeStateImage, for: .normal)
-         }
-         changeStateButton.translatesAutoresizingMaskIntoConstraints = false
-         upperMenuView.addSubview(changeStateButton)
-         changeStateButton.addTarget(self, action: #selector(changeStateButtonTapped), for: .touchUpInside)
-         
-         // Add labels for the buttons
-         let label1 = createLabel(text: "DrawsViewController.Scan".localized)
-         let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
-         let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
-         
-         // Add buttons and labels to upperMenuView
-         upperMenuView.addSubview(scanOptionButton)
-         upperMenuView.addSubview(luckyNumbersButton)
-         upperMenuView.addSubview(ticketsButton)
-         upperMenuView.addSubview(menuButton)
-         upperMenuView.addSubview(label1)
-         upperMenuView.addSubview(label2)
-         upperMenuView.addSubview(label3)
-         
-         // Set up constraints for upperMenuView
-         if #available(iOS 11.0, *) {
-             let window = UIApplication.shared.keyWindow
-             let topPadding = window?.safeAreaInsets.top ?? 0
-             
-             upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
-             
-             NSLayoutConstraint.activate([
-                 upperMenuView.topAnchor.constraint(equalTo: view.topAnchor),
-                 upperMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                 upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                 upperMenuHeightConstraint
-             ])
-             
-             upperMenuView.alpha = 1
-         }
-         
-         // Set constraints for the buttons and labels with reduced horizontal spacing
-         NSLayoutConstraint.activate([
-             // Button 1
-             scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
-             scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-             scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
-             scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
-             
-             // Label 1
-             label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
-             label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
-             
-             // Button 2 (center button)
-             ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor),
-             ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-             ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
-             ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
-             
-             label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
-             label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
-             
-             // Button 3
-             luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
-             luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
-             luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
-             luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
-             
-             label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
-             label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
-             
-             // Menu Button
-             menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
-             menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
-             menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
-             menuButton.heightAnchor.constraint(equalToConstant: 60.scale),
-             
-             // Change State Button
-             changeStateButton.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor, constant: -0.scale),
-             changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -49.scale),
-             changeStateButton.widthAnchor.constraint(equalToConstant: 82.scale),
-             changeStateButton.heightAnchor.constraint(equalToConstant: 26.scale)
-         ])
-     }
-
-     @objc func changeStateButtonTapped() {
-         print("Change State button tapped")
-         // Add logic for changing state here
-         let scanOnboardingViewController = ScanOnboardingViewController.make()
-         scanOnboardingViewController.fromDrawsViewController = true
-         
-         // Check if the current view controller is embedded in a navigation controller
-         if let navigationController = self.navigationController {
-             navigationController.pushViewController(scanOnboardingViewController, animated: true)
-             if let navigationController = getRootViewController() as? NavigationController,
-                let mainViewController = navigationController.viewControllers.first as? MainViewController {
-                 updateMainViewControllerConstraints(for: mainViewController)
-             }
-         } else {
-             // If not, present the view controller modally as a fallback
-             present(scanOnboardingViewController, animated: true, completion: nil)
-         }
-     }
-
+extension DrawsViewController {
+    private func setupPremiumAnimationView() {
+        // Initialize the Lottie animation view with the specified JSON file
+        premiumAnimationView = LottieAnimationView(name: "Premium")
+        premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        premiumAnimationView.contentMode = .scaleAspectFit
+        premiumAnimationView.loopMode = .loop // Ensure the animation loops
+        premiumAnimationView.play() // Start the animation
+        
+        // Add the animation view to the main view
+        view.addSubview(premiumAnimationView)
+        
+        // Set up the constraints to position the animation at the bottom-right
+        NSLayoutConstraint.activate([
+            premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
+            premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
+            premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale), // Adjust padding as needed
+            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale) // Adjust bottom padding as needed
+        ])
+        
+        // Make the animation view tappable
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
+        premiumAnimationView.isUserInteractionEnabled = true
+        premiumAnimationView.addGestureRecognizer(tapGesture)
+        if SessionManager().hasActiveSubscriptions() {
+            premiumAnimationView.alpha = 0
+        } else {
+            premiumAnimationView.alpha = 1
+        }
+        
+    }
+    
+    // MARK: - Handle Tap Gesture
+    @objc private func handlePremiumAnimationTap() {
+        // Present the PaygateViewController when the animation view is tapped
+        let vc = PaygateViewController.make()
+        present(vc, animated: true)
+    }
+    
+    
+    func setupUpperMenuView() {
+        // Set up upperMenuView as an image view
+        upperMenuView = UIImageView()
+        upperMenuView.contentMode = .scaleAspectFill
+        upperMenuView.layer.masksToBounds = true
+        if let image = UIImage(named: "upperMenuButtonImageView") {
+            upperMenuView.image = image
+        }
+        upperMenuView.isUserInteractionEnabled = true
+        upperMenuView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(upperMenuView)
+        
+        
+        // Add buttons with respective images
+        scanOptionButton = createButton(imageName: "ScanButtonImage")
+        luckyNumbersButton = createButton(imageName: "NumbersButtonImage")
+        ticketsButton = createButton(imageName: "MyTicketsButtonImage")
+        menuButton = createMenuButton(imageName: "whiteBurger")
+        scanOptionButton.addTarget(self, action: #selector(chooseScanOption), for: .touchUpInside)
+        luckyNumbersButton.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
+        ticketsButton.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
+        menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
+        
+        // Create and configure the changeStateButton with the image
+        changeStateButton = UIButton(type: .custom)
+        if let changeStateImage = UIImage(named: "changeState") {
+            changeStateButton.setImage(changeStateImage, for: .normal)
+        }
+        changeStateButton.translatesAutoresizingMaskIntoConstraints = false
+        upperMenuView.addSubview(changeStateButton)
+        changeStateButton.addTarget(self, action: #selector(changeStateButtonTapped), for: .touchUpInside)
+        
+        // Add labels for the buttons
+        let label1 = createLabel(text: "DrawsViewController.Scan".localized)
+        let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
+        let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
+        
+        // Add buttons and labels to upperMenuView
+        upperMenuView.addSubview(scanOptionButton)
+        upperMenuView.addSubview(luckyNumbersButton)
+        upperMenuView.addSubview(ticketsButton)
+        upperMenuView.addSubview(menuButton)
+        upperMenuView.addSubview(label1)
+        upperMenuView.addSubview(label2)
+        upperMenuView.addSubview(label3)
+        
+        // Set up constraints for upperMenuView
+        if #available(iOS 11.0, *) {
+            let window = UIApplication.shared.keyWindow
+            let topPadding = window?.safeAreaInsets.top ?? 0
+            
+            upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
+            
+            NSLayoutConstraint.activate([
+                upperMenuView.topAnchor.constraint(equalTo: view.topAnchor),
+                upperMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                upperMenuHeightConstraint
+            ])
+            
+            upperMenuView.alpha = 1
+        }
+        
+        // Set constraints for the buttons and labels with reduced horizontal spacing
+        NSLayoutConstraint.activate([
+            // Button 1
+            scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
+            scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
+            
+            // Label 1
+            label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
+            label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
+            
+            // Button 2 (center button)
+            ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor),
+            ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
+            
+            label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
+            label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
+            
+            // Button 3
+            luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
+            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
+            luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
+            
+            label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
+            label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
+            
+            // Menu Button
+            menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
+            menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
+            menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
+            menuButton.heightAnchor.constraint(equalToConstant: 60.scale),
+            
+            // Change State Button
+            changeStateButton.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor, constant: -0.scale),
+            changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -49.scale),
+            changeStateButton.widthAnchor.constraint(equalToConstant: 82.scale),
+            changeStateButton.heightAnchor.constraint(equalToConstant: 26.scale)
+        ])
+    }
+    
+    @objc func changeStateButtonTapped() {
+        print("Change State button tapped")
+        // Add logic for changing state here
+        let scanOnboardingViewController = ScanOnboardingViewController.make()
+        scanOnboardingViewController.fromDrawsViewController = true
+        
+        // Check if the current view controller is embedded in a navigation controller
+        if let navigationController = self.navigationController {
+            navigationController.setNavigationBarHidden(false, animated: false)
+            navigationController.pushViewController(scanOnboardingViewController, animated: true)
+//            if let navigationController = getRootViewController() as? NavigationController,
+//               let mainViewController = navigationController.viewControllers.first as? MainViewController {
+//                updateMainViewControllerConstraints(for: mainViewController)
+//            }
+        } else {
+            // If not, present the view controller modally as a fallback
+            present(scanOnboardingViewController, animated: true, completion: nil)
+        }
+    }
+    
     @objc func chooseScanOption() {
         if !SessionManager().hasActiveSubscriptions() {
             // Create the dim view to darken the background
@@ -424,38 +439,38 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             let vc = PaygateViewController.make()
             present(vc, animated: true)
         }
-      }
-
-      @objc func dismissChooseScanOptionView(_ sender: UIButton) {
-          if let chooseScanOptionView = sender.superview as? ChooseScanOptionView {
-              // Animate the view back down off-screen
-              UIView.animate(withDuration: 0.3, animations: {
-                  chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
-                  self.dimView.alpha = 0 // Fade out the dim view
-              }, completion: { _ in
-                  chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
-                  self.dimView.removeFromSuperview() // Remove the dim view after animation
-              })
-          }
-      }
-
-      @objc func dismissScanOption() {
-          // Call the dismiss function when the dim view is tapped
-          dismissChooseScanOptionView(scanOptionButton)
-      }
-     func dismissAndPresentreScanDraw(chooseScanOptionView: UIView) {
-         
-         // Animate the view back down off-screen
-         UIView.animate(withDuration: 0.3, animations: {
-             chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
-             self.dimView.alpha = 0 // Fade out the dim view
-         }, completion: { _ in
-             chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
-             self.dimView.removeFromSuperview() // Remove the dim view after animation
-             self.rescanButtonTapped()
-         })
-         
-     }
+    }
+    
+    @objc func dismissChooseScanOptionView(_ sender: UIButton) {
+        if let chooseScanOptionView = sender.superview as? ChooseScanOptionView {
+            // Animate the view back down off-screen
+            UIView.animate(withDuration: 0.3, animations: {
+                chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
+                self.dimView.alpha = 0 // Fade out the dim view
+            }, completion: { _ in
+                chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
+                self.dimView.removeFromSuperview() // Remove the dim view after animation
+            })
+        }
+    }
+    
+    @objc func dismissScanOption() {
+        // Call the dismiss function when the dim view is tapped
+        dismissChooseScanOptionView(scanOptionButton)
+    }
+    func dismissAndPresentreScanDraw(chooseScanOptionView: UIView) {
+        
+        // Animate the view back down off-screen
+        UIView.animate(withDuration: 0.3, animations: {
+            chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
+            self.dimView.alpha = 0 // Fade out the dim view
+        }, completion: { _ in
+            chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
+            self.dimView.removeFromSuperview() // Remove the dim view after animation
+            self.rescanButtonTapped()
+        })
+        
+    }
     func dismissAndPresentScanDraw(chooseScanOptionView: UIView) {
         
         // Animate the view back down off-screen
@@ -475,6 +490,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         // Push the luckyNumbersVC when Numbers button is tapped
         if let navigationController = self.navigationController {
             navigationController.pushViewController(luckyNumbersController, animated: true)
+            navigationController.setNavigationBarHidden(false, animated: false)
         } else {
             // Present modally if not embedded in a navigation controller
             present(luckyNumbersVC, animated: true, completion: nil)
@@ -488,6 +504,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         // Push the myTicketsVC when My Tickets button is tapped
         if let navigationController = self.navigationController {
             navigationController.pushViewController(myTicketsController, animated: true)
+            navigationController.setNavigationBarHidden(false, animated: false)
         } else {
             // Present modally if not embedded in a navigation controller
             present(myTicketsVC, animated: true, completion: nil)
@@ -635,7 +652,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     
     func setupLayoutConstraints() {
-       
+        
         NSLayoutConstraint.activate([
             segmentedControlBackgroundView.topAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: 0),
             segmentedControlBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -655,7 +672,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             pastDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             pastDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
-
+            
             noGamesAddedImageView.widthAnchor.constraint(equalToConstant: 344.scale),
             noGamesAddedImageView.heightAnchor.constraint(equalToConstant: 235.scale),
             noGamesAddedImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -725,13 +742,13 @@ extension DrawsViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-     
+        
         let bottomInset: CGFloat =  SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
         
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
         
-        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale  , left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
+        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 40.scale : 70.scale)  , left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
     }
 }
 
@@ -751,11 +768,11 @@ extension DrawsViewController {
             
             let game = nextDraws[indexPath.item]
             
-//            for lottery in self.lotteries {
-//                if lottery.id == game.lotteryId {
-//                    print("GAME - \(indexPath.item) - \(game.lotteryId) - \(lottery.name)")
-//                }
-//            }
+            //            for lottery in self.lotteries {
+            //                if lottery.id == game.lotteryId {
+            //                    print("GAME - \(indexPath.item) - \(game.lotteryId) - \(lottery.name)")
+            //                }
+            //            }
             
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
@@ -779,13 +796,13 @@ extension DrawsViewController {
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.configure(game: game, lotteries: lotteries)
-         
+            
             //  cell.prepareForReuse()
             cell.layer.cornerRadius = 20.scale
             cell.layer.masksToBounds = true
             if let myLuckyNumbers = game.myLuckyNumbers {
-               
-        
+                
+                
                 
                 if myLuckyNumbers.isEmpty {
                     cell.dashedLineImageView.alpha = 0
@@ -809,16 +826,18 @@ private extension DrawsViewController {
         navigationItem.leftBarButtonItem = nil
         navigationItem.rightBarButtonItem = nil
         navigationItem.titleView = nil
-
+        
         // Make the navigation bar transparent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.navigationBar.isUserInteractionEnabled = false
-
+        
         // Optional: If you want to hide the navigation bar completely
-        // navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
     }
     
     @objc func handleMenuTap() {
@@ -939,10 +958,10 @@ private extension DrawsViewController {
                                 }
                             }
                         }
-                      
+                        
                     }
                     self?.fetchLotteriesPatterns(for: stateId)
-                   
+                    
                 case .failure(let error):
                     print("Failed to fetch lotteries: \(error)")
                 }
@@ -958,7 +977,7 @@ private extension DrawsViewController {
         if let navigationController = self.navigationController {
             
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
-            
+            navigationController.setNavigationBarHidden(false, animated: false)
             if let navigationController = getRootViewController() as? NavigationController,
                let mainViewController = navigationController.viewControllers.first as? MainViewController {
                 
@@ -987,6 +1006,7 @@ private extension DrawsViewController {
                         scanViewController.lotteryId = 888
                         if let navigationController = self.navigationController {
                             navigationController.pushViewController(scanViewController, animated: true)
+                            navigationController.setNavigationBarHidden(false, animated: false)
                         } else {
                             self.present(scanViewController, animated: true, completion: nil)
                         }
@@ -1004,6 +1024,7 @@ private extension DrawsViewController {
                 scanViewController.lotteryId = 888
                 if let navigationController = self.navigationController {
                     navigationController.pushViewController(scanViewController, animated: true)
+                    navigationController.setNavigationBarHidden(false, animated: false)
                 } else {
                     self.present(scanViewController, animated: true, completion: nil)
                 }
