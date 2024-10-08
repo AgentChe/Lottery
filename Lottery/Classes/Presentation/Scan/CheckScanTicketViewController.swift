@@ -103,7 +103,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
                     self?.lotteryPatterns = patterns
                     // Reload any UI or update any data structures as necessary
                     self?.collectionView.reloadData()
-                    print("Successfully fetched lottery patterns: \(patterns)")
+                  //  print("Successfully fetched lottery patterns: \(patterns)")
                 case .failure(let error):
                     print("Failed to fetch lottery patterns: \(error)")
                 }

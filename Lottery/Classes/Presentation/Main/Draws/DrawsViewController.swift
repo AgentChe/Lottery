@@ -77,7 +77,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                 case .success(let patterns):
                     self?.lotteryPatterns = patterns
                     // Reload any UI or update any data structures as necessary
-                    print("Successfully fetched lottery patterns: \(patterns)")
+             //       print("Successfully fetched lottery patterns: \(patterns)")
                     if let stateId = stateId {
                         self?.fetchNextGames(for: stateId)
                         self?.fetchPastGames(for: stateId)
@@ -781,6 +781,7 @@ extension DrawsViewController {
                     }
                     cell.winningNumbers = pastDraw.winningNumbers ?? []
                     cell.winningNumbersCollectionView.reloadData()
+                    break
                 }
             }
             
@@ -860,9 +861,7 @@ private extension DrawsViewController {
     }
     
     func fetchStateAndGames() {
-        
         profileManager.getProfile(forceUpdate: false) { [weak self] result in
-            
             DispatchQueue.main.async {
                 switch result {
                 case .success(let profile):
@@ -900,16 +899,21 @@ private extension DrawsViewController {
                     //                    }
                     self?.nextDraws = []
                     for game in games {
+                        
                         if let lotteries = self?.profile.lotteries {
-                            for lottery in lotteries{
-                                if  game.lotteryId == lottery {
-                                    self?.nextDraws.append(game)
+                            if lotteries.count > 0 {
+                                for lottery in lotteries {
+                                    if  game.lotteryId == lottery {
+                                        self?.nextDraws.append(game)
+                                    }
                                 }
+                            } else {
+                                self?.nextDraws.append(game)
                             }
                         }
                     }
                     
-                    if games.count != 0{
+                    if games.count != 0 {
                         self?.noGamesAddedImageView.isHidden = true
                         self?.addButton.isHidden = true
                     }
@@ -945,10 +949,14 @@ private extension DrawsViewController {
                     self?.pastDraws = []
                     for game in games {
                         if let lotteries = self?.profile.lotteries {
-                            for lottery in lotteries{
-                                if  game.lotteryId == lottery {
-                                    self?.pastDraws.append(game)
+                            if lotteries.count > 0 {
+                                for lottery in lotteries {
+                                    if  game.lotteryId == lottery {
+                                        self?.pastDraws.append(game)
+                                    }
                                 }
+                            } else {
+                                self?.pastDraws.append(game)
                             }
                         }
                     }
@@ -962,8 +970,7 @@ private extension DrawsViewController {
         }
     }
     
-    func fetchLotteries(for stateId: Int) {
-        
+    func fetchLotteries(for stateId: Int) {        
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -972,7 +979,11 @@ private extension DrawsViewController {
                     for lottery in lotteries {
                         if let profile = self?.profile {
                             if let profileLotteries = profile.lotteries {
-                                if profileLotteries.contains(lottery.id) {
+                                if profileLotteries.count > 0 {
+                                    if profileLotteries.contains(lottery.id) {
+                                        self?.lotteries.append(lottery)
+                                    }
+                                } else {
                                     self?.lotteries.append(lottery)
                                 }
                             }

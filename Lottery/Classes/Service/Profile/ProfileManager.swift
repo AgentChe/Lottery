@@ -11,7 +11,7 @@ protocol ProfileManagerProtocol {
     func syncTokens(oldToken: String, newToken: String, complete: ((LoginResult) -> Void)?)
     func login(userToken: String, complete: ((LoginResult) -> Void)?)
     func getProfile(forceUpdate: Bool, complete: @escaping (Result<Profile, Error>) -> Void)
-    func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool, complete: @escaping (Result<Bool, Error>) -> Void)
+    func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void)
 }
 
 final class ProfileManager {
@@ -128,7 +128,7 @@ extension ProfileManager: ProfileManagerProtocol {
         }
     }
 
-    func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool = false, complete: @escaping (Result<Bool, Error>) -> Void) {
+    func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
             complete(.failure(SignError.tokenNotFound))
             return
