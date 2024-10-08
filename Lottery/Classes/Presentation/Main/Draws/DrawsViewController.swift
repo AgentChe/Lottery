@@ -81,7 +81,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         view.updateConstraintsIfNeeded()
      
         if let currentCollectionView = segmentedControl.currentIndex == 0 ? nextDrawsCollectionView : pastDrawsCollectionView {
-            scrollViewDidScroll(currentCollectionView)
+        //    scrollViewDidScroll(currentCollectionView)
         }
         
     }
@@ -764,7 +764,7 @@ extension DrawsViewController {
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
         
-        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 40.scale : 70.scale)  , left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
+        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 70.scale)  , left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
     }
 }
 
