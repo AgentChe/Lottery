@@ -1,15 +1,6 @@
-//
-//  DrawsViewController.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 6/6/24.
-//
-
 import UIKit
 import AVFoundation
 import Lottie
-
-
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
@@ -20,7 +11,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     }
 
     private var scrollStates: [UIScrollView: ScrollViewState] = [:]
-    
     
     var profile: Profile!
     var games: [Game] = []
@@ -38,79 +28,67 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
     private var premiumAnimationView: LottieAnimationView!
-    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 165.scale : 135.scale // Maximum height of upperMenuView
+    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 165.scale : 135.scale
     let minUpperMenuHeight: CGFloat = 115.scale
-    
     let segmentedControlBackgroundView = UIView()
-    
+
     lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
     lazy var myTicketsVC = NavigationController(rootViewController: myTicketsController)
     private lazy var luckyNumbersController = LuckyNumbersViewController()
     private lazy var myTicketsController = TicketsViewController()
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    func findSubviewsConnectedToNavigationBar() -> [UIView] {
-         var connectedSubviews: [UIView] = []
 
-         // Check if the view controller is embedded in a navigation controller
-         if let navigationController = self.navigationController {
-             // Iterate through the subviews of the navigation bar
+    func findSubviewsConnectedToNavigationBar() -> [UIView] {
+        var connectedSubviews: [UIView] = []
+        if let navigationController = self.navigationController {
             let navigationBarSubviews = navigationController.navigationBar.subviews
             connectedSubviews.append(contentsOf: navigationBarSubviews)
-             
-             // You may also want to check for other related views (like the toolbar)
-             if let toolbarSubviews = navigationController.toolbar?.subviews {
-                 connectedSubviews.append(contentsOf: toolbarSubviews)
-             }
-         }
+            if let toolbarSubviews = navigationController.toolbar?.subviews {
+                connectedSubviews.append(contentsOf: toolbarSubviews)
+            }
+        }
+        return connectedSubviews
+    }
 
-         return connectedSubviews
-     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         setupNavigationBarTitle()
         fetchStateAndGames()
-        
         isDrawScan = false
         isScratchScan = false
-        
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
-     
         if let currentCollectionView = segmentedControl.currentIndex == 0 ? nextDrawsCollectionView : pastDrawsCollectionView {
-        //    scrollViewDidScroll(currentCollectionView)
         }
-        
     }
+
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let patterns):
                     self?.lotteryPatterns = patterns
-                    // Reload any UI or update any data structures as necessary
-             //       print("Successfully fetched lottery patterns: \(patterns)")
                     if let stateId = stateId {
                         self?.fetchNextGames(for: stateId)
                         self?.fetchPastGames(for: stateId)
                     }
-                    
                 case .failure(let error):
                     print("Failed to fetch lottery patterns: \(error)")
                 }
             }
         }
     }
+
     private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     private var profileManager: ProfileManagerProtocol = ProfileManager()
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDrawsCollectionView: UICollectionView!
     private var pastDrawsCollectionView: UICollectionView!
-    private var scanButton: UIButton! // Adding the scan button
-    private var noGamesAddedImageView: UIImageView! // Adding the NoGamesAdded image view
+    private var scanButton: UIButton!
+    private var noGamesAddedImageView: UIImageView!
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Go to settings", for: .normal)
@@ -125,6 +103,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         button.isHidden = true
         return button
     }()
+
     @objc func addButtonTapped() {
         if SessionManager().hasActiveSubscriptions() {
             let scanOnboardingViewController = ScanOnboardingViewController.make()
@@ -137,7 +116,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                     case .success(let profile):
                         if let stateId = profile.state {
                             scanOnboardingViewController.selectedState = stateId
-                            
                             scanOnboardingViewController.showSelectLotteriesViewController()
                         } else {
                             print("State ID is not available in profile")
@@ -147,8 +125,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                     }
                 }
             }
-            
-            // Check if the current view controller is embedded in a navigation controller
             if let navigationController = self.navigationController {
                 navigationController.pushViewController(scanOnboardingViewController, animated: false)
                 if let navigationController = getRootViewController() as? NavigationController,
@@ -156,7 +132,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
                     updateMainViewControllerConstraints(for: mainViewController)
                 }
             } else {
-                // If not, present the view controller modally as a fallback
                 present(scanOnboardingViewController, animated: true, completion: nil)
             }
         } else {
@@ -164,48 +139,42 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             present(vc, animated: true)
         }
     }
-    
-    
+
     private var nextDraws: [Game] = [] {
         didSet {
             nextDraws.sort { $0.date > $1.date }
-            noGamesAddedImageView.isHidden =  profile.lotteries?.count != 0
+            noGamesAddedImageView.isHidden = profile.lotteries?.count != 0
             addButton.isHidden = profile.lotteries?.count != 0
         }
     }
-    
+
     private var pastDraws: [Game] = [] {
         didSet {
             pastDraws.sort { $0.date > $1.date }
             nextDrawsCollectionView.reloadData()
         }
     }
+
     private var lotteries: [Lottery] = []
-    
+
     private let gamesManager: GamesManagerProtocol = GamesManager()
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
-        
         setupCollectionViews()
         setupSegmentedControl()
         setupUpperMenuView()
-        
-        //setupScanButton()  // Setup scan button
-        setupNoGamesAddedImageView() // Setup NoGamesAdded image view
+        setupNoGamesAddedImageView()
         setupLayoutConstraints()
         setupPremiumAnimationView()
-        //  setupNavigationBarTitle()
     }
-    
+
     private var previousScrollOffset: CGFloat = .zero
-    private var initialContentOffset: CGFloat = 0.0 // To store the initial contentOffset
-    private var hasRecordedInitialOffset = false // Flag to track the first scroll event
-    
+    private var initialContentOffset: CGFloat = 0.0
+    private var hasRecordedInitialOffset = false
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Retrieve or initialize the scroll state for the current scroll view
         var scrollState = scrollStates[scrollView] ?? ScrollViewState()
 
         let currentOffset = scrollView.contentOffset.y
@@ -217,56 +186,42 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             scrollState.hasRecordedInitialOffset = true
         }
 
-        // Calculate the total scroll from the initial content offset
         let deltaYFromInitial = currentOffset - scrollState.initialContentOffset
 
-        // Define the minimum and maximum heights for the upper menu
         let minHeight = topPadding + minUpperMenuHeight
         let maxHeight = maxUpperMenuHeight + 45.scale
 
-        // Adjust the upper menu height based on the content offset
         var newHeight = maxHeight - deltaYFromInitial
         newHeight = max(minHeight, min(maxHeight, newHeight))
         upperMenuHeightConstraint.constant = newHeight
 
-        // Adjust the alpha of the buttons based on the upper menu height
         let alpha = (newHeight - minHeight) / (maxHeight - minHeight)
         menuButton.alpha = alpha
         changeStateButton.alpha = alpha
 
         view.layoutIfNeeded()
 
-        // Update the previous scroll offset
         scrollState.previousScrollOffset = currentOffset
-
-        // Save the updated scroll state
         scrollStates[scrollView] = scrollState
     }
-
 }
 
-// MARK: - UI Setup
 extension DrawsViewController {
     private func setupPremiumAnimationView() {
-        // Initialize the Lottie animation view with the specified JSON file
         premiumAnimationView = LottieAnimationView(name: "Premium")
         premiumAnimationView.translatesAutoresizingMaskIntoConstraints = false
         premiumAnimationView.contentMode = .scaleAspectFit
-        premiumAnimationView.loopMode = .loop // Ensure the animation loops
-        premiumAnimationView.play() // Start the animation
-        
-        // Add the animation view to the main view
+        premiumAnimationView.loopMode = .loop
+        premiumAnimationView.play()
         view.addSubview(premiumAnimationView)
-        
-        // Set up the constraints to position the animation at the bottom-right
+
         NSLayoutConstraint.activate([
             premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
             premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
-            premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale), // Adjust padding as needed
-            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale) // Adjust bottom padding as needed
+            premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale)
         ])
-        
-        // Make the animation view tappable
+
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
         premiumAnimationView.isUserInteractionEnabled = true
         premiumAnimationView.addGestureRecognizer(tapGesture)
@@ -275,19 +230,14 @@ extension DrawsViewController {
         } else {
             premiumAnimationView.alpha = 1
         }
-        
     }
-    
-    // MARK: - Handle Tap Gesture
+
     @objc private func handlePremiumAnimationTap() {
-        // Present the PaygateViewController when the animation view is tapped
         let vc = PaygateViewController.make()
         present(vc, animated: true)
     }
-    
-    
+
     func setupUpperMenuView() {
-        // Set up upperMenuView as an image view
         upperMenuView = UIImageView()
         upperMenuView.contentMode = .scaleAspectFill
         upperMenuView.layer.masksToBounds = true
@@ -297,9 +247,7 @@ extension DrawsViewController {
         upperMenuView.isUserInteractionEnabled = true
         upperMenuView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(upperMenuView)
-        
-        
-        // Add buttons with respective images
+
         scanOptionButton = createButton(imageName: "ScanButtonImage")
         luckyNumbersButton = createButton(imageName: "NumbersButtonImage")
         ticketsButton = createButton(imageName: "MyTicketsButtonImage")
@@ -308,8 +256,7 @@ extension DrawsViewController {
         luckyNumbersButton.addTarget(self, action: #selector(numbersButtonTapped), for: .touchUpInside)
         ticketsButton.addTarget(self, action: #selector(myTicketsButtonTapped), for: .touchUpInside)
         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
-        
-        // Create and configure the changeStateButton with the image
+
         changeStateButton = UIButton(type: .custom)
         if let changeStateImage = UIImage(named: "changeState") {
             changeStateButton.setImage(changeStateImage, for: .normal)
@@ -317,13 +264,11 @@ extension DrawsViewController {
         changeStateButton.translatesAutoresizingMaskIntoConstraints = false
         upperMenuView.addSubview(changeStateButton)
         changeStateButton.addTarget(self, action: #selector(changeStateButtonTapped), for: .touchUpInside)
-        
-        // Add labels for the buttons
+
         let label1 = createLabel(text: "DrawsViewController.Scan".localized)
         let label2 = createLabel(text: "DrawsViewController.Numbers".localized)
         let label3 = createLabel(text: "DrawsViewController.MyTickets".localized)
-        
-        // Add buttons and labels to upperMenuView
+
         upperMenuView.addSubview(scanOptionButton)
         upperMenuView.addSubview(luckyNumbersButton)
         upperMenuView.addSubview(ticketsButton)
@@ -331,269 +276,208 @@ extension DrawsViewController {
         upperMenuView.addSubview(label1)
         upperMenuView.addSubview(label2)
         upperMenuView.addSubview(label3)
-        
-        // Set up constraints for upperMenuView
+
         if #available(iOS 11.0, *) {
             let window = UIApplication.shared.keyWindow
             let topPadding = window?.safeAreaInsets.top ?? 0
-            
             upperMenuHeightConstraint = upperMenuView.heightAnchor.constraint(equalToConstant: topPadding + maxUpperMenuHeight)
-            
+
             NSLayoutConstraint.activate([
                 upperMenuView.topAnchor.constraint(equalTo: view.topAnchor),
                 upperMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 upperMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 upperMenuHeightConstraint
             ])
-            
-            upperMenuView.alpha = 1
         }
-        
-        // Set constraints for the buttons and labels with reduced horizontal spacing
+
         NSLayoutConstraint.activate([
-            // Button 1
             scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
             scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
             scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
             scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
-            
-            // Label 1
             label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
             label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
-            
-            // Button 2 (center button)
             ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor),
             ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
             ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
             ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
-            
             label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
             label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
-            
-            // Button 3
             luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
             luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
             luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
             luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
-            
             label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
             label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
-            
-            // Menu Button
             menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
             menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
             menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
             menuButton.heightAnchor.constraint(equalToConstant: 60.scale),
-            
-            // Change State Button
             changeStateButton.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor, constant: -0.scale),
             changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -49.scale),
             changeStateButton.widthAnchor.constraint(equalToConstant: 82.scale),
             changeStateButton.heightAnchor.constraint(equalToConstant: 26.scale)
         ])
     }
-    
+
     @objc func changeStateButtonTapped() {
-        print("Change State button tapped")
-        // Add logic for changing state here
         let scanOnboardingViewController = ScanOnboardingViewController.make()
         scanOnboardingViewController.fromDrawsViewController = true
-        
-        // Check if the current view controller is embedded in a navigation controller
         if let navigationController = self.navigationController {
             navigationController.setNavigationBarHidden(false, animated: false)
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
-//            if let navigationController = getRootViewController() as? NavigationController,
-//               let mainViewController = navigationController.viewControllers.first as? MainViewController {
-//                updateMainViewControllerConstraints(for: mainViewController)
-//            }
         } else {
-            // If not, present the view controller modally as a fallback
             present(scanOnboardingViewController, animated: true, completion: nil)
         }
     }
-    
+
     @objc func chooseScanOption() {
         if SessionManager().hasActiveSubscriptions() {
-            // Create the dim view to darken the background
             dimView = UIView(frame: self.view.bounds)
             dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-            dimView.alpha = 0 // Initially invisible
+            dimView.alpha = 0
             view.addSubview(dimView)
-            
-            // Add tap gesture to dismiss the scan option when tapping the dimmed area
+
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissScanOption))
             dimView.addGestureRecognizer(tapGesture)
-            
+
             let chooseScanOptionView = ChooseScanOptionView()
-            
-            // Set initial off-screen position (bottom of the screen)
             chooseScanOptionView.translatesAutoresizingMaskIntoConstraints = false
             chooseScanOptionView.layer.cornerRadius = 20.scale
             view.addSubview(chooseScanOptionView)
-            
-            // Set constraints for the width and height of ChooseScanOptionView
+
             NSLayoutConstraint.activate([
                 chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
                 chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
-                chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),  // Adjust height as needed
-                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)  // Start off-screen
+                chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),
+                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)
             ])
-            
+
             view.layoutIfNeeded()
-            
-            // Animate the dim view and the ChooseScanOptionView upwards onto the screen
+
             UIView.animate(withDuration: 0.3) {
-                self.dimView.alpha = 1 // Make the dim view visible
-                chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)  // Move up onto the screen
+                self.dimView.alpha = 1
+                chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)
                 self.view.layoutIfNeeded()
             }
-            
-            // Add a dismiss action for dismissButton
+
             chooseScanOptionView.dismissButton.addTarget(self, action: #selector(dismissChooseScanOptionView(_:)), for: .touchUpInside)
         } else {
             let vc = PaygateViewController.make()
             present(vc, animated: true)
         }
     }
-    
+
     @objc func dismissChooseScanOptionView(_ sender: UIButton) {
         if let chooseScanOptionView = sender.superview as? ChooseScanOptionView {
-            // Animate the view back down off-screen
             UIView.animate(withDuration: 0.3, animations: {
-                chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
-                self.dimView.alpha = 0 // Fade out the dim view
+                chooseScanOptionView.transform = .identity
+                self.dimView.alpha = 0
             }, completion: { _ in
-                chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
-                self.dimView.removeFromSuperview() // Remove the dim view after animation
+                chooseScanOptionView.removeFromSuperview()
+                self.dimView.removeFromSuperview()
             })
         }
     }
-    
+
     @objc func dismissScanOption() {
-        // Call the dismiss function when the dim view is tapped
         dismissChooseScanOptionView(scanOptionButton)
     }
+
     func dismissAndPresentreScanDraw(chooseScanOptionView: UIView) {
-        
-        // Animate the view back down off-screen
         UIView.animate(withDuration: 0.3, animations: {
-            chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
-            self.dimView.alpha = 0 // Fade out the dim view
+            chooseScanOptionView.transform = .identity
+            self.dimView.alpha = 0
         }, completion: { _ in
-            chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
-            self.dimView.removeFromSuperview() // Remove the dim view after animation
+            chooseScanOptionView.removeFromSuperview()
+            self.dimView.removeFromSuperview()
             self.rescanButtonTapped()
         })
-        
     }
+
     func dismissAndPresentScanDraw(chooseScanOptionView: UIView) {
-        
-        // Animate the view back down off-screen
         UIView.animate(withDuration: 0.3, animations: {
-            chooseScanOptionView.transform = .identity  // Reset to the original off-screen position
-            self.dimView.alpha = 0 // Fade out the dim view
+            chooseScanOptionView.transform = .identity
+            self.dimView.alpha = 0
         }, completion: { _ in
-            chooseScanOptionView.removeFromSuperview()  // Remove the ChooseScanOptionView after the animation completes
-            self.dimView.removeFromSuperview() // Remove the dim view after animation
+            chooseScanOptionView.removeFromSuperview()
+            self.dimView.removeFromSuperview()
             self.scanButtonTapped()
         })
-        
     }
+
     @objc func numbersButtonTapped() {
-        print("Numbers button tapped")
-        
-        // Push the luckyNumbersVC when Numbers button is tapped
         if let navigationController = self.navigationController {
             navigationController.pushViewController(luckyNumbersController, animated: true)
             navigationController.setNavigationBarHidden(false, animated: false)
         } else {
-            // Present modally if not embedded in a navigation controller
             present(luckyNumbersVC, animated: true, completion: nil)
         }
     }
-    
-    // Action method for the My Tickets button (pushes myTicketsVC)
+
     @objc func myTicketsButtonTapped() {
-        print("My Tickets button tapped")
-        
-        // Push the myTicketsVC when My Tickets button is tapped
         if let navigationController = self.navigationController {
             navigationController.pushViewController(myTicketsController, animated: true)
             navigationController.setNavigationBarHidden(false, animated: false)
         } else {
-            // Present modally if not embedded in a navigation controller
             present(myTicketsVC, animated: true, completion: nil)
         }
     }
-    
-    // Helper function to create a circular button with an image
+
     func createButton(imageName: String) -> UIButton {
         let button = UIButton(type: .custom)
         button.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
-        button.layer.cornerRadius = 34.scale // Half of the width and height to make it circular
+        button.layer.cornerRadius = 34.scale
         button.clipsToBounds = true
-        
-        // Create an image view for the button image
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         button.addSubview(imageView)
-        
-        // Set imageView constraints to center it within the button
+
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 24.scale), // Adjust size of the image
+            imageView.widthAnchor.constraint(equalToConstant: 24.scale),
             imageView.heightAnchor.constraint(equalToConstant: 24.scale)
         ])
-        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
-    
-    // Helper function to create the menu button with an image
+
     func createMenuButton(imageName: String) -> UIButton {
         let button = UIButton(type: .custom)
-        // Create an image view for the button image
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         button.addSubview(imageView)
-        
-        // Set imageView constraints to center it within the button
+
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 24.scale), // Adjust size of the image
+            imageView.widthAnchor.constraint(equalToConstant: 24.scale),
             imageView.heightAnchor.constraint(equalToConstant: 24.scale)
         ])
-        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
-    
-    // Helper function to create a label with specific styles
+
     func createLabel(text: String) -> UILabel {
         let label = UILabel()
         label.text = text
         label.font = Fonts.Inter.medium(size: 14.scale)
         label.textColor = .white
         label.textAlignment = .center
-        label.backgroundColor = .clear // Transparent background
+        label.backgroundColor = .clear
         label.layer.cornerRadius = 5.scale
         label.clipsToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
-    
-    
+
     func setupSegmentedControl() {
-        
         segmentedControlBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         segmentedControlBackgroundView.backgroundColor = Appearance.main400
         view.addSubview(segmentedControlBackgroundView)
-        
         segmentedControl.currentIndexTitleColor = UIColor(red: 0.1, green: 0.1, blue: 0.3, alpha: 1)
         segmentedControl.otherIndexTitleColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 1)
         segmentedControl.currentIndexBackgroundColor = Appearance.main400
@@ -604,19 +488,16 @@ extension DrawsViewController {
         segmentedControl.segmentsTitle = "\("DrawsViewController.NextDraws".localized),\("DrawsViewController.PastDraws".localized)"
         segmentedControl.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
         segmentedControl.layer.borderColor = UIColor.clear.cgColor
-        
+
         segmentedControl.didTapSegment = { [weak self] index in
             self?.segmentedControlChanged(index: index)
             self?.fetchStateAndGames()
         }
-        
+
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addSubview(segmentedControl)
     }
-    
-    
-    
+
     func setupCollectionViews() {
         let nextDrawsCollectionViewLayout = UICollectionViewFlowLayout()
         nextDrawsCollectionViewLayout.scrollDirection = .vertical
@@ -629,7 +510,7 @@ extension DrawsViewController {
         nextDrawsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         nextDrawsCollectionView.layer.masksToBounds = false
         view.addSubview(nextDrawsCollectionView)
-        
+
         let pastDrawsCollectionViewLayout = UICollectionViewFlowLayout()
         pastDrawsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: pastDrawsCollectionViewLayout)
         pastDrawsCollectionView.backgroundColor = .clear
@@ -640,35 +521,19 @@ extension DrawsViewController {
         pastDrawsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         pastDrawsCollectionView.layer.masksToBounds = false
         view.addSubview(pastDrawsCollectionView)
-        
         pastDrawsCollectionView.isHidden = true
     }
-    
-    func setupScanButton() {
-        scanButton = UIButton(type: .custom)
-        if let scanImage = UIImage(named: "Scan.BeginButton") {
-            scanButton.setImage(scanImage, for: .normal)
-        }
-        scanButton.translatesAutoresizingMaskIntoConstraints = false
-        scanButton.backgroundColor = .clear
-        scanButton.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
-        
-        view.addSubview(scanButton)
-    }
-    
+
     func setupNoGamesAddedImageView() {
         noGamesAddedImageView = UIImageView(image: UIImage(named: "NextDraws.NoGames"))
         noGamesAddedImageView.translatesAutoresizingMaskIntoConstraints = false
         noGamesAddedImageView.contentMode = .scaleAspectFit
         noGamesAddedImageView.isHidden = true
-        
         view.addSubview(noGamesAddedImageView)
         view.addSubview(addButton)
     }
-    
-    
+
     func setupLayoutConstraints() {
-        
         NSLayoutConstraint.activate([
             segmentedControlBackgroundView.topAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: 0),
             segmentedControlBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -678,22 +543,18 @@ extension DrawsViewController {
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             segmentedControl.widthAnchor.constraint(equalToConstant: 285.scale),
             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
-            
             nextDrawsCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             nextDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             nextDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
-            
             pastDrawsCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             pastDrawsCollectionView.widthAnchor.constraint(equalToConstant: 343.scale),
             pastDrawsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             pastDrawsCollectionView.centerXAnchor.constraint(equalTo: segmentedControl.centerXAnchor),
-            
             noGamesAddedImageView.widthAnchor.constraint(equalToConstant: 344.scale),
             noGamesAddedImageView.heightAnchor.constraint(equalToConstant: 235.scale),
             noGamesAddedImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             noGamesAddedImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30.scale),
-            
             addButton.widthAnchor.constraint(equalToConstant: 195.scale),
             addButton.heightAnchor.constraint(equalToConstant: 44.scale),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -702,18 +563,16 @@ extension DrawsViewController {
     }
 }
 
-// MARK: - CollectionView Delegate FlowLayout
 extension DrawsViewController {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth: CGFloat = 343.scale // Width is fixed to the collection view width with padding
-        
+        let cellWidth: CGFloat = 343.scale
         var cellHeight: CGFloat
-        
+
         if collectionView == nextDrawsCollectionView {
             let game = nextDraws[indexPath.item]
             for lottery in lotteries {
                 if lottery.id == game.lotteryId {
-                    if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
+                    if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
                         return CGSize(width: cellWidth, height: 204.scale)
                     } else {
                         return CGSize(width: cellWidth, height: 232.scale)
@@ -721,78 +580,60 @@ extension DrawsViewController {
                 }
             }
             return CGSize(width: cellWidth, height: 232.scale)
-            
         } else {
-            // For Past Draws
             let game = pastDraws[indexPath.item]
-            cellHeight = 176.scale  // Default height
+            cellHeight = 176.scale
             if let myLuckyNumbers = game.myLuckyNumbers, let winningNumbers = game.winningNumbers {
                 for lottery in lotteries {
                     if lottery.id == game.lotteryId {
-                        if  doesURLContain(lottery.logoUrl.absoluteString, word: "power") ||  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
+                        if doesURLContain(lottery.logoUrl.absoluteString, word: "power") || doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
                             if myLuckyNumbers.isEmpty {
-                                cellHeight = 204.scale//150.scale + 80.scale
-                                
+                                cellHeight = 204.scale
                             } else {
                                 cellHeight = 116.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) + 3.scale
                             }
                         } else {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 232.scale
-                                
                             } else {
                                 cellHeight = 144.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 5.scale
                             }
                         }
                     }
                 }
-                
             }
         }
-        
         return CGSize(width: cellWidth, height: cellHeight)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 40.scale // Adjust as needed for spacing between rows
+        return 40.scale
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        
-        let bottomInset: CGFloat =  SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
-        
+        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
-        
-        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 70.scale)  , left: 0, bottom: bottomInset, right: 0) // Adjust insets as needed
+        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 70.scale), left: 0, bottom: bottomInset, right: 0)
     }
 }
 
-// MARK: - Public Extension
 extension DrawsViewController {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == nextDrawsCollectionView {
             return nextDraws.count
         } else {
-            return pastDraws.count //> 100 ? 100 : pastDraws.count
+            return pastDraws.count
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
-            
             let game = nextDraws[indexPath.item]
-            
-            //            for lottery in self.lotteries {
-            //                if lottery.id == game.lotteryId {
-            //                    print("GAME - \(indexPath.item) - \(game.lotteryId) - \(lottery.name)")
-            //                }
-            //            }
-            
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
-                    if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == game.lotteryId }.first {
+                    if let pattern: LotteryPattern = lotteryPatterns.filter({ $0.id == game.lotteryId }).first {
                         cell.bonusIdx = pattern.bonusIdx
                     }
                     cell.winningNumbers = pastDraw.winningNumbers ?? []
@@ -800,7 +641,6 @@ extension DrawsViewController {
                     break
                 }
             }
-            
             cell.configure(game: game, lotteries: lotteries)
             cell.layer.cornerRadius = 20.scale
             cell.setNeedsLayout()
@@ -808,19 +648,13 @@ extension DrawsViewController {
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
-            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == game.lotteryId }.first {
-                print("BonusIdx:\(pattern.bonusIdx), lotteryId: \(game.lotteryId)")
+            if let pattern: LotteryPattern = lotteryPatterns.filter({ $0.id == game.lotteryId }).first {
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.configure(game: game, lotteries: lotteries)
-            
-            //  cell.prepareForReuse()
             cell.layer.cornerRadius = 20.scale
             cell.layer.masksToBounds = true
             if let myLuckyNumbers = game.myLuckyNumbers {
-                
-                
-                
                 if myLuckyNumbers.isEmpty {
                     cell.dashedLineImageView.alpha = 0
                     cell.myLuckyNumbersTitleLabel.alpha = 0
@@ -830,42 +664,31 @@ extension DrawsViewController {
                 }
             }
             cell.setNeedsLayout()
-            
             return cell
         }
     }
 }
 
-// MARK: - Private Extension
 private extension DrawsViewController {
     func setupNavigationBarTitle() {
-        // Remove all elements from the navigation bar
         navigationItem.leftBarButtonItem = nil
         navigationItem.rightBarButtonItem = nil
         navigationItem.titleView = nil
-        
-        // Make the navigation bar transparent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.navigationBar.isUserInteractionEnabled = false
-        
-        // Optional: If you want to hide the navigation bar completely
-        
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
     }
-    
+
     @objc func handleMenuTap() {
         let menuVC = MenuViewController()
         let navController = NavigationController(rootViewController: menuVC)
         navController.modalPresentationStyle = .fullScreen
-        
-        // Present the navigation controller
         present(navController, animated: true, completion: nil)
     }
-    
+
     func segmentedControlChanged(index: Int) {
         let newCollectionView: UICollectionView
         if index == 0 {
@@ -878,7 +701,6 @@ private extension DrawsViewController {
             newCollectionView = pastDrawsCollectionView
         }
 
-        // Initialize the scroll state for the new collection view if necessary
         if scrollStates[newCollectionView] == nil {
             var scrollState = ScrollViewState()
             scrollState.initialContentOffset = newCollectionView.contentOffset.y
@@ -886,8 +708,6 @@ private extension DrawsViewController {
             scrollState.hasRecordedInitialOffset = true
             scrollStates[newCollectionView] = scrollState
         }
-
-        // Manually call scrollViewDidScroll to adjust the upper menu height
         scrollViewDidScroll(newCollectionView)
     }
 
@@ -908,33 +728,18 @@ private extension DrawsViewController {
             }
         }
     }
-    
+
     func fetchNextGames(for stateId: Int) {
-        
         gamesManager.fetchNextGames(stateId: nil, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
-                    
-                    //                    var selectedGames: [Game] = []
-                    //                    if let profile = self?.profile{
-                    //                        if let profileLotteries = profile.lotteries {
-                    //                            for lottery in profileLotteries {
-                    //                                for game in games {
-                    //                                    if game.lotteryId == lottery {
-                    //                                        selectedGames.append(game)
-                    //                                    }
-                    //                                }
-                    //                            }
-                    //                        }
-                    //                    }
                     self?.nextDraws = []
                     for game in games {
-                        
                         if let lotteries = self?.profile.lotteries {
                             if lotteries.count > 0 {
                                 for lottery in lotteries {
-                                    if  game.lotteryId == lottery {
+                                    if game.lotteryId == lottery {
                                         self?.nextDraws.append(game)
                                     }
                                 }
@@ -943,12 +748,10 @@ private extension DrawsViewController {
                             }
                         }
                     }
-                    
                     if games.count != 0 {
                         self?.noGamesAddedImageView.isHidden = true
                         self?.addButton.isHidden = true
                     }
-                    
                     delay(0.05) {
                         self?.nextDrawsCollectionView.reloadData()
                     }
@@ -958,31 +761,18 @@ private extension DrawsViewController {
             }
         }
     }
-    
+
     func fetchPastGames(for stateId: Int) {
         gamesManager.fetchPastGames(stateId: nil, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
-                    
-                    //                    var selectedGames: [Game] = []
-                    //                    if let profile = self?.profile{
-                    //                        if let profileLotteries = profile.lotteries {
-                    //                            for lottery in profileLotteries {
-                    //                                for game in games {
-                    //                                    if game.lotteryId == lottery {
-                    //                                        selectedGames.append(game)
-                    //                                    }
-                    //                                }
-                    //                            }
-                    //                        }
-                    //                    }
                     self?.pastDraws = []
                     for game in games {
                         if let lotteries = self?.profile.lotteries {
                             if lotteries.count > 0 {
                                 for lottery in lotteries {
-                                    if  game.lotteryId == lottery {
+                                    if game.lotteryId == lottery {
                                         self?.pastDraws.append(game)
                                     }
                                 }
@@ -1000,8 +790,8 @@ private extension DrawsViewController {
             }
         }
     }
-    
-    func fetchLotteries(for stateId: Int) {        
+
+    func fetchLotteries(for stateId: Int) {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -1019,10 +809,8 @@ private extension DrawsViewController {
                                 }
                             }
                         }
-                        
                     }
                     self?.fetchLotteriesPatterns(for: stateId)
-                    
                 case .failure(let error):
                     print("Failed to fetch lotteries: \(error)")
                 }
@@ -1030,38 +818,31 @@ private extension DrawsViewController {
         }
     }
 }
+
 private extension DrawsViewController {
     @objc func scanButtonTapped() {
-        
         let scanOnboardingViewController = ScanOnboardingViewController.make()
-        
         if let navigationController = self.navigationController {
-            
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
             navigationController.setNavigationBarHidden(false, animated: false)
             if let navigationController = getRootViewController() as? NavigationController,
                let mainViewController = navigationController.viewControllers.first as? MainViewController {
-                
                 updateMainViewControllerConstraints(for: mainViewController)
-                
             }
         }
     }
-    
+
     @objc func rescanButtonTapped() {
         let scanViewController = ScanMenuViewController()
         scanViewController.stateId = 888
         scanViewController.lotteryId = 888
-        
         let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
-        
         switch cameraAuthorizationStatus {
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
                     guard let self = self else { return }
                     if granted {
-                        print("Camera access granted.")
                         let scanViewController = ScanViewController()
                         scanViewController.stateId = 888
                         scanViewController.lotteryId = 888
@@ -1094,6 +875,7 @@ private extension DrawsViewController {
             fatalError("Unknown camera authorization status.")
         }
     }
+
     func showCameraAccessDeniedAlert() {
         let alert = UIAlertController(
             title: "ScanMenuViewController.CameraAccessNeededTitle".localized,
@@ -1106,32 +888,23 @@ private extension DrawsViewController {
             }
         }))
         alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
-        
         self.present(alert, animated: true, completion: nil)
     }
-    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant : CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale ) {
+
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView
-        
-        
-        
         if mainView.tabViewBottomConstraint?.constant != newConstant {
-            // Deactivate and nil the old constraint if it's different
             if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
                 oldTabViewBottomConstraint.isActive = false
                 mainView.tabViewBottomConstraint = nil
             }
-            
-            // Create and activate the new constraint
             let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
             mainView.tabViewBottomConstraint = newTabViewBottomConstraint
             newTabViewBottomConstraint.isActive = true
-            
-            // Call layoutIfNeeded to apply the changes
             mainView.layoutIfNeeded()
         }
     }
-    
 }
 
 private extension DrawsViewController {
