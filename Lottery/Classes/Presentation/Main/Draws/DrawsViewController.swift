@@ -9,7 +9,19 @@ import UIKit
 import AVFoundation
 import Lottie
 
+
+
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
+    struct ScrollViewState {
+        var previousScrollOffset: CGFloat = 0.0
+        var initialContentOffset: CGFloat = 0.0
+        var hasRecordedInitialOffset: Bool = false
+    }
+
+    private var scrollStates: [UIScrollView: ScrollViewState] = [:]
+    
+    
     var profile: Profile!
     var games: [Game] = []
     var dimView: UIView!
@@ -67,7 +79,10 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
-        scrollViewDidScroll(nextDrawsCollectionView)
+     
+        if let currentCollectionView = segmentedControl.currentIndex == 0 ? nextDrawsCollectionView : pastDrawsCollectionView {
+            scrollViewDidScroll(currentCollectionView)
+        }
         
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
@@ -190,43 +205,44 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var hasRecordedInitialOffset = false // Flag to track the first scroll event
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
+        // Retrieve or initialize the scroll state for the current scroll view
+        var scrollState = scrollStates[scrollView] ?? ScrollViewState()
+
         let currentOffset = scrollView.contentOffset.y
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
-        
-        if !hasRecordedInitialOffset {
-            initialContentOffset = currentOffset
-            hasRecordedInitialOffset = true
+
+        if !scrollState.hasRecordedInitialOffset {
+            scrollState.initialContentOffset = currentOffset
+            scrollState.hasRecordedInitialOffset = true
         }
-        
-        let deltaY = currentOffset - previousScrollOffset
-        
-        if deltaY > 0 { //shrink
-            if currentOffset >= initialContentOffset {
-                
-                
-                if upperMenuHeightConstraint.constant <  maxUpperMenuHeight + 45.scale - 10.scale {
-                    menuButton.alpha = 0
-                    changeStateButton.alpha = 0
-                }
-                
-                upperMenuHeightConstraint.constant = max( topPadding + minUpperMenuHeight, upperMenuHeightConstraint.constant - abs(deltaY))
-            }
-            
-        }
-        if deltaY < 0 {
-            
-            if upperMenuHeightConstraint.constant > topPadding + minUpperMenuHeight + 35.scale {
-                menuButton.alpha = 1
-                changeStateButton.alpha = 1
-                
-            }
-            upperMenuHeightConstraint.constant = min(maxUpperMenuHeight + 45.scale, upperMenuHeightConstraint.constant + abs(deltaY))
-        }
+
+        // Calculate the total scroll from the initial content offset
+        let deltaYFromInitial = currentOffset - scrollState.initialContentOffset
+
+        // Define the minimum and maximum heights for the upper menu
+        let minHeight = topPadding + minUpperMenuHeight
+        let maxHeight = maxUpperMenuHeight + 45.scale
+
+        // Adjust the upper menu height based on the content offset
+        var newHeight = maxHeight - deltaYFromInitial
+        newHeight = max(minHeight, min(maxHeight, newHeight))
+        upperMenuHeightConstraint.constant = newHeight
+
+        // Adjust the alpha of the buttons based on the upper menu height
+        let alpha = (newHeight - minHeight) / (maxHeight - minHeight)
+        menuButton.alpha = alpha
+        changeStateButton.alpha = alpha
+
         view.layoutIfNeeded()
-        previousScrollOffset = currentOffset
+
+        // Update the previous scroll offset
+        scrollState.previousScrollOffset = currentOffset
+
+        // Save the updated scroll state
+        scrollStates[scrollView] = scrollState
     }
+
 }
 
 // MARK: - UI Setup
@@ -851,15 +867,30 @@ private extension DrawsViewController {
     }
     
     func segmentedControlChanged(index: Int) {
+        let newCollectionView: UICollectionView
         if index == 0 {
             nextDrawsCollectionView.isHidden = false
             pastDrawsCollectionView.isHidden = true
+            newCollectionView = nextDrawsCollectionView
         } else {
             nextDrawsCollectionView.isHidden = true
             pastDrawsCollectionView.isHidden = false
+            newCollectionView = pastDrawsCollectionView
         }
+
+        // Initialize the scroll state for the new collection view if necessary
+        if scrollStates[newCollectionView] == nil {
+            var scrollState = ScrollViewState()
+            scrollState.initialContentOffset = newCollectionView.contentOffset.y
+            scrollState.previousScrollOffset = newCollectionView.contentOffset.y
+            scrollState.hasRecordedInitialOffset = true
+            scrollStates[newCollectionView] = scrollState
+        }
+
+        // Manually call scrollViewDidScroll to adjust the upper menu height
+        scrollViewDidScroll(newCollectionView)
     }
-    
+
     func fetchStateAndGames() {
         profileManager.getProfile(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
@@ -1109,3 +1140,6 @@ private extension DrawsViewController {
     }
 }
 
+func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+}
