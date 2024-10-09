@@ -56,7 +56,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationBarTitle()
-        fetchStateAndGames()
+      //  fetchStateAndGames()
         isDrawScan = false
         isScratchScan = false
         view.setNeedsUpdateConstraints()
@@ -64,7 +64,10 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         if let currentCollectionView = segmentedControl.currentIndex == 0 ? nextDrawsCollectionView : pastDrawsCollectionView {
         }
     }
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        fetchStateAndGames()
+    }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
