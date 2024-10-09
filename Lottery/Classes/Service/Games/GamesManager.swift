@@ -1,13 +1,3 @@
-//
-//  GamesManager.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 5/30/24.
-//
-
-import Foundation
-
-
 // GamesManager.swift
 
 import Foundation
@@ -61,25 +51,21 @@ extension GamesManager: GamesManagerProtocol {
 
         let operationId = UUID().uuidString
 
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in the Operations class
+        Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
 
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeGamesManagerOperation(forKey: operationId)
+            // Remove the operation from the Operations class
+            Operations.shared.removeGamesManagerOperation(forKey: operationId)
 
-                if let error = error {
-                    completion(.failure(error))
-                } else if let gamesArray = result as? [[String: Any]] {
-                    let games = gamesArray.compactMap { Game(response: $0) }
-                    self.cacheGames(games: games, key: Constants.cachedNextGamesKey)
-                    completion(.success(games))
-                } else {
-                    completion(.failure(ContentError(.notContent)))
-                }
+            if let error = error {
+                completion(.failure(error))
+            } else if let gamesArray = result as? [[String: Any]] {
+                let games = gamesArray.compactMap { Game(response: $0) }
+                self.cacheGames(games: games, key: Constants.cachedNextGamesKey)
+                completion(.success(games))
+            } else {
+                completion(.failure(ContentError(.notContent)))
             }
         }
     }
@@ -100,25 +86,21 @@ extension GamesManager: GamesManagerProtocol {
 
         let operationId = UUID().uuidString
 
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in the Operations class
+        Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
 
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeGamesManagerOperation(forKey: operationId)
+            // Remove the operation from the Operations class
+            Operations.shared.removeGamesManagerOperation(forKey: operationId)
 
-                if let error = error {
-                    completion(.failure(error))
-                } else if let gamesArray = result as? [[String: Any]] {
-                    let games = gamesArray.compactMap { Game(response: $0) }
-                    self.cacheGames(games: games, key: Constants.cachedPastGamesKey)
-                    completion(.success(games))
-                } else {
-                    completion(.failure(ContentError(.notContent)))
-                }
+            if let error = error {
+                completion(.failure(error))
+            } else if let gamesArray = result as? [[String: Any]] {
+                let games = gamesArray.compactMap { Game(response: $0) }
+                self.cacheGames(games: games, key: Constants.cachedPastGamesKey)
+                completion(.success(games))
+            } else {
+                completion(.failure(ContentError(.notContent)))
             }
         }
     }
@@ -134,21 +116,17 @@ extension GamesManager: GamesManagerProtocol {
 
         let operationId = UUID().uuidString
 
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in the Operations class
+        Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
 
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeGamesManagerOperation(forKey: operationId)
+            // Remove the operation from the Operations class
+            Operations.shared.removeGamesManagerOperation(forKey: operationId)
 
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    completion(.success(true))
-                }
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(true))
             }
         }
     }
@@ -165,15 +143,15 @@ extension GamesManager: GamesManagerProtocol {
         let operationId = UUID().uuidString
 
         // Set the operation in the actor
-        Task {
-            await Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
-        }
+        
+        Operations.shared.setGamesManagerOperation(operation, forKey: operationId)
+        
 
         performRequest(request) { result in
             // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeGamesManagerOperation(forKey: operationId)
-            }
+            
+        Operations.shared.removeGamesManagerOperation(forKey: operationId)
+        
 
             switch result {
             case .success(let data):

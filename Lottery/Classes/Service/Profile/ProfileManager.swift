@@ -1,9 +1,7 @@
+//
 //  ProfileManager.swift
 //  Lottery
 //
-//  Created by Андрей Чернышев on 23.05.2024.
-//
-
 
 import Foundation
 
@@ -43,7 +41,7 @@ final class ProfileManager {
     }
 }
 
-// MARK: ProfileManagerProtocol
+// MARK: - ProfileManagerProtocol
 extension ProfileManager: ProfileManagerProtocol {
     func syncTokens(oldToken: String, newToken: String, complete: ((LoginResult) -> Void)? = nil) {
         let request = SyncTokensRequest(oldToken: oldToken, newToken: newToken)
@@ -51,18 +49,14 @@ extension ProfileManager: ProfileManagerProtocol {
         
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
 
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeProfileManagerOperation(forKey: operationId)
-                DispatchQueue.main.async {
-                    complete?(LoginResult(error: error))
-                }
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
+            DispatchQueue.main.async {
+                complete?(LoginResult(error: error))
             }
         }
     }
@@ -73,18 +67,14 @@ extension ProfileManager: ProfileManagerProtocol {
         
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
 
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeProfileManagerOperation(forKey: operationId)
-                DispatchQueue.main.async {
-                    complete?(LoginResult(error: error))
-                }
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
+            DispatchQueue.main.async {
+                complete?(LoginResult(error: error))
             }
         }
     }
@@ -105,24 +95,20 @@ extension ProfileManager: ProfileManagerProtocol {
 
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeProfileManagerOperation(forKey: operationId)
-                DispatchQueue.main.async {
-                    if let error = error {
-                        complete(.failure(error))
-                    } else if let profile = ResponseMapper.mapGetProfileResponse(result: result) {
-                        self?.cacheProfile(lotteries: profile.lotteries, state: profile.state)
-                        complete(.success(profile))
-                    } else {
-                        complete(.failure(ContentError(.notContent)))
-                    }
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
+            DispatchQueue.main.async {
+                if let error = error {
+                    complete(.failure(error))
+                } else if let profile = ResponseMapper.mapGetProfileResponse(result: result) {
+                    self?.cacheProfile(lotteries: profile.lotteries, state: profile.state)
+                    complete(.success(profile))
+                } else {
+                    complete(.failure(ContentError(.notContent)))
                 }
             }
         }
@@ -139,33 +125,29 @@ extension ProfileManager: ProfileManagerProtocol {
 
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeProfileManagerOperation(forKey: operationId)
-                DispatchQueue.main.async {
-                    if let error = error {
-                        complete(.failure(error))
-                    } else if let success = ResponseMapper.mapSetProfileResponse(result: result) {
-                        if success {
-                            self?.cacheProfile(lotteries: lotteries, state: state)
-                        }
-                        complete(.success(success))
-                    } else {
-                        complete(.failure(ContentError(.notContent)))
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
+            DispatchQueue.main.async {
+                if let error = error {
+                    complete(.failure(error))
+                } else if let success = ResponseMapper.mapSetProfileResponse(result: result) {
+                    if success {
+                        self?.cacheProfile(lotteries: lotteries, state: state)
                     }
+                    complete(.success(success))
+                } else {
+                    complete(.failure(ContentError(.notContent)))
                 }
             }
         }
     }
 }
 
-
+// MARK: - ResponseMapper
 final class ResponseMapper {
     static func mapSetProfileResponse(result: Any) -> Bool? {
         guard let result = result as? [String: Any] else {

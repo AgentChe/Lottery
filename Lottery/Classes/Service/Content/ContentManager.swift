@@ -36,26 +36,22 @@ extension ContentManager: ContentManagerProtocol {
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setContentManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in the Operations class
+        Operations.shared.setContentManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeContentManagerOperation(forKey: operationId)
-                
-                DispatchQueue.main.async {
-                    if let error = error {
-                        completion(.failure(error))
-                    } else if let statesArray = result as? [[String: Any]] {
-                        let states = statesArray.compactMap { State(response: $0) }
-                        self.saveToCache(data: states, forKey: Constants.stateCacheKey)
-                        completion(.success(states))
-                    } else {
-                        completion(.failure(ContentError(.notContent)))
-                    }
+            // Remove the operation from the Operations class
+            Operations.shared.removeContentManagerOperation(forKey: operationId)
+            
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let statesArray = result as? [[String: Any]] {
+                    let states = statesArray.compactMap { State(response: $0) }
+                    self.saveToCache(data: states, forKey: Constants.stateCacheKey)
+                    completion(.success(states))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
                 }
             }
         }
@@ -81,26 +77,22 @@ extension ContentManager: ContentManagerProtocol {
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setContentManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in the Operations class
+        Operations.shared.setContentManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeContentManagerOperation(forKey: operationId)
-                
-                DispatchQueue.main.async {
-                    if let error = error {
-                        completion(.failure(error))
-                    } else if let lotteriesArray = result as? [[String: Any]] {
-                        let lotteries = lotteriesArray.compactMap { Lottery(response: $0) }
-                        self.saveToCache(data: lotteries, forKey: Constants.lotteryCacheKey)
-                        completion(.success(lotteries))
-                    } else {
-                        completion(.failure(ContentError(.notContent)))
-                    }
+            // Remove the operation from the Operations class
+            Operations.shared.removeContentManagerOperation(forKey: operationId)
+            
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let lotteriesArray = result as? [[String: Any]] {
+                    let lotteries = lotteriesArray.compactMap { Lottery(response: $0) }
+                    self.saveToCache(data: lotteries, forKey: Constants.lotteryCacheKey)
+                    completion(.success(lotteries))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
                 }
             }
         }
@@ -121,26 +113,22 @@ extension ContentManager: ContentManagerProtocol {
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
         
-        // Set the operation in the actor
-        Task {
-            await Operations.shared.setContentManagerOperation(operation, forKey: operationId)
-        }
+        // Set the operation in the Operations class
+        Operations.shared.setContentManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from the actor
-            Task {
-                await Operations.shared.removeContentManagerOperation(forKey: operationId)
-                
-                DispatchQueue.main.async {
-                    if let error = error {
-                        completion(.failure(error))
-                    } else if let patternsArray = result as? [[String: Any]] {
-                        let patterns = patternsArray.compactMap { LotteryPattern(response: $0) }
-                        self.saveToCache(data: patterns, forKey: Constants.lotteryPatternsCacheKey)
-                        completion(.success(patterns))
-                    } else {
-                        completion(.failure(ContentError(.notContent)))
-                    }
+            // Remove the operation from the Operations class
+            Operations.shared.removeContentManagerOperation(forKey: operationId)
+            
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let patternsArray = result as? [[String: Any]] {
+                    let patterns = patternsArray.compactMap { LotteryPattern(response: $0) }
+                    self.saveToCache(data: patterns, forKey: Constants.lotteryPatternsCacheKey)
+                    completion(.success(patterns))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
                 }
             }
         }

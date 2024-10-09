@@ -2,63 +2,90 @@
 
 import Foundation
 
-actor Operations {
+class Operations {
     static let shared = Operations()
     
-    var contentManagerOperations: [String: (any APIOperationProtocol)] = [:]
-    var gamesManagerOperations: [String: (any APIOperationProtocol)] = [:]
-    var ticketsManagerOperations: [String: (any APIOperationProtocol)] = [:]
-    var profileManagerOperations: [String: (any APIOperationProtocol)] = [:]
+    private var contentManagerOperations: [String: any APIOperationProtocol] = [:]
+    private var gamesManagerOperations: [String: any APIOperationProtocol] = [:]
+    private var ticketsManagerOperations: [String: any APIOperationProtocol] = [:]
+    private var profileManagerOperations: [String: any APIOperationProtocol] = [:]
     
-    // Methods for contentManagerOperations
+    
+    private let operationsQueue = DispatchQueue(label: "com.example.OperationsQueue")
+    
+    // MARK: - Methods for contentManagerOperations
     func setContentManagerOperation(_ operation: any APIOperationProtocol, forKey key: String) {
-        contentManagerOperations[key] = operation
+        operationsQueue.sync {
+            contentManagerOperations[key] = operation
+        }
     }
 
     func removeContentManagerOperation(forKey key: String) {
-        contentManagerOperations.removeValue(forKey: key)
+        operationsQueue.sync {
+            contentManagerOperations.removeValue(forKey: key)
+        }
     }
 
     func getContentManagerOperation(forKey key: String) -> (any APIOperationProtocol)? {
-        return contentManagerOperations[key]
+        return operationsQueue.sync {
+            contentManagerOperations[key]
+        }
     }
     
-    // Methods for gamesManagerOperations
+    // MARK: - Methods for gamesManagerOperations
     func setGamesManagerOperation(_ operation: any APIOperationProtocol, forKey key: String) {
-        gamesManagerOperations[key] = operation
+        operationsQueue.sync {
+            gamesManagerOperations[key] = operation
+        }
     }
     
     func removeGamesManagerOperation(forKey key: String) {
-        gamesManagerOperations.removeValue(forKey: key)
+        operationsQueue.sync {
+            gamesManagerOperations.removeValue(forKey: key)
+        }
     }
     
     func getGamesManagerOperation(forKey key: String) -> (any APIOperationProtocol)? {
-        return gamesManagerOperations[key]
+        return operationsQueue.sync {
+            gamesManagerOperations[key]
+        }
     }
     
-    // Methods for ticketsManagerOperations
+    // MARK: - Methods for ticketsManagerOperations
     func setTicketsManagerOperation(_ operation: any APIOperationProtocol, forKey key: String) {
-        ticketsManagerOperations[key] = operation
+        operationsQueue.sync {
+            ticketsManagerOperations[key] = operation
+        }
     }
     
     func removeTicketsManagerOperation(forKey key: String) {
-        ticketsManagerOperations.removeValue(forKey: key)
+        operationsQueue.sync {
+            ticketsManagerOperations.removeValue(forKey: key)
+        }
     }
     
     func getTicketsManagerOperation(forKey key: String) -> (any APIOperationProtocol)? {
-        return ticketsManagerOperations[key]
+        return operationsQueue.sync {
+            ticketsManagerOperations[key]
+        }
     }
     
-    // Methods for profileManagerOperations
+    // MARK: - Methods for profileManagerOperations
     func setProfileManagerOperation(_ operation: any APIOperationProtocol, forKey key: String) {
-        profileManagerOperations[key] = operation
+        operationsQueue.sync {
+            profileManagerOperations[key] = operation
+        }
     }
     
     func removeProfileManagerOperation(forKey key: String) {
-        profileManagerOperations.removeValue(forKey: key)
+        operationsQueue.sync {
+            profileManagerOperations.removeValue(forKey: key)
+        }
     }
     
     func getProfileManagerOperation(forKey key: String) -> (any APIOperationProtocol)? {
-        return profileManagerOperations[key]
+        return operationsQueue.sync {
+            profileManagerOperations[key]
+        }
     }
 }
