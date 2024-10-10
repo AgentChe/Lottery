@@ -46,6 +46,19 @@ class ScanSelectLotteriesViewController: UIViewController {
         selectLotteryView.fromMenu = fromMenu
         selectLotteryView.getAlreadySelectedLotteriesId()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+      
+        selectLotteryView.preloader.stopAnimating()
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 17.scale))
+        let attributedTitle = "Continue".localized.attributed(with: attrs)
+        
+        selectLotteryView.continueButton.setAttributedTitle(attributedTitle, for: .normal)
+        
+    }
 }
 
 // MARK: - Private Methods
@@ -144,6 +157,7 @@ private extension ScanSelectLotteriesViewController {
         let selectedLotteryIdsArray  = neededLotteries.map { $0.id }
         onContinue?(selectedLotteryIdsArray)
     }
+    
  
     @objc func addAnotherGameButtonTapped() {
         let suggestNewGameVC = SuggestNewGameViewController()

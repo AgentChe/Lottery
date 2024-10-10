@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
+		A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */; };
+		A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */; };
 		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
 		A32748BC2C25E74F00E9F79A /* ScanSelectStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */; };
 		A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */; };
@@ -89,6 +91,8 @@
 		A375583F2C37BEB80028DB95 /* AddScanTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */; };
 		A37558412C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */; };
 		A37558432C383FDE0028DB95 /* DeleteTicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37558422C383FDE0028DB95 /* DeleteTicketRequest.swift */; };
+		A3764F2B2CAC5F1200D8ECD8 /* LotteryPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3764F2A2CAC5F0C00D8ECD8 /* LotteryPattern.swift */; };
+		A3764F2D2CAC5F5C00D8ECD8 /* FetchLotteriesPatternRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3764F2C2CAC5F5A00D8ECD8 /* FetchLotteriesPatternRequest.swift */; };
 		A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */; };
 		A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B322C0F5A880024FC9F /* StateCell.swift */; };
 		A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39B2B392C0F5B880024FC9F /* LotteryCell.swift */; };
@@ -110,6 +114,7 @@
 		A3EF372D2C17BC8D00753C41 /* SettingsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */; };
 		A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37302C184DD600753C41 /* TicketsViewController.swift */; };
 		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
+		A3EF38202CB43D7E00D2C4B1 /* Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */; };
 		A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */; };
 		A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */; };
 		A3FC079F2C8A287100A668C5 /* ScanScratchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */; };
@@ -250,6 +255,8 @@
 /* Begin PBXFileReference section */
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollecitonViewCell.swift; sourceTree = SOURCE_ROOT; };
+		A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoVerticalScrollCollectionView.swift; sourceTree = "<group>"; };
 		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
 		A32748BB2C25E74F00E9F79A /* ScanSelectStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateViewController.swift; sourceTree = "<group>"; };
 		A32748BE2C25E79B00E9F79A /* ScanSelectStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSelectStateView.swift; sourceTree = "<group>"; };
@@ -331,6 +338,8 @@
 		A375583E2C37BEB80028DB95 /* AddScanTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScanTicketViewController.swift; sourceTree = "<group>"; };
 		A37558402C37BF2C0028DB95 /* ScanAddNumbersEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanAddNumbersEditCell.swift; sourceTree = "<group>"; };
 		A37558422C383FDE0028DB95 /* DeleteTicketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTicketRequest.swift; sourceTree = SOURCE_ROOT; };
+		A3764F2A2CAC5F0C00D8ECD8 /* LotteryPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryPattern.swift; sourceTree = "<group>"; };
+		A3764F2C2CAC5F5A00D8ECD8 /* FetchLotteriesPatternRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchLotteriesPatternRequest.swift; sourceTree = "<group>"; };
 		A39B2B302C0E1DC10024FC9F /* SuggestNewGameRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestNewGameRequest.swift; sourceTree = "<group>"; };
 		A39B2B322C0F5A880024FC9F /* StateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateCell.swift; sourceTree = "<group>"; };
 		A39B2B392C0F5B880024FC9F /* LotteryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryCell.swift; sourceTree = "<group>"; };
@@ -352,6 +361,7 @@
 		A3EF372C2C17BC8D00753C41 /* SettingsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWebViewController.swift; sourceTree = "<group>"; };
 		A3EF37302C184DD600753C41 /* TicketsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsViewController.swift; sourceTree = "<group>"; };
 		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
+		A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operations.swift; sourceTree = "<group>"; };
 		A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScanOptionView.swift; sourceTree = "<group>"; };
 		A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimViewWithProgressBar.swift; sourceTree = SOURCE_ROOT; };
 		A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanScratchManager.swift; sourceTree = SOURCE_ROOT; };
@@ -863,7 +873,9 @@
 		A3FD9EA42C11C9EE000FAD68 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */,
 				A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */,
+				A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */,
 				A3EF37222C174E1D00753C41 /* NumberCell.swift */,
 				A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */,
 				A3FD9EA92C11EDBE000FAD68 /* CustomSegmentControl.swift */,
@@ -895,6 +907,7 @@
 			children = (
 				A3FF55562C07E0B600E81771 /* State.swift */,
 				A3FF55582C07E0CA00E81771 /* Lottery.swift */,
+				A3764F2A2CAC5F0C00D8ECD8 /* LotteryPattern.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -903,6 +916,7 @@
 			isa = PBXGroup;
 			children = (
 				A3FF555C2C07E11200E81771 /* FetchStatesRequest.swift */,
+				A3764F2C2CAC5F5A00D8ECD8 /* FetchLotteriesPatternRequest.swift */,
 				A3FF555E2C07E26700E81771 /* FetchLotteriesRequest.swift */,
 				A3FF557C2C08B8A600E81771 /* AddLotteryRequest.swift */,
 			);
@@ -1278,6 +1292,7 @@
 		DE42B1872BFF3CB100FF61B0 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */,
 				A3FF55552C07E09D00E81771 /* Content */,
 				DE42B20B2BFF576700FF61B0 /* Profile */,
 				A3FF55642C07E42000E81771 /* Games */,
@@ -1602,6 +1617,7 @@
 				A32749422C29859400E9F79A /* CGPoint+Utils.swift in Sources */,
 				A32749732C29859400E9F79A /* ScannedResultsViewController.swift in Sources */,
 				A3FF557F2C08B8C400E81771 /* AddLuckyNumbersRequest.swift in Sources */,
+				A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */,
 				DE42B1972BFF3CB200FF61B0 /* TapAreaButton.swift in Sources */,
 				A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */,
 				A3AE801C2C2CA19600E5B473 /* SelectGameCell.swift in Sources */,
@@ -1617,6 +1633,7 @@
 				A32749392C29859400E9F79A /* QuadrilateralView.swift in Sources */,
 				A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */,
 				A3FF555F2C07E26700E81771 /* FetchLotteriesRequest.swift in Sources */,
+				A3764F2D2CAC5F5C00D8ECD8 /* FetchLotteriesPatternRequest.swift in Sources */,
 				A327497B2C29859400E9F79A /* ImageManager.swift in Sources */,
 				A35112F12C986AEF0060D261 /* SplashProgressBar.swift in Sources */,
 				A3FF55752C07E5C700E81771 /* AddTicketRequest.swift in Sources */,
@@ -1690,6 +1707,7 @@
 				DE42B1B52BFF3CB200FF61B0 /* SceneDelegate.swift in Sources */,
 				A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */,
 				A3FF55852C08C03400E81771 /* GetProfileRequest.swift in Sources */,
+				A3764F2B2CAC5F1200D8ECD8 /* LotteryPattern.swift in Sources */,
 				A32748C32C28E99E00E9F79A /* ScanSelectLotteryView.swift in Sources */,
 				A327493A2C29859400E9F79A /* VisionRectangleDetector.swift in Sources */,
 				DE42B1AE2BFF3CB200FF61B0 /* ScreenSize.swift in Sources */,
@@ -1767,6 +1785,7 @@
 				A32749412C29859400E9F79A /* CGImagePropertyOrientation.swift in Sources */,
 				A3EF37232C174E1D00753C41 /* NumberCell.swift in Sources */,
 				A3FF55732C07E5A300E81771 /* Ticket.swift in Sources */,
+				A3EF38202CB43D7E00D2C4B1 /* Operations.swift in Sources */,
 				A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */,
 				A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */,
 				DE42B1BD2BFF3CB200FF61B0 /* OnboardingView.swift in Sources */,
@@ -1800,6 +1819,7 @@
 				A3EF372B2C17B9DE00753C41 /* MenuCell.swift in Sources */,
 				A32749752C29859400E9F79A /* CaptureSession+Flash.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
+				A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1951,11 +1971,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
+				DEVELOPMENT_TEAM = 2NVL5EUMWM;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lottery/Info.plist;
@@ -1973,7 +1991,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Lottery AppStore";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1991,11 +2008,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RXCT63549X;
+				DEVELOPMENT_TEAM = 2NVL5EUMWM;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lottery/Info.plist;
@@ -2013,7 +2028,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Lottery AppStore";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

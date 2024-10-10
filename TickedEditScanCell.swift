@@ -9,6 +9,7 @@ import UIKit
 import Kingfisher
 class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
     let contentManager = ContentManager()
+    var bonusIdx: [Int] = []
     var ticket: Ticket? {
         didSet {
            // parentvc?.ticket = ticket
@@ -365,6 +366,7 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
             
             // Get the appropriate number for this index
             if let numbers = numbersStringArray[safe: indexPath.section] {
+                cell.bonusIdx = bonusIdx
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)

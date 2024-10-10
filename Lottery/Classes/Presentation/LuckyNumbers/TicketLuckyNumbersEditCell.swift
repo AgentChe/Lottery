@@ -8,7 +8,7 @@
 import UIKit
 
 class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
-    
+    var bonusIdx: [Int] = []
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -357,7 +357,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
                 return UICollectionViewCell()
             }
-            
+            cell.bonusIdx = bonusIdx
             // Get the appropriate number for this index
             if let numbers = numbersStringArray[safe: indexPath.section] {
                 let number = numbers[indexPath.item]

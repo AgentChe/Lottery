@@ -173,7 +173,7 @@
 "DrawsViewController.MyTickets" = "My tickets";
 
 // MARK: PastGameCell
-"PastGameCell.WinningNumbers" = "WINNING NUMBERS";
+"PastGameCell.WinningNumbers" = "LATEST WINNING NUMBERS";
 "PastGameCell.MyLuckyNumbers" = "MY LUCKY NUMBERS";
 
 // MARK: AddScanTicketViewController

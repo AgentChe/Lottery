@@ -17,6 +17,7 @@ extension CGFloat: Scalable {
         let currentScreenWidth = UIScreen.main.bounds.size.width
         return self * currentScreenWidth / designScreenWidth
     }
+   
 }
 
 extension Int {

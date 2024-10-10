@@ -109,7 +109,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
             return
         }
 
-        profileManager.setProfile(lotteries: selectedGames, state: stateId, forceUpdate: true) { [weak self] result in
+        profileManager.setProfile(lotteries: selectedGames, state: stateId) { [weak self] result in
             switch result {
             case .success:
                 let nextStep = self?.determineNextStep() ?? .main

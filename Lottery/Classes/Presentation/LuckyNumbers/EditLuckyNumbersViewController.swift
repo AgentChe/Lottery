@@ -8,6 +8,8 @@
 import UIKit
 
 class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    var lotteryPatterns: [LotteryPattern] = []
+    private var contentManager: ContentManagerProtocol = ContentManager()
     private let label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -25,7 +27,19 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         }
     }
     var collectionView: UICollectionView!
-    
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    self?.collectionView.reloadData()
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
     private let saveTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("EditLuckyNumbersViewController.SaveButton".localized, for: .normal)
@@ -77,7 +91,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         view.backgroundColor = Appearance.main400
         setupNavigationBar()
         setupNavigationBarTitle()
-        
+        fetchLotteriesPatterns()
         label.text = "You can add additional row of lucky numbers by tapping plus button"
         view.addSubview(label)
         
@@ -233,6 +247,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketLuckyNumbersEditCellId", for: indexPath) as! TicketLuckyNumbersEditCell
         if let ticket = self.ticket {
+            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
+                cell.bonusIdx = pattern.bonusIdx
+            }
             cell.configure(ticket: ticket, game: game, lotteries: lotteries)
         }
         cell.delegate = self

@@ -11,6 +11,7 @@ final class ScanOnboardingViewController: UIViewController {
     struct Constants {
         static let wasViewedKey = "onboarding_view_controller_was_viewed_key"
     }
+    var fromDrawsViewController : Bool = false
     var fromMenu: Bool = false
     var immediateGameChoose: Bool = false
     private let profileManager: ProfileManagerProtocol = ProfileManager()
@@ -44,6 +45,10 @@ final class ScanOnboardingViewController: UIViewController {
             guard let self = self else { return }
             
             self.selectedState = selectedState
+            if fromDrawsViewController {
+                saveProfile()
+                return
+            }
             self.showSelectLotteriesViewController()
         }
         
@@ -102,8 +107,6 @@ final class ScanOnboardingViewController: UIViewController {
         scanViewController.didMove(toParent: self)
     }
     
-    
-    
     func showSelectLotteriesViewController() {
         guard let selectedState = selectedState else { return } // Ensure we have a stateId
         selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: fromMenu)
@@ -114,7 +117,7 @@ final class ScanOnboardingViewController: UIViewController {
             if !fromMenu {
                 self.completeOnboarding()
             } else {
-                saveProfile()
+                saveProfile(selectedLotteries)
             }
         }
         
@@ -166,22 +169,59 @@ final class ScanOnboardingViewController: UIViewController {
             }
         }
     }
-    private func saveProfile() {
+    private func saveProfile(_ selectedLotteries: [Int]? = nil) {
         guard let stateId = selectedState else {
             presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
         
-        profileManager.setProfile(lotteries: selectedLotteries, state: stateId, forceUpdate: false) { [weak self] result in
+        profileManager.setProfile(lotteries: selectedLotteries, state: stateId) { [weak self] result in
             switch result {
             case .success:
-                if !(self?.fromMenu ?? false) {
+                if !(self?.fromMenu ?? false) && !(self?.fromDrawsViewController ?? false) {
                     let nextStep = self?.determineNextStep() ?? .main
                     self?.goToNext(at: nextStep)
                 } else {
-                    self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
-                    self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
+                    if self?.fromMenu == true {
+                        self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
+                        self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
+                    }
+                
                     let rootViewController =  self?.navigationController?.viewControllers.first
+                    Task {
+                        
+//                        let contentManager = ContentManager()
+//                     async let lotteriesResult =   contentManager.fetchLotteries(forceUpdate: true)  { [weak self] result in
+//                        }
+//                      async let lpResult = contentManager.fetchLotteriesPattern(forceUpdate: true) { [weak self] result in
+//                            
+//                        }
+                        
+                        let gamesManager = GamesManager()
+                        
+                        async let nextGamesResult = gamesManager.fetchNextGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
+                            
+                        }
+                        async let pastGamesResult = gamesManager.fetchPastGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
+                            
+                        }
+                        
+                        // Wait for both results to complete
+                        do {
+                            let nextGames = try await nextGamesResult
+                            let pastGames = try await pastGamesResult
+                         //   let ltteries = try await lotteriesResult
+                         //   let lp = try await lpResult
+                            
+                            // Process both results
+                            // Handle nextGames and pastGames here
+                        } catch {
+                            // Handle error
+                            self?.presentTryAgainViewController(with: ContentError(.notContent))
+                            return
+                        }
+                    }
+                    
                     self?.navigationController?.popToRootViewController(animated: true)
                     //                    delay(0.7) {
                     //                        rootViewController?.dismiss(animated: true)

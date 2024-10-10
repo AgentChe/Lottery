@@ -1,20 +1,18 @@
-//  ContentManager.swift
-//  Lottery
-//
-//  Created by Niiaz Khasanov on 5/30/24.
-//
+// ContentManager.swift
 
 import Foundation
 
 protocol ContentManagerProtocol {
     func fetchStates(forceUpdate: Bool, completion: @escaping (Result<[State], Error>) -> Void)
     func fetchLotteries(forceUpdate: Bool, stateId: Int?, completion: @escaping (Result<[Lottery], Error>) -> Void)
+    func fetchLotteriesPattern(forceUpdate: Bool, stateId: Int?, completion: @escaping (Result<[LotteryPattern], Error>) -> Void)
 }
 
 final class ContentManager {
     enum Constants {
         static let stateCacheKey = "states_cache"
         static let lotteryCacheKey = "lotteries_cache"
+        static let lotteryPatternsCacheKey = "lottery_patterns_cache"
     }
     
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
@@ -37,10 +35,13 @@ extension ContentManager: ContentManagerProtocol {
         let request = FetchStatesRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
-        Opertaions.contentManagerOprations[operationId] = operation
+        
+        // Set the operation in the Operations class
+        Operations.shared.setContentManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            Opertaions.contentManagerOprations.removeValue(forKey: operationId)
+            // Remove the operation from the Operations class
+            Operations.shared.removeContentManagerOperation(forKey: operationId)
             
             DispatchQueue.main.async {
                 if let error = error {
@@ -58,14 +59,14 @@ extension ContentManager: ContentManagerProtocol {
     
     func fetchLotteries(forceUpdate: Bool, stateId: Int? = nil, completion: @escaping (Result<[Lottery], Error>) -> Void) {
         if !forceUpdate, let cachedLotteries: [Lottery] = loadFromCache(forKey: Constants.lotteryCacheKey) {
-               if let stateId = stateId {
-                   let filteredLotteries = cachedLotteries.filter { $0.avaliable_states.contains(stateId) }
-                   completion(.success(filteredLotteries))
-               } else {
-                   completion(.success(cachedLotteries))
-               }
-               return
-           }
+            if let stateId = stateId {
+                let filteredLotteries = cachedLotteries.filter { $0.avaliable_states.contains(stateId) }
+                completion(.success(filteredLotteries))
+            } else {
+                completion(.success(cachedLotteries))
+            }
+            return
+        }
         
         guard let userToken = sessionManager.getSession()?.userToken else {
             completion(.failure(ContentError(.notContent)))
@@ -75,11 +76,14 @@ extension ContentManager: ContentManagerProtocol {
         let request = FetchLotteriesRequest(stateId: stateId, userToken: userToken)
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
-        Opertaions.contentManagerOprations[operationId] = operation
         
-        operation.execute(dispatcher: dispatcher) {  result, error in
-            Opertaions.contentManagerOprations.removeValue(forKey: operationId)
-            print("fetchLotteries!")
+        // Set the operation in the Operations class
+        Operations.shared.setContentManagerOperation(operation, forKey: operationId)
+        
+        operation.execute(dispatcher: dispatcher) { result, error in
+            // Remove the operation from the Operations class
+            Operations.shared.removeContentManagerOperation(forKey: operationId)
+            
             DispatchQueue.main.async {
                 if let error = error {
                     completion(.failure(error))
@@ -87,6 +91,42 @@ extension ContentManager: ContentManagerProtocol {
                     let lotteries = lotteriesArray.compactMap { Lottery(response: $0) }
                     self.saveToCache(data: lotteries, forKey: Constants.lotteryCacheKey)
                     completion(.success(lotteries))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
+                }
+            }
+        }
+    }
+    
+    func fetchLotteriesPattern(forceUpdate: Bool, stateId: Int? = nil, completion: @escaping (Result<[LotteryPattern], Error>) -> Void) {
+        if !forceUpdate, let cachedPatterns: [LotteryPattern] = loadFromCache(forKey: Constants.lotteryPatternsCacheKey) {
+            completion(.success(cachedPatterns))
+            return
+        }
+        
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            completion(.failure(ContentError(.notContent)))
+            return
+        }
+        
+        let request = FetchLotteriesPatternRequest(stateId: stateId, userToken: userToken)
+        let operation = APIOperation(endPoint: request)
+        let operationId = UUID().uuidString
+        
+        // Set the operation in the Operations class
+        Operations.shared.setContentManagerOperation(operation, forKey: operationId)
+        
+        operation.execute(dispatcher: dispatcher) { result, error in
+            // Remove the operation from the Operations class
+            Operations.shared.removeContentManagerOperation(forKey: operationId)
+            
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let patternsArray = result as? [[String: Any]] {
+                    let patterns = patternsArray.compactMap { LotteryPattern(response: $0) }
+                    self.saveToCache(data: patterns, forKey: Constants.lotteryPatternsCacheKey)
+                    completion(.success(patterns))
                 } else {
                     completion(.failure(ContentError(.notContent)))
                 }

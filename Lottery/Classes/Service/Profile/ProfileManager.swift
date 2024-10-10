@@ -1,7 +1,6 @@
+//
 //  ProfileManager.swift
 //  Lottery
-//
-//  Created by Андрей Чернышев on 23.05.2024.
 //
 
 import Foundation
@@ -10,7 +9,7 @@ protocol ProfileManagerProtocol {
     func syncTokens(oldToken: String, newToken: String, complete: ((LoginResult) -> Void)?)
     func login(userToken: String, complete: ((LoginResult) -> Void)?)
     func getProfile(forceUpdate: Bool, complete: @escaping (Result<Profile, Error>) -> Void)
-    func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool, complete: @escaping (Result<Bool, Error>) -> Void)
+    func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void)
 }
 
 final class ProfileManager {
@@ -36,23 +35,26 @@ final class ProfileManager {
     }
 
     private func loadCachedProfile() -> Profile? {
-           let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int]
-           let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int
-           return Profile(lotteries: lotteries, state: state)
-       }
+        let lotteries = UserDefaults.standard.array(forKey: Constants.cachedLotteriesKey) as? [Int]
+        let state = UserDefaults.standard.value(forKey: Constants.cachedStateKey) as? Int
+        return Profile(lotteries: lotteries, state: state)
+    }
 }
 
-// MARK: ProfileManagerProtocol
+// MARK: - ProfileManagerProtocol
 extension ProfileManager: ProfileManagerProtocol {
     func syncTokens(oldToken: String, newToken: String, complete: ((LoginResult) -> Void)? = nil) {
         let request = SyncTokensRequest(oldToken: oldToken, newToken: newToken)
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Opertaions.profileManagerOprations[operationId] = operation
+        
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
 
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
+        operation.execute(dispatcher: dispatcher) { result, error in
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
             DispatchQueue.main.async {
                 complete?(LoginResult(error: error))
             }
@@ -64,10 +66,13 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
         
         let operationId = UUID().uuidString
-        Opertaions.profileManagerOprations[operationId] = operation
+        
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
 
-        operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
+        operation.execute(dispatcher: dispatcher) { result, error in
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
             DispatchQueue.main.async {
                 complete?(LoginResult(error: error))
             }
@@ -89,10 +94,13 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
 
         let operationId = UUID().uuidString
-        Opertaions.profileManagerOprations[operationId] = operation
+        
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
@@ -106,9 +114,7 @@ extension ProfileManager: ProfileManagerProtocol {
         }
     }
 
-    func setProfile(lotteries: [Int]?, state: Int?, forceUpdate: Bool = false, complete: @escaping (Result<Bool, Error>) -> Void) {
-        
-        
+    func setProfile(lotteries: [Int]?, state: Int?, complete: @escaping (Result<Bool, Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
             complete(.failure(SignError.tokenNotFound))
             return
@@ -118,10 +124,13 @@ extension ProfileManager: ProfileManagerProtocol {
         let operation = APIOperation(endPoint: request)
 
         let operationId = UUID().uuidString
-        Opertaions.profileManagerOprations[operationId] = operation
+        
+        // Set the operation in Operations
+        Operations.shared.setProfileManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { [weak self] result, error in
-            Opertaions.profileManagerOprations.removeValue(forKey: operationId)
+            // Remove the operation from Operations
+            Operations.shared.removeProfileManagerOperation(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
                     complete(.failure(error))
@@ -136,9 +145,9 @@ extension ProfileManager: ProfileManagerProtocol {
             }
         }
     }
-
 }
 
+// MARK: - ResponseMapper
 final class ResponseMapper {
     static func mapSetProfileResponse(result: Any) -> Bool? {
         guard let result = result as? [String: Any] else {

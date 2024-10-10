@@ -16,6 +16,8 @@ protocol RecognizedTextDataSource: AnyObject {
 class CheckScanTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var image: UIImage?
     var ticket: Ticket?
+    var lotteryPatterns: [LotteryPattern] = []
+    private var contentManager: ContentManagerProtocol = ContentManager()
     var numbersStringArray: [[String]] = [] {
         didSet {
             if numbersStringArray.count == 0 {
@@ -93,6 +95,21 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             self.presentRecognitionErrorAlert(on: self)
         }
     }
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    // Reload any UI or update any data structures as necessary
+                    self?.collectionView.reloadData()
+                  //  print("Successfully fetched lottery patterns: \(patterns)")
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
     // Custom initializer
     init(ticket: Ticket) {
         super.init(nibName: nil, bundle: nil)
@@ -146,7 +163,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         view.backgroundColor = Appearance.main400
         setupNavigationBar()
         setupNavigationBarTitle()
-
+        fetchLotteriesPatterns()
  
 
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
@@ -255,6 +272,9 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditScanCell", for: indexPath) as! TicketEditScanCell
         if let ticket = self.ticket {
+            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
+                cell.bonusIdx = pattern.bonusIdx
+            }
             cell.configure(ticket: ticket)
         }
         cell.delegate = self

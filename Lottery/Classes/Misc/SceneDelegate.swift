@@ -16,12 +16,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         let gamesManager = GamesManager()
         gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+ 
         }
         gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
+   
         }
       
         let contentManager = ContentManager()
         contentManager.fetchLotteries(forceUpdate: true)  { [weak self] result in
+        }
+        contentManager.fetchLotteriesPattern(forceUpdate: true) { [weak self] result in
+            
         }
         
         window = UIWindow(windowScene: windowScene)

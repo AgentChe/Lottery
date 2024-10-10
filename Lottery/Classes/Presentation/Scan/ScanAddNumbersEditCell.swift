@@ -17,7 +17,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
             delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
-    
+    var bonusIdx: [Int] = []
     weak var delegate: EditTicketViewControllerDelegate?
     weak var parentvc: AddScanTicketViewController?
     private let logoImageView = UIImageView()
@@ -348,6 +348,7 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
             cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
             
+            
             if numbersStringArray.count == 1 {
                 cell.closeButton.alpha = 0
             }
@@ -364,6 +365,7 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
             
             // Get the appropriate number for this index
             if let numbers = numbersStringArray[safe: indexPath.section] {
+                cell.bonusIdx = bonusIdx
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
