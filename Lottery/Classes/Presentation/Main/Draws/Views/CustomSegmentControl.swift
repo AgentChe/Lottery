@@ -212,7 +212,7 @@ private extension SSSegmentedControl {
                 button.setTitle("<Segment>", for: .normal)
             }
             
-            button.titleLabel?.font = Fonts.Inter.bold(size: 17.scale)
+            button.titleLabel?.font = Fonts.Inter.bold(size: 16.scale)
             button.addTarget(self, action: #selector(segmentTapped(_:)), for: .touchUpInside)
             
             stackView.addArrangedSubview(button)

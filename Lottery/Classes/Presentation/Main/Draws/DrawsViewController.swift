@@ -28,8 +28,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
     private var premiumAnimationView: LottieAnimationView!
-    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 165.scale : 135.scale
-    let minUpperMenuHeight: CGFloat = 115.scale
+    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 180.scale : 135.scale
+    let minUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 130.scale : 115.scale
     let segmentedControlBackgroundView = UIView()
 
     lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
@@ -295,29 +295,29 @@ extension DrawsViewController {
 
         NSLayoutConstraint.activate([
             scanOptionButton.leadingAnchor.constraint(equalTo: upperMenuView.leadingAnchor, constant: 16.scale * 2.2),
-            scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            scanOptionButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -48.scale),
             scanOptionButton.widthAnchor.constraint(equalToConstant: 68.scale),
             scanOptionButton.heightAnchor.constraint(equalToConstant: 68.scale),
             label1.centerXAnchor.constraint(equalTo: scanOptionButton.centerXAnchor),
             label1.topAnchor.constraint(equalTo: scanOptionButton.bottomAnchor, constant: 4.scale),
             ticketsButton.centerXAnchor.constraint(equalTo: upperMenuView.centerXAnchor),
-            ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            ticketsButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -48.scale),
             ticketsButton.widthAnchor.constraint(equalToConstant: 68.scale),
             ticketsButton.heightAnchor.constraint(equalToConstant: 68.scale),
             label2.centerXAnchor.constraint(equalTo: luckyNumbersButton.centerXAnchor),
             label2.topAnchor.constraint(equalTo: luckyNumbersButton.bottomAnchor, constant: 4.scale),
             luckyNumbersButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale * 2.2),
-            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -34.scale),
+            luckyNumbersButton.bottomAnchor.constraint(equalTo: upperMenuView.bottomAnchor, constant: -48.scale),
             luckyNumbersButton.widthAnchor.constraint(equalToConstant: 68.scale),
             luckyNumbersButton.heightAnchor.constraint(equalToConstant: 68.scale),
             label3.centerXAnchor.constraint(equalTo: ticketsButton.centerXAnchor),
             label3.topAnchor.constraint(equalTo: ticketsButton.bottomAnchor, constant: 4.scale),
-            menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -0.scale),
-            menuButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -66.scale),
-            menuButton.widthAnchor.constraint(equalToConstant: 60.scale),
-            menuButton.heightAnchor.constraint(equalToConstant: 60.scale),
-            changeStateButton.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor, constant: -0.scale),
-            changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -49.scale),
+            menuButton.trailingAnchor.constraint(equalTo: upperMenuView.trailingAnchor, constant: -16.scale),
+            menuButton.bottomAnchor.constraint(equalTo: luckyNumbersButton.topAnchor, constant: -22.scale),
+            menuButton.widthAnchor.constraint(equalToConstant: 24.scale),
+            menuButton.heightAnchor.constraint(equalToConstant: 24.scale),
+            changeStateButton.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor, constant: -16.scale),
+            changeStateButton.topAnchor.constraint(equalTo: ticketsButton.topAnchor, constant: -47.scale),
             changeStateButton.widthAnchor.constraint(equalToConstant: 82.scale),
             changeStateButton.heightAnchor.constraint(equalToConstant: 26.scale)
         ])
@@ -429,7 +429,7 @@ extension DrawsViewController {
 
     func createButton(imageName: String) -> UIButton {
         let button = UIButton(type: .custom)
-        button.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
+        button.backgroundColor = UIColor(hex: "#D9E2FA", alpha: 0.2)
         button.layer.cornerRadius = 34.scale
         button.clipsToBounds = true
         let imageView = UIImageView(image: UIImage(named: imageName))
@@ -457,8 +457,8 @@ extension DrawsViewController {
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 24.scale),
-            imageView.heightAnchor.constraint(equalToConstant: 24.scale)
+            imageView.widthAnchor.constraint(equalToConstant: 16.scale),
+            imageView.heightAnchor.constraint(equalToConstant: 12.scale)
         ])
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -610,7 +610,7 @@ extension DrawsViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 40.scale
+        return 16.scale
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

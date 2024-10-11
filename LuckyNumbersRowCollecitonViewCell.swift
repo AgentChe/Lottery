@@ -71,7 +71,7 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
                     if winNumArray.last != number {
                         cell.numberLabel.textColor = Appearance.main100
                         cell.layer.borderColor = Appearance.main100.cgColor
-                        cell.backgroundViewContainer.backgroundColor = Appearance.mono100
+                        cell.backgroundViewContainer.backgroundColor = UIColor(hex: "#D9E2FA", alpha: 0.2)
                         cell.backgroundViewContainer.alpha = 0.5
                     }
                 }
@@ -95,14 +95,14 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
         let allNumbers = Set(comparisonArray.flatMap({ $0 }))
         let isHighlight = allNumbers.contains(number)
         cell.configure(with: String(number))
-        cell.backgroundViewContainer.backgroundColor = isHighlight ? Appearance.main600 : Appearance.mono100
+        cell.backgroundViewContainer.backgroundColor = isHighlight ? Appearance.main600 : UIColor(hex: "#D9E2FA", alpha: 0.2)
         if cell.backgroundViewContainer.backgroundColor  == Appearance.main600 {
             cell.numberLabel.textColor = Appearance.mono200
         }
     
         cell.backgroundViewContainer.alpha = isHighlight ? 1 : 0.5
        
-        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor : Appearance.main500.cgColor
+        cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor :  UIColor.clear.cgColor
       
         if bonusIdx.contains(indexPath.item) {
             cell.backgroundViewContainer.backgroundColor = Appearance.main100
