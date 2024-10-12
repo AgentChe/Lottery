@@ -335,7 +335,7 @@ extension DrawsViewController {
     }
 
     @objc func chooseScanOption() {
-        if SessionManager().hasActiveSubscriptions() {
+        if !SessionManager().hasActiveSubscriptions() {
             dimView = UIView(frame: self.view.bounds)
             dimView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             dimView.alpha = 0
@@ -359,11 +359,15 @@ extension DrawsViewController {
             view.layoutIfNeeded()
 
             UIView.animate(withDuration: 0.3) {
-                self.dimView.alpha = 1
+                self.dimView.alpha = 0.7
                 chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)
                 self.view.layoutIfNeeded()
             }
-
+            
+            let dismissTapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissScanOption))
+                   dimView.addGestureRecognizer(dismissTapGesture)
+            dimView.addGestureRecognizer(dismissTapGesture)
+            
             chooseScanOptionView.dismissButton.addTarget(self, action: #selector(dismissChooseScanOptionView(_:)), for: .touchUpInside)
         } else {
             let vc = PaygateViewController.make()
@@ -372,7 +376,7 @@ extension DrawsViewController {
     }
 
     @objc func dismissChooseScanOptionView(_ sender: UIButton) {
-        if let chooseScanOptionView = sender.superview as? ChooseScanOptionView {
+        if let chooseScanOptionView = view.subviews.first(where: { $0 is ChooseScanOptionView }) as? ChooseScanOptionView {
             UIView.animate(withDuration: 0.3, animations: {
                 chooseScanOptionView.transform = .identity
                 self.dimView.alpha = 0
