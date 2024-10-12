@@ -407,14 +407,43 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
     }
     
     func setupNavigationBackButton() {
+         // Create a custom back button
         let backButton = UIButton(type: .custom)
+        
+        // Set the custom image for the button
         if let image = UIImage(named: "Scan.ScanTheTicket") {
             backButton.setImage(image, for: .normal)
         }
-        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        
+        // Disable autoresizing mask translation
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
+        
+        // Add a target to handle back navigation
         backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
-        let backButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Create a container view to hold the button
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        // Set constraints for the button within the container
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -20.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        // Set constraints for the container view
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        // Create a UIBarButtonItem with the container view
+        let backButtonItem = UIBarButtonItem(customView: containerView)
+        
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true
     }

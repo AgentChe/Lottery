@@ -57,7 +57,7 @@ final class ScanSelectStateView: UIView {
     
     let stateTableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = Appearance.main500
+        tableView.backgroundColor = Appearance.main400
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
         tableView.separatorColor = .lightGray
@@ -72,6 +72,7 @@ final class ScanSelectStateView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+       
         setupView()
         setupTableView()
     }
@@ -107,7 +108,7 @@ extension ScanSelectStateView {
 
 private extension ScanSelectStateView {
     func setupView() {
-        backgroundColor = Appearance.main500
+        backgroundColor = Appearance.main400
         
         addSubview(descriptionLabel)
         addSubview(stateTableView)

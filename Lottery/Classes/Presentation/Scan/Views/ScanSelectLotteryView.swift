@@ -154,7 +154,7 @@ extension ScanSelectLotteryView {
 
 private extension ScanSelectLotteryView {
     func setupView() {
-        backgroundColor = Appearance.main500
+        backgroundColor = Appearance.main400
         addSubview(descriptionLabel)
         addSubview(gameTableView)
         addSubview(continueButton)
@@ -224,6 +224,7 @@ private extension ScanSelectLotteryView {
         gameTableView.dataSource = self
         gameTableView.delegate = self
         gameTableView.register(LotteryCell.self, forCellReuseIdentifier: "LotteryCell")
+        gameTableView.backgroundColor = Appearance.main400
     }
     
     func updateContinueButtonState() {

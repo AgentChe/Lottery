@@ -56,7 +56,7 @@ class StateCell: UITableViewCell {
         backgroundColor = .red
         accessoryImageView.image = UIImage(named: isSelected ? "State.Selected" : "State.NotSelected")
         
-        contentView.backgroundColor = Appearance.main500
+        contentView.backgroundColor = Appearance.main400
         separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
     }
 }
