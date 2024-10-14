@@ -187,7 +187,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                     let gamesManager = GamesManager()
                     gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
                         DispatchQueue.main.async {
-                            self?.navigationController?.popToRootViewController(animated: true)
+                            if let luckyNumbersViewController = self?.navigationController?.viewControllers[1] {
+                                self?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                            }
                         }
                     }
                     gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in

@@ -165,17 +165,34 @@ final class LuckyNumbersViewController: UIViewController {
         if let image = UIImage(named: "luckyNumbersBackButtonImage") {
             backButton.setImage(image, for: .normal)
         }
-        
-        // Set the frame or size of the button as needed
-        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        // Disable autoresizing mask translation
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
         
         // Add a target to handle back navigation
         backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
         
-        // Create a UIBarButtonItem with the custom button
-        let backButtonItem = UIBarButtonItem(customView: backButton)
+        // Create a container view to hold the button
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
         
+        // Set constraints for the button within the container
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -35.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        // Set constraints for the container view
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        // Create a UIBarButtonItem with the container view
+        let backButtonItem = UIBarButtonItem(customView: containerView)
         // Replace the default back button with the custom button
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true // Hide the default back button
@@ -229,7 +246,7 @@ final class LuckyNumbersViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+        if !SessionManager().hasActiveSubscriptions() {
             let selectTheGameViewController = SelectTheGameViewController()
             if let navigationController = navigationController {
                 navigationController.pushViewController(selectTheGameViewController, animated: true)

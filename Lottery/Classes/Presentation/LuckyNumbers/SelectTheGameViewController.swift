@@ -60,11 +60,10 @@ final class SelectTheGameViewController: UIViewController {
     }
     
     func setupNavigationBackButton() {
-        // Create a custom back button
         let backButton = UIButton(type: .custom)
         
         // Set the custom image for the button
-        if let image = UIImage(named: "Scan.ScanLottery") {
+        if let image = UIImage(named: "luckyNumbersBackButtonImage") {
             backButton.setImage(image, for: .normal)
         }
         
@@ -84,7 +83,7 @@ final class SelectTheGameViewController: UIViewController {
         NSLayoutConstraint.activate([
             backButton.widthAnchor.constraint(equalToConstant: 341.scale),
             backButton.heightAnchor.constraint(equalToConstant: 26.scale),
-            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -20.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -35.scale),
             backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
         
