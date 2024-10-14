@@ -10,6 +10,8 @@ import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
     private var lotteries: [Lottery] = []
+   
+    var lotteryPatterns: [LotteryPattern] = []
     var profile: Profile!
     private var profileManager: ProfileManagerProtocol = ProfileManager()
     private var contentManager: ContentManagerProtocol = ContentManager()
@@ -175,8 +177,24 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         view.bringSubviewToFront(scanScratchOffTicketButton)
         view.bringSubviewToFront(scanLotteryTicketButton)
         
+        fetchLotteriesPatterns()
+        
     }
-  
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    // Reload any UI or update any data structures as necessary
+                    self?.ticketsCollectionView.reloadData()
+                  //  print("Successfully fetched lottery patterns: \(patterns)")
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
 
     func fetchLotteries(for stateId: Int? = nil) {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
@@ -559,6 +577,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
       func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
           if collectionView == ticketsCollectionView {
               let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
+              if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == tickets[indexPath.item].lotteryId }.first {
+                  cell.bonusIdx = pattern.bonusIdx
+              }
               cell.lotteries = self.lotteries
               cell.configure(with: tickets[indexPath.item])
               cell.delegate = self

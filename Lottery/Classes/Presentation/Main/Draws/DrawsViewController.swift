@@ -410,7 +410,7 @@ extension DrawsViewController {
         }, completion: { _ in
             chooseScanOptionView.removeFromSuperview()
             self.dimView.removeFromSuperview()
-            if SessionManager().hasActiveSubscriptions() {
+            if !SessionManager().hasActiveSubscriptions() {
                 self.scanButtonTapped()
             } else {
                 let vc = PaygateViewController.make()

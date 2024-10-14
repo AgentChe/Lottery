@@ -218,7 +218,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                 DispatchQueue.main.async {
                     // Stop the activity indicator and show the title
                     self.activityIndicator.stopAnimating()
-                    self.saveTicketButton.setTitle("AddScanTicketViewController.".localized, for: .normal)
+                    self.saveTicketButton.setTitle("AddScanTicketViewController.SaveTicket".localized, for: .normal)
                 }
                 switch result {
                 case .success(let updatedTicket):
