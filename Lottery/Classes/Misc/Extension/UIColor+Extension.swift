@@ -12,7 +12,7 @@ extension UIColor {
         self.init(red: red / 255, green: green / 255, blue: blue / 255, alpha: alpha)
     }
     
-    convenience init?(hex: String) {
+    convenience init?(hex: String, alpha: CGFloat = 1) {
         var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         
         if (hexString.hasPrefix("#")) {
@@ -28,9 +28,7 @@ extension UIColor {
         
         let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
         let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
-        let blue = CGFloat(rgb & 0x0000FF) / 255.0
-        let alpha = CGFloat(1)
-        
+        let blue = CGFloat(rgb & 0x0000FF) / 255.0        
         self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
 }

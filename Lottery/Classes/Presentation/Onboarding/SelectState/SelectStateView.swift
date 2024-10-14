@@ -54,7 +54,7 @@ final class SelectStateView: UIView {
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = "Please choose the state to monitor now. You can switch later.".localized.attributed(with: attrs)
+        label.attributedText = "SelectState.Description".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -104,7 +104,7 @@ extension SelectStateView {
 
 private extension SelectStateView {
     func setupView() {
-        backgroundColor = Appearance.main500
+        backgroundColor = Appearance.main400
         addSubview(headerLabel)
         addSubview(descriptionLabel)
         addSubview(stateTableView)
@@ -143,6 +143,7 @@ private extension SelectStateView {
         stateTableView.dataSource = self
         stateTableView.delegate = self
         stateTableView.register(StateCell.self, forCellReuseIdentifier: "StateCell")
+        stateTableView.backgroundColor = Appearance.main400
     }
     
     func updateContinueButtonState() {

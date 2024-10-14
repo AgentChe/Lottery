@@ -458,7 +458,7 @@ extension NextGameCell:  UICollectionViewDataSource, UICollectionViewDelegateFlo
             
         } else {
             cell.numberLabel.text = String(number)
-            cell.backgroundViewContainer.backgroundColor = Appearance.mono100
+            cell.backgroundViewContainer.backgroundColor = UIColor(hex: "#D9E2FA", alpha: 0.2)
             cell.backgroundViewContainer.alpha = 0.5
             cell.layer.borderWidth = 0
         }

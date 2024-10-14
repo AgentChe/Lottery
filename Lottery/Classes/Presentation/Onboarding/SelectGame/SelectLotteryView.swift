@@ -67,7 +67,7 @@ final class SelectLotteryView: UIView {
             .lineHeight(18.scale)
             .textAlignment(.left)
         let label = UILabel()
-        label.attributedText = "Please choose the game to monitor. You can add another game if it is not on the list.".localized.attributed(with: attrs)
+        label.attributedText = "SelectGame.Description".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -123,7 +123,7 @@ extension SelectLotteryView {
 
 private extension SelectLotteryView {
     func setupView() {
-        backgroundColor = Appearance.main500
+        backgroundColor = Appearance.main400
         addSubview(headerLabel)
         addSubview(descriptionLabel)
         addSubview(gameTableView)
@@ -168,6 +168,7 @@ private extension SelectLotteryView {
         gameTableView.dataSource = self
         gameTableView.delegate = self
         gameTableView.register(LotteryCell.self, forCellReuseIdentifier: "LotteryCell")
+        gameTableView.backgroundColor = Appearance.main400
     }
     
     func updateContinueButtonState() {

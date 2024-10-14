@@ -57,7 +57,7 @@ class LotteryCell: UITableViewCell {
         
         accessoryImageView.image = UIImage(named: isSelected ? "Game.Selected" : "Game.NotSelected")
         
-        contentView.backgroundColor = Appearance.main500
+        contentView.backgroundColor = Appearance.main400
         
         separatorInset = UIEdgeInsets(top: 0.scale, left: 20.scale, bottom: 0.scale, right: 20.scale)
     }

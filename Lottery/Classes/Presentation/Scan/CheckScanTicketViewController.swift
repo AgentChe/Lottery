@@ -221,7 +221,80 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     }
 
     @objc func saveTicketButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        // Hide the title and show the activity indicator
+        saveTicketButton.setTitle("", for: .normal)
+        activityIndicator.startAnimating()
+
+        // Convert numbersStringArray to [[Int]]
+        var numbersArray: [[Int]] = []
+        for section in numbersStringArray {
+            var intSection: [Int] = []
+            for numberString in section {
+                if let number = Int(numberString) {
+                    intSection.append(number)
+                }
+            }
+            numbersArray.append(intSection)
+        }
+        
+        // Ensure we have a ticket to modify
+        guard var existingTicket = ticket else { return }
+        
+        // Update the ticket's numbers
+        existingTicket.numbers = numbersArray
+        if  let ticket = ticket {
+            let ticketsManager = TicketsManager()
+            ticketsManager.addTicket(lotteryId: existingTicket.lotteryId, pictureUrl: nil, date: ticket.date, numbers: numbersArray) { result in
+                DispatchQueue.main.async {
+                    // Stop the activity indicator and show the title
+                    self.activityIndicator.stopAnimating()
+                    self.saveTicketButton.setTitle("AddScanTicketViewController.SaveTicket".localized, for: .normal)
+                }
+                switch result {
+                case .success(let updatedTicket):
+                    DispatchQueue.main.async {
+                        ticketsManager.listTickets(forceUpdate: true) {
+                            [weak self] result in
+                            guard let self = self else { return }
+                            guard let navigationController = self.navigationController else { return }
+                            guard let drawsViewController = navigationController.viewControllers.first as? DrawsViewController else { return }
+                            
+                            // Modify the navigation stack to insert DrawsViewController right after the root view controller
+                            var viewControllers = navigationController.viewControllers
+                            // Ensure root view controller exists at index 0
+                            let rootViewController = viewControllers[0]
+                            
+                            // Insert DrawsViewController after the root view controller if it's not already there
+                            // Add myTicketsController (or myTicketsVC) after DrawsViewController
+                            let myTicketsController = drawsViewController.myTicketsController
+                            if !viewControllers.contains(myTicketsController) {
+                                viewControllers.insert(myTicketsController, at: 1)
+                            }
+                            
+                            navigationController.setViewControllers(viewControllers, animated: false)
+                            navigationController.popToViewController(myTicketsController, animated: true)
+                        }
+                    }
+                case .failure(let error):
+                    // Handle failure by presenting an alert to the user
+                    print("Failed to update the ticket: \(error)")
+                    
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(
+                            title: "AddScanTicketViewController.UpdateFailed.Title".localized,
+                            message: String(format: "AddScanTicketViewController.UpdateFailed.Message".localized, error.localizedDescription),
+                            preferredStyle: .alert
+                        )
+                        
+                        // Add an OK button to the alert
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        
+                        // Present the alert
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
     }
 
     @objc func rescanButtonTapped() {

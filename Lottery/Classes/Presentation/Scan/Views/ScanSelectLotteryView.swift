@@ -39,11 +39,11 @@ final class ScanSelectLotteryView: UIView {
     private let descriptionLabel: UILabel = {
         let attrs = TextAttributes()
             .textColor(Appearance.main300)
-            .font(Fonts.Inter.medium(size: 15.scale))
-            .lineHeight(18.scale)
+            .font(Fonts.Inter.medium(size: 14.scale))
+            .lineHeight(25.scale)
             .textAlignment(.left)
         let label = UILabel()
-        label.attributedText = "Please choose the game to monitor. You can add another game if it is not on the list.".localized.attributed(with: attrs)
+        label.attributedText = "ScanSelectLotteryView.selectGames".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -154,7 +154,7 @@ extension ScanSelectLotteryView {
 
 private extension ScanSelectLotteryView {
     func setupView() {
-        backgroundColor = Appearance.main500
+        backgroundColor = Appearance.main400
         addSubview(descriptionLabel)
         addSubview(gameTableView)
         addSubview(continueButton)
@@ -224,6 +224,7 @@ private extension ScanSelectLotteryView {
         gameTableView.dataSource = self
         gameTableView.delegate = self
         gameTableView.register(LotteryCell.self, forCellReuseIdentifier: "LotteryCell")
+        gameTableView.backgroundColor = Appearance.main400
     }
     
     func updateContinueButtonState() {

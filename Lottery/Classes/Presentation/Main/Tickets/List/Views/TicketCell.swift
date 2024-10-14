@@ -13,6 +13,8 @@ protocol TicketCellDelegate: AnyObject {
 }
 
 class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    var lotteries: [Lottery] = []
+    var bonusIdx: [Int] = []
     
     static let reuseIdentifier = "TicketCell"
     weak var delegate: TicketCellDelegate?
@@ -169,7 +171,8 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         numbersCollectionView.reloadData()
         
         // Load ticket image asynchronously
-        if let url = ticket.pictureUrl {
+        var lotteryLogoUrlString = lotteries.filter { $0.id == ticket.lotteryId }.first?.logoUrl
+        if let url = lotteryLogoUrlString {
             self.ticketImageView.kf.setImage(with: url)
         } else {
             ticketImageView.image = nil
@@ -223,7 +226,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         let number = numbers[indexPath.section][indexPath.item]
         
         // Determine if this is the last item in the section
-        let isLastItemInSection = indexPath.item == numbers[indexPath.section].count - 1
+        let isLastItemInSection = bonusIdx.contains(indexPath.item)
         cell.configure(with: number, isLastInSection: isLastItemInSection)
         
         return cell

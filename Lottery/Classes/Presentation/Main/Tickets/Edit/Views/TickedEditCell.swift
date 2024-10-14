@@ -17,7 +17,8 @@ protocol EditTicketViewControllerDelegate : AnyObject {
     func updateSizeOfEditCell(numbersStringArray: [[String]])
 }
 class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
-    
+    var lotteries: [Lottery] = []
+    var bonusIdx: [Int] = []
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -72,6 +73,8 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -88,7 +91,12 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         self.ticket = ticket
         numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
         
-        logoImageView.kf.setImage(with:ticket.pictureUrl)
+        var lotteryLogoUrlString = lotteries.filter { $0.id == ticket.lotteryId }.first?.logoUrl
+        if let url = lotteryLogoUrlString {
+            self.logoImageView.kf.setImage(with: url)
+        } else {
+            logoImageView.image = nil
+        }
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
@@ -315,6 +323,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             
             // Get the appropriate number for this index
             if let numbers = numbersStringArray[safe: indexPath.section] {
+                cell.bonusIdx = bonusIdx
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)

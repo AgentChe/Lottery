@@ -147,7 +147,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         let backButton = UIButton(type: .custom)
         
         // Set the custom image for the button
-        if let image = UIImage(named: "AddScanTicketViewController.CustomBackButtonImage".localized) {
+        if let image = UIImage(named: "EditBackButtonImage".localized) {
             backButton.setImage(image, for: .normal)
         }
         
@@ -213,8 +213,8 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         if let lottery = lottery, let ticket = ticket {
             let lotteryId = lottery.id
             
-            let ticketManager = TicketsManager()
-            ticketManager.addTicket(lotteryId: lotteryId, pictureUrl: nil, date: ticket.date, numbers: numbersArray) { result in
+            let ticketsManager = TicketsManager()
+            ticketsManager.addTicket(lotteryId: lotteryId, pictureUrl: nil, date: ticket.date, numbers: numbersArray) { result in
                 DispatchQueue.main.async {
                     // Stop the activity indicator and show the title
                     self.activityIndicator.stopAnimating()
@@ -223,7 +223,27 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                 switch result {
                 case .success(let updatedTicket):
                     DispatchQueue.main.async {
-                        self.navigationController?.popToRootViewController(animated: true)
+                        ticketsManager.listTickets(forceUpdate: true) {
+                            [weak self] result in
+                            guard let self = self else { return }
+                            guard let navigationController = self.navigationController else { return }
+                            guard let drawsViewController = navigationController.viewControllers.first as? DrawsViewController else { return }
+                            
+                            // Modify the navigation stack to insert DrawsViewController right after the root view controller
+                            var viewControllers = navigationController.viewControllers
+                            // Ensure root view controller exists at index 0
+                            let rootViewController = viewControllers[0]
+                            
+                            // Insert DrawsViewController after the root view controller if it's not already there
+                            // Add myTicketsController (or myTicketsVC) after DrawsViewController
+                            let myTicketsController = drawsViewController.myTicketsController
+                            if !viewControllers.contains(myTicketsController) {
+                                viewControllers.insert(myTicketsController, at: 1)
+                            }
+                            
+                            navigationController.setViewControllers(viewControllers, animated: false)
+                            navigationController.popToViewController(myTicketsController, animated: true)
+                        }
                     }
                 case .failure(let error):
                     // Handle failure by presenting an alert to the user

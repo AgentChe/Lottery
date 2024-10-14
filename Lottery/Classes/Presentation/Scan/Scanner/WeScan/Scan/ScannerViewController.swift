@@ -46,13 +46,31 @@ public final class ScannerViewController: UIViewController {
    
     private lazy var instructionLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("ScannerViewController.InstructionLabel", comment: "Instruction to ensure the ticket is visible within the frame")
+        
+        // The text for the label
+        let text = NSLocalizedString("ScannerViewController.InstructionLabel", comment: "Instruction to ensure the ticket is visible within the frame")
+        
+        // Create an attributed string with the text
+        let attributedString = NSMutableAttributedString(string: text)
+        
+        // Create a paragraph style with line height multiple
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.2 // Adjust this value to control line height
+        
+        // Apply the paragraph style to the entire text
+        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
+        
+        // Set the attributed string to the label
+        label.attributedText = attributedString
+        
+        // Basic label settings
         label.font = Fonts.Inter.medium(size: 14.scale)
         label.textAlignment = .center
         label.textColor = .white
         label.numberOfLines = 0
         label.alpha = 1
         label.translatesAutoresizingMaskIntoConstraints = false
+        
         return label
     }()
 
@@ -161,20 +179,41 @@ public final class ScannerViewController: UIViewController {
             backButton.setImage(image, for: .normal)
         }
         
-        // Set the frame or size of the button as needed
-        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        // Disable autoresizing mask translation
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
         
         // Add a target to handle back navigation
         backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
         
-        // Create a UIBarButtonItem with the custom button
-        let backButtonItem = UIBarButtonItem(customView: backButton)
+        // Create a container view to hold the button
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        // Set constraints for the button within the container
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -20.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        // Set constraints for the container view
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        // Create a UIBarButtonItem with the container view
+        let backButtonItem = UIBarButtonItem(customView: containerView)
         
         // Replace the default back button with the custom button
         parent?.parent?.navigationItem.leftBarButtonItem = backButtonItem
         parent?.parent?.navigationItem.hidesBackButton = true // Hide the default back button
     }
+
+
     @objc private func customBackButtonTapped() {
         // Perform back navigation
         parent?.parent?.navigationController?.popViewController(animated: true)
@@ -300,7 +339,7 @@ public final class ScannerViewController: UIViewController {
         let maskLayer = CAShapeLayer()
         
         // Define the mask's frame
-        let maskFrame = CGRect(x: 16.scale, y: ScreenSize.isIphoneXFamily ? 129.scale : 79.scale, width: 343.scale, height: 510.scale)
+        let maskFrame = CGRect(x: 16.scale, y: ScreenSize.isIphoneXFamily ? 97.scale : 79.scale, width: 343.scale, height: 510.scale)
         
         // Create the path for the mask
         let path = UIBezierPath(rect: darkBlueBackground.bounds) // Start with the full view bounds
@@ -347,7 +386,7 @@ public final class ScannerViewController: UIViewController {
         ]
         NSLayoutConstraint.activate([
             instructionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            instructionLabel.bottomAnchor.constraint(equalTo: shutterButton.topAnchor, constant: -10.scale),
+            instructionLabel.bottomAnchor.constraint(equalTo: shutterButton.topAnchor, constant: -20.scale),
             instructionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
             instructionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale)
         ])

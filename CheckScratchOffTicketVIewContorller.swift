@@ -173,10 +173,36 @@ class CheckScratchOffTicketViewController: UIViewController {
         if let image = UIImage(named: "analyzeResultIImage") {
             backButton.setImage(image, for: .normal)
         }
-        backButton.frame = CGRect(x: 0, y: 0, width: 50.scale, height: 45.scale)
+        
+        // Disable autoresizing mask translation
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
+        
+        // Add a target to handle back navigation
         backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
-        let backButtonItem = UIBarButtonItem(customView: backButton)
+        
+        // Create a container view to hold the button
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        // Set constraints for the button within the container
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -35.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        // Set constraints for the container view
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        // Create a UIBarButtonItem with the container view
+        let backButtonItem = UIBarButtonItem(customView: containerView)
+        
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true
     }
@@ -277,14 +303,25 @@ class CheckScratchOffTicketViewController: UIViewController {
         scanManager.save(scratchOff: scratchOff) { [weak self] success in
             DispatchQueue.main.async {
                 if success {
-                    // If the save is successful, pop to the desired view controller
-                    if let viewControllers = self?.navigationController?.viewControllers {
-                        let targetIndex = viewControllers.count - 3
-                        if targetIndex >= 0 {
-                            let targetViewController = viewControllers[targetIndex]
-                            self?.navigationController?.popToViewController(targetViewController, animated: true)
-                        }
+                    guard let self = self else { return }
+                    guard let navigationController = self.navigationController else { return }
+                    guard let drawsViewController = navigationController.viewControllers.first as? DrawsViewController else { return }
+                    
+                    // Modify the navigation stack to insert DrawsViewController right after the root view controller
+                    var viewControllers = navigationController.viewControllers
+                    // Ensure root view controller exists at index 0
+                    let rootViewController = viewControllers[0]
+                    
+                    // Insert DrawsViewController after the root view controller if it's not already there
+                    // Add myTicketsController (or myTicketsVC) after DrawsViewController
+                    let myTicketsController = drawsViewController.myTicketsController
+                    myTicketsController.segmentedControl.segmentTapped(myTicketsController.segmentedControl.buttonsCollection[1])
+                    if !viewControllers.contains(myTicketsController) {
+                        viewControllers.insert(myTicketsController, at: 1)
                     }
+                    
+                    navigationController.setViewControllers(viewControllers, animated: false)
+                    navigationController.popToViewController(myTicketsController, animated: true)
                 } else {
                     // Show a specific alert in case of failure to save
                     let alertController = UIAlertController(title: "Save Error", message: "Failed to save the ticket. Please try again.", preferredStyle: .alert)

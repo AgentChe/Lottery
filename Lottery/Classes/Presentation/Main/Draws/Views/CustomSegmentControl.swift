@@ -11,16 +11,16 @@ class SSSegmentedControl: UIView {
     
     // MARK: - Properties
     private var stackView: UIStackView = UIStackView()
-    private var buttonsCollection: [UIButton] = []
+    var buttonsCollection: [UIButton] = []
     private var currentIndexView: UIView = UIView(frame: .zero)
     
-    var buttonPadding: CGFloat = 5 {
+    var buttonPadding: CGFloat = 5.scale {
         didSet {
             setupStackView()
         }
     }
     
-    var stackViewSpacing: CGFloat = 0 {
+    var stackViewSpacing: CGFloat = 0.scale {
         didSet {
             setupStackView()
         }
@@ -54,13 +54,13 @@ class SSSegmentedControl: UIView {
         }
     }
     
-    var cornerRadius: CGFloat = 15 {
+    var cornerRadius: CGFloat = 15.scale {
         didSet {
             setCornerRadius()
         }
     }
     
-    var buttonCornerRadius: CGFloat = 25 {
+    var buttonCornerRadius: CGFloat = 25.scale {
         didSet {
             setButtonCornerRadius()
         }
@@ -72,7 +72,7 @@ class SSSegmentedControl: UIView {
         }
     }
     
-    var borderWidth: CGFloat = 1 {
+    var borderWidth: CGFloat = 1.scale {
         didSet {
             setBorderWidth()
         }
@@ -175,7 +175,7 @@ private extension SSSegmentedControl {
     
     func setCurrentViewBackgroundColor() {
         currentIndexView.backgroundColor = currentIndexBackgroundColor
-        currentIndexView.layer.cornerRadius = 20
+        currentIndexView.layer.cornerRadius = 20.scale
         currentIndexView.clipsToBounds = true
     }
     
@@ -212,7 +212,7 @@ private extension SSSegmentedControl {
                 button.setTitle("<Segment>", for: .normal)
             }
             
-            button.titleLabel?.font = Fonts.Inter.bold(size: 17.scale)
+            button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
             button.addTarget(self, action: #selector(segmentTapped(_:)), for: .touchUpInside)
             
             stackView.addArrangedSubview(button)

@@ -60,7 +60,7 @@
 
 // MARK: SelectGame
 "SelectGame.Header" = "SELECT THE GAME";
-"SelectGame.Description" = "Please choose the game to monitor. You can add another game if it is not on the list.";
+"SelectGame.Description" = "Please select the game for which you want to scan the ticket.";
 "SelectGame.Continue" = "Continue";
 "SelectGame.AddAnotherGame" = "Add another game";
 "SelectGame.ThanksForSuggestion" = "Thanks for adding a new game! We will consider adding it to the list.";
@@ -248,3 +248,8 @@
 "in one place" = "in one place";
 "Stay on top of every lottery game's result. Never miss a chance to win!" = "Stay on top of every lottery game's result. Never miss a chance to win!";
 
+//MARK: ScanSelectStateView
+"ScanSelectStateView.selectState" = "Please select the state where you’ve purchased the ticket.";
+
+//MARK: ScanSelectLotteryView
+"ScanSelectLotteryView.selectGames" = "Please select the game for which you want to scan the ticket.";
