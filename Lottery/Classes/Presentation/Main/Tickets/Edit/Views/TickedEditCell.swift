@@ -18,6 +18,7 @@ protocol EditTicketViewControllerDelegate : AnyObject {
 }
 class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     var lotteries: [Lottery] = []
+    var bonusIdx: [Int] = []
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -72,6 +73,8 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -320,6 +323,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             
             // Get the appropriate number for this index
             if let numbers = numbersStringArray[safe: indexPath.section] {
+                cell.bonusIdx = bonusIdx
                 let number = numbers[indexPath.item]
                 let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
                 cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)

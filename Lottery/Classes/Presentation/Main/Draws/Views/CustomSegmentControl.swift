@@ -11,7 +11,7 @@ class SSSegmentedControl: UIView {
     
     // MARK: - Properties
     private var stackView: UIStackView = UIStackView()
-    private var buttonsCollection: [UIButton] = []
+    var buttonsCollection: [UIButton] = []
     private var currentIndexView: UIView = UIView(frame: .zero)
     
     var buttonPadding: CGFloat = 5.scale {

@@ -8,7 +8,10 @@
 import UIKit
 
 class EditTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    let contentManager = ContentManager()
     var lotteries: [Lottery] = []
+    var lotteryPatterns: [LotteryPattern] = []
+    
     private var ticketsManager: TicketsManagerProtocol = TicketsManager()
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
@@ -21,7 +24,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("EditTicketViewController.SaveTicket".localized, for: .normal)
+        button.setTitle("Save".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -63,6 +66,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
+        
     }
     
     // Required initializer for compatibility with storyboards
@@ -103,6 +107,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         // Add keyboard observers
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        fetchLotteriesPatterns()
     }
     
     private func setupConstraints() {
@@ -127,7 +133,21 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         deleteButtonBottomConstraint  = deleteTicketButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
         deleteButtonBottomConstraint.isActive = true
     }
-
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    // Reload any UI or update any data structures as necessary
+                    self?.collectionView.reloadData()
+                  //  print("Successfully fetched lottery patterns: \(patterns)")
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
     @objc func deleteTicketButtonTapped() {
         // Convert numbersStringArray to [[Int]]
         var numbersArray: [[Int]] = []
@@ -231,7 +251,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             DispatchQueue.main.async {
                 // Stop the activity indicator and show the title
                 self.activityIndicator.stopAnimating()
-                self.saveTicketButton.setTitle("EditTicketViewController.SaveTicket".localized, for: .normal)
+                self.saveTicketButton.setTitle("Save".localized, for: .normal)
                 self.saveTicketButton.isEnabled = true // Re-enable the button
             }
             switch result {
@@ -304,6 +324,9 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
         if let ticket = self.ticket {
+            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
+                cell.bonusIdx = pattern.bonusIdx
+            }
             cell.lotteries = self.lotteries
             cell.configure(ticket: ticket)
         }

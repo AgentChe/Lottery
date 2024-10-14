@@ -143,7 +143,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
 
     
-    private var segmentedControl: SSSegmentedControl = SSSegmentedControl()
+    var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -257,7 +257,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
     }
       // Function to switch between collection views based on the selected segment
-      private func segmentedControlChanged(index: Int) {
+       func segmentedControlChanged(index: Int) {
           if index == 0 {
               ticketsCollectionView.isHidden = false
               scratchoffsCollectionView.isHidden = true
@@ -313,7 +313,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
            scratchoffsCollectionView.delegate = self
            scratchoffsCollectionView.backgroundColor = .clear
            scratchoffsCollectionView.register(ScratchOffCell.self, forCellWithReuseIdentifier: "ScratchOffCell") // Use a custom cell
-           scratchoffsCollectionView.contentInset = UIEdgeInsets(top: 30.scale, left: 0, bottom: 30.scale, right: 0)
+           scratchoffsCollectionView.contentInset = UIEdgeInsets(top: 0.scale, left: 0, bottom: 30.scale, right: 0)
 
            view.addSubview(scratchoffsCollectionView)
            scratchoffsCollectionView.isHidden = true // Initially hidden
@@ -682,8 +682,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     @objc func scanButtonTapped() {
         if !SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
-            let scanOnboardingViewController = ScanOnboardingViewController.make()
             
+            if  let drawsViewController = self.navigationController?.viewControllers[0] as? DrawsViewController {
+                drawsViewController.isDrawScan = true
+            }
+            
+            let scanOnboardingViewController = ScanOnboardingViewController.make()
             // Check if the current view controller is embedded in a navigation controller
             if let navigationController = self.navigationController {
                 navigationController.pushViewController(scanOnboardingViewController, animated: true)
