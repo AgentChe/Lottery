@@ -329,7 +329,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         ticketsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         ticketsCollectionView.dataSource = self
         ticketsCollectionView.delegate = self
-        ticketsCollectionView.backgroundColor = .yellow
+        ticketsCollectionView.backgroundColor = .clear
         ticketsCollectionView.register(TicketCell.self, forCellWithReuseIdentifier: TicketCell.reuseIdentifier)
 
         ticketsCollectionView.contentInset = UIEdgeInsets(top: 0.scale, left: 0, bottom: 30.scale, right: 0)
