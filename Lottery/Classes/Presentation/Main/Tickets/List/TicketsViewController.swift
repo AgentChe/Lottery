@@ -618,7 +618,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         navigationController?.pushViewController(editVC, animated: true)
     }
     @objc func scanScratchButtonTapped() {
-        if !SessionManager().hasActiveSubscriptions() {
+     //   if SessionManager().hasActiveSubscriptions() {
             
         let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         
@@ -659,10 +659,10 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             fatalError("Unknown camera authorization status.")
         }
         
-        } else {
-            let vc = PaygateViewController.make()
-            present(vc, animated: true)
-        }
+//        } else {
+//            let vc = PaygateViewController.make()
+//            present(vc, animated: true)
+//        }
     }
     func showCameraAccessDeniedAlert() {
         let alert = UIAlertController(
@@ -680,7 +680,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
-        if !SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             
             if  let drawsViewController = self.navigationController?.viewControllers[0] as? DrawsViewController {
