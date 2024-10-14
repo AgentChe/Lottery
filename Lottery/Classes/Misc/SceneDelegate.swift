@@ -29,6 +29,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
         }
         
+        let ticketsManager = TicketsManager()
+        ticketsManager.listTickets(forceUpdate: true) {
+            [weak self] result in
+        }
+        
         window = UIWindow(windowScene: windowScene)
         //window?.rootViewController = OnboardingViewController.make()
         window?.rootViewController = SplashViewController.make()

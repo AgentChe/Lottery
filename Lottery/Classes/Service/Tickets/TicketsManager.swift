@@ -8,44 +8,56 @@ import Foundation
 protocol TicketsManagerProtocol {
     func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
     func editTicket(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
-    func listTickets(completion: @escaping (Result<[Ticket], Error>) -> Void)
+    func listTickets(forceUpdate: Bool, completion: @escaping (Result<[Ticket], Error>) -> Void)
     func deleteTicket(id: Int, completion: @escaping (Result<ResultResponse, Error>) -> Void)
 }
 
 final class TicketsManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
+    
+    enum Constants {
+        static let ticketsCacheKey = "tickets_cache"
+    }
 }
 
 // MARK: - TicketsManagerProtocol
 extension TicketsManager: TicketsManagerProtocol {
-    func listTickets(completion: @escaping (Result<[Ticket], Error>) -> Void) {
+    func listTickets(forceUpdate: Bool = false, completion: @escaping (Result<[Ticket], Error>) -> Void) {
+        if !forceUpdate, let cachedTickets: [Ticket] = loadFromCache(forKey: Constants.ticketsCacheKey) {
+            completion(.success(cachedTickets))
+            return
+        }
+        
         guard let userToken = sessionManager.getSession()?.userToken else {
             completion(.failure(ContentError(.notContent)))
             return
         }
         let request = ListTicketsRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
-
+        
         let operationId = UUID().uuidString
-
+        
         // Set the operation in Operations
         Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
-
+        
         operation.execute(dispatcher: dispatcher) { result, error in
             // Remove the operation from Operations
             Operations.shared.removeTicketsManagerOperation(forKey: operationId)
-            if let error = error {
-                completion(.failure(error))
-            } else if let ticketsArray = result as? [[String: Any]] {
-                let tickets = ticketsArray.compactMap { Ticket(response: $0) }
-                completion(.success(tickets))
-            } else {
-                completion(.failure(ContentError(.notContent)))
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                } else if let ticketsArray = result as? [[String: Any]] {
+                    let tickets = ticketsArray.compactMap { Ticket(response: $0) }
+                    self.saveToCache(data: tickets, forKey: Constants.ticketsCacheKey)
+                    completion(.success(tickets))
+                } else {
+                    completion(.failure(ContentError(.notContent)))
+                }
             }
         }
     }
-
+    
     func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void) {
         guard let userToken = sessionManager.getSession()?.userToken else {
             completion(.failure(ContentError(.notContent)))
@@ -130,6 +142,23 @@ extension TicketsManager: TicketsManagerProtocol {
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+    }
+}
+
+// MARK: - Private Methods
+private extension TicketsManager {
+    func loadFromCache<T: Decodable>(forKey key: String) -> T? {
+        if let data = UserDefaults.standard.data(forKey: key),
+           let cachedData = try? JSONDecoder().decode(T.self, from: data) {
+            return cachedData
+        }
+        return nil
+    }
+
+    func saveToCache<T: Encodable>(data: T, forKey key: String) {
+        if let encodedData = try? JSONEncoder().encode(data) {
+            UserDefaults.standard.set(encodedData, forKey: key)
         }
     }
 }

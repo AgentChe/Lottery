@@ -491,7 +491,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         navigationController?.popViewController(animated: true)
     }
     private func fetchTickets() {
-        ticketsManager.listTickets() { [weak self] result in
+        ticketsManager.listTickets(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let tickets):
