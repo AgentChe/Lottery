@@ -255,7 +255,24 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
                     DispatchQueue.main.async {
                         ticketsManager.listTickets(forceUpdate: true) {
                             [weak self] result in
-                            self?.navigationController?.popToRootViewController(animated: true)
+                            guard let self = self else { return }
+                            guard let navigationController = self.navigationController else { return }
+                            guard let drawsViewController = navigationController.viewControllers.first as? DrawsViewController else { return }
+                            
+                            // Modify the navigation stack to insert DrawsViewController right after the root view controller
+                            var viewControllers = navigationController.viewControllers
+                            // Ensure root view controller exists at index 0
+                            let rootViewController = viewControllers[0]
+                            
+                            // Insert DrawsViewController after the root view controller if it's not already there
+                            // Add myTicketsController (or myTicketsVC) after DrawsViewController
+                            let myTicketsController = drawsViewController.myTicketsController
+                            if !viewControllers.contains(myTicketsController) {
+                                viewControllers.insert(myTicketsController, at: 1)
+                            }
+                            
+                            navigationController.setViewControllers(viewControllers, animated: false)
+                            navigationController.popToViewController(myTicketsController, animated: true)
                         }
                     }
                 case .failure(let error):

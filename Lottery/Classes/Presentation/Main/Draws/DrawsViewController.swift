@@ -35,7 +35,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
     lazy var myTicketsVC = NavigationController(rootViewController: myTicketsController)
     private lazy var luckyNumbersController = LuckyNumbersViewController()
-    private lazy var myTicketsController = TicketsViewController()
+    lazy var myTicketsController = TicketsViewController()
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent

@@ -241,7 +241,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 DispatchQueue.main.async {
                     ticketsManager.listTickets(forceUpdate: true) {
                         [weak self] result in
-                            self?.navigationController?.popViewController(animated: true)
+                        self?.navigationController?.popViewController(animated: true)
                     }
                 }
                 
