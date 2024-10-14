@@ -192,6 +192,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
     }
     func scratchOffsScanMagic() {
+        dimView?.resetMessageIndex()
         dimView?.alpha = 1
         guard let quad = quadView.quad,
               let ciImage = CIImage(image: image) else {
@@ -258,7 +259,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         touchDown.isEnabled = false
         self.continueButton.isUserInteractionEnabled = false
-        
+        self.dimView?.startTextRotation()
         scanScratchManager.analyze(image: results.croppedScan.image) { scratchoff in
             if let response = scratchoff {
                 DispatchQueue.main.async {
@@ -284,10 +285,12 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             } else {
                 DispatchQueue.main.async {
                     self.weDo = true
+                    self.dimView?.stopTimer()
                     self.dimView?.progressLabel.text = "Scan unsuccesfull. Try again."
                     self.dimView?.setNeedsDisplay()
                     self.dimView?.setNeedsLayout()
                     self.dimView?.layoutIfNeeded()
+                    
                     delay(1) {
                         self.hideDimView()
                         self.showDimView()
@@ -397,6 +400,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         displayQuad()
     }
     func hideDimView() {
+        dimView?.stopTimer()
         dimView?.stopLoading()
         dimView = nil
     }

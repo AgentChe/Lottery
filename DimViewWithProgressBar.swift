@@ -16,35 +16,45 @@ class DimViewWithProgressBar: UIView {
     private var animateStart = false
     private var animateEnd = true
     
-     let progressLabel: UILabel = {
+    private let progressMessages = [
+        "Analyzing the ticket...",
+        "Your lucky moment is loading...",
+        "Hold tight, luck is on its way...",
+        "Final stop is Drawing your luck..."
+    ]
+    
+    private var messageIndex = 0
+    private var timer: Timer?
+    
+    let progressLabel: UILabel = {
         let label = UILabel()
-        label.text = "Loading..."
+        label.text = "Analyzing the ticket..."
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 16.scale, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-     let dimView: UIView = {
+    let dimView: UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor.black.withAlphaComponent(0.5) // Dimmed background
+        view.backgroundColor =  UIColor.black.withAlphaComponent(0.8) // Dimmed background
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    // Create a button below the progress label
-     let actionButton: UIButton = {
+    let actionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Cancel", for: .normal)
-        button.setTitleColor( Appearance.mono200, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14.scale, weight: .medium)
         button.backgroundColor = Appearance.mono100
         button.layer.cornerRadius = 20.scale
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
     @objc func cancel() {
         
         if let pvc = parentViewController as? EditScanViewController {
@@ -61,17 +71,26 @@ class DimViewWithProgressBar: UIView {
         }
         stopLoading()
     }
-    
+    func stopTimer() {
+        timer?.invalidate()  // Stop the timer if it exists
+        timer = nil          // Set the timer to nil to ensure it's fully stopped
+    }
+    func resetMessageIndex() {
+        messageIndex = 0
+        progressLabel.text = progressMessages[messageIndex]
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
         setupAnimations()
+       // startTextRotation()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
         setupAnimations()
+        //startTextRotation()
     }
     
     private func setupView() {
@@ -87,35 +106,35 @@ class DimViewWithProgressBar: UIView {
         ])
         
         // Set up the background circular layer
-        let circularPath = UIBezierPath(arcCenter: .zero, radius: 75, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let circularPath = UIBezierPath(arcCenter: .zero, radius: 45.scale, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         backgroundLayer.path = circularPath.cgPath
         backgroundLayer.fillColor = UIColor.clear.cgColor
         backgroundLayer.strokeColor = UIColor.lightGray.cgColor
-        backgroundLayer.lineWidth = 6.scale
-        backgroundLayer.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+        backgroundLayer.lineWidth = 5.scale
+        backgroundLayer.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 34.scale)
         layer.addSublayer(backgroundLayer)
         
         // Set up the animated progress circular layer
         progressLayer.path = circularPath.cgPath
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.strokeColor = Appearance.mono100.cgColor
-        progressLayer.lineWidth = 6.scale
+        progressLayer.lineWidth = 5.scale
         progressLayer.strokeEnd = 0
-        progressLayer.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+        progressLayer.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 34.scale)
         layer.addSublayer(progressLayer)
         
         // Add the progress label
         addSubview(progressLabel)
         NSLayoutConstraint.activate([
             progressLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            progressLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 100) // Beneath the circle
+            progressLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 30.scale) // Beneath the circle
         ])
         
         // Add the action button
         addSubview(actionButton)
         NSLayoutConstraint.activate([
             actionButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            actionButton.topAnchor.constraint(equalTo: progressLabel.bottomAnchor, constant: 30.scale),
+            actionButton.topAnchor.constraint(equalTo: progressLabel.bottomAnchor, constant: 103.scale),
             actionButton.widthAnchor.constraint(equalToConstant: 200.scale),
             actionButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
@@ -151,12 +170,30 @@ class DimViewWithProgressBar: UIView {
         progressLayer.add(endAnimation, forKey: "endAnimation")
     }
     
+    // Function to start the text rotation
+    func startTextRotation() {
+        timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateText), userInfo: nil, repeats: true)
+    }
+    
+    // Function to update the progress label's text
+    @objc private func updateText() {
+        if messageIndex < progressMessages.count - 1 {
+            messageIndex += 1
+            progressLabel.text = progressMessages[messageIndex]
+        } else {
+            // When the final message is reached, stop the timer
+            progressLabel.text = progressMessages[messageIndex]
+            timer?.invalidate() // Stop the timer
+        }
+    }
+    
     func updateProgressText(_ text: String) {
         progressLabel.text = text
     }
     
     func stopLoading() {
         progressLayer.removeAllAnimations()
+        timer?.invalidate() // Stop the timer
         if let pvc = parentViewController as? EditScanViewController {
             pvc.continueButton.isUserInteractionEnabled = true
         }

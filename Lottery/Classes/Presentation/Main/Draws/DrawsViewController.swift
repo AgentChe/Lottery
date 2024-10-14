@@ -28,8 +28,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var upperMenuHeightConstraint: NSLayoutConstraint!
     private var segmentTopConstraint : NSLayoutConstraint!
     private var premiumAnimationView: LottieAnimationView!
-    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 180.scale : 135.scale
-    let minUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 130.scale : 115.scale
+    let maxUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 180.scale : 150.scale
+    let minUpperMenuHeight: CGFloat = ScreenSize.isIphoneXFamily ? 130.scale : 130.scale
     let segmentedControlBackgroundView = UIView()
 
     lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
@@ -621,7 +621,7 @@ extension DrawsViewController {
         let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
-        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 70.scale), left: 0, bottom: bottomInset, right: 0)
+        return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 60.scale), left: 0, bottom: bottomInset, right: 0)
     }
 }
 
