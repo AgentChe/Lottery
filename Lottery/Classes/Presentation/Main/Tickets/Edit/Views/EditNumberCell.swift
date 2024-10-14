@@ -150,10 +150,12 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         var resultedColor = Appearance.mono200
         
         if numberOfCells == 6 {
-            if indexPath?.item == 5 {
-                resultedColor = Appearance.mono100
-            } else {
-                resultedColor = Appearance.mono200
+            if let indexPath = indexPath {
+                if bonusIdx.contains(indexPath.item)  {
+                    resultedColor = Appearance.mono100
+                } else {
+                    resultedColor = Appearance.mono200
+                }
             }
         }
         if numberOfCells == 4 {
