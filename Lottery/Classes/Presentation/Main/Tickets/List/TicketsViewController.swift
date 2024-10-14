@@ -614,6 +614,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         guard let indexPath = ticketsCollectionView.indexPath(for: cell) else { return }
         let ticket = tickets[indexPath.item]
         let editVC = EditTicketViewController(ticket: ticket)
+        editVC.lotteries = self.lotteries
         navigationController?.pushViewController(editVC, animated: true)
     }
     @objc func scanScratchButtonTapped() {

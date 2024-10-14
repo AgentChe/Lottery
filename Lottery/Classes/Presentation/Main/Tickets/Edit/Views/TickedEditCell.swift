@@ -17,7 +17,7 @@ protocol EditTicketViewControllerDelegate : AnyObject {
     func updateSizeOfEditCell(numbersStringArray: [[String]])
 }
 class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
-    
+    var lotteries: [Lottery] = []
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -88,7 +88,12 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         self.ticket = ticket
         numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
         
-        logoImageView.kf.setImage(with:ticket.pictureUrl)
+        var lotteryLogoUrlString = lotteries.filter { $0.id == ticket.lotteryId }.first?.logoUrl
+        if let url = lotteryLogoUrlString {
+            self.logoImageView.kf.setImage(with: url)
+        } else {
+            logoImageView.image = nil
+        }
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"

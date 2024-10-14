@@ -213,8 +213,8 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         if let lottery = lottery, let ticket = ticket {
             let lotteryId = lottery.id
             
-            let ticketManager = TicketsManager()
-            ticketManager.addTicket(lotteryId: lotteryId, pictureUrl: nil, date: ticket.date, numbers: numbersArray) { result in
+            let ticketsManager = TicketsManager()
+            ticketsManager.addTicket(lotteryId: lotteryId, pictureUrl: nil, date: ticket.date, numbers: numbersArray) { result in
                 DispatchQueue.main.async {
                     // Stop the activity indicator and show the title
                     self.activityIndicator.stopAnimating()
@@ -223,7 +223,10 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                 switch result {
                 case .success(let updatedTicket):
                     DispatchQueue.main.async {
-                        self.navigationController?.popToRootViewController(animated: true)
+                        ticketsManager.listTickets(forceUpdate: true) {
+                            [weak self] result in
+                            self?.navigationController?.popToRootViewController(animated: true)
+                        }
                     }
                 case .failure(let error):
                     // Handle failure by presenting an alert to the user

@@ -8,7 +8,8 @@
 import UIKit
 
 class EditTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    var lotteries: [Lottery] = []
+    private var ticketsManager: TicketsManagerProtocol = TicketsManager()
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -149,6 +150,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         // Get the necessary properties from the ticket to use in the editTicket method
         let id = existingTicket.id
         let lotteryId = existingTicket.lotteryId
+        
+        
         let pictureUrl = existingTicket.pictureUrl
         let date = existingTicket.date
         
@@ -162,7 +165,10 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 // Handle success (e.g., show a success message or pop the view controller)
                 print("Ticket deleted successfully")
                 DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+                    ticketsManager.listTickets(forceUpdate: true) {
+                        [weak self] result in
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 }
                 
             case .failure(let error):
@@ -233,7 +239,10 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 // Handle success (e.g., show a success message or pop the view controller)
                 print("Ticket updated successfully: \(updatedTicket)")
                 DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+                    ticketsManager.listTickets(forceUpdate: true) {
+                        [weak self] result in
+                            self?.navigationController?.popViewController(animated: true)
+                    }
                 }
                 
             case .failure(let error):
@@ -295,6 +304,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
         if let ticket = self.ticket {
+            cell.lotteries = self.lotteries
             cell.configure(ticket: ticket)
         }
         cell.delegate = self
