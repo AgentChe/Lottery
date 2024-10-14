@@ -44,12 +44,12 @@ final class ScanSelectStateView: UIView {
     private let descriptionLabel: UILabel = {
         let attrs = TextAttributes()
             .textColor(Appearance.main300)
-            .font(Fonts.Inter.medium(size: 15.scale))
-            .lineHeight(18.scale)
+            .font(Fonts.Inter.medium(size: 14.scale))
+            .lineHeight(25.scale)
             .textAlignment(.left)
         
         let label = UILabel()
-        label.attributedText = "Please choose the state to monitor now. You can switch later.".localized.attributed(with: attrs)
+        label.attributedText = "ScanSelectStateView.selectState" .localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

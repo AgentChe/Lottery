@@ -248,3 +248,5 @@
 "in one place" = "in one place";
 "Stay on top of every lottery game's result. Never miss a chance to win!" = "Stay on top of every lottery game's result. Never miss a chance to win!";
 
+//MARK: ScanSelectStateView
+"ScanSelectStateView.selectState" = "Please select the state where you’ve purchased the ticket.";
