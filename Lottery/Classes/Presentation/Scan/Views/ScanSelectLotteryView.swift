@@ -43,7 +43,7 @@ final class ScanSelectLotteryView: UIView {
             .lineHeight(25.scale)
             .textAlignment(.left)
         let label = UILabel()
-        label.attributedText = "Please choose the game to monitor. You can add another game if it is not on the list.".localized.attributed(with: attrs)
+        label.attributedText = "ScanSelectLotteryView.selectGames".localized.attributed(with: attrs)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

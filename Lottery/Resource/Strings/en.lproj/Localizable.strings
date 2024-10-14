@@ -250,3 +250,6 @@
 
 //MARK: ScanSelectStateView
 "ScanSelectStateView.selectState" = "Please select the state where you’ve purchased the ticket.";
+
+//MARK: ScanSelectLotteryView
+"ScanSelectLotteryView.selectGames" = "Please select the game for which you want to scan the ticket.";
