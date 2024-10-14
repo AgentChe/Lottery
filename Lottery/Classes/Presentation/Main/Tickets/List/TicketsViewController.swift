@@ -701,7 +701,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
-        if !SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             
             if  let drawsViewController = self.navigationController?.viewControllers[0] as? DrawsViewController {
