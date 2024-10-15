@@ -253,3 +253,11 @@
 
 //MARK: ScanSelectLotteryView
 "ScanSelectLotteryView.selectGames" = "Please select the game for which you want to scan the ticket.";
+
+//NotificationRequestViewController
+
+"NotificationRequestViewController.allow" = "Allow Notifications";
+"NotificationRequestViewController.later" = "Maybe later";
+"NotificationRequestViewController.allowHeaderLabel" = "ALLOW NOTIFICATIONS";
+"NotificationRequestViewController.allowDescritionLabel" = "Get notifications to never miss results and important updates about your tickets.";
+

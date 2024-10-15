@@ -79,7 +79,7 @@ final class SuggestNewGameView: UIView {
         let attributedTitle = "Cancel".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
         
-        button.backgroundColor = .white
+        button.backgroundColor = Appearance.mono100
         button.layer.borderColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1).cgColor
         button.layer.borderWidth = 1.scale
         button.layer.cornerRadius = 20.scale

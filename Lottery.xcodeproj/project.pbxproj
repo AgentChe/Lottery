@@ -121,6 +121,7 @@
 		A3FC07A12C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */; };
 		A3FC07A32C8AB54300A668C5 /* ScratchOffCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */; };
 		A3FC07A52C9172E700A668C5 /* PaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */; };
+		A3FC47852CBEB1B3006E1EA3 /* NotificationRequstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC47842CBEB1AC006E1EA3 /* NotificationRequstViewController.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -368,6 +369,7 @@
 		A3FC07A02C8A330D00A668C5 /* CheckScratchOffTicketVIewContorller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckScratchOffTicketVIewContorller.swift; sourceTree = SOURCE_ROOT; };
 		A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchOffCell.swift; sourceTree = "<group>"; };
 		A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedLabel.swift; sourceTree = "<group>"; };
+		A3FC47842CBEB1AC006E1EA3 /* NotificationRequstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRequstViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -859,6 +861,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		A3FC47832CBEB190006E1EA3 /* NotificationRequest */ = {
+			isa = PBXGroup;
+			children = (
+				A3FC47842CBEB1AC006E1EA3 /* NotificationRequstViewController.swift */,
+			);
+			path = NotificationRequest;
+			sourceTree = "<group>";
+		};
 		A3FD9EA02C11C984000FAD68 /* Draws */ = {
 			isa = PBXGroup;
 			children = (
@@ -1202,6 +1212,7 @@
 				A3A376B62C86EFA30050E706 /* ScanScratch */,
 				A3C5CEBF2C0CD7E100C43681 /* SelectState */,
 				A3C5CEC02C0CD80600C43681 /* SelectGame */,
+				A3FC47832CBEB190006E1EA3 /* NotificationRequest */,
 				A3CF29572C0D52C800DF735A /* SuggestNewGame */,
 			);
 			path = Onboarding;
@@ -1733,6 +1744,7 @@
 				DE42B2032BFF50E300FF61B0 /* EndPoint.swift in Sources */,
 				A327493F2C29859400E9F79A /* AVCaptureVideoOrientation+Utils.swift in Sources */,
 				A327496B2C29859400E9F79A /* CameraScannerViewController.swift in Sources */,
+				A3FC47852CBEB1B3006E1EA3 /* NotificationRequstViewController.swift in Sources */,
 				DE42B19A2BFF3CB200FF61B0 /* String+Extension.swift in Sources */,
 				A32749472C29859400E9F79A /* UIImage+SFSymbol.swift in Sources */,
 				DE42B1B12BFF3CB200FF61B0 /* XOREncryption.swift in Sources */,
