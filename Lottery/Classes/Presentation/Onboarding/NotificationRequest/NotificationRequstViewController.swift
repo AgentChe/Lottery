@@ -155,6 +155,8 @@ class NotificationRequestViewController: UIViewController {
                 self.dismiss(animated: true) {
                     onboardingViewController.completeOnboarding()
                 }
+            } else {
+                self.dismiss(animated: true)
             }
         }
     }

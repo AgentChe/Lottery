@@ -168,6 +168,10 @@ class SheetViewController: UIViewController {
                             onboardingViewController.completeOnboarding()
                         }
                     }
+                } else {
+                    self.dismiss(animated: true) {
+                        noticiationRequestViewControleller.dismiss(animated: true)
+                    }
                 }
             }
         }
