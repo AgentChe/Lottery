@@ -67,10 +67,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         fetchStateAndGames()
-        
-        let notificationRequestViewController = NotificationRequestViewController()
-        notificationRequestViewController.modalPresentationStyle = .fullScreen
-        present(notificationRequestViewController, animated: true, completion: nil)
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in

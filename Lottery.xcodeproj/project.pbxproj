@@ -122,7 +122,7 @@
 		A3FC07A32C8AB54300A668C5 /* ScratchOffCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */; };
 		A3FC07A52C9172E700A668C5 /* PaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */; };
 		A3FC47852CBEB1B3006E1EA3 /* NotificationRequstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC47842CBEB1AC006E1EA3 /* NotificationRequstViewController.swift */; };
-		A3FC47872CBF442E006E1EA3 /* ShhetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC47862CBF4429006E1EA3 /* ShhetViewController.swift */; };
+		A3FC47872CBF442E006E1EA3 /* SheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC47862CBF4429006E1EA3 /* SheetViewController.swift */; };
 		A3FD9EA32C11C9DE000FAD68 /* DrawsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */; };
 		A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */; };
 		A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */; };
@@ -371,7 +371,7 @@
 		A3FC07A22C8AB54300A668C5 /* ScratchOffCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScratchOffCell.swift; sourceTree = "<group>"; };
 		A3FC07A42C9172E700A668C5 /* PaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedLabel.swift; sourceTree = "<group>"; };
 		A3FC47842CBEB1AC006E1EA3 /* NotificationRequstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRequstViewController.swift; sourceTree = "<group>"; };
-		A3FC47862CBF4429006E1EA3 /* ShhetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShhetViewController.swift; sourceTree = "<group>"; };
+		A3FC47862CBF4429006E1EA3 /* SheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA22C11C9DE000FAD68 /* DrawsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawsViewController.swift; sourceTree = "<group>"; };
 		A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastGameCell.swift; sourceTree = "<group>"; };
 		A3FD9EA72C11CB0F000FAD68 /* NextGameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGameCell.swift; sourceTree = "<group>"; };
@@ -867,7 +867,7 @@
 			isa = PBXGroup;
 			children = (
 				A3FC47842CBEB1AC006E1EA3 /* NotificationRequstViewController.swift */,
-				A3FC47862CBF4429006E1EA3 /* ShhetViewController.swift */,
+				A3FC47862CBF4429006E1EA3 /* SheetViewController.swift */,
 			);
 			path = NotificationRequest;
 			sourceTree = "<group>";
@@ -1751,7 +1751,7 @@
 				DE42B19A2BFF3CB200FF61B0 /* String+Extension.swift in Sources */,
 				A32749472C29859400E9F79A /* UIImage+SFSymbol.swift in Sources */,
 				DE42B1B12BFF3CB200FF61B0 /* XOREncryption.swift in Sources */,
-				A3FC47872CBF442E006E1EA3 /* ShhetViewController.swift in Sources */,
+				A3FC47872CBF442E006E1EA3 /* SheetViewController.swift in Sources */,
 				A3FF558F2C0CC3EF00E81771 /* SelectStateView.swift in Sources */,
 				A32749442C29859400E9F79A /* CGSize+Utils.swift in Sources */,
 				DE42B18D2BFF3CB200FF61B0 /* ImagePicker.swift in Sources */,

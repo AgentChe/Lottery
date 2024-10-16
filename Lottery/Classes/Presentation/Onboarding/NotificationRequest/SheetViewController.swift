@@ -160,11 +160,28 @@ class SheetViewController: UIViewController {
     
     @objc private func allowButtonTapped() {
         // Request notification authorization when the allow button is tapped
-        PushNotificationsManager.shared.requestAuthorization()
+        PushNotificationsManager.shared.requestAuthorization() { bool in
+            if let noticiationRequestViewControleller = self.presentingViewController as? NotificationRequestViewController {
+                if let onboardingViewController = noticiationRequestViewControleller.presentingViewController as? OnboardingViewController {
+                    self.dismiss(animated: true) {
+                        noticiationRequestViewControleller.dismiss(animated: true) {
+                            onboardingViewController.completeOnboarding()
+                        }
+                    }
+                }
+            }
+        }
     }
     
     @objc private func denyButtonTapped() {
-        // Handle deny button tap
-        print("Deny button tapped")
+        if let noticiationRequestViewControleller = self.presentingViewController as? NotificationRequestViewController {
+            if let onboardingViewController = noticiationRequestViewControleller.presentingViewController as? OnboardingViewController {
+                self.dismiss(animated: true) {
+                    noticiationRequestViewControleller.dismiss(animated: true) {
+                        onboardingViewController.completeOnboarding()
+                    }
+                }
+            }
+        }
     }
 }

@@ -56,17 +56,19 @@ extension PushNotificationsManager {
         }
     }
     
-    func requestAuthorization() {
-        notificationsCenter.requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            DispatchQueue.main.async {
-                if granted {
-                    UIApplication.shared.registerForRemoteNotifications()
-                } else {
-                    self.delegates.forEach { $0.weak?.pushNotificationsDidReceive(token: nil) }
+    
+        func requestAuthorization(completion: @escaping (Bool) -> Void) {
+            notificationsCenter.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+                DispatchQueue.main.async {
+                    if granted {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                    completion(granted) // Call the completion handler with the result
                 }
             }
         }
-    }
+    
+
     
     func add(observer: PushNotificationsDelegate) {
         let weakly = observer as AnyObject
