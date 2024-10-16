@@ -149,8 +149,8 @@ class NotificationRequestViewController: UIViewController {
     }
     
     @objc private func allowButtonTapped() {
-        // Handle allow notifications
-        print("Allow button tapped")
+        // Request notification authorization when the allow button is tapped
+        PushNotificationsManager.shared.requestAuthorization()
     }
     
     @objc private func denyButtonTapped() {

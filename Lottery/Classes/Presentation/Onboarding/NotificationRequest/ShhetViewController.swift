@@ -1,7 +1,7 @@
 import UIKit
 
 class SheetViewController: UIViewController {
-    
+
     // Dash ImageView for the handle
     private let dashImageView: UIImageView = {
         let imageView = UIImageView()
@@ -159,8 +159,8 @@ class SheetViewController: UIViewController {
     }
     
     @objc private func allowButtonTapped() {
-        // Handle allow button tap
-        print("Allow button tapped")
+        // Request notification authorization when the allow button is tapped
+        PushNotificationsManager.shared.requestAuthorization()
     }
     
     @objc private func denyButtonTapped() {
