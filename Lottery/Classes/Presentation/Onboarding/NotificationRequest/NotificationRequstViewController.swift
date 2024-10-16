@@ -14,7 +14,7 @@ class NotificationRequestViewController: UIViewController {
         
         let attrs = TextAttributes()
             .textColor(.white)
-            .font(Fonts.Inter.medium(size: 14.scale))
+            .font(Fonts.Inter.bold(size: 14.scale))
         
         let attributedTitle = "Allow Notifications".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
@@ -31,7 +31,7 @@ class NotificationRequestViewController: UIViewController {
         
         let attrs = TextAttributes()
             .textColor(Appearance.mono200)
-            .font(Fonts.Inter.medium(size: 14.scale))
+            .font(Fonts.Inter.bold(size: 14.scale))
         
         let attributedTitle = "Maybe later".localized.attributed(with: attrs)
         button.setAttributedTitle(attributedTitle, for: .normal)
@@ -66,7 +66,12 @@ class NotificationRequestViewController: UIViewController {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "NotificationRequestViewController.allowDescritionLabel".localized
+        let attrs = TextAttributes()
+            .textColor(.white)
+            .font(Fonts.Inter.medium(size: 14.scale))
+            .lineHeight(21.scale)
+        
+        label.attributedText = "NotificationRequestViewController.allowDescritionLabel".localized.attributed(with: attrs)
         label.font = Fonts.Inter.regular(size: 14.scale)
         label.textColor = Appearance.main300
         label.textAlignment = .center
@@ -149,8 +154,15 @@ class NotificationRequestViewController: UIViewController {
     }
     
     @objc private func denyButtonTapped() {
-        // Handle deny notifications
-        print("Deny button tapped")
+        let sheetVC = SheetViewController()
+        
+        if let sheet = sheetVC.sheetPresentationController {
+            sheet.detents = [.medium()] // You can choose from .small(), .medium(), or .large()
+            sheet.prefersGrabberVisible = false // Show the grabber handle at the top of the sheet
+            sheet.preferredCornerRadius = 20 // Optional: Customize the corner radius of the sheet
+        }
+        
+        present(sheetVC, animated: true, completion: nil)
     }
     
     @objc private func dismissButtonTapped() {
