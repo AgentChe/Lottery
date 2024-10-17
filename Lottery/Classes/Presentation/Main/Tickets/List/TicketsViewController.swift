@@ -48,10 +48,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private let allButton: UIButton = {
         let button = UIButton()
         button.setTitle("All", for: .normal)
-        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
-        button.backgroundColor = Appearance.main100
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8.scale
+        button.titleLabel?.font = Fonts.Inter.medium(size: 14.scale)
+        button.backgroundColor = UIColor.clear
+        button.layer.borderWidth = 1.scale
+        button.layer.borderColor = Appearance.ticketsBorderColor.cgColor
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -59,10 +61,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private let upcomingButton: UIButton = {
         let button = UIButton()
         button.setTitle("Upcoming", for: .normal)
-        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
-        button.backgroundColor = Appearance.main100
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8.scale
+        button.titleLabel?.font = Fonts.Inter.medium(size: 14.scale)
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.backgroundColor = UIColor.clear
+        button.layer.borderWidth = 1.scale
+        button.layer.borderColor = Appearance.ticketsBorderColor.cgColor
+        button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -70,10 +74,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private let winnersButton: UIButton = {
         let button = UIButton()
         button.setTitle("Winners", for: .normal)
-        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
-        button.backgroundColor = Appearance.main100
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8.scale
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.titleLabel?.font = Fonts.Inter.medium(size: 14.scale)
+        button.backgroundColor = UIColor.clear
+        button.layer.borderWidth = 1.scale
+        button.layer.borderColor = Appearance.ticketsBorderColor.cgColor
+        button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -81,10 +87,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private let nonWinnersButton: UIButton = {
         let button = UIButton()
         button.setTitle("Non-winners", for: .normal)
+        button.setTitleColor(Appearance.mono200, for: .normal)
         button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
-        button.backgroundColor = Appearance.main100
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8.scale
+        button.backgroundColor = UIColor.clear
+        button.layer.borderWidth = 1.scale
+        button.layer.borderColor = Appearance.ticketsBorderColor.cgColor
+        button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -94,7 +102,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
-        stackView.spacing = 10.scale
+        stackView.spacing = 8.scale
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()

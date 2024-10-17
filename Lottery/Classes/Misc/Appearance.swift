@@ -15,6 +15,8 @@ struct Appearance {
     static let main500 = UIColor(integralRed: 219, green: 223, blue: 230)
     static let main600 = UIColor(integralRed: 217, green: 226, blue: 250)
     static let mono100 = UIColor.white
+    static let ticketsBorderColor = UIColor(red: 128/255, green: 139/255, blue: 150/255, alpha: 0.4)
+
     static let mono200 = UIColor(integralRed: 14, green: 21, blue: 59)
     static let dropShadowColor = UIColor(hex: "#CEDAFC")
     static let lightGrayTextColor = UIColor(hex: "#808B96")
