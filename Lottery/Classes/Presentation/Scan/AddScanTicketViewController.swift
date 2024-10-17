@@ -228,7 +228,8 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                             guard let self = self else { return }
                             guard let navigationController = self.navigationController else { return }
                             guard let drawsViewController = navigationController.viewControllers.first as? DrawsViewController else { return }
-                            
+                            drawsViewController.isDrawScan = false
+                            drawsViewController.isScratchScan = false
                             // Modify the navigation stack to insert DrawsViewController right after the root view controller
                             var viewControllers = navigationController.viewControllers
                             // Ensure root view controller exists at index 0
