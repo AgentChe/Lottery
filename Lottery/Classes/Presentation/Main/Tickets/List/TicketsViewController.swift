@@ -40,6 +40,66 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private var noScratchOffsImageView: UIImageView! // Adding the no tickets image view
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
     let scanScratchManager : ScanScratchManager = ScanScratchManager()
+    
+    private var buttonsStackViewHeightConstraint: NSLayoutConstraint?
+    private var ticketsCollectionViewTopConstraint: NSLayoutConstraint?
+    private var scratchoffsCollectionViewTopConstraint: NSLayoutConstraint?
+    
+    private let allButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("All", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private let upcomingButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Upcoming", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private let winnersButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Winners", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private let nonWinnersButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Non-winners", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.regular(size: 14.scale)
+        button.backgroundColor = Appearance.main100
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8.scale
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private let buttonsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .equalSpacing
+        stackView.spacing = 10.scale
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    
 
     private let scanScratchOffTicketButton: UIButton = {
         let button = UIButton()
@@ -152,6 +212,15 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         view.backgroundColor = Appearance.main400
         
         setupNavigationBarTitle()
+        
+        // Add buttons to the stack view
+        buttonsStackView.addArrangedSubview(allButton)
+        buttonsStackView.addArrangedSubview(upcomingButton)
+        buttonsStackView.addArrangedSubview(winnersButton)
+        buttonsStackView.addArrangedSubview(nonWinnersButton)
+        
+        // Add the stack view to the view
+        view.addSubview(buttonsStackView)
 
         setupTicketsCollectionView()
         setupScratchoffsCollectionView()
@@ -277,6 +346,20 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
       // Function to switch between collection views based on the selected segment
        func segmentedControlChanged(index: Int) {
           if index == 0 {
+              
+              buttonsStackViewHeightConstraint?.constant = 40.scale
+              
+              // Update collection views' top constraints
+                    ticketsCollectionViewTopConstraint?.isActive = false
+                    ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+                    ticketsCollectionViewTopConstraint?.isActive = true
+
+                    scratchoffsCollectionViewTopConstraint?.isActive = false
+                    scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+                    scratchoffsCollectionViewTopConstraint?.isActive = true
+              
+              
+              buttonsStackView.isHidden = false
               ticketsCollectionView.isHidden = false
               scratchoffsCollectionView.isHidden = true
               noScratchOffsImageView.isHidden = true
@@ -296,7 +379,21 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
              fetchTickets()
               
           } else {
-             
+              
+              buttonsStackViewHeightConstraint?.constant = 0.scale
+              
+              
+              // Update collection views' top constraints
+                    ticketsCollectionViewTopConstraint?.isActive = false
+                    ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale)
+                    ticketsCollectionViewTopConstraint?.isActive = true
+
+                    scratchoffsCollectionViewTopConstraint?.isActive = false
+                    scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale)
+                    scratchoffsCollectionViewTopConstraint?.isActive = true
+              
+              
+              buttonsStackView.isHidden = true
               ticketsCollectionView.isHidden = true
               scratchoffsCollectionView.isHidden = false
               noTicketsImageView.isHidden = true
@@ -316,6 +413,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
               }
               fetchScratchoffs()
           }
+           self.view.layoutIfNeeded()
+
       }
    
     private func setupScratchoffsCollectionView() {
@@ -387,57 +486,91 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     private func setupLayoutConstraints() {
+        // Segmented control constraints
         NSLayoutConstraint.activate([
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             segmentedControl.widthAnchor.constraint(equalToConstant: 258.scale),
-            segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale)
+        ])
 
-            ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
-            ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        // Buttons stack view constraints
+        buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
+        buttonsStackView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale).isActive = true
+        buttonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        buttonsStackViewHeightConstraint = buttonsStackView.heightAnchor.constraint(equalToConstant: 40.scale)
+        buttonsStackViewHeightConstraint?.isActive = true
+        buttonsStackView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 20.scale).isActive = true
+        buttonsStackView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20.scale).isActive = true
 
-            scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale),
-            scratchoffsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scratchoffsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scratchoffsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        // Set constraints for buttons inside the stack view
+        NSLayoutConstraint.activate([
+            allButton.widthAnchor.constraint(equalToConstant: 41.scale),
+            allButton.heightAnchor.constraint(equalToConstant: 40.scale),
+            upcomingButton.widthAnchor.constraint(equalToConstant: 90.scale),
+            upcomingButton.heightAnchor.constraint(equalToConstant: 40.scale),
+            winnersButton.widthAnchor.constraint(equalToConstant: 80.scale),
+            winnersButton.heightAnchor.constraint(equalToConstant: 40.scale),
+            nonWinnersButton.widthAnchor.constraint(equalToConstant: 111.scale),
+            nonWinnersButton.heightAnchor.constraint(equalToConstant: 40.scale)
+        ])
 
+        // Tickets collection view constraints
+        ticketsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+        ticketsCollectionViewTopConstraint?.isActive = true
+        ticketsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        ticketsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        ticketsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+        // Scratch-offs collection view constraints
+        scratchoffsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+        scratchoffsCollectionViewTopConstraint?.isActive = true
+        scratchoffsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        scratchoffsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scratchoffsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+        // Scan button constraints
+        NSLayoutConstraint.activate([
             scanButton.heightAnchor.constraint(equalToConstant: 70.scale),
             scanButton.widthAnchor.constraint(equalToConstant: 70.scale),
             scanButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -13.scale),
-            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            scanButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale)
+        ])
 
+        // No tickets image and label constraints
+        NSLayoutConstraint.activate([
             noTicketsImageView.widthAnchor.constraint(equalToConstant: 130.scale),
             noTicketsImageView.heightAnchor.constraint(equalToConstant: 130.scale),
             noTicketsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             noTicketsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60.scale),
-
-            // Add the noTicketsLabel below the noTicketsImageView
             noTicketsLabel.topAnchor.constraint(equalTo: noTicketsImageView.bottomAnchor, constant: 30.scale),
             noTicketsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40.scale),
             noTicketsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40.scale),
-
-            noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 130.scale),
-            noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 130.scale),
-            noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60.scale),
-
-            noScratchoffLabel.topAnchor.constraint(equalTo: noScratchOffsImageView.bottomAnchor, constant: 23.scale),
-            noScratchoffLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40.scale),
-            noScratchoffLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40.scale),
-
-            scanScratchOffTicketButton.topAnchor.constraint(equalTo: noScratchoffLabel.bottomAnchor, constant: 30.scale),
-            scanScratchOffTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
-            scanScratchOffTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
-            scanScratchOffTicketButton.heightAnchor.constraint(equalToConstant: 44.scale),
-
             scanLotteryTicketButton.topAnchor.constraint(equalTo: noTicketsLabel.bottomAnchor, constant: 30.scale),
             scanLotteryTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
             scanLotteryTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
             scanLotteryTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
+
+        // No scratch-offs image and label constraints
+        NSLayoutConstraint.activate([
+            noScratchOffsImageView.widthAnchor.constraint(equalToConstant: 130.scale),
+            noScratchOffsImageView.heightAnchor.constraint(equalToConstant: 130.scale),
+            noScratchOffsImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noScratchOffsImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -60.scale),
+            noScratchoffLabel.topAnchor.constraint(equalTo: noScratchOffsImageView.bottomAnchor, constant: 23.scale),
+            noScratchoffLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40.scale),
+            noScratchoffLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40.scale),
+            scanScratchOffTicketButton.topAnchor.constraint(equalTo: noScratchoffLabel.bottomAnchor, constant: 30.scale),
+            scanScratchOffTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60.scale),
+            scanScratchOffTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60.scale),
+            scanScratchOffTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        ])
     }
+
+
 
 
     var scanButtonIsTapped: Bool = false

@@ -170,11 +170,15 @@ class NotificationRequestViewController: UIViewController {
             sheet.preferredCornerRadius = 20 // Optional: Customize the corner radius of the sheet
         }
         
-        present(sheetVC, animated: true, completion: nil)
+        present(sheetVC, animated: true)
     }
     
     @objc private func dismissButtonTapped() {
         // Handle dismiss action
-        dismiss(animated: true, completion: nil)
+        if let onboardingViewController = self.presentingViewController as? OnboardingViewController {
+            dismiss(animated: true) {
+                onboardingViewController.completeOnboarding()
+            }
+        }
     }
 }
