@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate {
+class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
     private var lotteries: [Lottery] = []
     
     var lotteryPatterns: [LotteryPattern] = []
@@ -203,6 +203,34 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     
     var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     
+    // Top constraints for adjusting positions
+    var segmentedControlTopConstraint: NSLayoutConstraint!
+    var buttonsStackViewTopConstraint: NSLayoutConstraint!
+    let initialSegmentedControlTopConstant: CGFloat = 10.scale
+    let initialButtonsStackViewTopConstant: CGFloat = 20.scale
+  
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        
+        // Calculate new positions
+        var newSegmentedControlTopConstant = initialSegmentedControlTopConstant - offsetY
+        var newButtonsStackViewTopConstant = initialButtonsStackViewTopConstant + 48.scale + initialSegmentedControlTopConstant - offsetY
+
+        // Limit the top constants
+        let minSegmentedControlTopConstant = -segmentedControl.frame.height - initialSegmentedControlTopConstant
+        let minButtonsStackViewTopConstant = -buttonsStackView.frame.height - initialButtonsStackViewTopConstant
+
+        newSegmentedControlTopConstant =  max(newSegmentedControlTopConstant, minSegmentedControlTopConstant)
+        newButtonsStackViewTopConstant = max(newButtonsStackViewTopConstant, minButtonsStackViewTopConstant)
+
+        // Update the constraints
+        segmentedControlTopConstraint.constant = newSegmentedControlTopConstant
+        buttonsStackViewTopConstraint.constant = newButtonsStackViewTopConstant
+
+        // Force layout update
+        //view.layoutIfNeeded()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
@@ -352,11 +380,11 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             
             // Update collection views' top constraints
             ticketsCollectionViewTopConstraint?.isActive = false
-            ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+            ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 0.scale)
             ticketsCollectionViewTopConstraint?.isActive = true
             
             scratchoffsCollectionViewTopConstraint?.isActive = false
-            scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+            scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 0.scale)
             scratchoffsCollectionViewTopConstraint?.isActive = true
             
             
@@ -386,11 +414,11 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             
             // Update collection views' top constraints
             ticketsCollectionViewTopConstraint?.isActive = false
-            ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale)
+            ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 0.scale)
             ticketsCollectionViewTopConstraint?.isActive = true
             
             scratchoffsCollectionViewTopConstraint?.isActive = false
-            scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale)
+            scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 0.scale)
             scratchoffsCollectionViewTopConstraint?.isActive = true
             
             
@@ -490,8 +518,10 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     
     private func setupLayoutConstraints() {
         // Segmented control constraints
+        segmentedControlTopConstraint = segmentedControl.topAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.topAnchor, constant: initialSegmentedControlTopConstant)
+
         NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.topAnchor, constant: 10.scale),
+            segmentedControlTopConstraint,
             segmentedControl.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             segmentedControl.widthAnchor.constraint(equalToConstant: 258.scale),
             segmentedControl.heightAnchor.constraint(equalToConstant: 48.scale)
@@ -499,7 +529,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         // Buttons stack view constraints
         buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
-        buttonsStackView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20.scale).isActive = true
+        buttonsStackViewTopConstraint = buttonsStackView.topAnchor.constraint(equalTo: backgroundView.safeAreaLayoutGuide.topAnchor, constant: initialSegmentedControlTopConstant + 48.scale + initialButtonsStackViewTopConstant)
+        buttonsStackViewTopConstraint.isActive = true
         buttonsStackView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor).isActive = true
         buttonsStackViewHeightConstraint = buttonsStackView.heightAnchor.constraint(equalToConstant: 40.scale)
         buttonsStackViewHeightConstraint?.isActive = true
@@ -520,7 +551,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         // Tickets collection view constraints
         ticketsCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+        ticketsCollectionViewTopConstraint = ticketsCollectionView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 0.scale)
         ticketsCollectionViewTopConstraint?.isActive = true
         ticketsCollectionView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor).isActive = true
         ticketsCollectionView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor).isActive = true
@@ -528,7 +559,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         // Scratch-offs collection view constraints
         scratchoffsCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 20.scale)
+        scratchoffsCollectionViewTopConstraint = scratchoffsCollectionView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 0.scale)
         scratchoffsCollectionViewTopConstraint?.isActive = true
         scratchoffsCollectionView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor).isActive = true
         scratchoffsCollectionView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor).isActive = true
@@ -701,7 +732,14 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         present(navController, animated: true, completion: nil)
     }
-    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if collectionView == ticketsCollectionView {
+            return UIEdgeInsets(top: initialSegmentedControlTopConstant + 48.scale + initialButtonsStackViewTopConstant + 40.scale + 20.scale , left: 0, bottom: 0, right: 0)
+        } else if collectionView == scratchoffsCollectionView {
+            return UIEdgeInsets(top: initialSegmentedControlTopConstant + 48.scale + 20.scale , left: 0, bottom: 0, right: 0)
+        }
+        fatalError()
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == ticketsCollectionView {
             return tickets.count
