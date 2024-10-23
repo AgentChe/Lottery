@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "My tickets.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

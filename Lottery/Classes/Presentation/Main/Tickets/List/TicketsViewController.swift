@@ -195,11 +195,21 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     
     private let backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
+        view.isUserInteractionEnabled = true
         return view
     }()
+    private let backgroundfullView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "TicketsVCBackgroundImage")
+        imageView.contentMode = .scaleToFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
+
     
     var segmentedControl: SSSegmentedControl = SSSegmentedControl()
     
@@ -233,8 +243,14 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(backgroundfullView)
         view.backgroundColor = Appearance.main400
-        
+        NSLayoutConstraint.activate([
+            backgroundfullView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundfullView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundfullView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundfullView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         // Add backgroundView to self.view
         view.addSubview(backgroundView)
         NSLayoutConstraint.activate([
@@ -667,6 +683,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         // Create a UIBarButtonItem with the container view
         let backButtonItem = UIBarButtonItem(customView: containerView)
+      
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.shadowImage = UIImage()
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear
         
         // Replace the default back button with the custom button
         navigationItem.leftBarButtonItem = backButtonItem
@@ -771,10 +793,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             let ticketDate = Date(timeIntervalSince1970: ticket.date)
             let now = Date()
             let numbersCount = ticket.numbers.count
-            
-            let isNextDraw = ticketDate > now
-            let baseHeight: CGFloat = isNextDraw ? 266.scale : 210.scale
-            let additionalHeight: CGFloat = 55.scale * CGFloat(max(0, numbersCount - 1))
+        
+            let baseHeight: CGFloat =  266.scale
+            let additionalHeight: CGFloat = 61.scale * CGFloat(max(0, numbersCount - 1))
             
             let cellHeight = baseHeight + additionalHeight
             

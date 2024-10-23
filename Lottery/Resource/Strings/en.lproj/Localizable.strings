@@ -134,7 +134,7 @@
 // MARK: TicketCell
 "TicketCell.NextDraw" = "NEXT DRAW";
 "TicketCell.PastDraw" = "PAST DRAW";
-"TicketCell.EditTicket" = "Edit ticket";
+"TicketCell.ViewAll" = "View all";
 
 // MARK: CustomCalendarView
 "CustomCalendarView.Save" = "Save";

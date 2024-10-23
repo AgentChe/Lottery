@@ -70,6 +70,7 @@
 		A327497D2C29859400E9F79A /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32749302C29859400E9F79A /* ScanViewController.swift */; };
 		A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */; };
 		A3282B192C20A4C4006EED71 /* UIView(helper).swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B182C20A4C4006EED71 /* UIView(helper).swift */; };
+		A33D28E22CC7501500E8B0AC /* TicketNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33D28E12CC74FF900E8B0AC /* TicketNumbersRowCollectionViewCell.swift */; };
 		A35112F12C986AEF0060D261 /* SplashProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35112F02C986AEF0060D261 /* SplashProgressBar.swift */; };
 		A35112F32C9883EA0060D261 /* Animation01.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F22C9883EA0060D261 /* Animation01.json */; };
 		A35112F52C9884D80060D261 /* Animation02.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F42C9884D70060D261 /* Animation02.json */; };
@@ -319,6 +320,7 @@
 		A32749302C29859400E9F79A /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
 		A3282B182C20A4C4006EED71 /* UIView(helper).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView(helper).swift"; sourceTree = "<group>"; };
+		A33D28E12CC74FF900E8B0AC /* TicketNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
 		A35112F02C986AEF0060D261 /* SplashProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashProgressBar.swift; sourceTree = "<group>"; };
 		A35112F22C9883EA0060D261 /* Animation01.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation01.json; sourceTree = "<group>"; };
 		A35112F42C9884D70060D261 /* Animation02.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation02.json; sourceTree = "<group>"; };
@@ -857,6 +859,7 @@
 			isa = PBXGroup;
 			children = (
 				A3EF37322C185D3500753C41 /* TicketCell.swift */,
+				A33D28E12CC74FF900E8B0AC /* TicketNumbersRowCollectionViewCell.swift */,
 				A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */,
 				A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */,
 			);
@@ -1762,6 +1765,7 @@
 				DE89C3C02C92DBCB00CB9160 /* Currency.swift in Sources */,
 				A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */,
 				A3FF55592C07E0CA00E81771 /* Lottery.swift in Sources */,
+				A33D28E22CC7501500E8B0AC /* TicketNumbersRowCollectionViewCell.swift in Sources */,
 				DE89C3C82C92DBCB00CB9160 /* PaygateViewModel.swift in Sources */,
 				DE42B18F2BFF3CB200FF61B0 /* RxActivityIndicator.swift in Sources */,
 				A3AE80142C2B63BB00E5B473 /* CheckScanTicketViewController.swift in Sources */,
