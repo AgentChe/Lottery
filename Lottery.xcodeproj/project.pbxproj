@@ -71,6 +71,8 @@
 		A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */; };
 		A3282B192C20A4C4006EED71 /* UIView(helper).swift in Sources */ = {isa = PBXBuildFile; fileRef = A3282B182C20A4C4006EED71 /* UIView(helper).swift */; };
 		A33D28E22CC7501500E8B0AC /* TicketNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33D28E12CC74FF900E8B0AC /* TicketNumbersRowCollectionViewCell.swift */; };
+		A33D28E42CC8A22F00E8B0AC /* FullTicketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33D28E32CC8A21F00E8B0AC /* FullTicketViewController.swift */; };
+		A33D28E62CC8A8D700E8B0AC /* FullTicketCustomTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33D28E52CC8A8CC00E8B0AC /* FullTicketCustomTransitionManager.swift */; };
 		A35112F12C986AEF0060D261 /* SplashProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35112F02C986AEF0060D261 /* SplashProgressBar.swift */; };
 		A35112F32C9883EA0060D261 /* Animation01.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F22C9883EA0060D261 /* Animation01.json */; };
 		A35112F52C9884D80060D261 /* Animation02.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F42C9884D70060D261 /* Animation02.json */; };
@@ -321,6 +323,8 @@
 		A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
 		A3282B182C20A4C4006EED71 /* UIView(helper).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView(helper).swift"; sourceTree = "<group>"; };
 		A33D28E12CC74FF900E8B0AC /* TicketNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
+		A33D28E32CC8A21F00E8B0AC /* FullTicketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullTicketViewController.swift; sourceTree = "<group>"; };
+		A33D28E52CC8A8CC00E8B0AC /* FullTicketCustomTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullTicketCustomTransitionManager.swift; sourceTree = "<group>"; };
 		A35112F02C986AEF0060D261 /* SplashProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashProgressBar.swift; sourceTree = "<group>"; };
 		A35112F22C9883EA0060D261 /* Animation01.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation01.json; sourceTree = "<group>"; };
 		A35112F42C9884D70060D261 /* Animation02.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation02.json; sourceTree = "<group>"; };
@@ -850,6 +854,8 @@
 				A3668DAE2C1A1C7300754446 /* List */,
 				A3668DAF2C1A1C7D00754446 /* Edit */,
 				A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */,
+				A33D28E32CC8A21F00E8B0AC /* FullTicketViewController.swift */,
+				A33D28E52CC8A8CC00E8B0AC /* FullTicketCustomTransitionManager.swift */,
 				A3282B162C20A1B5006EED71 /* CustomAlertViewController.swift */,
 			);
 			path = Tickets;
@@ -1752,6 +1758,7 @@
 				A327496B2C29859400E9F79A /* CameraScannerViewController.swift in Sources */,
 				A3FC47852CBEB1B3006E1EA3 /* NotificationRequstViewController.swift in Sources */,
 				DE42B19A2BFF3CB200FF61B0 /* String+Extension.swift in Sources */,
+				A33D28E42CC8A22F00E8B0AC /* FullTicketViewController.swift in Sources */,
 				A32749472C29859400E9F79A /* UIImage+SFSymbol.swift in Sources */,
 				DE42B1B12BFF3CB200FF61B0 /* XOREncryption.swift in Sources */,
 				A3FC47872CBF442E006E1EA3 /* SheetViewController.swift in Sources */,
@@ -1812,6 +1819,7 @@
 				A3FD9EA62C11CAFE000FAD68 /* PastGameCell.swift in Sources */,
 				A37557F92C344A4C0028DB95 /* ImageViewController.swift in Sources */,
 				DE42B1AB2BFF3CB200FF61B0 /* NumberLaunches.swift in Sources */,
+				A33D28E62CC8A8D700E8B0AC /* FullTicketCustomTransitionManager.swift in Sources */,
 				A3FF558B2C0CC3AA00E81771 /* SelectLotteriesViewController.swift in Sources */,
 				DE42B18A2BFF3CB200FF61B0 /* BranchManager.swift in Sources */,
 				A39B2B332C0F5A880024FC9F /* StateCell.swift in Sources */,

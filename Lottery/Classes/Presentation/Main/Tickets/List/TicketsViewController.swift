@@ -9,6 +9,13 @@ import UIKit
 import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
+    func viewAllButtonTapped(for cell: TicketCell) {
+        let fullTicketVC = FullTicketViewController()
+        fullTicketVC.modalPresentationStyle = .overFullScreen  // Ensure full-screen presentation
+        
+        present(fullTicketVC, animated: true, completion: nil)
+    }
+    
     private var lotteries: [Lottery] = []
     
     var lotteryPatterns: [LotteryPattern] = []

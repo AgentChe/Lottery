@@ -10,6 +10,7 @@ import Kingfisher
 
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
+    func viewAllButtonTapped(for cell: TicketCell)
 }
 
 class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,TicketNumbersRowCellDelegate {
@@ -52,14 +53,14 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return imageView
     }()
     
-    private let editButton: UIButton = {
+    private let viewAllButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("TicketCell.ViewAll".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 22.scale // Rounded corners, half of height
-        button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(viewAllButtonTapped), for: .touchUpInside)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
         return button
     }()
@@ -83,8 +84,9 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     private var numbersCollectionViewBottomToEditButtonConstraint: NSLayoutConstraint!
     private var editButtonBottomConstraint: NSLayoutConstraint!
     
-    @objc private func editButtonTapped() {
-        delegate?.editButtonTapped(for: self)
+    @objc private func viewAllButtonTapped() {
+        //delegate?.editButtonTapped(for: self)
+        delegate?.viewAllButtonTapped(for: self)
     }
     
     override init(frame: CGRect) {
@@ -111,7 +113,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         self.addSubview(dateLabel)
         self.addSubview(numbersCollectionView)
         self.addSubview(dashedLineImageView) // Add dashed line image view
-        self.addSubview(editButton)
+        self.addSubview(viewAllButton)
     }
     
     private func setupConstraints() {
@@ -135,17 +137,17 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             numbersCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10.scale),
         ])
         
-        editButtonHeightConstraint = editButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        editButtonHeightConstraint = viewAllButton.heightAnchor.constraint(equalToConstant: 44.scale)
         editButtonHeightConstraint.isActive = true
         
         numbersCollectionViewBottomConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
-        numbersCollectionViewBottomToEditButtonConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: editButton.topAnchor, constant: -20.scale)
+        numbersCollectionViewBottomToEditButtonConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: viewAllButton.topAnchor, constant: -20.scale)
         
-        editButtonBottomConstraint = editButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
+        editButtonBottomConstraint = viewAllButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
         
         NSLayoutConstraint.activate([
-            editButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
-            editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
+            viewAllButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
+            viewAllButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
         ])
     }
     
@@ -174,7 +176,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         
         // Configure cell appearance based on draw date
         
-        editButton.isHidden = false
+        viewAllButton.isHidden = false
         editButtonHeightConstraint.constant = 44.scale
         editButtonBottomConstraint.isActive = true
         numbersCollectionViewBottomToEditButtonConstraint.isActive = true
