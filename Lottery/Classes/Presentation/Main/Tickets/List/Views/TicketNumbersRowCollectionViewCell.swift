@@ -25,7 +25,6 @@ class TicketNumbersRowCollectionViewCell: UICollectionViewCell, UICollectionView
     lazy var ticketNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
