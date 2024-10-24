@@ -9,8 +9,11 @@ import UIKit
 import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
-    func viewAllButtonTapped(for cell: TicketCell) {
+    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket) {
         let fullTicketVC = FullTicketViewController()
+        fullTicketVC.ticket = ticket
+        fullTicketVC.lotteries = lotteries
+        fullTicketVC.lotteryPatterns = lotteryPatterns
         fullTicketVC.modalPresentationStyle = .overFullScreen  // Ensure full-screen presentation
         
         present(fullTicketVC, animated: true, completion: nil)
@@ -785,6 +788,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.lotteries = self.lotteries
+            cell.ticket = tickets[indexPath.item]
             cell.configure(with: tickets[indexPath.item])
             cell.delegate = self
             return cell

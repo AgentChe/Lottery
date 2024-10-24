@@ -10,13 +10,14 @@ import Kingfisher
 
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
-    func viewAllButtonTapped(for cell: TicketCell)
+    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket)
 }
 
 class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,TicketNumbersRowCellDelegate {
     var lotteries: [Lottery] = []
+    var ticket: Ticket?
     var bonusIdx: [Int] = []
-    
+     
     func ticketNumbersRowCell(_ cell: TicketNumbersRowCollectionViewCell, didScroll contentOffset: CGPoint) {
         // Iterate over the visible cells in numbersCollectionView
         for visibleCell in numbersCollectionView.visibleCells {
@@ -86,7 +87,10 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     
     @objc private func viewAllButtonTapped() {
         //delegate?.editButtonTapped(for: self)
-        delegate?.viewAllButtonTapped(for: self)
+        if let ticket = ticket {
+            delegate?.viewAllButtonTapped(for: self, ticket: ticket)
+        }
+        
     }
     
     override init(frame: CGRect) {

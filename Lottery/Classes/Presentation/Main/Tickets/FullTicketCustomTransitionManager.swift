@@ -13,10 +13,12 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
     // Declare dimView as a property of the class
     var dimView: UIView?
 
+ 
     // Set up the gesture recognizer to track the swipe-down gesture
     func setupGestureRecognizer(in viewController: UIViewController) {
         self.viewController = viewController
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        panGestureRecognizer.delegate = viewController as! FullTicketViewController
         viewController.view.addGestureRecognizer(panGestureRecognizer)
     }
 
@@ -27,7 +29,7 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
         let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
         let progress = fminf(downwardMovement, 1.0)
         percentComplete = CGFloat(progress)  // Store the progress
-
+        
         switch gesture.state {
         case .began:
             interactiveDismiss = true
