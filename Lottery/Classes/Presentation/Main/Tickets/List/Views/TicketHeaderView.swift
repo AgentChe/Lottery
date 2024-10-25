@@ -11,19 +11,19 @@ class TicketHeaderView: UICollectionReusableView {
     
     static let identifier = "TicketHeaderView"
     
-    // Label for the header title
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Your Ticket Numbers"  // Default title
-        return label
+    // ImageView for the separator
+    private let dashedLineImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(named: "FullTicket.Spearator") // Assuming the image is in assets
+        return imageView
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
+        backgroundColor = .systemCyan
     }
     
     required init?(coder: NSCoder) {
@@ -31,13 +31,14 @@ class TicketHeaderView: UICollectionReusableView {
     }
     
     private func setupViews() {
-        addSubview(titleLabel)
+        addSubview(dashedLineImageView)
         
-        // Set constraints for the title label
+        // Set constraints for the dashed line image view
         NSLayoutConstraint.activate([
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+            dashedLineImageView.topAnchor.constraint(equalTo: topAnchor, constant: 0.scale),
+            dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale) // Full width, height of 1.scale
         ])
     }
 }

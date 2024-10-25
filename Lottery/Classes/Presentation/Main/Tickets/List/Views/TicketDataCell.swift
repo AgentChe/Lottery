@@ -202,7 +202,11 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
       
       // Define the size for the header view
       func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-          return CGSize(width: collectionView.frame.width, height: 50)
+          if collectionView == winningNumberCollectionView {
+              return CGSize(width: collectionView.frame.width, height: 50.scale)
+          } else {
+              return CGSize(width: collectionView.frame.width, height: 15.scale)
+          }
       }
     
     

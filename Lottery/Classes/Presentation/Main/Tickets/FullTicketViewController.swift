@@ -2,10 +2,20 @@ import UIKit
 
 class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
+    var lotteries: [Lottery] = []
+    var lotteryPatterns: [LotteryPattern] = []
+    var ticket: Ticket!
+    
+    
     let customTransitionManager = FullTicketCustomTransitionManager()
     
     var previousContentOffsetY: CGFloat = 0.0
-   
+    var isTheWinner: Bool = true {
+           didSet {
+               updateWinnerAndEditButtonVisibility()
+           }
+       }
+    
     // Background view that will take up 90% of the main view's height
     private let backgroundView: UIView = {
         let view = UIView()
@@ -28,9 +38,28 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         return collectionView
     }()
     
-    var lotteries: [Lottery] = []
-    var lotteryPatterns: [LotteryPattern] = []
-    var ticket: Ticket!
+    // Winner image view (58.scale x 20.scale)
+        private let winnerImageView: UIImageView = {
+            let imageView = UIImageView()
+            imageView.image = UIImage(named: "FullTicket.Winner")
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.contentMode = .scaleAspectFit
+            return imageView
+        }()
+        
+        // Edit button (132.scale x 44.scale)
+        private let editButton: UIButton = {
+            let button = UIButton(type: .system)
+            button.setTitle("Edit ticket", for: .normal)
+            button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+            button.setTitleColor(Appearance.mono200, for: .normal)
+            button.backgroundColor = Appearance.main400
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.layer.cornerRadius = 22.scale
+            button.layer.masksToBounds = true
+            
+            return button
+        }()
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
     private var pastDraws: [Game] = [] {
@@ -58,14 +87,41 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Add a tap gesture recognizer to the main view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleViewTap))
         view.addGestureRecognizer(tapGesture)
+      
         
         // Setup the ticketDataCollectionView
         setupCollectionView()
         
+        // Setup the winnerImageView and editButton
+        setupWinnerAndEditButton()
+        
         // Fetch past games
         fetchPastGames(for: nil)
+        
+        updateWinnerAndEditButtonVisibility()
     }
-    
+    private func setupWinnerAndEditButton() {
+        let viewHeight = view.frame.height
+        // Add the winnerImageView and editButton to the backgroundView
+        backgroundView.addSubview(winnerImageView)
+        backgroundView.addSubview(editButton)
+        
+        // Set up constraints for winnerImageView (top-right corner)
+        NSLayoutConstraint.activate([
+            winnerImageView.widthAnchor.constraint(equalToConstant: 58.scale),
+            winnerImageView.heightAnchor.constraint(equalToConstant: 20.scale),
+            winnerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight*0.2 + 24.scale),
+            winnerImageView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16.scale)
+        ])
+        
+        // Set up constraints for editButton (same place as winnerImageView)
+        NSLayoutConstraint.activate([
+            editButton.widthAnchor.constraint(equalToConstant: 132.scale),
+            editButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            editButton.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight*0.2 + 24.scale),
+            editButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16.scale)
+        ])
+    }
     private func setupBackgroundView() {
         // Add backgroundView to the main view
         view.addSubview(backgroundView)
@@ -109,6 +165,10 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Dismiss the view controller when the view is tapped
         dismiss(animated: true, completion: nil)
     }
+    private func updateWinnerAndEditButtonVisibility() {
+           winnerImageView.isHidden = !isTheWinner
+           editButton.isHidden = isTheWinner
+       }
     
 }
 
@@ -124,7 +184,7 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketDataCell", for: indexPath) as! TicketDataCell
-        cell.isTheWinner = true
+        cell.isTheWinner = isTheWinner
         cell.lotteries = lotteries
         cell.lotteryPatterns = lotteryPatterns
         cell.ticket = ticket
