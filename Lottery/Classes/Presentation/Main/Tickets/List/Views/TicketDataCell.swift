@@ -1,7 +1,23 @@
 import UIKit
 import Kingfisher // Assuming you're using Kingfisher for image loading
 
-class TicketDataCell: UICollectionViewCell {
+class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
+    func ticketNumbersRowCell(_ cell: TicketNumbersCollectionCell, didScroll contentOffset: CGPoint) {
+        // Iterate over the visible cells in numbersCollectionView
+        for visibleCell in ticketNumbersCollectionView.visibleCells {
+            if let rowCell = visibleCell as? TicketNumbersCollectionCell, rowCell != cell {
+                rowCell.ticketRowNumbersCollectionView.contentOffset = contentOffset
+            }
+        }
+    }
+    func winningNumbersRowCell(_ cell: WinningNumbersCollectionCell, didScroll contentOffset: CGPoint) {
+        // Iterate over the visible cells in numbersCollectionView
+        for visibleCell in winningNumberCollectionView.visibleCells {
+            if let rowCell = visibleCell as? WinningNumbersCollectionCell, rowCell != cell {
+                rowCell.winningNumbersRowNumbersCollectionView.contentOffset = contentOffset
+            }
+        }
+    }
     
     static let identifier = "TicketDataCell"
     var ticket: Ticket! {
@@ -9,18 +25,23 @@ class TicketDataCell: UICollectionViewCell {
             configure()
         }
     }
+    var bonusIdx: [Int] = []
     
     var pastDraws: [Game] = [] {
         didSet {
             // Configure the view when data is updated
-            configure()
+            if !pastDraws.isEmpty {
+                winningNumbers = pastDraws.first?.winningNumbers ?? []
+                configure()
+            }
         }
     }
     var lotteries: [Lottery] = []
     var lotteryPatterns: [LotteryPattern] = []
     
+    
     // Property to track if this ticket is a winning ticket
-    var isTheWinner: Bool = false {
+    var isTheWinner: Bool = true {
         didSet {
             updateCollectionViewHeights()
         }
@@ -45,9 +66,9 @@ class TicketDataCell: UICollectionViewCell {
     }()
     
     // Winning numbers collection view
-    private var winningNumbers: [Int] = []
+    var winningNumbers: [[Int]] = []
     
-    private lazy var winningNumberCollectionView: UICollectionView = {
+     lazy var winningNumberCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 10.scale
@@ -63,7 +84,7 @@ class TicketDataCell: UICollectionViewCell {
     // Ticket numbers collection view (newly added)
     private var ticketNumbers: [Int] = []
     
-    private lazy var ticketNumbersCollectionView: UICollectionView = {
+     lazy var ticketNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 10.scale
@@ -88,10 +109,11 @@ class TicketDataCell: UICollectionViewCell {
         ticketNumbersCollectionView.register(TicketHeaderView.self,
                                              forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                              withReuseIdentifier: TicketHeaderView.identifier)
-        winningNumberCollectionView.register(WinningNumberCell.self, forCellWithReuseIdentifier: WinningNumberCell.identifier)
-        ticketNumbersCollectionView.register(TicketNumberCell.self, forCellWithReuseIdentifier: TicketNumberCell.identifier)
+        winningNumberCollectionView.register(WinningNumbersCollectionCell.self, forCellWithReuseIdentifier: WinningNumbersCollectionCell.identifier)
+        ticketNumbersCollectionView.register(TicketNumbersCollectionCell.self, forCellWithReuseIdentifier: TicketNumbersCollectionCell.identifier)
         
         setupViews()
+      
         backgroundColor = .yellow
     }
     
@@ -104,9 +126,6 @@ class TicketDataCell: UICollectionViewCell {
         contentView.addSubview(dateLabel)
         contentView.addSubview(winningNumberCollectionView)
         contentView.addSubview(ticketNumbersCollectionView)
-        
-      
-          
         
         // Set constraints for ticketImageView
         NSLayoutConstraint.activate([
@@ -215,24 +234,35 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if collectionView == winningNumberCollectionView {
-//            return winningNumbers.count // Number of winning numbers
-//        } else if collectionView == ticketNumbersCollectionView {
-//            return ticketNumbers.count // Number of ticket numbers
-//        }
-        return 10
+        if collectionView == winningNumberCollectionView {
+            return winningNumbers.count // Number of winning numbers
+        } else if collectionView == ticketNumbersCollectionView {
+            return  ticket.numbers.count // Number of ticket numbers
+        }
+        fatalError()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == winningNumberCollectionView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WinningNumberCell.identifier, for: indexPath) as! WinningNumberCell
-       //     let winningNumber = winningNumbers[indexPath.item]
-            cell.configure(with: 1)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WinningNumbersCollectionCell.identifier, for: indexPath) as! WinningNumbersCollectionCell
+            cell.bonusIdx = bonusIdx
+            cell.parentCell = self
+            cell.indexPath = indexPath
+            cell.ticketNumbers = winningNumbers
+            cell.section = indexPath.item
+            cell.config()
+        cell.delegate = self
             return cell
         } else if collectionView == ticketNumbersCollectionView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketNumberCell.identifier, for: indexPath) as! TicketNumberCell
-         //   let ticketNumber = ticketNumbers[indexPath.item]
-            cell.configure(with: 1)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketNumbersCollectionCell.identifier, for: indexPath) as! TicketNumbersCollectionCell
+                cell.bonusIdx = bonusIdx
+                cell.parentCell = self
+                cell.indexPath = indexPath
+                cell.ticketNumbers = ticket.numbers
+                cell.section = indexPath.item
+            cell.config()
+            cell.delegate = self
+            
             return cell
         }
         return UICollectionViewCell()

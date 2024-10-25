@@ -9,8 +9,9 @@ import UIKit
 import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
-    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket) {
+    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int]) {
         let fullTicketVC = FullTicketViewController()
+        fullTicketVC.bonusIdx = bonusIdx
         fullTicketVC.ticket = ticket
         fullTicketVC.lotteries = lotteries
         fullTicketVC.lotteryPatterns = lotteryPatterns

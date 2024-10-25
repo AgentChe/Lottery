@@ -1,20 +1,30 @@
 import UIKit
 
-class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout {
+class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout{
     
-    var lotteries: [Lottery] = []
-    var lotteryPatterns: [LotteryPattern] = []
-    var ticket: Ticket!
-    
-    
+    private let gamesManager: GamesManagerProtocol = GamesManager()
     let customTransitionManager = FullTicketCustomTransitionManager()
     
-    var previousContentOffsetY: CGFloat = 0.0
+    var lotteries: [Lottery] = []
+    var bonusIdx: [Int] = []
+    var lotteryPatterns: [LotteryPattern] = []
+    var ticket: Ticket!
+    private var pastDraws: [Game] = [] {
+        didSet {
+            self.ticketDataCollectionView.reloadData()
+        }
+    }
+    
     var isTheWinner: Bool = true {
-           didSet {
-               updateWinnerAndEditButtonVisibility()
-           }
-       }
+        didSet {
+            updateWinnerAndEditButtonVisibility()
+        }
+    }
+    
+    var previousContentOffsetY: CGFloat = 0.0
+    
+   
+    
     
     // Background view that will take up 90% of the main view's height
     private let backgroundView: UIView = {
@@ -27,7 +37,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     }()
     
     // Collection view to display ticket data
-     let ticketDataCollectionView: UICollectionView = {
+    let ticketDataCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -38,39 +48,33 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         return collectionView
     }()
     
-    // Winner image view (58.scale x 20.scale)
-        private let winnerImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.image = UIImage(named: "FullTicket.Winner")
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.contentMode = .scaleAspectFit
-            return imageView
-        }()
-        
-        // Edit button (132.scale x 44.scale)
-        private let editButton: UIButton = {
-            let button = UIButton(type: .system)
-            button.setTitle("Edit ticket", for: .normal)
-            button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
-            button.setTitleColor(Appearance.mono200, for: .normal)
-            button.backgroundColor = Appearance.main400
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.layer.cornerRadius = 22.scale
-            button.layer.masksToBounds = true
-            
-            return button
-        }()
     
-    private let gamesManager: GamesManagerProtocol = GamesManager()
-    private var pastDraws: [Game] = [] {
-        didSet {
-            self.ticketDataCollectionView.reloadData()
-        }
-    }
+    private let winnerImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "FullTicket.Winner")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    // Edit button (132.scale x 44.scale)
+    private let editButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Edit ticket", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.backgroundColor = Appearance.main400
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 22.scale
+        button.layer.masksToBounds = true
+        
+        return button
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         // Make the main view clear
         view.backgroundColor = UIColor.clear
         
@@ -87,7 +91,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Add a tap gesture recognizer to the main view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleViewTap))
         view.addGestureRecognizer(tapGesture)
-      
+        
         
         // Setup the ticketDataCollectionView
         setupCollectionView()
@@ -100,6 +104,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         
         updateWinnerAndEditButtonVisibility()
     }
+    
     private func setupWinnerAndEditButton() {
         let viewHeight = view.frame.height
         // Add the winnerImageView and editButton to the backgroundView
@@ -166,9 +171,9 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         dismiss(animated: true, completion: nil)
     }
     private func updateWinnerAndEditButtonVisibility() {
-           winnerImageView.isHidden = !isTheWinner
-           editButton.isHidden = isTheWinner
-       }
+        winnerImageView.isHidden = !isTheWinner
+        editButton.isHidden = isTheWinner
+    }
     
 }
 
@@ -184,37 +189,19 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketDataCell", for: indexPath) as! TicketDataCell
+        cell.ticket = ticket
         cell.isTheWinner = isTheWinner
+        cell.bonusIdx = bonusIdx
         cell.lotteries = lotteries
         cell.lotteryPatterns = lotteryPatterns
-        cell.ticket = ticket
         if !pastDraws.isEmpty {
             cell.pastDraws = pastDraws
         }
+  
+        
         return cell
     }
-    
-//    // Monitor scrolling behavior
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let contentOffsetY = scrollView.contentOffset.y
-//        print("offset")
-//        // Detect scroll direction
-//        
-//        if contentOffsetY > previousContentOffsetY {
-//            print("Scrolling Down")
-//            ticketDataCollectionView.isScrollEnabled = true
-//           
-//        } else if contentOffsetY < previousContentOffsetY {
-//            print("Scrolling Up")
-//            if contentOffsetY <= 0 {
-//                ticketDataCollectionView.isScrollEnabled = false
-//            } else {
-//                ticketDataCollectionView.isScrollEnabled = true
-//            }
-//        }
-//        
-//       
-//    }
+
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
