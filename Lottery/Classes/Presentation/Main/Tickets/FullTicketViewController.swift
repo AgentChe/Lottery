@@ -166,9 +166,14 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         ])
     }
     
-    @objc private func handleViewTap() {
-        // Dismiss the view controller when the view is tapped
-        dismiss(animated: true, completion: nil)
+    @objc private func handleViewTap(_ sender: UITapGestureRecognizer) {
+        let tapLocation = sender.location(in: view)
+        
+        // Check if tap is below 20% of view's height
+        if tapLocation.y < view.frame.height * 0.2 {
+            // Dismiss the view controller when the tap is outside the top 20%
+            dismiss(animated: true, completion: nil)
+        }
     }
     private func updateWinnerAndEditButtonVisibility() {
         winnerImageView.isHidden = !isTheWinner
@@ -211,7 +216,14 @@ extension FullTicketViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 1200.scale) // Adjust size as needed
+        
+        var winningHeight :CGFloat = 0
+        if pastDraws.isEmpty == false {
+            winningHeight =   CGFloat(pastDraws.first!.winningNumbers?.count ?? 0)*(40.scale + 10.scale) + 50.scale + CGFloat(3)
+        }
+        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale) + 15.scale + 3
+        
+        return CGSize(width: collectionView.frame.width, height: 120.scale + winningHeight + 10.scale + ticketHeight) // Adjust size as needed
     }
 }
 

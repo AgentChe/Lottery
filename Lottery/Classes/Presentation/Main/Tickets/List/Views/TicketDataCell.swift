@@ -87,8 +87,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
      lazy var ticketNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumInteritemSpacing = 10.scale
-        layout.minimumLineSpacing = 10.scale
+        layout.minimumInteritemSpacing = 0.scale
+        layout.minimumLineSpacing = 0.scale
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
@@ -102,6 +102,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         winningNumberCollectionView.register(WinningNumbersHeaderView.self,
                                              forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                              withReuseIdentifier: WinningNumbersHeaderView.identifier)
@@ -190,8 +191,10 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     
     // Update the height of the collection views based on whether it's a winning ticket
     private func updateCollectionViewHeights() {
-        winningNumbersCollectionViewHeightConstraint.constant = isTheWinner ? 250.scale : 0
-        ticketNumbersCollectionViewHeightConstraint.constant = 250.scale
+        let winningHeight = CGFloat(winningNumbers.count)*(40.scale + 10.scale) + 50.scale + 3
+        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale) + 15.scale + 3
+        winningNumbersCollectionViewHeightConstraint.constant = isTheWinner ? winningHeight : 0
+        ticketNumbersCollectionViewHeightConstraint.constant = ticketHeight
         layoutIfNeeded() // Apply the changes to the layout
     }
     
@@ -228,7 +231,9 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
           }
       }
     
-    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.scale // Adjust the value as needed for the desired space between sections
+    }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -270,6 +275,11 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     // Define the size for the cells
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.frame.width, height: 50) // Adjust the size as needed
+        if collectionView == winningNumberCollectionView {
+
+            return CGSize(width: self.frame.width, height: 50.scale)
+        } else {
+            return CGSize(width: self.frame.width, height: 50.scale)
+        }
     }
 }

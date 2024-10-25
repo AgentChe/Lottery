@@ -58,24 +58,16 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
         contentView.addSubview(ticketRowNumbersCollectionView)
 
         NSLayoutConstraint.activate([
-            ticketRowNumbersCollectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            ticketRowNumbersCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
-            ticketRowNumbersCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8.scale),
-            ticketRowNumbersCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            ticketRowNumbersCollectionView.topAnchor.constraint(equalTo: topAnchor),
+            ticketRowNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            ticketRowNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.scale),
+            ticketRowNumbersCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        
         return 10.scale
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if section == 0 {
-            return 0.scale
-        } else {
-            return 0.scale
-        }
-    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == 0 {
             return  CGSize(width: 20.scale, height: 40.scale)
