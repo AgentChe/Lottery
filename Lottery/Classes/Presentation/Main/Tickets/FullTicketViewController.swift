@@ -1,9 +1,8 @@
 import UIKit
 
-class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout{
+class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
-    let customTransitionManager = FullTicketCustomTransitionManager()
     
     var lotteries: [Lottery] = []
     var bonusIdx: [Int] = []
@@ -20,14 +19,10 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     var isTheWinner: Bool = true {
         didSet {
             updateWinnerAndEditButtonVisibility()
-            
         }
     }
     
     var previousContentOffsetY: CGFloat = 0.0
-    
-   
-    
     
     // Background view that will take up 90% of the main view's height
     private let backgroundView: UIView = {
@@ -47,10 +42,8 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .red
         collectionView.showsVerticalScrollIndicator = false
-        
         return collectionView
     }()
-    
     
     private let winnerImageView: UIImageView = {
         let imageView = UIImageView()
@@ -70,10 +63,18 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 22.scale
         button.layer.masksToBounds = true
-        
+        button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
         return button
     }()
     
+    // Method to be called when the button is tapped
+    @objc private func editButtonTapped() {
+        let editVC = EditTicketViewController(ticket: ticket)
+        editVC.lotteries = self.lotteries
+        
+        // Present the edit ticket view controller
+        self.navigationController?.pushViewController(editVC, animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,17 +85,14 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Setup the background view
         setupBackgroundView()
         
-        // Setup custom transition manager
-        transitioningDelegate = customTransitionManager
-        modalPresentationStyle = .overFullScreen
-        
-        // Setup the swipe gesture
-        customTransitionManager.setupGestureRecognizer(in: self)
+        // Remove the custom transition setup code
+        // transitioningDelegate = customTransitionManager
+        // modalPresentationStyle = .overFullScreen
+        // customTransitionManager.setupGestureRecognizer(in: self)
         
         // Add a tap gesture recognizer to the main view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleViewTap))
         view.addGestureRecognizer(tapGesture)
-        
         
         // Setup the ticketDataCollectionView
         setupCollectionView()
@@ -118,7 +116,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         NSLayoutConstraint.activate([
             winnerImageView.widthAnchor.constraint(equalToConstant: 58.scale),
             winnerImageView.heightAnchor.constraint(equalToConstant: 20.scale),
-            winnerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight*0.2 + 24.scale),
+            winnerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight * 0.2 + 24.scale),
             winnerImageView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16.scale)
         ])
         
@@ -126,10 +124,11 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         NSLayoutConstraint.activate([
             editButton.widthAnchor.constraint(equalToConstant: 132.scale),
             editButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            editButton.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight*0.2 + 24.scale),
+            editButton.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight * 0.2 + 24.scale),
             editButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16.scale)
         ])
     }
+    
     private func setupBackgroundView() {
         // Add backgroundView to the main view
         view.addSubview(backgroundView)
@@ -138,8 +137,8 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         NSLayoutConstraint.activate([
             backgroundView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            backgroundView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1),  // Adjust width as needed
-            backgroundView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8) // 90% of main view's height
+            backgroundView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1),
+            backgroundView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8)
         ])
     }
     
@@ -150,7 +149,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Set the delegate and dataSource
         ticketDataCollectionView.delegate = self
         ticketDataCollectionView.dataSource = self
-        ticketDataCollectionView.isScrollEnabled = true // Initially, scrolling is enabled
+        ticketDataCollectionView.isScrollEnabled = true
         if #available(iOS 17.4, *) {
             ticketDataCollectionView.bouncesVertically = false
         } else {
@@ -158,7 +157,6 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         }
         // Register the cell class
         ticketDataCollectionView.register(TicketDataCell.self, forCellWithReuseIdentifier: TicketDataCell.identifier)
-        
         
         // Set up constraints for ticketDataCollectionView
         NSLayoutConstraint.activate([
@@ -175,15 +173,14 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Check if tap is below 20% of view's height
         if tapLocation.y < view.frame.height * 0.2 {
             // Dismiss the view controller when the tap is outside the top 20%
-            dismiss(animated: true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
+    
     private func updateWinnerAndEditButtonVisibility() {
         winnerImageView.isHidden = !isTheWinner
     }
-    
 }
-
 
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource
 extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDelegate {
@@ -191,9 +188,8 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
         return 1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  1
+        return 1
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketDataCell", for: indexPath) as! TicketDataCell
         cell.ticket = ticket
@@ -204,11 +200,8 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
         if !pastDraws.isEmpty {
             cell.pastDraws = pastDraws
         }
-  
-        
         return cell
     }
-
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -216,16 +209,13 @@ extension FullTicketViewController {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: view.frame.height * 0.2, left: 0, bottom: 0, right: 0)
     }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        var winningHeight :CGFloat = 0
-        if pastDraws.isEmpty == false {
-            winningHeight =   CGFloat(pastDraws.first!.winningNumbers?.count ?? 0)*(40.scale + 10.scale + 4.scale) + 50.scale + CGFloat(3)
+        var winningHeight: CGFloat = 0
+        if !pastDraws.isEmpty {
+            winningHeight = CGFloat(pastDraws.first!.winningNumbers?.count ?? 0) * (40.scale + 10.scale + 4.scale) + 50.scale + 3
         }
-        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale + 4.scale) + 15.scale + 3
-        
-        return CGSize(width: collectionView.frame.width, height: 120.scale + winningHeight + 10.scale + ticketHeight) // Adjust size as needed
+        let ticketHeight = CGFloat(ticket.numbers.count) * (40.scale + 10.scale + 4.scale) + 15.scale + 3
+        return CGSize(width: collectionView.frame.width, height: 120.scale + winningHeight + 10.scale + ticketHeight)
     }
 }
 
@@ -255,7 +245,6 @@ extension FullTicketViewController {
                         }
                     }
                     // Reload data
-                   
                     self?.ticketDataCollectionView.reloadData()
                 case .failure(let error):
                     print("Failed to fetch past games: \(error)")
@@ -263,14 +252,14 @@ extension FullTicketViewController {
             }
         }
     }
+    
     func formatTimeIntervalAsDate(_ timeInterval: TimeInterval) -> String {
-        let date = Date(timeIntervalSince1970: timeInterval) // Assuming `timeInterval` starts from Unix epoch (1970)
+        let date = Date(timeIntervalSince1970: timeInterval)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MM yyyy"
         return dateFormatter.string(from: date)
     }
 }
-
 
 extension FullTicketViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {

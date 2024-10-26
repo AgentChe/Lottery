@@ -9,16 +9,31 @@ import UIKit
 import AVFoundation
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
+   
+    var customTransitionManager: FullTicketCustomTransitionManager?
+
     func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int]) {
-        let fullTicketVC = FullTicketViewController()
-        fullTicketVC.bonusIdx = bonusIdx
-        fullTicketVC.ticket = ticket
-        fullTicketVC.lotteries = lotteries
-        fullTicketVC.lotteryPatterns = lotteryPatterns
-        fullTicketVC.modalPresentationStyle = .overFullScreen  // Ensure full-screen presentation
-        
-        present(fullTicketVC, animated: true, completion: nil)
-    }
+          let fullTicketVC = FullTicketViewController()
+          fullTicketVC.bonusIdx = bonusIdx
+          fullTicketVC.ticket = ticket
+          fullTicketVC.lotteries = lotteries
+          fullTicketVC.lotteryPatterns = lotteryPatterns
+
+          // Embed in a UINavigationController
+          let navController = UINavigationController(rootViewController: fullTicketVC)
+          navController.modalPresentationStyle = .overFullScreen
+
+          // Initialize and set up the custom transition manager
+          let customTransitionManager = FullTicketCustomTransitionManager()
+          navController.transitioningDelegate = customTransitionManager
+          customTransitionManager.setupGestureRecognizer(in: navController)
+
+          // Retain the transition manager
+          self.customTransitionManager = customTransitionManager
+
+          // Present the navigation controller
+          present(navController, animated: true, completion: nil)
+      }
     
     private var lotteries: [Lottery] = []
     

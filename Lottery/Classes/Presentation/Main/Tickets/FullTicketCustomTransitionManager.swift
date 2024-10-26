@@ -1,6 +1,8 @@
 import UIKit
 
-class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning, UIViewControllerInteractiveTransitioning {
+import UIKit
+
+class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning, UIViewControllerInteractiveTransitioning, UIGestureRecognizerDelegate {
 
     var isPresenting = false
     var interactiveDismiss = false
@@ -10,15 +12,14 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
     var initialCenter: CGPoint = .zero
     var percentComplete: CGFloat = 0.0
 
-    // Declare dimView as a property of the class
+    // Dim view for background
     var dimView: UIView?
 
- 
     // Set up the gesture recognizer to track the swipe-down gesture
     func setupGestureRecognizer(in viewController: UIViewController) {
         self.viewController = viewController
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
-        panGestureRecognizer.delegate = viewController as! FullTicketViewController
+        panGestureRecognizer.delegate = self
         viewController.view.addGestureRecognizer(panGestureRecognizer)
     }
 
@@ -26,10 +27,10 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
         guard let view = viewController?.view else { return }
         let translation = gesture.translation(in: view)
         let verticalMovement = translation.y / view.bounds.height
-        let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
-        let progress = fminf(downwardMovement, 1.0)
-        percentComplete = CGFloat(progress)  // Store the progress
-        
+        let downwardMovement = max(verticalMovement, 0.0)
+        let progress = min(downwardMovement, 1.0)
+        percentComplete = progress  // Store the progress
+
         switch gesture.state {
         case .began:
             interactiveDismiss = true
@@ -49,7 +50,7 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
             }
         case .ended, .cancelled:
             let velocity = gesture.velocity(in: view)
-            if percentComplete > 0.1 || velocity.y > 300 {
+            if percentComplete > 0.3 || velocity.y > 1000 {
                 finishInteractiveTransition()
             } else {
                 cancelInteractiveTransition()
@@ -63,54 +64,31 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
     private func finishInteractiveTransition() {
         guard let transitionContext = transitionContext, let view = viewController?.view else { return }
 
-        // Create spring timing parameters
-        let mass: CGFloat = 1.0
-        let stiffness: CGFloat = 200.0
-        let damping: CGFloat = 20.0
-        let initialVelocity = CGVector(dx: 0, dy: 0)
-        let springTimingParameters = UISpringTimingParameters(mass: mass, stiffness: stiffness, damping: damping, initialVelocity: initialVelocity)
-
-        let animator = UIViewPropertyAnimator(duration: 0, timingParameters: springTimingParameters)
-
-        animator.addAnimations {
+        let duration = transitionDuration(using: transitionContext)
+        UIView.animate(withDuration: duration * (1 - Double(percentComplete)), delay: 0, options: .curveEaseOut, animations: {
             view.center = CGPoint(x: self.initialCenter.x, y: self.initialCenter.y + view.bounds.height)
             self.dimView?.alpha = 0
-        }
-
-        animator.addCompletion { _ in
+        }) { _ in
             view.removeFromSuperview()
+            self.dimView?.removeFromSuperview()
             transitionContext.completeTransition(true)
             self.transitionContext = nil
             view.isUserInteractionEnabled = true  // Re-enable user interaction
         }
-
-        animator.startAnimation()
     }
 
     private func cancelInteractiveTransition() {
         guard let transitionContext = transitionContext, let view = viewController?.view else { return }
 
-        // Create spring timing parameters
-        let mass: CGFloat = 1.0
-        let stiffness: CGFloat = 200.0
-        let damping: CGFloat = 20.0
-        let initialVelocity = CGVector(dx: 0, dy: 0)
-        let springTimingParameters = UISpringTimingParameters(mass: mass, stiffness: stiffness, damping: damping, initialVelocity: initialVelocity)
-
-        let animator = UIViewPropertyAnimator(duration: 0, timingParameters: springTimingParameters)
-
-        animator.addAnimations {
+        let duration = transitionDuration(using: transitionContext)
+        UIView.animate(withDuration: duration * Double(percentComplete), delay: 0, options: .curveEaseOut, animations: {
             view.center = self.initialCenter
             self.dimView?.alpha = 1
-        }
-
-        animator.addCompletion { _ in
+        }) { _ in
             transitionContext.completeTransition(false)
             self.transitionContext = nil
             view.isUserInteractionEnabled = true  // Re-enable user interaction
         }
-
-        animator.startAnimation()
     }
 
     // MARK: - UIViewControllerTransitioningDelegate
@@ -157,26 +135,15 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
             containerView.addSubview(toView)
             toView.frame = CGRect(x: 0, y: containerView.frame.height, width: containerView.frame.width, height: containerView.frame.height)
 
-            // Create spring timing parameters
-            let mass: CGFloat = 1.0
-            let stiffness: CGFloat = 400.0
-            let damping: CGFloat = 40.0
-            let initialVelocity = CGVector(dx: 0, dy: 0)
-            let springTimingParameters = UISpringTimingParameters(mass: mass, stiffness: stiffness, damping: damping, initialVelocity: initialVelocity)
-
-            let animator = UIViewPropertyAnimator(duration: 0, timingParameters: springTimingParameters)
-
-            animator.addAnimations {
+            // Create spring animation
+            let duration = transitionDuration(using: transitionContext)
+            UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.8, options: [.curveEaseOut], animations: {
                 toView.frame = containerView.bounds
                 self.dimView?.alpha = 1  // Fade in dimView
-            }
-
-            animator.addCompletion { _ in
+            }) { _ in
                 transitionContext.completeTransition(true)
                 toView.isUserInteractionEnabled = true  // Re-enable user interaction
             }
-
-            animator.startAnimation()
         } else {
             guard let fromView = transitionContext.view(forKey: .from) else { return }
 
@@ -184,28 +151,17 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
             fromView.isUserInteractionEnabled = false
 
             // Use existing dimView
-            let mass: CGFloat = 1.0
-            let stiffness: CGFloat = 200.0
-            let damping: CGFloat = 20.0
-            let initialVelocity = CGVector(dx: 0, dy: 0)
-            let springTimingParameters = UISpringTimingParameters(mass: mass, stiffness: stiffness, damping: damping, initialVelocity: initialVelocity)
-
-            let animator = UIViewPropertyAnimator(duration: 0, timingParameters: springTimingParameters)
-
-            animator.addAnimations {
+            let duration = transitionDuration(using: transitionContext)
+            UIView.animate(withDuration: duration * (1 - Double(percentComplete)), delay: 0, options: .curveEaseIn, animations: {
                 fromView.frame = CGRect(x: 0, y: containerView.frame.height, width: containerView.frame.width, height: containerView.frame.height)
                 self.dimView?.alpha = 0  // Fade out dimView
-            }
-
-            animator.addCompletion { _ in
+            }) { _ in
                 fromView.removeFromSuperview()
                 self.dimView?.removeFromSuperview()
                 self.dimView = nil  // Clean up dimView
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
                 // No need to re-enable user interaction on fromView since it's being removed
             }
-
-            animator.startAnimation()
         }
     }
 
@@ -215,5 +171,36 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
         guard let view = viewController?.view else { return }
         initialCenter = view.center
         view.isUserInteractionEnabled = false  // Disable user interaction during interactive transition
+    }
+
+    // MARK: - UIGestureRecognizerDelegate
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let panGR = gestureRecognizer as? UIPanGestureRecognizer {
+            let translation = panGR.translation(in: panGR.view)
+            // Only begin if the swipe is more vertical than horizontal
+            return abs(translation.y) > abs(translation.x)
+        }
+        return true
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Allow simultaneous recognition only if the scrollView is at the top
+        if let scrollView = findScrollView(in: viewController?.view), scrollView.contentOffset.y <= 0 {
+            return true
+        }
+        return false
+    }
+
+    // Helper function to find a scroll view in the view hierarchy
+    func findScrollView(in view: UIView?) -> UIScrollView? {
+        if let scrollView = view as? UIScrollView {
+            return scrollView
+        }
+        for subview in view?.subviews ?? [] {
+            if let found = findScrollView(in: subview) {
+                return found
+            }
+        }
+        return nil
     }
 }
