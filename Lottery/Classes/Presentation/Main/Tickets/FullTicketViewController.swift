@@ -15,7 +15,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    var isTheWinner: Bool = true {
+    var isTheWinner: Bool = false {
         didSet {
             updateWinnerAndEditButtonVisibility()
         }
@@ -244,6 +244,7 @@ extension FullTicketViewController {
                     for game in games {
                         if game.lotteryId == self?.ticket.lotteryId {
                             if let self = self {
+                                print("date: \(self.formatTimeIntervalAsDate(game.date))")
                                 if self.isSameDay(timeInterval1: game.date,
                                                   timeInterval2: self.ticket.date) {
                                     self.pastDraws.append(game)
@@ -258,6 +259,12 @@ extension FullTicketViewController {
                 }
             }
         }
+    }
+    func formatTimeIntervalAsDate(_ timeInterval: TimeInterval) -> String {
+        let date = Date(timeIntervalSince1970: timeInterval) // Assuming `timeInterval` starts from Unix epoch (1970)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MM yyyy"
+        return dateFormatter.string(from: date)
     }
 }
 

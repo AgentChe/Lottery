@@ -33,6 +33,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
             if !pastDraws.isEmpty {
                 winningNumbers = pastDraws.first?.winningNumbers ?? []
                 configure()
+                updateCollectionViewHeights()
             }
         }
     }
@@ -41,7 +42,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     
     
     // Property to track if this ticket is a winning ticket
-    var isTheWinner: Bool = true {
+    var isTheWinner: Bool = false {
         didSet {
             updateCollectionViewHeights()
         }
@@ -99,6 +100,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     // Height constraints for collection views
     private var winningNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
     private var ticketNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
+    private var winningNumberCollectionViewTopConstraint: NSLayoutConstraint!
+    private var ticketNumberCollectionViewTopConstraint: NSLayoutConstraint!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -146,8 +149,9 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         
         // Set constraints for winningNumberCollectionView
         winningNumbersCollectionViewHeightConstraint = winningNumberCollectionView.heightAnchor.constraint(equalToConstant: 250.scale)
+        winningNumberCollectionViewTopConstraint = winningNumberCollectionView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10.scale)
         NSLayoutConstraint.activate([
-            winningNumberCollectionView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10.scale),
+            winningNumberCollectionViewTopConstraint,
             winningNumberCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.scale),
             winningNumberCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.scale),
             winningNumbersCollectionViewHeightConstraint
@@ -155,8 +159,9 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         
         // Set constraints for ticketNumbersCollectionView (newly added collection view)
         ticketNumbersCollectionViewHeightConstraint = ticketNumbersCollectionView.heightAnchor.constraint(equalToConstant: 250.scale)
+        ticketNumberCollectionViewTopConstraint = ticketNumbersCollectionView.topAnchor.constraint(equalTo: winningNumberCollectionView.bottomAnchor, constant: 10.scale)
         NSLayoutConstraint.activate([
-            ticketNumbersCollectionView.topAnchor.constraint(equalTo: winningNumberCollectionView.bottomAnchor, constant: 10.scale),
+            ticketNumberCollectionViewTopConstraint,
             ticketNumbersCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.scale),
             ticketNumbersCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.scale),
             ticketNumbersCollectionViewHeightConstraint,
@@ -193,8 +198,13 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     private func updateCollectionViewHeights() {
         let winningHeight = CGFloat(winningNumbers.count)*(40.scale + 10.scale + 4.scale) + 50.scale + 3
         let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale + 4.scale) + 15.scale + 3
-        winningNumbersCollectionViewHeightConstraint.constant = isTheWinner ? winningHeight : 0
+        winningNumbersCollectionViewHeightConstraint.constant = winningNumbers.count>0 ? winningHeight : 0
         ticketNumbersCollectionViewHeightConstraint.constant = ticketHeight
+        if pastDraws.count == 0 {
+            ticketNumberCollectionViewTopConstraint.constant = 0
+        } else {
+            ticketNumberCollectionViewTopConstraint.constant = 10.scale
+        }
         layoutIfNeeded() // Apply the changes to the layout
     }
     
