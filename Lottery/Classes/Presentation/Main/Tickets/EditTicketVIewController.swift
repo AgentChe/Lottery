@@ -302,19 +302,19 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.setNeedsDisplay()
+       // navigationController?.navigationBar.isTranslucent = false
+      //  navigationController?.navigationBar.setNeedsDisplay()
     }
     @objc func handleBackButton() {
         navigationController?.popViewController(animated: true)
     }
 
     private func setupNavigationBar() {
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.tintColor = .red//Appearance.mono200
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
+//        navigationController?.navigationBar.isTranslucent = true
+//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        navigationController?.navigationBar.shadowImage = UIImage()
+//        navigationController?.navigationBar.tintColor = .red//Appearance.mono200
+//        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

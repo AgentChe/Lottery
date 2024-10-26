@@ -79,6 +79,12 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Make navigation bar transparent
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.view.backgroundColor = .clear
+    
         // Make the main view clear
         view.backgroundColor = UIColor.clear
         
