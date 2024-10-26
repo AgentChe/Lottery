@@ -11,13 +11,16 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     var ticket: Ticket!
     private var pastDraws: [Game] = [] {
         didSet {
+            editButton.isHidden = pastDraws.count > 0 ? true : false
+            winnerImageView.isHidden = pastDraws.count > 0 ? false : true
             self.ticketDataCollectionView.reloadData()
         }
     }
     
-    var isTheWinner: Bool = false {
+    var isTheWinner: Bool = true {
         didSet {
             updateWinnerAndEditButtonVisibility()
+            
         }
     }
     
@@ -177,7 +180,6 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     }
     private func updateWinnerAndEditButtonVisibility() {
         winnerImageView.isHidden = !isTheWinner
-        editButton.isHidden = isTheWinner
     }
     
 }
@@ -253,6 +255,7 @@ extension FullTicketViewController {
                         }
                     }
                     // Reload data
+                   
                     self?.ticketDataCollectionView.reloadData()
                 case .failure(let error):
                     print("Failed to fetch past games: \(error)")
