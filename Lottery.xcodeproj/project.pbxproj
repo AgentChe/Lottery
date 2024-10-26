@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
+		A30A95102CCC413800912E17 /* FullNumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */; };
 		A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */; };
 		A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */; };
 		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
@@ -265,6 +266,7 @@
 /* Begin PBXFileReference section */
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullNumberTicketCell.swift; sourceTree = "<group>"; };
 		A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollecitonViewCell.swift; sourceTree = SOURCE_ROOT; };
 		A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoVerticalScrollCollectionView.swift; sourceTree = "<group>"; };
 		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
@@ -878,6 +880,7 @@
 				A33D28E12CC74FF900E8B0AC /* TicketNumbersRowCollectionViewCell.swift */,
 				A33D28E72CC9CD3200E8B0AC /* TicketDataCell.swift */,
 				A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */,
+				A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */,
 				A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */,
 				A3E888222CCA150500C31554 /* WinningNumbersHeaderView.swift */,
 				A3E888242CCA151400C31554 /* TicketHeaderView.swift */,
@@ -1671,6 +1674,7 @@
 				A32749392C29859400E9F79A /* QuadrilateralView.swift in Sources */,
 				A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */,
 				A3FF555F2C07E26700E81771 /* FetchLotteriesRequest.swift in Sources */,
+				A30A95102CCC413800912E17 /* FullNumberTicketCell.swift in Sources */,
 				A3764F2D2CAC5F5C00D8ECD8 /* FetchLotteriesPatternRequest.swift in Sources */,
 				A327497B2C29859400E9F79A /* ImageManager.swift in Sources */,
 				A35112F12C986AEF0060D261 /* SplashProgressBar.swift in Sources */,

@@ -14,6 +14,8 @@ struct Appearance {
     static let main400 = UIColor(integralRed: 242, green: 244, blue: 250)
     static let main500 = UIColor(integralRed: 219, green: 223, blue: 230)
     static let main600 = UIColor(integralRed: 217, green: 226, blue: 250)
+    static let green = UIColor(red: 78/255, green: 155/255, blue: 87/255, alpha: 1.0)
+
     static let mono100 = UIColor.white
     static let ticketsBorderColor = UIColor(red: 128/255, green: 139/255, blue: 150/255, alpha: 0.4)
 

@@ -191,8 +191,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     
     // Update the height of the collection views based on whether it's a winning ticket
     private func updateCollectionViewHeights() {
-        let winningHeight = CGFloat(winningNumbers.count)*(40.scale + 10.scale) + 50.scale + 3
-        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale) + 15.scale + 3
+        let winningHeight = CGFloat(winningNumbers.count)*(40.scale + 10.scale + 4.scale) + 50.scale + 3
+        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale + 4.scale) + 15.scale + 3
         winningNumbersCollectionViewHeightConstraint.constant = isTheWinner ? winningHeight : 0
         ticketNumbersCollectionViewHeightConstraint.constant = ticketHeight
         layoutIfNeeded() // Apply the changes to the layout
@@ -253,9 +253,11 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
             cell.bonusIdx = bonusIdx
             cell.parentCell = self
             cell.indexPath = indexPath
-            cell.ticketNumbers = winningNumbers
+            cell.winningNumbers = winningNumbers
+            cell.ticketNumbers = ticket.numbers
             cell.section = indexPath.item
             cell.config()
+            cell.layer.masksToBounds = false
         cell.delegate = self
             return cell
         } else if collectionView == ticketNumbersCollectionView {
@@ -264,6 +266,7 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
                 cell.parentCell = self
                 cell.indexPath = indexPath
                 cell.ticketNumbers = ticket.numbers
+            cell.winningNumbers = winningNumbers
                 cell.section = indexPath.item
             cell.config()
             cell.delegate = self
@@ -277,9 +280,9 @@ extension TicketDataCell: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == winningNumberCollectionView {
 
-            return CGSize(width: self.frame.width, height: 50.scale)
+            return CGSize(width: self.frame.width, height: 54.scale)
         } else {
-            return CGSize(width: self.frame.width, height: 50.scale)
+            return CGSize(width: self.frame.width, height: 54.scale)
         }
     }
 }

@@ -44,7 +44,7 @@ class NumberTicketCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with numberOrLabel: String, isLastInSection: Bool, indexPath: IndexPath) {
+    func configure(with numberOrLabel: String, isLastInSection: Bool, indexPath: IndexPath, isWinningNumbersCollectionView: Bool = false) {
         numberLabel.text = "\(numberOrLabel)"
         
         if isLastInSection {
@@ -57,7 +57,7 @@ class NumberTicketCell: UICollectionViewCell {
             numberLabel.layer.borderColor = Appearance.lightGrayBorderTicket.cgColor
             numberLabel.layer.borderWidth = 1
         }
-        if indexPath.item == 0 {
+        if indexPath.item == 0 && !isWinningNumbersCollectionView{
             numberLabel.layer.borderWidth = 0
             numberLabel.textColor = Appearance.main300
         }

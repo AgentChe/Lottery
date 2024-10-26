@@ -56,7 +56,7 @@ class WinningNumbersHeaderView: UICollectionReusableView {
         // Set constraints for the title label
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: dashedLineImageView.bottomAnchor, constant: 16.scale),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale)
         ])
     }

@@ -12,8 +12,10 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
     static let identifier = "WinningNumberCell"
     
     var bonusIdx: [Int] = []
+    var winningNumbers: [[Int]] = []
+    var winningNumbersWithLabels: [[String]] = []
     var ticketNumbers: [[Int]] = []
-    var ticketsNumbersWithLabels: [[String]] = []
+    var ticketNumbersWithLabels: [[String]] = []
     var section: Int!
     var indexPath: IndexPath!
     var numbers: [Int] = []
@@ -30,7 +32,7 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.register(NumberTicketCell.self, forCellWithReuseIdentifier: NumberTicketCell.reuseIdentifier)
+        collectionView.register(FullNumberTicketCell.self, forCellWithReuseIdentifier: FullNumberTicketCell.reuseIdentifier)
         return collectionView
     }()
     override func prepareForReuse() {
@@ -38,13 +40,15 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
         winningNumbersRowNumbersCollectionView.contentOffset = .zero
     }
     func config() {
-        ticketsNumbersWithLabels = convertTo2DStringArray(ticketNumbers)
-        print("ticketsNumbersWithLabels", ticketsNumbersWithLabels)
+        winningNumbersWithLabels = convertTo2DStringArray(winningNumbers)
+        ticketNumbersWithLabels = convertTo2DStringArray(ticketNumbers)
+        print("ticketsNumbersWithLabels", winningNumbersWithLabels)
         winningNumbersRowNumbersCollectionView.reloadData()
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
+        
         
     }
     
@@ -68,32 +72,26 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if section == 0 {
-            return 0.scale
-        } else {
-            return 0.scale
-        }
+            return 10.scale
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.item == 0 {
-            return  CGSize(width: 20.scale, height: 40.scale)
-        } else {
             return  CGSize(width: 40.scale, height: 40.scale)
-        }
     }
     
     // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return ticketsNumbersWithLabels[section].count
+        return winningNumbersWithLabels[section].count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        let label = ticketsNumbersWithLabels[section][indexPath.item]
-        print("label:", label)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FullNumberTicketCell.reuseIdentifier, for: indexPath) as! FullNumberTicketCell
+        let labelString = winningNumbersWithLabels[section][indexPath.item]
+       // print("label:", label)
         // Determine if this is the last item in the section
+        let isInBothArrays = isElementInBothArrays(labelString: labelString, array1: winningNumbersWithLabels, array2: ticketNumbersWithLabels)
         let isLastItemInSection = bonusIdx.contains(indexPath.item)
-        cell.configure(with: label, isLastInSection: isLastItemInSection, indexPath: indexPath)
+        cell.configure(with: labelString, isLastInSection: isLastItemInSection, indexPath: indexPath, isWinningNumbersCollectionView: true, showCheckmark: isInBothArrays)
+        
         
         return cell
     }
@@ -121,5 +119,17 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
         return intArray.map { innerArray in
             innerArray.map { String($0) }
         }
+    }
+    
+}
+
+extension WinningNumbersCollectionCell {
+    func isElementInBothArrays(labelString: String, array1: [[String]], array2: [[String]]) -> Bool {
+        // Flatten both 2D arrays into single-dimensional arrays
+        let flattenedArray1 = array1.flatMap { $0 }
+        let flattenedArray2 = array2.flatMap { $0 }
+        
+        // Check if the labelString exists in both flattened arrays
+        return flattenedArray1.contains(labelString) && flattenedArray2.contains(labelString)
     }
 }

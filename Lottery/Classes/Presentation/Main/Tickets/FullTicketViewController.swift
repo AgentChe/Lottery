@@ -219,9 +219,9 @@ extension FullTicketViewController {
         
         var winningHeight :CGFloat = 0
         if pastDraws.isEmpty == false {
-            winningHeight =   CGFloat(pastDraws.first!.winningNumbers?.count ?? 0)*(40.scale + 10.scale) + 50.scale + CGFloat(3)
+            winningHeight =   CGFloat(pastDraws.first!.winningNumbers?.count ?? 0)*(40.scale + 10.scale + 4.scale) + 50.scale + CGFloat(3)
         }
-        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale) + 15.scale + 3
+        let ticketHeight = CGFloat(ticket.numbers.count)*(40.scale + 10.scale + 4.scale) + 15.scale + 3
         
         return CGSize(width: collectionView.frame.width, height: 120.scale + winningHeight + 10.scale + ticketHeight) // Adjust size as needed
     }

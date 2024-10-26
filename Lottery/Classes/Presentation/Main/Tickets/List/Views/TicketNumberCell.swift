@@ -13,9 +13,18 @@ protocol TicketNumbersCollectionCellDelegate: AnyObject {
 class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
 
     static let identifier = "TicketNumberCell"
-    var bonusIdx: [Int] = []
+    var bonusIdx: [Int] = [] {
+        didSet {
+            
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
     var ticketNumbers: [[Int]] = []
     var ticketsNumbersWithLabels: [[String]] = []
+    var winningNumbers: [[Int]] = []
+    var winningNumbersWithLabels: [[String]] = []
     var section: Int!
     var indexPath: IndexPath!
     var numbers: [Int] = []
@@ -32,7 +41,7 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.register(NumberTicketCell.self, forCellWithReuseIdentifier: NumberTicketCell.reuseIdentifier)
+        collectionView.register(FullNumberTicketCell.self, forCellWithReuseIdentifier: FullNumberTicketCell.reuseIdentifier)
         return collectionView
     }()
     override func prepareForReuse() {
@@ -41,12 +50,14 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
     }
     func config() {
         ticketsNumbersWithLabels = convertTo2DStringArray(ticketNumbers)
+        winningNumbersWithLabels = convertTo2DStringArray(winningNumbers)
         print("ticketsNumbersWithLabels", ticketsNumbersWithLabels)
         ticketRowNumbersCollectionView.reloadData()
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
+        
         
     }
     
@@ -82,12 +93,14 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        let label = ticketsNumbersWithLabels[section][indexPath.item]
-        print("label:", label)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FullNumberTicketCell.reuseIdentifier, for: indexPath) as! FullNumberTicketCell
+        let labelString = ticketsNumbersWithLabels[section][indexPath.item]
+        //print("label:", label)
         // Determine if this is the last item in the section
+        let isInBothArrays = isNumericElementInBothArrays(labelString: labelString, array1: winningNumbersWithLabels, array2: ticketsNumbersWithLabels)
+        
         let isLastItemInSection = bonusIdx.contains(indexPath.item)
-        cell.configure(with: label, isLastInSection: isLastItemInSection, indexPath: indexPath)
+        cell.configure(with: labelString, isLastInSection: isLastItemInSection, indexPath: indexPath, showCheckmark: isInBothArrays)
         
         return cell
     }
@@ -141,4 +154,21 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
         
         return result
     }
+}
+
+extension TicketNumbersCollectionCell{
+    func isNumericElementInBothArrays(labelString: String, array1: [[String]], array2: [[String]]) -> Bool {
+        // Check if labelString is numeric
+        guard let _ = Double(labelString) else {
+            return false // If labelString is not a number, return false immediately
+        }
+        
+        // Filter and flatten both arrays to include only numeric strings
+        let flattenedArray1 = array1.flatMap { $0 }.filter { Double($0) != nil }
+        let flattenedArray2 = array2.flatMap { $0 }.filter { Double($0) != nil }
+        
+        // Check if the numeric labelString exists in both filtered arrays
+        return flattenedArray1.contains(labelString) && flattenedArray2.contains(labelString)
+    }
+
 }
