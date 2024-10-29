@@ -34,7 +34,11 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         button.isEnabled = false // Initially disabled
         return button
     }()
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+    }
     private let deleteTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
@@ -160,58 +164,35 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             }
             numbersArray.append(intSection)
         }
-        
+
         // Ensure we have a ticket to modify
-        guard var existingTicket = ticket else { return }
-        
-        // Update the ticket's numbers
-        existingTicket.numbers = numbersArray
-        
-        // Get the necessary properties from the ticket to use in the editTicket method
+        guard let existingTicket = ticket else { return }
+
         let id = existingTicket.id
-        let lotteryId = existingTicket.lotteryId
-        
-        
-        let pictureUrl = existingTicket.pictureUrl
-        let date = existingTicket.date
-        
-        // Create an instance of TicketsManager (assuming you have a shared instance or create a new one)
+
+        // Create an instance of TicketsManager
         let ticketsManager = TicketsManager()
-        
-        // Call the editTicket method
+
+        // Call the deleteTicket method
         ticketsManager.deleteTicket(id: id) { result in
             switch result {
             case .success:
-                // Handle success (e.g., show a success message or pop the view controller)
                 print("Ticket deleted successfully")
                 DispatchQueue.main.async {
-                    ticketsManager.listTickets(forceUpdate: true) {
-                        [weak self] result in
-                        self?.navigationController?.popViewController(animated: true)
-                    }
-                }
+                    // Post the notification
                 
+                    
+                    // Pop back to the previous view controller
+                    self.navigationController?.popViewController(animated: true)
+                }
             case .failure(let error):
-                // Handle failure by presenting an alert to the user
+                // Handle failure
                 print("Failed to delete the ticket: \(error)")
-                
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(
-                        title: "EditTicketViewController.DeleteFailed.Title".localized,
-                        message: String(format: "EditTicketViewController.DeleteFailed.Message".localized, error.localizedDescription),
-                        preferredStyle: .alert
-                    )
-                    
-                    // Add an OK button to the alert
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    
-                    // Present the alert
-                    self.present(alert, animated: true, completion: nil)
-                }
+                // Present an alert if needed
             }
         }
-
     }
+
 
     @objc func saveTicketButtonTapped() {
         // Hide the title and show the activity indicator

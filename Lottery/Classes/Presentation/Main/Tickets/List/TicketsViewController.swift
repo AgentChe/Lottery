@@ -8,6 +8,11 @@
 import UIKit
 import AVFoundation
 
+extension Notification.Name {
+    static let ticketDeleted = Notification.Name("TicketDeletedNotification")
+}
+
+
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
    
     var customTransitionManager: FullTicketCustomTransitionManager?
@@ -319,7 +324,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         backgroundView.bringSubviewToFront(scanLotteryTicketButton)
         
         fetchLotteriesPatterns()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTicketDeleted), name: .ticketDeleted, object: nil)
     }
+    @objc private func handleTicketDeleted() {
+            // Call fetchTickets to refresh the UI
+            fetchTickets()
+        }
+    deinit {
+           // Remove observer when the view controller is deinitialized
+           NotificationCenter.default.removeObserver(self, name: .ticketDeleted, object: nil)
+       }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {

@@ -101,9 +101,7 @@ extension EditTicketRowCollectionCell: UICollectionViewDataSource, UICollectionV
         
         return cell
     }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("DID SELECT ITEM AT: \(indexPath)")
-    }
+    
 }
 
 extension EditTicketRowCollectionCell: UICollectionViewDelegateFlowLayout {

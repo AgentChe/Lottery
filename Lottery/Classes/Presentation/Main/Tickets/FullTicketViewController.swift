@@ -3,7 +3,7 @@ import UIKit
 class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
-    
+    private let ticketsManager: TicketsManagerProtocol = TicketsManager()
     var lotteries: [Lottery] = []
     var bonusIdx: [Int] = []
     var lotteryPatterns: [LotteryPattern] = []
@@ -77,7 +77,33 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         // Present the edit ticket view controller
         self.navigationController?.pushViewController(editVC, animated: true)
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        fetchTickets()
+    }
+    func fetchTickets() {
+        ticketsManager.listTickets(forceUpdate: true) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let tickets):
+                    for ticket in tickets {
+                        if ticket.id == self?.ticket.id {
+                            self?.ticket = ticket
+                            self?.updateViewConstraints()
+                            self?.ticketDataCollectionView.reloadData()
+                            return
+                        }
+                    }
+                    // Ticket not found, dismiss
+                    NotificationCenter.default.post(name: .ticketDeleted, object: nil)
+                    self?.dismiss(animated: true, completion: nil)
+                case .failure:
+                    print("failure")
+                }
+            }
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
