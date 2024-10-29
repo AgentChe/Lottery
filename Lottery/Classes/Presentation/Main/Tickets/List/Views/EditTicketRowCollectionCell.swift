@@ -57,7 +57,7 @@ class EditTicketRowCollectionCell: UICollectionViewCell {
     }
     
     private func configureCollectionView() {
-        collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
+        collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: EditNumberCell.reuseIdentifier)
         collectionView.delegate = self
         collectionView.dataSource = self
     }
@@ -75,7 +75,7 @@ extension EditTicketRowCollectionCell: UICollectionViewDataSource, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as! EditNumberCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditNumberCell.reuseIdentifier, for: indexPath) as! EditNumberCell
         if let parent = parent {
             if let section = section {
                 if let numbers = numbersStringArray[safe: section] {

@@ -16,7 +16,13 @@ protocol TicketCellDelegate: AnyObject {
 class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,TicketNumbersRowCellDelegate {
     var lotteries: [Lottery] = []
     var ticket: Ticket?
-    var bonusIdx: [Int] = []
+    var bonusIdx: [Int] = [] {
+        didSet {
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
      
     func ticketNumbersRowCell(_ cell: TicketNumbersRowCollectionViewCell, didScroll contentOffset: CGPoint) {
         // Iterate over the visible cells in numbersCollectionView

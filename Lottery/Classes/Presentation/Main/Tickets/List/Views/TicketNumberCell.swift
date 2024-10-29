@@ -16,9 +16,9 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
     var bonusIdx: [Int] = [] {
         didSet {
             
-            for i in 0..<bonusIdx.count {
-                bonusIdx[i] = bonusIdx[i] + 1
-            }
+//            for i in 0..<bonusIdx.count {
+//                bonusIdx[i] = bonusIdx[i] + 1
+//            }
         }
     }
     var ticketNumbers: [[Int]] = []

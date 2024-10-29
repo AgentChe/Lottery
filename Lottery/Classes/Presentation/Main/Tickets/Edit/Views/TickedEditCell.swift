@@ -10,9 +10,11 @@ import UIKit
 import Kingfisher
 
 protocol EditScanNumberCellDelegate: AnyObject {
-    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
+    func numberCell(_ cell: EditScanNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
 }
-
+protocol EditNumberCellDelegate: AnyObject {
+    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath, collectionView: UICollectionView)
+}
 protocol EditTicketViewControllerDelegate : AnyObject {
     func updateSizeOfEditCell(numbersStringArray: [[String]])
 }
@@ -58,7 +60,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
+        collectionView.register(EditScanNumberCell.self, forCellWithReuseIdentifier: EditScanNumberCell.reuseIdentifier)
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         collectionView.register(EditTicketRowCollectionCell.self, forCellWithReuseIdentifier: EditTicketRowCollectionCell.reuseIdentifier) //
         
@@ -444,8 +446,8 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
 }
 
-extension TicketEditCell: EditScanNumberCellDelegate {
-    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
+extension TicketEditCell: EditNumberCellDelegate {
+    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath, collectionView: UICollectionView) {
         
         guard indexPath.section < numbersStringArray.count,
               indexPath.item < numbersStringArray[indexPath.section].count else { return }
@@ -478,7 +480,7 @@ extension TicketEditCell: EditScanNumberCellDelegate {
 
                     // Get the next cell and make its text field the first responder
                     DispatchQueue.main.async {
-                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
+                        if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
                             if nextCell.numberTextField.text?.count != 2 {
                                 nextCell.numberTextField.becomeFirstResponder()
                             }

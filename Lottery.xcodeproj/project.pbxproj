@@ -87,7 +87,7 @@
 		A3668DB62C1B4B6500754446 /* TicketEditPaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB52C1B4B6500754446 /* TicketEditPaddedLabel.swift */; };
 		A3668DB82C1B4D4C00754446 /* CustomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB72C1B4D4C00754446 /* CustomCalendarView.swift */; };
 		A3668DBA2C1C4CEA00754446 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB92C1C4CEA00754446 /* DateCell.swift */; };
-		A3668DC12C1C89F100754446 /* EditNumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DC02C1C89F100754446 /* EditNumberCell.swift */; };
+		A3668DC12C1C89F100754446 /* EditScanNumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DC02C1C89F100754446 /* EditScanNumberCell.swift */; };
 		A3668DC32C1C96AD00754446 /* RemoveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DC22C1C96AD00754446 /* RemoveCell.swift */; };
 		A37557F72C343C260028DB95 /* CheckTicket+ScanTicketRecongnizeDigitsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F62C343C260028DB95 /* CheckTicket+ScanTicketRecongnizeDigitsDelegate.swift */; };
 		A37557F92C344A4C0028DB95 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37557F82C344A4C0028DB95 /* ImageViewController.swift */; };
@@ -346,7 +346,7 @@
 		A3668DB52C1B4B6500754446 /* TicketEditPaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketEditPaddedLabel.swift; sourceTree = "<group>"; };
 		A3668DB72C1B4D4C00754446 /* CustomCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendarView.swift; sourceTree = "<group>"; };
 		A3668DB92C1C4CEA00754446 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
-		A3668DC02C1C89F100754446 /* EditNumberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNumberCell.swift; sourceTree = "<group>"; };
+		A3668DC02C1C89F100754446 /* EditScanNumberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScanNumberCell.swift; sourceTree = "<group>"; };
 		A3668DC22C1C96AD00754446 /* RemoveCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveCell.swift; sourceTree = "<group>"; };
 		A37557F62C343C260028DB95 /* CheckTicket+ScanTicketRecongnizeDigitsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CheckTicket+ScanTicketRecongnizeDigitsDelegate.swift"; sourceTree = SOURCE_ROOT; };
 		A37557F82C344A4C0028DB95 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
@@ -751,7 +751,7 @@
 			children = (
 				A3668DB32C1B366B00754446 /* TickedEditCell.swift */,
 				A3668DB72C1B4D4C00754446 /* CustomCalendarView.swift */,
-				A3668DC02C1C89F100754446 /* EditNumberCell.swift */,
+				A3668DC02C1C89F100754446 /* EditScanNumberCell.swift */,
 				A3668DC22C1C96AD00754446 /* RemoveCell.swift */,
 				A3668DB92C1C4CEA00754446 /* DateCell.swift */,
 				A3668DB52C1B4B6500754446 /* TicketEditPaddedLabel.swift */,
@@ -1812,7 +1812,7 @@
 				DE42B1C92BFF3CB200FF61B0 /* SplashReceiptValidationObserver.swift in Sources */,
 				DE42B1EC2BFF429200FF61B0 /* SessionManager.swift in Sources */,
 				A3FF55772C07E5F900E81771 /* EditTicketRequest.swift in Sources */,
-				A3668DC12C1C89F100754446 /* EditNumberCell.swift in Sources */,
+				A3668DC12C1C89F100754446 /* EditScanNumberCell.swift in Sources */,
 				DE42B1BE2BFF3CB200FF61B0 /* OnboardingViewController.swift in Sources */,
 				DE42B1A42BFF3CB200FF61B0 /* PushNotificationsAuthorizationStatus.swift in Sources */,
 				A3E888272CCA16F800C31554 /* WinningNumbersCell.swift in Sources */,
