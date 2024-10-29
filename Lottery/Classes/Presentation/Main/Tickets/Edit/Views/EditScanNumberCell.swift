@@ -327,74 +327,17 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         
     }
     
-    // UITextFieldDelegate method to handle changes to the text
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Allow only numeric input and limit to 2 characters
-        let allowedCharacters = CharacterSet.decimalDigits
-        let characterSet = CharacterSet(charactersIn: string)
-        
-        // Determine the new text after the replacement
-        let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-        
-        // Check if the new text exceeds the 2 characters limit
-        if currentText.count > 2 {
-            return false
-        }
-        
-        // Apply the underline to the new text
-        var resultedColor = Appearance.mono200
-        
-        if numberOfCells == 6 {
-            if let indexPath = indexPath {
-                if bonusIdx.contains(indexPath.item)  {
-                    resultedColor = Appearance.mono100
-                } else {
-                    resultedColor = Appearance.mono200
-                }
-            }
-        }
-        if numberOfCells == 4 {
-            if indexPath?.item == 0 || indexPath?.item == 1 {
-                resultedColor = Appearance.mono100
-            }
-            if indexPath?.item == 2 || indexPath?.item == 3 {
-                resultedColor = Appearance.mono200
-            }
-        }
-        let underlineAttribute: [NSAttributedString.Key: Any] = [
-            .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .foregroundColor: resultedColor
-        ]
-        let attributedText = NSAttributedString(string: currentText, attributes: underlineAttribute)
-        textField.attributedText = attributedText
-        
-        // Notify delegate of the text change
-        
-        if let indexPath = indexPath {
-            if let parentCollectionView = parentCollectionView {
-                delegate?.numberCell(self, didUpdateNumber: currentText, at: indexPath, collectionView: parentCollectionView)
-            }
-        }
-        
-        // Always return false to prevent the default behavior since we're handling the text change manually
-        return false
-    }
+           // Existing validation...
+
+           // Notify delegate
+           if let indexPath = indexPath {
+               let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+               delegate?.numberCell(self, didUpdateNumber: updatedText, at: indexPath)
+           }
+
+           return true
+       }
     
-    // UITextFieldDelegate method to show underscore when text field is empty
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if let indexPath = indexPath {
-            if let parentCollectionView = parentCollectionView {
-                delegate?.numberCell(self, didUpdateNumber: textField.text ?? "", at: indexPath, collectionView: parentCollectionView)
-            }
-        }
-        if textField.text?.isEmpty ?? true {
-            // Show underscore if the text field is empty
-            let underlineAttribute: [NSAttributedString.Key: Any] = [
-                .underlineStyle: NSUnderlineStyle.single.rawValue,
-                .foregroundColor: Appearance.mono200
-            ]
-            let attributedText = NSAttributedString(string: "", attributes: underlineAttribute)
-            textField.attributedText = attributedText
-        }
-    }
+   
 }

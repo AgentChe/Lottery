@@ -7,13 +7,17 @@
 
 import UIKit
 
-class EditTicketRowCollectionCell: UICollectionViewCell {
+class EditTicketRowCollectionCell: UICollectionViewCell,EditNumberCellDelegate {
     static let reuseIdentifier: String = "EditTicketRowCollectionCell"
+    weak var parentDelegate: EditTicketRowCollectionCellDelegate?
     var numbersStringArray: [[String]] = []
     var bonusIdx: [Int] = []
+    var numbers: [String] = []
+
+    
     // MARK: - UI Components
     weak var parent: TicketEditCell?
-    var section: Int?
+    var section: Int = 0
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -23,7 +27,39 @@ class EditTicketRowCollectionCell: UICollectionViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
-    
+    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
+        // Update the number in the local 'numbers' array
+        numbers[indexPath.item] = number
+
+        // Notify the parent of the update
+        parentDelegate?.editTicketRowCollectionCell(self, didUpdateNumbers: numbers, inSection: self.section)
+
+        // Move to the next cell if two digits are entered
+        if number.count == 2 {
+            let nextItem = indexPath.item + 1
+            if nextItem < numbers.count {
+                // Move to next cell in the same row
+                let nextIndexPath = IndexPath(item: nextItem, section: 0)
+                collectionView.scrollToItem(at: nextIndexPath, at: .centeredHorizontally, animated: true)
+
+                DispatchQueue.main.async {
+                    if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
+                        nextCell.numberTextField.becomeFirstResponder()
+                    } else {
+                        // Force layout and try again
+                        self.collectionView.layoutIfNeeded()
+                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
+                            nextCell.numberTextField.becomeFirstResponder()
+                        }
+                    }
+                }
+            } else {
+                // Row is complete, notify parent to move to next row
+                parentDelegate?.editTicketRowCollectionCellDidFinishEnteringNumbers(self)
+            }
+        }
+    }
+
     // MARK: - Initializers
     
     override init(frame: CGRect) {
@@ -67,30 +103,25 @@ class EditTicketRowCollectionCell: UICollectionViewCell {
 
 extension EditTicketRowCollectionCell: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Replace with your data count
-        if let parent = self.parent {
-            return parent.numbersStringArray[section].count
-        }
-        return 0
+        return numbers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditNumberCell.reuseIdentifier, for: indexPath) as! EditNumberCell
-        if let parent = parent {
-            if let section = section {
-                if let numbers = numbersStringArray[safe: section] {
-                    cell.bonusIdx = bonusIdx
-                    let number = numbers[indexPath.item]
-                    
-                    let isLastInRow = true//parent.bonusIdx.contains(indexPath.item)
-                    cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
-                    cell.delegate = parent
-                    cell.numberOfCells = numbersStringArray.last?.count
-                }
-            }
-            
-        }
+        cell.delegate = self
+        cell.indexPath = indexPath
+        cell.numberOfCells = numbers.count
+        
+        // Configure the cell with the number
+        let number = numbers[indexPath.item]
+        let isLastInRow = (indexPath.item == numbers.count - 1)
+        cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
+        cell.bonusIdx = bonusIdx
+        
         return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("DID SELECT ITEM AT: \(indexPath)")
     }
 }
 
