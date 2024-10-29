@@ -814,7 +814,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == ticketsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
-            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == tickets[indexPath.item].lotteryId }.first {
+            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == tickets[indexPath.item].lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.lotteries = self.lotteries
@@ -838,9 +838,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             let baseHeight: CGFloat =  225.scale
             var additionalHeight: CGFloat = 0.scale
             if numbersCount < 2 {
-                 additionalHeight = 61.scale * CGFloat(max(0, numbersCount - 1))
+                 additionalHeight = 61.scale * CGFloat(max(0, numbersCount)) + 5.scale
             } else {
-                 additionalHeight = 61.scale * CGFloat(max(0, 2))
+                additionalHeight = 61.scale * CGFloat(max(0, 2))
             }
              
             
