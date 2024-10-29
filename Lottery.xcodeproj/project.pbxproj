@@ -10,6 +10,7 @@
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
 		A30A95102CCC413800912E17 /* FullNumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */; };
 		A30A95142CD0302400912E17 /* EditTicketRowCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */; };
+		A30A95182CD09FEC00912E17 /* EditNumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A95172CD09FE800912E17 /* EditNumberCell.swift */; };
 		A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */; };
 		A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */; };
 		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
@@ -269,6 +270,7 @@
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullNumberTicketCell.swift; sourceTree = "<group>"; };
 		A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketRowCollectionCell.swift; sourceTree = "<group>"; };
+		A30A95172CD09FE800912E17 /* EditNumberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNumberCell.swift; sourceTree = "<group>"; };
 		A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollecitonViewCell.swift; sourceTree = SOURCE_ROOT; };
 		A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoVerticalScrollCollectionView.swift; sourceTree = "<group>"; };
 		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
@@ -752,6 +754,7 @@
 				A3668DB32C1B366B00754446 /* TickedEditCell.swift */,
 				A3668DB72C1B4D4C00754446 /* CustomCalendarView.swift */,
 				A3668DC02C1C89F100754446 /* EditScanNumberCell.swift */,
+				A30A95172CD09FE800912E17 /* EditNumberCell.swift */,
 				A3668DC22C1C96AD00754446 /* RemoveCell.swift */,
 				A3668DB92C1C4CEA00754446 /* DateCell.swift */,
 				A3668DB52C1B4B6500754446 /* TicketEditPaddedLabel.swift */,
@@ -1821,6 +1824,7 @@
 				A3FF556D2C07E51E00E81771 /* GamesManager.swift in Sources */,
 				DE42B19F2BFF3CB200FF61B0 /* UITapGestureRecognizer+Extension.swift in Sources */,
 				DE89C3C42C92DBCB00CB9160 /* PaygateProductButton.swift in Sources */,
+				A30A95182CD09FEC00912E17 /* EditNumberCell.swift in Sources */,
 				DE42B1922BFF3CB200FF61B0 /* CircleView.swift in Sources */,
 				A3FD9EAA2C11EDBE000FAD68 /* CustomSegmentControl.swift in Sources */,
 				DE42B1912BFF3CB200FF61B0 /* NavigationControllerSettings.swift in Sources */,
