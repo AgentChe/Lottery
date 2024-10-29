@@ -1,6 +1,10 @@
 import UIKit
 import Kingfisher // Assuming you're using Kingfisher for image loading
 
+protocol TicketDataCellDelegate: AnyObject {
+    func didTapEditButton(for ticket: Ticket)
+}
+
 class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     func ticketNumbersRowCell(_ cell: TicketNumbersCollectionCell, didScroll contentOffset: CGPoint) {
         // Iterate over the visible cells in numbersCollectionView
@@ -18,12 +22,35 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
             }
         }
     }
-    
+    private let winnerImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "FullTicket.Winner")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    private let editButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Edit ticket", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.setTitleColor(Appearance.mono200, for: .normal)
+        button.backgroundColor = Appearance.main400
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 22.scale
+        button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    weak var delegate: TicketDataCellDelegate?
     static let identifier = "TicketDataCell"
     var ticket: Ticket! {
         didSet {
             configure()
         }
+    }
+    @objc private func editButtonTapped() {
+        delegate?.didTapEditButton(for: ticket)
     }
     var bonusIdx: [Int] = []
     
@@ -31,6 +58,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         didSet {
             // Configure the view when data is updated
             if !pastDraws.isEmpty {
+                editButton.isHidden = pastDraws.count > 0 ? true : false
+                winnerImageView.isHidden = pastDraws.count > 0 ? false : true
                 winningNumbers = pastDraws.first?.winningNumbers ?? []
                 configure()
                 updateCollectionViewHeights()
@@ -44,6 +73,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     // Property to track if this ticket is a winning ticket
     var isTheWinner: Bool = false {
         didSet {
+            editButton.isHidden = !isTheWinner
+            winnerImageView.isHidden = isTheWinner
             updateCollectionViewHeights()
         }
     }
@@ -117,10 +148,26 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         ticketNumbersCollectionView.register(TicketNumbersCollectionCell.self, forCellWithReuseIdentifier: TicketNumbersCollectionCell.identifier)
         
         setupViews()
-      
+        setupWinnerAndEditButton()
         backgroundColor = .yellow
     }
-    
+    private func setupWinnerAndEditButton() {
+        contentView.addSubview(winnerImageView)
+        contentView.addSubview(editButton)
+
+        NSLayoutConstraint.activate([
+            winnerImageView.widthAnchor.constraint(equalToConstant: 58.scale),
+            winnerImageView.heightAnchor.constraint(equalToConstant: 20.scale),
+            winnerImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24.scale),
+            winnerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale),
+            
+            editButton.widthAnchor.constraint(equalToConstant: 132.scale),
+            editButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            editButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24.scale),
+            editButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale)
+        ])
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

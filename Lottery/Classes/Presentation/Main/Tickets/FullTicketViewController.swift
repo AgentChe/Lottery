@@ -1,6 +1,6 @@
 import UIKit
 
-class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout {
+class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLayout,TicketDataCellDelegate {
     
     private let gamesManager: GamesManagerProtocol = GamesManager()
     private let ticketsManager: TicketsManagerProtocol = TicketsManager()
@@ -10,15 +10,14 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     var ticket: Ticket!
     private var pastDraws: [Game] = [] {
         didSet {
-            editButton.isHidden = pastDraws.count > 0 ? true : false
-            winnerImageView.isHidden = pastDraws.count > 0 ? false : true
+         
             self.ticketDataCollectionView.reloadData()
         }
     }
     
     var isTheWinner: Bool = true {
         didSet {
-            updateWinnerAndEditButtonVisibility()
+           // updateWinnerAndEditButtonVisibility()
         }
     }
     
@@ -45,38 +44,14 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         return collectionView
     }()
     
-    private let winnerImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "FullTicket.Winner")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    // Edit button (132.scale x 44.scale)
-    private let editButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Edit ticket", for: .normal)
-        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
-        button.setTitleColor(Appearance.mono200, for: .normal)
-        button.backgroundColor = Appearance.main400
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 22.scale
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    // Method to be called when the button is tapped
-    @objc private func editButtonTapped() {
+    func didTapEditButton(for ticket: Ticket) {
         let editVC = EditTicketViewController(ticket: ticket)
         editVC.lotteries = self.lotteries
         editVC.lotteryPatterns = self.lotteryPatterns
-       
-        
-        // Present the edit ticket view controller
         self.navigationController?.pushViewController(editVC, animated: true)
     }
+
+ 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         fetchTickets()
@@ -132,36 +107,15 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         setupCollectionView()
         
         // Setup the winnerImageView and editButton
-        setupWinnerAndEditButton()
+        
         
         // Fetch past games
         fetchPastGames(for: nil)
         
-        updateWinnerAndEditButtonVisibility()
+      //  updateWinnerAndEditButtonVisibility()
     }
     
-    private func setupWinnerAndEditButton() {
-        let viewHeight = view.frame.height
-        // Add the winnerImageView and editButton to the backgroundView
-        backgroundView.addSubview(winnerImageView)
-        backgroundView.addSubview(editButton)
-        
-        // Set up constraints for winnerImageView (top-right corner)
-        NSLayoutConstraint.activate([
-            winnerImageView.widthAnchor.constraint(equalToConstant: 58.scale),
-            winnerImageView.heightAnchor.constraint(equalToConstant: 20.scale),
-            winnerImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight * 0.2 + 24.scale),
-            winnerImageView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16.scale)
-        ])
-        
-        // Set up constraints for editButton (same place as winnerImageView)
-        NSLayoutConstraint.activate([
-            editButton.widthAnchor.constraint(equalToConstant: 132.scale),
-            editButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            editButton.topAnchor.constraint(equalTo: view.topAnchor, constant: viewHeight * 0.2 + 24.scale),
-            editButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16.scale)
-        ])
-    }
+  
     
     private func setupBackgroundView() {
         // Add backgroundView to the main view
@@ -210,10 +164,6 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
             self.dismiss(animated: true, completion: nil)
         }
     }
-    
-    private func updateWinnerAndEditButtonVisibility() {
-        winnerImageView.isHidden = !isTheWinner
-    }
 }
 
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource
@@ -230,6 +180,7 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
         cell.isTheWinner = isTheWinner
         cell.bonusIdx = bonusIdx
         cell.lotteries = lotteries
+        cell.delegate = self
         cell.lotteryPatterns = lotteryPatterns
         if !pastDraws.isEmpty {
             cell.pastDraws = pastDraws
