@@ -328,16 +328,33 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-           // Existing validation...
+        // Allow only numeric input
+        let allowedCharacters = CharacterSet.decimalDigits
+        let characterSet = CharacterSet(charactersIn: string)
+        if !allowedCharacters.isSuperset(of: characterSet) {
+            return false
+        }
 
-           // Notify delegate
-           if let indexPath = indexPath {
-               let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-               delegate?.numberCell(self, didUpdateNumber: updatedText, at: indexPath)
-           }
+        // Determine the new text after the replacement
+        let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
 
-           return true
-       }
+        // Check if the new text exceeds the 2 characters limit
+        if currentText.count > 2 {
+            return false
+        }
+
+        // Update the text field
+        textField.text = currentText
+
+        // Notify delegate of the text change
+        if let indexPath = indexPath {
+            delegate?.numberCell(self, didUpdateNumber: currentText, at: indexPath)
+        }
+
+        // Return false because we've manually updated the text field
+        return false
+    }
+
     
    
 }

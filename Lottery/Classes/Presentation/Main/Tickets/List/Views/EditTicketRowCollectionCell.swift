@@ -34,29 +34,10 @@ class EditTicketRowCollectionCell: UICollectionViewCell,EditNumberCellDelegate {
         // Notify the parent of the update
         parentDelegate?.editTicketRowCollectionCell(self, didUpdateNumbers: numbers, inSection: self.section)
 
-        // Move to the next cell if two digits are entered
+        // Move to the next unfilled cell if two digits are entered
         if number.count == 2 {
-            let nextItem = indexPath.item + 1
-            if nextItem < numbers.count {
-                // Move to next cell in the same row
-                let nextIndexPath = IndexPath(item: nextItem, section: 0)
-                collectionView.scrollToItem(at: nextIndexPath, at: .centeredHorizontally, animated: true)
-
-                DispatchQueue.main.async {
-                    if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
-                        nextCell.numberTextField.becomeFirstResponder()
-                    } else {
-                        // Force layout and try again
-                        self.collectionView.layoutIfNeeded()
-                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
-                            nextCell.numberTextField.becomeFirstResponder()
-                        }
-                    }
-                }
-            } else {
-                // Row is complete, notify parent to move to next row
-                parentDelegate?.editTicketRowCollectionCellDidFinishEnteringNumbers(self)
-            }
+            // Ask the parent to find the next unfilled cell
+            parentDelegate?.editTicketRowCollectionCell(self, moveToNextUnfilledCellFrom: indexPath)
         }
     }
 
@@ -115,8 +96,8 @@ extension EditTicketRowCollectionCell: UICollectionViewDataSource, UICollectionV
         // Configure the cell with the number
         let number = numbers[indexPath.item]
         let isLastInRow = (indexPath.item == numbers.count - 1)
-        cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
         cell.bonusIdx = bonusIdx
+        cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
         
         return cell
     }

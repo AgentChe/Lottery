@@ -17,8 +17,10 @@ protocol EditNumberCellDelegate: AnyObject {
 }
 protocol EditTicketRowCollectionCellDelegate: AnyObject {
     func editTicketRowCollectionCell(_ cell: EditTicketRowCollectionCell, didUpdateNumbers numbers: [String], inSection section: Int)
-        func editTicketRowCollectionCellDidFinishEnteringNumbers(_ cell: EditTicketRowCollectionCell)
+    func editTicketRowCollectionCellDidFinishEnteringNumbers(_ cell: EditTicketRowCollectionCell)
+    func editTicketRowCollectionCell(_ cell: EditTicketRowCollectionCell, moveToNextUnfilledCellFrom indexPath: IndexPath)
 }
+
 protocol EditTicketViewControllerDelegate : AnyObject {
     func updateSizeOfEditCell(numbersStringArray: [[String]])
 }
@@ -152,8 +154,6 @@ private extension TicketEditCell {
         delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
     }
 
-
-    
     func setupUI() {
         backgroundColor = Appearance.mono100
         logoImageView.contentMode = .scaleAspectFit
@@ -475,6 +475,63 @@ extension TicketEditCell: EditTicketRowCollectionCellDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 cell.endEditing(true)
             }
+        }
+    }
+    func editTicketRowCollectionCell(_ cell: EditTicketRowCollectionCell, moveToNextUnfilledCellFrom indexPath: IndexPath) {
+        guard let currentRowIndexPath = collectionView.indexPath(for: cell) else { return }
+        var currentSection = currentRowIndexPath.section
+        var currentItem = indexPath.item
+
+        // Start searching from the next item
+        var foundNextCell = false
+
+        while !foundNextCell {
+            currentItem += 1
+
+            // If we reach the end of the current row, move to the next row
+            if currentItem >= numbersStringArray[currentSection].count {
+                currentSection += 1
+                currentItem = 0
+
+                // If we reach the end of the sections, stop searching
+                if currentSection >= numbersStringArray.count {
+                    break
+                }
+            }
+
+            let nextNumber = numbersStringArray[currentSection][currentItem]
+            if nextNumber.count < 2 {
+                foundNextCell = true
+                break
+            }
+        }
+
+        if foundNextCell {
+            // Scroll to the next cell and make it the first responder
+            let nextRowIndexPath = IndexPath(item: 1, section: currentSection) // Assuming item 1 is EditTicketRowCollectionCell
+            collectionView.scrollToItem(at: nextRowIndexPath, at: .centeredVertically, animated: true)
+
+            DispatchQueue.main.async {
+                if let nextRowCell = self.collectionView.cellForItem(at: nextRowIndexPath) as? EditTicketRowCollectionCell {
+                    let nestedCollectionView = nextRowCell.collectionView
+                    let nestedIndexPath = IndexPath(item: currentItem, section: 0)
+                    nestedCollectionView.scrollToItem(at: nestedIndexPath, at: .centeredHorizontally, animated: true)
+
+                    DispatchQueue.main.async {
+                        if let nextCell = nestedCollectionView.cellForItem(at: nestedIndexPath) as? EditNumberCell {
+                            nextCell.numberTextField.becomeFirstResponder()
+                        } else {
+                            nestedCollectionView.layoutIfNeeded()
+                            if let nextCell = nestedCollectionView.cellForItem(at: nestedIndexPath) as? EditNumberCell {
+                                nextCell.numberTextField.becomeFirstResponder()
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            // No next unfilled cell found; optionally dismiss keyboard
+            cell.endEditing(true)
         }
     }
 
