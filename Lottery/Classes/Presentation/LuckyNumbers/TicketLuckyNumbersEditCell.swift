@@ -464,7 +464,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     }
 }
 
-extension TicketLuckyNumbersEditCell: EditNumberCellDelegate {
+extension TicketLuckyNumbersEditCell: EditScanNumberCellDelegate {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
         guard indexPath.section < numbersStringArray.count,
               indexPath.item < numbersStringArray[indexPath.section].count else { return }

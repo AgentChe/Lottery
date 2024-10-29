@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
 		A30A95102CCC413800912E17 /* FullNumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */; };
+		A30A95142CD0302400912E17 /* EditTicketRowCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */; };
 		A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */; };
 		A32691382CA1992C00504DA3 /* NoVerticalScrollCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */; };
 		A32748BA2C25D79500E9F79A /* ScanOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */; };
@@ -267,6 +268,7 @@
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullNumberTicketCell.swift; sourceTree = "<group>"; };
+		A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketRowCollectionCell.swift; sourceTree = "<group>"; };
 		A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollecitonViewCell.swift; sourceTree = SOURCE_ROOT; };
 		A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoVerticalScrollCollectionView.swift; sourceTree = "<group>"; };
 		A32748B92C25D79500E9F79A /* ScanOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanOnboardingViewController.swift; sourceTree = "<group>"; };
@@ -886,6 +888,7 @@
 				A3E888242CCA151400C31554 /* TicketHeaderView.swift */,
 				A3E888262CCA16F200C31554 /* WinningNumbersCell.swift */,
 				A3E888282CCA170200C31554 /* TicketNumberCell.swift */,
+				A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1671,6 +1674,7 @@
 				DE42B2172BFF665600FF61B0 /* TryAgainViewController.swift in Sources */,
 				DE42B19D2BFF3CB200FF61B0 /* UIDevice+Extension.swift in Sources */,
 				DE42B1F22BFF464300FF61B0 /* TabView.swift in Sources */,
+				A30A95142CD0302400912E17 /* EditTicketRowCollectionCell.swift in Sources */,
 				A32749392C29859400E9F79A /* QuadrilateralView.swift in Sources */,
 				A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */,
 				A3FF555F2C07E26700E81771 /* FetchLotteriesRequest.swift in Sources */,

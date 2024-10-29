@@ -71,6 +71,8 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     @objc private func editButtonTapped() {
         let editVC = EditTicketViewController(ticket: ticket)
         editVC.lotteries = self.lotteries
+        editVC.lotteryPatterns = self.lotteryPatterns
+       
         
         // Present the edit ticket view controller
         self.navigationController?.pushViewController(editVC, animated: true)

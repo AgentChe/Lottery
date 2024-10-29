@@ -9,7 +9,7 @@
 import UIKit
 import Kingfisher
 
-protocol EditNumberCellDelegate: AnyObject {
+protocol EditScanNumberCellDelegate: AnyObject {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
 }
 
@@ -60,6 +60,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
+        collectionView.register(EditTicketRowCollectionCell.self, forCellWithReuseIdentifier: EditTicketRowCollectionCell.reuseIdentifier) //
         
         return collectionView
     }()
@@ -150,7 +151,7 @@ private extension TicketEditCell {
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 6).scale + 5.scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 6).scale)
             }
@@ -290,15 +291,11 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Add 1 to the count to include the RemoveCell
-        if let numbersCount = numbersStringArray[safe: section]?.count {
-            return numbersCount + 1
-        } else {
-            return 0
-        }
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
+        if indexPath.item == 0 {
             // If the index is the last one, return a RemoveCell
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RemoveCell", for: indexPath) as? RemoveCell else {
                 return UICollectionViewCell()
@@ -307,37 +304,44 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
             
-            if numbersStringArray.count == 1 {
-                cell.closeButton.alpha = 0
-            }
+//            if numbersStringArray.count == 1 {
+//                cell.closeButton.alpha = 0
+//            }
+//            
+//            if numbersStringArray.count > 1  {
+//                cell.closeButton.alpha = 1
+//            }
             
-            if numbersStringArray.count > 1  {
-                cell.closeButton.alpha = 1
-            }
-            
-            return cell
-        } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
-                return UICollectionViewCell()
-            }
-            
-            // Get the appropriate number for this index
-            if let numbers = numbersStringArray[safe: indexPath.section] {
-                cell.bonusIdx = bonusIdx
-                let number = numbers[indexPath.item]
-                let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
-                cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
-                cell.delegate = self // Set the delegate
-                cell.numberOfCells = numbersStringArray.last?.count
-            }
             return cell
         }
+        if indexPath.item == 1  {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditTicketRowCollectionCell.reuseIdentifier, for: indexPath) as? EditTicketRowCollectionCell else {
+                return UICollectionViewCell()
+            }
+            cell.parent = self
+            cell.section = indexPath.section
+            cell.numbersStringArray = numbersStringArray
+            cell.bonusIdx = bonusIdx
+            cell.collectionView.reloadData()
+            
+            // Get the appropriate number for this index
+//            if let numbers = numbersStringArray[safe: indexPath.section] {
+//                cell.bonusIdx = bonusIdx
+//                let number = numbers[indexPath.item]
+//                let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
+//                cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
+//                cell.delegate = self // Set the delegate
+//                cell.numberOfCells = numbersStringArray.last?.count
+//            }
+            return cell
+        }
+        fatalError()
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if numbersStringArray.count == 1 {
             return UIEdgeInsets(top: 6.scale,
-                                left: numbersStringArray[0].count == 6 ? 20.scale : 30.scale, bottom: 0.scale,
-                                right:  numbersStringArray[0].count == 6 ? 20.scale : 30.scale)
+                                left: numbersStringArray[0].count == 6 ? 0.scale : 0.scale, bottom: 0.scale,
+                                right:  numbersStringArray[0].count == 6 ? 0.scale : 0.scale)
         } else {
             return UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         }
@@ -351,7 +355,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
         } else {
             // Normal removal process
             numbersStringArray.remove(at: indexPath.section)
-            
+            print("numbersStringArray: \(numbersStringArray.count)")
             collectionViewHeightConstraint.isActive = false
             // Get the number of cells in the last row
             if let firstNumberArray = numbersStringArray.first {
@@ -371,6 +375,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             collectionViewHeightConstraint.isActive = true
             
             collectionView.reloadData()
+
         }
     }
     private func presentDeleteConfirmationAlert() {
@@ -391,7 +396,9 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
         
         if let parentVC = self.parentViewController {
             parentVC.present(alertVC, animated: true, completion: nil)
+            return
         }
+        
     }
     
     private func removeTicket() {
@@ -404,34 +411,42 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Default size for the cell
-        let defaultSize = CGSize(width: 40.scale, height: 40.scale)
-
-        // Check if there are numbers in the numbersStringArray
-        guard let lastRow = numbersStringArray.last else {
-            // Return default size if numbersStringArray is empty or nil
-            return defaultSize
+        if indexPath.item == 0 {
+            // Default size for the cell
+            let defaultSize = CGSize(width: 40.scale, height: 40.scale)
+            
+            // Check if there are numbers in the numbersStringArray
+            guard let lastRow = numbersStringArray.last else {
+                // Return default size if numbersStringArray is empty or nil
+                return defaultSize
+            }
+            
+            // Get the number of cells in the last row
+            let numberOfCells = lastRow.count + 1
+            
+            // Calculate the available width based on the given constraints
+            let totalWidth: CGFloat = 343.scale
+            let sideMargins: CGFloat = 40.scale
+            let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
+            
+            // Calculate the width for each cell
+            let availableWidth = totalWidth - sideMargins - cellSpacing
+            let cellWidth = availableWidth / CGFloat(numberOfCells)
+            
+            // Return the size for the cell
+            return CGSize(width:40.scale , height: 40.scale)
+        } else {
+            let collectionViewWidth = collectionView.bounds.width
+            let resWidth = collectionViewWidth - 40.scale - 6.scale - 2.scale
+            print("resWiddth \(resWidth) \(indexPath)")
+            return CGSize(width: resWidth, height: 40.scale)
         }
-        
-        // Get the number of cells in the last row
-        let numberOfCells = lastRow.count + 1
-        
-        // Calculate the available width based on the given constraints
-        let totalWidth: CGFloat = 343.scale
-        let sideMargins: CGFloat = 40.scale
-        let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
-        
-        // Calculate the width for each cell
-        let availableWidth = totalWidth - sideMargins - cellSpacing
-        let cellWidth = availableWidth / CGFloat(numberOfCells)
-        
-        // Return the size for the cell
-        return CGSize(width:cellWidth , height: cellWidth)
     }
 }
 
-extension TicketEditCell: EditNumberCellDelegate {
+extension TicketEditCell: EditScanNumberCellDelegate {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
+        
         guard indexPath.section < numbersStringArray.count,
               indexPath.item < numbersStringArray[indexPath.section].count else { return }
 

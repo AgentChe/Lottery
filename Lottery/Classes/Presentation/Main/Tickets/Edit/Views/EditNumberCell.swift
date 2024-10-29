@@ -16,7 +16,7 @@ import UIKit
 
 class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
     
-    weak var delegate: EditNumberCellDelegate?
+    weak var delegate: EditScanNumberCellDelegate?
     var indexPath: IndexPath?
     var bonusIdx: [Int] = []
     var numberOfCells: Int? {

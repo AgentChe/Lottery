@@ -477,7 +477,7 @@ extension ScanAddTicketNumbersEditCell: UICollectionViewDataSource, UICollection
     }
 }
 
-extension ScanAddTicketNumbersEditCell: EditNumberCellDelegate {
+extension ScanAddTicketNumbersEditCell: EditScanNumberCellDelegate {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
         guard indexPath.section < numbersStringArray.count,
               indexPath.item < numbersStringArray[indexPath.section].count else { return }
