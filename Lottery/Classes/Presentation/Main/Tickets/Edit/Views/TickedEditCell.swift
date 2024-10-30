@@ -14,6 +14,7 @@ protocol EditScanNumberCellDelegate: AnyObject {
 }
 protocol EditNumberCellDelegate: AnyObject {
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath)
+    func numberCell(_ cell: EditNumberCell, didFinishEditingNumber number: String, at indexPath: IndexPath)
 }
 protocol EditTicketRowCollectionCellDelegate: AnyObject {
     func editTicketRowCollectionCell(_ cell: EditTicketRowCollectionCell, didUpdateNumbers numbers: [String], inSection section: Int)
@@ -463,7 +464,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
         if numbersStringArray.count == 1 && indexPath.section == 0 {
             presentDeleteConfirmationAlert()
         } else {
-            // Normal removal process
+            // Normal removal proceditTicketRowCollectionCelless
             numbersStringArray.remove(at: indexPath.section)
             print("numbersStringArray: \(numbersStringArray.count)")
             collectionViewHeightConstraint.isActive = false
@@ -617,10 +618,21 @@ extension TicketEditCell: EditTicketRowCollectionCellDelegate {
             }
 
             let nextNumber = numbersStringArray[currentSection][currentItem]
-            if nextNumber.count < 2 {
-                foundNextCell = true
-                break
+            let containsNonDigit = nextNumber.contains { !$0.isNumber }
+
+            // Skip cells that have at least one character that is not a number
+            if containsNonDigit {
+                continue
             }
+
+            // Skip cells that have two numbers
+            if nextNumber.count >= 2 {
+                continue
+            }
+
+            // Found a cell that has no number or one number
+            foundNextCell = true
+            break
         }
 
         if foundNextCell {
@@ -651,6 +663,7 @@ extension TicketEditCell: EditTicketRowCollectionCellDelegate {
             cell.endEditing(true)
         }
     }
+
 
 }
 

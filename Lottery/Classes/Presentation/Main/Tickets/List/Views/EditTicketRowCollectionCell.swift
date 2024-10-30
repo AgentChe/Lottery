@@ -33,13 +33,8 @@ class EditTicketRowCollectionCell: UICollectionViewCell,EditNumberCellDelegate {
 
         // Notify the parent of the update
         parentDelegate?.editTicketRowCollectionCell(self, didUpdateNumbers: numbers, inSection: self.section)
-
-        // Move to the next unfilled cell if two digits are entered
-        if number.count == 2 {
-            // Ask the parent to find the next unfilled cell
-            parentDelegate?.editTicketRowCollectionCell(self, moveToNextUnfilledCellFrom: indexPath)
-        }
     }
+
 
     // MARK: - Initializers
     
@@ -108,6 +103,11 @@ extension EditTicketRowCollectionCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 40.scale, height: 40.scale)
     }
+    func numberCell(_ cell: EditNumberCell, didFinishEditingNumber number: String, at indexPath: IndexPath) {
+        // Move to the next appropriate cell
+        parentDelegate?.editTicketRowCollectionCell(self, moveToNextUnfilledCellFrom: indexPath)
+    }
+
 }
 
 

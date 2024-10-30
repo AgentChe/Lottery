@@ -585,10 +585,21 @@ extension TicketLuckyNumbersEditCell: EditTicketRowCollectionCellDelegate {
             }
 
             let nextNumber = numbersStringArray[currentSection][currentItem]
-            if nextNumber.count < 2 {
-                foundNextCell = true
-                break
+            let containsNonDigit = nextNumber.contains { !$0.isNumber }
+
+            // Skip cells that have at least one character that is not a number
+            if containsNonDigit {
+                continue
             }
+
+            // Skip cells that have two numbers
+            if nextNumber.count >= 2 {
+                continue
+            }
+
+            // Found a cell that has no number or one number
+            foundNextCell = true
+            break
         }
 
         if foundNextCell {
@@ -619,6 +630,7 @@ extension TicketLuckyNumbersEditCell: EditTicketRowCollectionCellDelegate {
             cell.endEditing(true)
         }
     }
+
 
 }
 

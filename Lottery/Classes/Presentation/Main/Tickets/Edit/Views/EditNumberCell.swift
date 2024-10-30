@@ -135,27 +135,33 @@ class EditNumberCell: UICollectionViewCell, UITextFieldDelegate {
         if !allowedCharacters.isSuperset(of: characterSet) {
             return false
         }
-        
+
         // Determine the new text after the replacement
         let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-        
+
         // Check if the new text exceeds the 2 characters limit
         if currentText.count > 2 {
             return false
         }
-        
+
         // Update the text field
         textField.text = currentText
-        
+
         // Notify delegate of the text change
         if let indexPath = indexPath {
             delegate?.numberCell(self, didUpdateNumber: currentText, at: indexPath)
         }
-        
+
+        // Move to the next cell if conditions are met
+        if currentText.count == 2 {
+            if let indexPath = indexPath {
+                delegate?.numberCell(self, didFinishEditingNumber: currentText, at: indexPath)
+            }
+        }
+
         // Return false because we've manually updated the text field
         return false
     }
-    
-    
+
     
 }
