@@ -305,7 +305,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
         if let ticket = self.ticket {
-            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
+            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.lotteries = self.lotteries

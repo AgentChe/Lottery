@@ -23,7 +23,7 @@ class RemoveCell: UICollectionViewCell {
     var numberOfCells: Int? {
         didSet {
             if let numberOfCells = numberOfCells {
-                layer.cornerRadius = numberOfCells == 6 ? 20.scale : 28.scale
+                layer.cornerRadius = numberOfCells == 6 ? 0.scale : 8.scale
             }
         }
     }
@@ -64,13 +64,14 @@ class RemoveCell: UICollectionViewCell {
         layer.cornerRadius = (20).scale
         layer.masksToBounds = true
         
+        
         addSubview(closeButton)
         
         NSLayoutConstraint.activate([
             closeButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             closeButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            closeButton.widthAnchor.constraint(equalToConstant: 24.scale),
-            closeButton.heightAnchor.constraint(equalToConstant: 24.scale)
+            closeButton.widthAnchor.constraint(equalToConstant: 40.scale),
+            closeButton.heightAnchor.constraint(equalToConstant: 40.scale)
         ])
     }
 }

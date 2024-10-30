@@ -26,7 +26,13 @@ protocol EditTicketViewControllerDelegate : AnyObject {
 }
 class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     var lotteries: [Lottery] = []
-    var bonusIdx: [Int] = []
+    var bonusIdx: [Int] = [] {
+        didSet {
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -98,7 +104,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
    
     func configure(ticket: Ticket) {
         self.ticket = ticket
-        numbersStringArray = ticket.numbers.map { $0.map { "\($0)" } }
+        numbersStringArray = convertTo2DStringArray(ticket.numbers) //ticket.numbers.map { $0.map { "\($0)" } }
         
         var lotteryLogoUrlString = lotteries.filter { $0.id == ticket.lotteryId }.first?.logoUrl
         if let url = lotteryLogoUrlString {
@@ -535,4 +541,38 @@ extension TicketEditCell: EditTicketRowCollectionCellDelegate {
         }
     }
 
+}
+
+extension TicketEditCell {
+    func convertTo2DStringArray(_ input: [[Int]]) -> [[String]] {
+        let alphabet = (65...90).map { String(UnicodeScalar($0)!) } // "A" to "Z"
+        
+        var result = [[String]]()
+        var letterIndex = 0
+        var repeatIndex = 0
+        
+        for array in input {
+            // Generate the label (e.g., "A", "B", ..., "Z", "A1", "B1", ...)
+            let label: String
+            if letterIndex < alphabet.count {
+                label = alphabet[letterIndex]
+            } else {
+                let baseIndex = (letterIndex % alphabet.count)
+                label = alphabet[baseIndex] + "\(repeatIndex)"
+            }
+            
+            // Convert the current array to [String] and prepend the label
+            let newArray = [label] + array.map { String($0) }
+            result.append(newArray)
+            
+            // Update the indices for next label
+            letterIndex += 1
+            if letterIndex == alphabet.count {
+                letterIndex = 0
+                repeatIndex += 1
+            }
+        }
+        
+        return result
+    }
 }

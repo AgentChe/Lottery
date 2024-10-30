@@ -10,7 +10,6 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     var ticket: Ticket!
     private var pastDraws: [Game] = [] {
         didSet {
-         
             self.ticketDataCollectionView.reloadData()
         }
     }
@@ -56,6 +55,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         super.viewDidAppear(animated)
         fetchTickets()
     }
+    
     func fetchTickets() {
         ticketsManager.listTickets(forceUpdate: true) { [weak self] result in
             DispatchQueue.main.async {
