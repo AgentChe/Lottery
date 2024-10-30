@@ -292,13 +292,14 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
         if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == game.lotteryId }.first {
             cell.bonusIdx = pattern.bonusIdx
         }
+        cell.lotteryPatterns = lotteryPatterns
         cell.configure(game: game, lotteries: lotteries)
         cell.delegate = self
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
+        return UIEdgeInsets(top: 16.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

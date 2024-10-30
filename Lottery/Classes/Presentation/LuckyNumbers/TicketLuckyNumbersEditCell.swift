@@ -9,6 +9,7 @@ import UIKit
 
 class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
     var lotteries: [Lottery] = []
+    var lotteryPatterns : [LotteryPattern] = []
     var bonusIdx: [Int] = [] {
         didSet {
             for i in 0..<bonusIdx.count {
@@ -156,7 +157,8 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
 private extension TicketLuckyNumbersEditCell {
     @objc private func plusButtonTapped() {
         // Determine the first element of the last section
-        let lastSection = numbersStringArray.last
+        var lastSection = numbersStringArray.last
+         
         var nextRowFirstElement = ""
         
         if let lastSectionFirstElement = lastSection?.first, !lastSectionFirstElement.isEmpty {
@@ -166,7 +168,8 @@ private extension TicketLuckyNumbersEditCell {
         }
         
         // Create a new row with the first element as calculated and the rest as empty strings
-        let numberOfElementsInLastSection = lastSection?.count ?? 5
+        var itemCount = lotteryPatterns.first?.itemCount
+        let numberOfElementsInLastSection = lastSection?.count  ?? ((itemCount != nil) ? (itemCount! + 1) : 0)
         var newSection = Array(repeating: "", count: numberOfElementsInLastSection)
         if !newSection.isEmpty {
             newSection[0] = nextRowFirstElement
@@ -394,15 +397,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
             cell.indexPath = indexPath
             cell.numberOfCells = numbersStringArray.last?.count
             cell.delegate = self
-            
-//            if numbersStringArray.count == 1 {
-//                cell.closeButton.alpha = 0
-//            }
-//
-//            if numbersStringArray.count > 1  {
-//                cell.closeButton.alpha = 1
-//            }
-            
+
             return cell
         }
         if indexPath.item == 1  {
@@ -416,16 +411,6 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
             cell.bonusIdx = bonusIdx
             cell.collectionView.reloadData()
 
-            
-            // Get the appropriate number for this index
-//            if let numbers = numbersStringArray[safe: indexPath.section] {
-//                cell.bonusIdx = bonusIdx
-//                let number = numbers[indexPath.item]
-//                let isLastInRow = indexPath.item == numbers.count - 1 // Check if it's the last item in its row
-//                cell.configure(number: number, isLastInRow: isLastInRow, indexPath: indexPath)
-//                cell.delegate = self // Set the delegate
-//                cell.numberOfCells = numbersStringArray.last?.count
-//            }
             return cell
         }
         fatalError()

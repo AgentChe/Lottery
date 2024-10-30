@@ -26,6 +26,7 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
     
     var game: Game!
     var lotteries: [Lottery]!
+    var lotteryPatterns : [LotteryPattern] = []
     var bonusIdx: [Int] = [] {
         didSet {
             for i in 0..<bonusIdx.count {
@@ -117,6 +118,7 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
                                             numbers: game.myLuckyNumbers ?? [])
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
+                editLuckyNumbersVC.lotteryPatterns = lotteryPatterns
                 delegate?.navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
             }
         }

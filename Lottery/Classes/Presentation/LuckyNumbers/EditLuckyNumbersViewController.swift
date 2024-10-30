@@ -112,7 +112,8 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        
+        fetchLotteriesPatterns()
+
     }
     
     private func setupConstraints() {
@@ -149,6 +150,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             }
             numbersArray.append(intSection)
         }
+        
         
         // Ensure we have a ticket to modify
         guard var existingTicket = ticket else { return }
@@ -237,6 +239,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
+            cell.lotteryPatterns = lotteryPatterns
             cell.lotteries = self.lotteries
             cell.configure(ticket: ticket)
         }
@@ -272,8 +275,8 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
+            for i in 1..<section.count {
+                if Int(section[i]) == nil {
                     return false
                 }
             }
