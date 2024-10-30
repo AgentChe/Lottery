@@ -8,13 +8,31 @@
 import UIKit
 import Kingfisher
 
-class LuckyNumbersCell: UICollectionViewCell {
+class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         print("Touch!")
     }
+    
+    func luckyNumbersRowCell(_ cell: LuckyNumbersRowCollectionViewCell, didScroll contentOffset: CGPoint) {
+        // Iterate over the visible cells in numbersCollectionView
+        for visibleCell in myLuckyNumbersCollectionView.visibleCells {
+            if let rowCell = visibleCell as? LuckyNumbersRowCollectionViewCell, rowCell != cell {
+                rowCell.ticketNumbersCollectionView.contentOffset = contentOffset
+            }
+        }
+    }
+    
+    
     var game: Game!
     var lotteries: [Lottery]!
+    var bonusIdx: [Int] = [] {
+        didSet {
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
     weak var delegate: LuckyNumbersViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
@@ -39,15 +57,15 @@ class LuckyNumbersCell: UICollectionViewCell {
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 6.scale
         layout.minimumLineSpacing = 6.scale
-        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.isUserInteractionEnabled = false
-        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+        collectionView.isUserInteractionEnabled = true
+        collectionView.isScrollEnabled = false
+        collectionView.register(LuckyNumbersRowCollectionViewCell.self, forCellWithReuseIdentifier: LuckyNumbersRowCollectionViewCell.reuseIdentifier)
         return collectionView
     }()
     
@@ -247,7 +265,7 @@ private extension LuckyNumbersCell {
 //        dateLabelContainer.layer.shadowRadius = 3.scale
 //        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
+        dateLabel.font = Fonts.Inter.medium(size: 12.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100
@@ -293,8 +311,8 @@ private extension LuckyNumbersCell {
             
             // My Lucky Numbers CollectionView
             myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: topAnchor, constant: 165.scale),
-            myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+            myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
+            myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
             myLuckyNumbersCollectionView.bottomAnchor.constraint(equalTo: dashedLineImageViewBottom.topAnchor, constant: -20.scale),
             
             // Dashed Line View
@@ -316,19 +334,30 @@ private extension LuckyNumbersCell {
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let viewWidth = frame.width
+        return CGSize(width: viewWidth , height: 40.scale)
+    }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return myLuckyNumbers.count // Using the first set of numbers for simplicity
+        return 1 // Using the first set of numbers for simplicity
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return myLuckyNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
+        return myLuckyNumbers.count ?? 0 // Using the first set of numbers for simplicity
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
-            fatalError("Could not dequeue cell with identifier: NumberCell")
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LuckyNumbersRowCollectionViewCell.reuseIdentifier, for: indexPath) as? LuckyNumbersRowCollectionViewCell else {
+            fatalError("Could not dequeue cell with identifier: TicketNumbersRowCollectionViewCell")
         }
-        configureCellForLuckyNumbers(cell, at: indexPath)
+        
+        cell.bonusIdx = bonusIdx
+        cell.indexPath = indexPath
+        cell.ticketNumbers = game.myLuckyNumbers ?? []
+        cell.section = indexPath.item
+        cell.delegate = self
+        
+        cell.config()
         
         return cell
     }

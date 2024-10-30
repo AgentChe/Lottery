@@ -94,7 +94,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
         
-        collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 10.scale, left: 0, bottom: 30.scale, right: 0)
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
@@ -117,7 +117,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

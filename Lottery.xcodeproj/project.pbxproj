@@ -82,6 +82,7 @@
 		A35112F52C9884D80060D261 /* Animation02.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F42C9884D70060D261 /* Animation02.json */; };
 		A35112F92C98CDF40060D261 /* Premium.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F82C98CDF40060D261 /* Premium.json */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
+		A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */; };
 		A3668DAD2C19BFCF00754446 /* NotchedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */; };
 		A3668DB22C1A1C9300754446 /* EditTicketVIewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */; };
 		A3668DB42C1B366C00754446 /* TickedEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB32C1B366B00754446 /* TickedEditCell.swift */; };
@@ -342,6 +343,7 @@
 		A35112F42C9884D70060D261 /* Animation02.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation02.json; sourceTree = "<group>"; };
 		A35112F82C98CDF40060D261 /* Premium.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Premium.json; sourceTree = "<group>"; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
+		A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
 		A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedBackgroundView.swift; sourceTree = "<group>"; };
 		A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketVIewController.swift; sourceTree = "<group>"; };
 		A3668DB32C1B366B00754446 /* TickedEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedEditCell.swift; sourceTree = "<group>"; };
@@ -792,6 +794,7 @@
 			children = (
 				A375583C2C37105C0028DB95 /* LuckyNumbersAlertViewController.swift */,
 				A375583A2C35B86C0028DB95 /* LuckyNumbersCell.swift */,
+				A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */,
 				A3AE801A2C2CA18700E5B473 /* Views */,
 				A3AE80162C2C577200E5B473 /* LuckyNumbersViewController.swift */,
 				A3AE80182C2C5D6900E5B473 /* SelectTheGameViewController.swift */,
@@ -1670,6 +1673,7 @@
 				A3AE801C2C2CA19600E5B473 /* SelectGameCell.swift in Sources */,
 				A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */,
 				A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */,
+				A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */,
 				DE42B1F02BFF463B00FF61B0 /* TabItemView.swift in Sources */,
 				A327494A2C29859400E9F79A /* Transformable.swift in Sources */,
 				DE42B1A62BFF3CB200FF61B0 /* PushNotificationsManager.swift in Sources */,

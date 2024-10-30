@@ -12,7 +12,7 @@ final class LuckyNumbersViewController: UIViewController {
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDraws: [Game] = []
     private var lotteries: [Lottery] = []
-    
+    var lotteryPatterns: [LotteryPattern] = []
     private let imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "LuckyNumbers.Add"))
         imageView.contentMode = .scaleAspectFit
@@ -77,7 +77,7 @@ final class LuckyNumbersViewController: UIViewController {
         return button
     }()
     
-    private lazy var nextDrawsCollectionView: UICollectionView = {
+    private lazy var luckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 16.scale
         layout.scrollDirection = .vertical
@@ -104,8 +104,23 @@ final class LuckyNumbersViewController: UIViewController {
         setupNavigationBarTitle()
         setupViews()
         fetchLotteries(for: nil)
+        fetchLotteriesPatterns()
     }
-    
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    // Reload any UI or update any data structures as necessary
+                    self?.luckyNumbersCollectionView.reloadData()
+                    //  print("Successfully fetched lottery patterns: \(patterns)")
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchLotteries(for: nil)
@@ -136,16 +151,16 @@ final class LuckyNumbersViewController: UIViewController {
                 switch result {
                 case .success(let games):
                     self?.nextDraws = games.filter { $0.myLuckyNumbers?.isEmpty == false }
-                    self?.nextDrawsCollectionView.isHidden = self?.nextDraws.isEmpty ?? true
+                    self?.luckyNumbersCollectionView.isHidden = self?.nextDraws.isEmpty ?? true
                     self?.addLuckyNumbersButton.isHidden = self?.nextDraws.isEmpty ?? true
                     self?.imageView.isHidden = !(self?.nextDraws.isEmpty ?? false)
                     self?.firstLabel.isHidden = !(self?.nextDraws.isEmpty ?? false)
                     self?.secondLabel.isHidden = !(self?.nextDraws.isEmpty ?? false)
                     self?.addButton.isHidden = !(self?.nextDraws.isEmpty ?? false)
-                    self?.nextDrawsCollectionView.reloadData()
+                    self?.luckyNumbersCollectionView.reloadData()
                 case .failure:
                     print("LuckyNumbersViewController.ErrorFetchGames".localized)
-                    self?.nextDrawsCollectionView.isHidden = true
+                    self?.luckyNumbersCollectionView.isHidden = true
                     self?.addLuckyNumbersButton.isHidden = true
                     self?.imageView.isHidden = false
                     self?.firstLabel.isHidden = false
@@ -213,7 +228,7 @@ final class LuckyNumbersViewController: UIViewController {
         view.addSubview(firstLabel)
         view.addSubview(secondLabel)
         view.addSubview(addButton)
-        view.addSubview(nextDrawsCollectionView)
+        view.addSubview(luckyNumbersCollectionView)
         view.addSubview(addLuckyNumbersButton)
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -230,10 +245,10 @@ final class LuckyNumbersViewController: UIViewController {
             addButton.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 20.scale),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            nextDrawsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            nextDrawsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nextDrawsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            luckyNumbersCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            luckyNumbersCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            luckyNumbersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            luckyNumbersCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             addLuckyNumbersButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             addLuckyNumbersButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
@@ -274,6 +289,9 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
         }
         
         let game = nextDraws[indexPath.item]
+        if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == game.lotteryId }.first {
+            cell.bonusIdx = pattern.bonusIdx
+        }
         cell.configure(game: game, lotteries: lotteries)
         cell.delegate = self
         return cell
@@ -290,7 +308,7 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
             if myLuckyNumbers.isEmpty {
                 cellHeight = 155.scale
             } else {
-                cellHeight = 270.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(54.scale)
+                cellHeight = 270.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 6.scale)
             }
         }
         return CGSize(width: collectionView.frame.width - 32, height: cellHeight)
