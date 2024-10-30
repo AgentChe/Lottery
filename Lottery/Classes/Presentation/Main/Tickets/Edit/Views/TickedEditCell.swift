@@ -42,6 +42,24 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     
     weak var delegate: EditTicketViewControllerDelegate?
     weak var parentvc: EditTicketViewController?
+    
+    private let rightArrowImageView: UIImageView = {
+         let imageView = UIImageView()
+         imageView.image = UIImage(named: "EditTickets.RightArrow")
+         imageView.translatesAutoresizingMaskIntoConstraints = false
+         imageView.contentMode = .scaleAspectFit
+         return imageView
+     }()
+
+    private let containerBackgroundView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 16.scale // Optional corner radius for rounded edges
+        view.layer.masksToBounds = true
+        view.backgroundColor = Appearance.main400 // Set the desired background color
+        return view
+    }()
+    
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = TickedEditDatePaddedLabel()
@@ -49,6 +67,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     
     private var datePickerContainer: UIView?
     private let customDatePicker = CustomCalendarView()
+    
     
     // Plus Button Declaration
     private let plusButton: UIButton = {
@@ -85,7 +104,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         setupUI()
         setupLayoutConstraints()
         addDateLabelTapGesture()
-        
+        addContainerBackgroundViewTapGesture()
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -97,11 +116,19 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         setupUI()
         setupLayoutConstraints()
         addDateLabelTapGesture()
-        
+        addContainerBackgroundViewTapGesture()
         collectionView.dataSource = self
         collectionView.delegate = self
     }
-   
+    private func addContainerBackgroundViewTapGesture() {
+           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(containerBackgroundViewTapped))
+           containerBackgroundView.isUserInteractionEnabled = true
+           containerBackgroundView.addGestureRecognizer(tapGesture)
+       }
+
+       @objc private func containerBackgroundViewTapped() {
+           dateLabelTapped()
+       }
     func configure(ticket: Ticket) {
         self.ticket = ticket
         numbersStringArray = convertTo2DStringArray(ticket.numbers) //ticket.numbers.map { $0.map { "\($0)" } }
@@ -120,7 +147,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = formattedDate.uppercased()
         
-        pencilEditImageView.image = UIImage(named: "EditTickets.Pencil")
+        pencilEditImageView.image = UIImage(named: "vEditTickets.Pencil")
         collectionViewHeightConstraint.isActive = false
         
         // Get the number of cells in the last row
@@ -145,20 +172,85 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
 
 private extension TicketEditCell {
     @objc private func plusButtonTapped() {
-
-        let numberOfElementsInLastSection = numbersStringArray.last?.count ?? 5
-        let newEmptySection = Array(repeating: "", count: numberOfElementsInLastSection)
-
-        numbersStringArray.append(newEmptySection)
-
+        // Determine the first element of the last section
+        let lastSection = numbersStringArray.last
+        var nextRowFirstElement = ""
+        
+        if let lastSectionFirstElement = lastSection?.first, !lastSectionFirstElement.isEmpty {
+            nextRowFirstElement = getNextLabel(from: lastSectionFirstElement)
+        } else {
+            nextRowFirstElement = "A" // Default to "A" if last section is empty or not defined
+        }
+        
+        // Create a new row with the first element as calculated and the rest as empty strings
+        let numberOfElementsInLastSection = lastSection?.count ?? 5
+        var newSection = Array(repeating: "", count: numberOfElementsInLastSection)
+        if !newSection.isEmpty {
+            newSection[0] = nextRowFirstElement
+        }
+        
+        numbersStringArray.append(newSection)
+        
         // Update the collection view height constraint
         collectionViewHeightConstraint.constant = CGFloat(numbersStringArray.count) * (40 + 6).scale + 5.scale
-
-
+        
         collectionView.reloadData()
-
+        
         delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
     }
+
+    // Helper function to calculate the next label in sequence
+    private func getNextLabel(from currentLabel: String) -> String {
+        // If currentLabel is empty, start with "A"
+        if currentLabel.isEmpty {
+            return "A"
+        }
+        
+        // Separate the letters and numbers from the current label
+        let letters = currentLabel.prefix { $0.isLetter }
+        let numbers = currentLabel.drop { $0.isLetter }
+        
+        let letterStr = String(letters).uppercased()
+        let numberStr = String(numbers)
+        
+        // Ensure there's at least one letter
+        guard let lastLetter = letterStr.last, let asciiValue = lastLetter.asciiValue else {
+            return "A"
+        }
+        
+        // Logic to compute the next label
+        if numberStr.isEmpty {
+            if letterStr == "Z" {
+                // From "Z" to "A1"
+                return "A1"
+            } else {
+                // Increment the letter
+                let nextAscii = asciiValue + 1
+                let nextLetter = UnicodeScalar(nextAscii)
+                return "\(Character(nextLetter))"
+            }
+        } else {
+            if letterStr == "Z" {
+                // From "Z<number>" to "A<next_number>"
+                if let number = Int(numberStr) {
+                    let nextNumber = number + 1
+                    return "A\(nextNumber)"
+                } else {
+                    // If number parsing fails, start from "A1"
+                    return "A1"
+                }
+            } else {
+                // Increment the letter, keep the same number
+                let nextAscii = asciiValue + 1
+                let nextLetter = UnicodeScalar(nextAscii)
+                return "\(Character(nextLetter))\(numberStr)"
+            }
+        }
+        
+        // Default fallback
+        return "A"
+    }
+
 
     func setupUI() {
         backgroundColor = Appearance.mono100
@@ -166,15 +258,15 @@ private extension TicketEditCell {
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
         dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
-        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
-        dateLabelContainer.layer.shadowOpacity = 0.5
-        dateLabelContainer.layer.shadowRadius = 3.scale
-        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
+//        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
+//        dateLabelContainer.layer.shadowOpacity = 0.5
+//        dateLabelContainer.layer.shadowRadius = 3.scale
+//        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
         dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
-        dateLabel.backgroundColor = Appearance.mono100
+        dateLabel.backgroundColor = .clear//Appearance.mono100
         dateLabel.layer.cornerRadius = 17.scale
         dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -182,12 +274,14 @@ private extension TicketEditCell {
         pencilEditImageView.contentMode = .scaleAspectFit
         pencilEditImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        addSubview(logoImageView)
-        addSubview(dateLabelContainer)
+        addSubview(containerBackgroundView) // Add container background view
+        containerBackgroundView.addSubview(rightArrowImageView)
+        containerBackgroundView.addSubview(logoImageView)
+        containerBackgroundView.addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
         dateLabelContainer.addSubview(pencilEditImageView)
         addSubview(collectionView)
-        addSubview(plusButton) // Add Plus Button to the view hierarchy
+        addSubview(plusButton)
         
         customDatePicker.onDateSelected = { [weak self] selectedDate in
             self?.updateDateLabel(with: selectedDate)
@@ -204,40 +298,56 @@ private extension TicketEditCell {
     }
     
     func setupLayoutConstraints() {
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 6 + 10).scale)
-        NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -27.scale),
-            logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -5.scale),
-            logoImageView.widthAnchor.constraint(equalToConstant: 188.scale),
-            logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
-            
-            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
-            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.scale),
-            dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale),
-            dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale),
-            
-            dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -10.scale),
-            dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
-            dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor, constant: 10.scale),
-            dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
-            
-            pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -33.scale),
-            pencilEditImageView.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
-            pencilEditImageView.widthAnchor.constraint(equalToConstant: 24.scale),
-            pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale),
-            
-            collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 10.scale),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
-            collectionViewHeightConstraint,
-            
-            // Set constraints for the Plus Button
-            plusButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            plusButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 18.scale),
-            plusButton.widthAnchor.constraint(equalToConstant: 50.scale),
-            plusButton.heightAnchor.constraint(equalToConstant: 50.scale)
-        ])
-    }
+           collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat((ticket?.numbers.count ?? 0)) * (40 + 6 + 10).scale)
+
+           NSLayoutConstraint.activate([
+               // Container Background View Constraints
+               containerBackgroundView.topAnchor.constraint(equalTo: topAnchor, constant: 16.scale),
+               containerBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
+               containerBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
+               containerBackgroundView.heightAnchor.constraint(equalToConstant: 92.scale),
+
+               // logoImageView Constraints inside containerBackgroundView
+               logoImageView.topAnchor.constraint(equalTo: containerBackgroundView.topAnchor, constant: 10.scale),
+               logoImageView.leadingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor, constant: 10.scale),
+               logoImageView.widthAnchor.constraint(equalToConstant: 138.scale),
+               logoImageView.heightAnchor.constraint(equalToConstant: 48.scale),
+
+               // dateLabelContainer Constraints inside containerBackgroundView
+               dateLabelContainer.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 4.scale),
+               dateLabelContainer.leadingAnchor.constraint(equalTo: logoImageView.leadingAnchor, constant: 8.scale),
+               dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale),
+               dateLabelContainer.heightAnchor.constraint(equalToConstant: 24.scale),
+
+               dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -10.scale),
+               dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
+               dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor, constant: 10.scale),
+               dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
+
+               pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -33.scale),
+               pencilEditImageView.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
+               pencilEditImageView.widthAnchor.constraint(equalToConstant: 24.scale),
+               pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale),
+
+               // Right Arrow Image View Constraints
+               rightArrowImageView.centerYAnchor.constraint(equalTo: containerBackgroundView.centerYAnchor),
+               rightArrowImageView.trailingAnchor.constraint(equalTo: containerBackgroundView.trailingAnchor, constant: -16.scale),
+               rightArrowImageView.widthAnchor.constraint(equalToConstant: 24.scale),
+               rightArrowImageView.heightAnchor.constraint(equalToConstant: 24.scale),
+
+               // CollectionView Constraints
+               collectionView.topAnchor.constraint(equalTo: containerBackgroundView.bottomAnchor, constant: 10.scale),
+               collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
+               collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
+               collectionViewHeightConstraint,
+
+               // Plus Button Constraints
+               plusButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+               plusButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 18.scale),
+               plusButton.widthAnchor.constraint(equalToConstant: 50.scale),
+               plusButton.heightAnchor.constraint(equalToConstant: 50.scale)
+           ])
+       }
     
     func addDateLabelTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dateLabelTapped))
@@ -250,6 +360,7 @@ private extension TicketEditCell {
     }
     
     func presentDatePicker() {
+        
         datePickerContainer = UIView(frame: self.superview?.bounds ?? .zero)
         datePickerContainer?.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         

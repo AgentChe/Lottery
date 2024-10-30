@@ -148,7 +148,7 @@
 "CustomCalendarView.Days.Saturday" = "Sa";
 
 // MARK: EditTicketViewController
-"EditTicketViewController.SaveTicket" = "Save ticket";
+"EditTicketViewController.UpdateTicket" = "Update ticket";
 "EditTicketViewController.DeleteTicket" = "Delete";
 "EditTicketViewController.TicketDeletedSuccessfully.Title" = "Ticket Deleted Successfully";
 "EditTicketViewController.TicketDeletedSuccessfully.Message" = "Your ticket has been successfully deleted.";

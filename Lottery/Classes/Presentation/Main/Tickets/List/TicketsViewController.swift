@@ -738,8 +738,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         // Perform back navigation
         navigationController?.popViewController(animated: true)
     }
-    private func fetchTickets() {
-        ticketsManager.listTickets(forceUpdate: false) { [weak self] result in
+    private func fetchTickets(forceUpdate: Bool = false) {
+        ticketsManager.listTickets(forceUpdate: forceUpdate) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let tickets):

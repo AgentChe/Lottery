@@ -24,7 +24,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save".localized, for: .normal)
+        button.setTitle("EditTicketViewController.UpdateTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -232,7 +232,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             DispatchQueue.main.async {
                 // Stop the activity indicator and show the title
                 self.activityIndicator.stopAnimating()
-                self.saveTicketButton.setTitle("Save".localized, for: .normal)
+                self.saveTicketButton.setTitle("EditTicketViewController.UpdateTicket".localized, for: .normal)
                 self.saveTicketButton.isEnabled = true // Re-enable the button
             }
             switch result {
@@ -334,10 +334,10 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40.scale + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         }
     }
     
@@ -345,8 +345,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
+            for i in 1..<section.count {
+                if Int(section[i]) == nil {
                     return false
                 }
             }
@@ -356,6 +356,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
 
     // Method to update save button state based on validation
     private func updateSaveButtonState() {
+        print("updateSaveButtonState")
         let allNumbersValid = areAllNumbersValid()
         saveTicketButton.isEnabled = allNumbersValid
         saveTicketButton.backgroundColor = allNumbersValid ? Appearance.main100 : .gray // Change the color to gray if not valid

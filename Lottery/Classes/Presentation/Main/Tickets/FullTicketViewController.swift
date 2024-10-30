@@ -51,13 +51,13 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     }
 
  
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         fetchTickets()
     }
     
     func fetchTickets() {
-        ticketsManager.listTickets(forceUpdate: true) { [weak self] result in
+        ticketsManager.listTickets(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let tickets):
@@ -66,6 +66,8 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
                             self?.ticket = ticket
                             self?.updateViewConstraints()
                             self?.ticketDataCollectionView.reloadData()
+                            // Ticket not found, dismiss
+                            NotificationCenter.default.post(name: .ticketDeleted, object: nil)
                             return
                         }
                     }

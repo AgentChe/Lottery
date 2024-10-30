@@ -79,8 +79,7 @@ final class LuckyNumbersViewController: UIViewController {
     
     private lazy var nextDrawsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width - 32, height: 210.scale)
-        layout.minimumLineSpacing = 50.scale
+        layout.minimumLineSpacing = 16.scale
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -246,7 +245,7 @@ final class LuckyNumbersViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+        if !SessionManager().hasActiveSubscriptions() {
             let selectTheGameViewController = SelectTheGameViewController()
             if let navigationController = navigationController {
                 navigationController.pushViewController(selectTheGameViewController, animated: true)
@@ -281,7 +280,7 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 50.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
+        return UIEdgeInsets(top: 0.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -291,7 +290,7 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
             if myLuckyNumbers.isEmpty {
                 cellHeight = 155.scale
             } else {
-                cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(54.scale)
+                cellHeight = 270.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(54.scale)
             }
         }
         return CGSize(width: collectionView.frame.width - 32, height: cellHeight)
