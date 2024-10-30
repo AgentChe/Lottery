@@ -426,7 +426,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditTicketRowCollectionCell.reuseIdentifier, for: indexPath) as? EditTicketRowCollectionCell else {
                 return UICollectionViewCell()
             }
-            cell.parent = self
+            //cell.parent = self
             cell.parentDelegate = self // Set the delegate
             cell.section = indexPath.section
             cell.numbers = numbersStringArray[indexPath.section]

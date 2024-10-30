@@ -109,3 +109,6 @@ extension EditTicketRowCollectionCell: UICollectionViewDelegateFlowLayout {
         return CGSize(width: 40.scale, height: 40.scale)
     }
 }
+
+
+

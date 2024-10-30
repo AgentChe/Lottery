@@ -73,7 +73,9 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
                     }
                     // Ticket not found, dismiss
                     NotificationCenter.default.post(name: .ticketDeleted, object: nil)
-                    self?.dismiss(animated: true, completion: nil)
+                    delay(0.8) { [weak self] in
+                        self?.dismiss(animated: true, completion: nil)
+                    }
                 case .failure:
                     print("failure")
                 }

@@ -10,15 +10,6 @@ import UIKit
 class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var lotteryPatterns: [LotteryPattern] = []
     private var contentManager: ContentManagerProtocol = ContentManager()
-    private let label: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Appearance.main300
-        label.font = Fonts.Inter.medium(size: 14.scale)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -92,8 +83,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         setupNavigationBar()
         setupNavigationBarTitle()
         fetchLotteriesPatterns()
-        label.text = "You can add additional row of lucky numbers by tapping plus button"
-        view.addSubview(label)
+        
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -105,7 +95,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketLuckyNumbersEditCell.self, forCellWithReuseIdentifier: "TicketLuckyNumbersEditCellId")
         
-        collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 15.scale, left: 0, bottom: 30.scale, right: 0)
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
@@ -127,13 +117,8 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.widthAnchor.constraint(equalToConstant: 343.scale),
-            label.heightAnchor.constraint(equalToConstant: 48.scale),
-            
             // CollectionView constraints
-            collectionView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10.scale),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10.scale),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -252,10 +237,11 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
-            cell.configure(ticket: ticket, game: game, lotteries: lotteries)
+            cell.lotteries = self.lotteries
+            cell.configure(ticket: ticket)
         }
         cell.delegate = self
-        cell.parentVC = self
+        cell.parentvc = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -276,10 +262,10 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale + 85.scale )
         }
     }
     

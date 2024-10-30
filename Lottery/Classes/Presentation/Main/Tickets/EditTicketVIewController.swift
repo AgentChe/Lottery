@@ -94,7 +94,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
         
-        collectionView.contentInset = UIEdgeInsets(top: 10.scale, left: 0, bottom: 30.scale, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 16.scale, left: 0, bottom: 30.scale, right: 0)
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
@@ -179,11 +179,10 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             case .success:
                 print("Ticket deleted successfully")
                 DispatchQueue.main.async {
-                    // Post the notification
-                
-                    
-                    // Pop back to the previous view controller
-                    self.navigationController?.popViewController(animated: true)
+                    ticketsManager.listTickets(forceUpdate: true) {
+                        [weak self] result in
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 }
             case .failure(let error):
                 // Handle failure
