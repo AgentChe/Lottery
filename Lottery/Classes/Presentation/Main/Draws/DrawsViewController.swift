@@ -422,8 +422,10 @@ extension DrawsViewController {
 
     @objc func numbersButtonTapped() {
         if let navigationController = self.navigationController {
-            navigationController.pushViewController(luckyNumbersController, animated: true)
-            navigationController.setNavigationBarHidden(false, animated: false)
+            if navigationController.topViewController != luckyNumbersController {
+                navigationController.pushViewController(luckyNumbersController, animated: true)
+                navigationController.setNavigationBarHidden(false, animated: false)
+            }
         } else {
             present(luckyNumbersVC, animated: true, completion: nil)
         }
@@ -431,8 +433,10 @@ extension DrawsViewController {
 
     @objc func myTicketsButtonTapped() {
         if let navigationController = self.navigationController {
-            navigationController.pushViewController(myTicketsController, animated: true)
-            navigationController.setNavigationBarHidden(false, animated: false)
+            if navigationController.topViewController != myTicketsController {
+                navigationController.pushViewController(myTicketsController, animated: true)
+                navigationController.setNavigationBarHidden(false, animated: false)
+            }
         } else {
             present(myTicketsVC, animated: true, completion: nil)
         }

@@ -333,10 +333,10 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40.scale + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
+                          height: CGFloat(numbersStringArray.count) * (40.scale + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         }
     }
     

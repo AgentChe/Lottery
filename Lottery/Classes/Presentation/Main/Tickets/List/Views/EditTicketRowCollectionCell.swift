@@ -21,7 +21,8 @@ class EditTicketRowCollectionCell: UICollectionViewCell,EditNumberCellDelegate {
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 8
+        layout.minimumLineSpacing = 8.scale
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
@@ -77,7 +78,7 @@ class EditTicketRowCollectionCell: UICollectionViewCell,EditNumberCellDelegate {
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
-extension EditTicketRowCollectionCell: UICollectionViewDataSource, UICollectionViewDelegate {
+extension EditTicketRowCollectionCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numbers.count
     }
@@ -100,6 +101,7 @@ extension EditTicketRowCollectionCell: UICollectionViewDataSource, UICollectionV
 }
 
 extension EditTicketRowCollectionCell: UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 40.scale, height: 40.scale)
     }
