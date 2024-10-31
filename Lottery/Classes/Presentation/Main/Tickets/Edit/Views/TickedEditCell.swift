@@ -49,6 +49,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
          imageView.image = UIImage(named: "EditTickets.RightArrow")
          imageView.translatesAutoresizingMaskIntoConstraints = false
          imageView.contentMode = .scaleAspectFit
+        imageView.alpha = 0
          return imageView
      }()
 
@@ -128,7 +129,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
        }
 
        @objc private func containerBackgroundViewTapped() {
-           dateLabelTapped()
+        //   dateLabelTapped()
        }
     func configure(ticket: Ticket) {
         self.ticket = ticket
@@ -148,7 +149,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = formattedDate.uppercased()
         
-        pencilEditImageView.image = UIImage(named: "vEditTickets.Pencil")
+        pencilEditImageView.image = UIImage(named: "EditTickets.PencilBlack")
         collectionViewHeightConstraint.isActive = false
         
         // Get the number of cells in the last row
@@ -259,16 +260,19 @@ private extension TicketEditCell {
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
         dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        dateLabelContainer.backgroundColor = Appearance.main400
+        dateLabelContainer.layer.cornerRadius = 14.scale
+        dateLabelContainer.layer.masksToBounds = true
 //        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
 //        dateLabelContainer.layer.shadowOpacity = 0.5
 //        dateLabelContainer.layer.shadowRadius = 3.scale
 //        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
+        dateLabel.font = Fonts.Inter.medium(size: 12.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
-        dateLabel.backgroundColor = .clear//Appearance.mono100
-        dateLabel.layer.cornerRadius = 17.scale
+        dateLabel.backgroundColor = Appearance.main400
+        dateLabel.layer.cornerRadius = 14.scale
         dateLabel.layer.masksToBounds = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -278,7 +282,7 @@ private extension TicketEditCell {
         addSubview(containerBackgroundView) // Add container background view
         containerBackgroundView.addSubview(rightArrowImageView)
         containerBackgroundView.addSubview(logoImageView)
-        containerBackgroundView.addSubview(dateLabelContainer)
+        addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
         dateLabelContainer.addSubview(pencilEditImageView)
         addSubview(collectionView)
@@ -306,26 +310,26 @@ private extension TicketEditCell {
                containerBackgroundView.topAnchor.constraint(equalTo: topAnchor, constant: 16.scale),
                containerBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
                containerBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-               containerBackgroundView.heightAnchor.constraint(equalToConstant: 92.scale),
+               containerBackgroundView.heightAnchor.constraint(equalToConstant: 72.scale),
 
                // logoImageView Constraints inside containerBackgroundView
-               logoImageView.topAnchor.constraint(equalTo: containerBackgroundView.topAnchor, constant: 10.scale),
+               logoImageView.centerYAnchor.constraint(equalTo: containerBackgroundView.centerYAnchor, constant: 0.scale),
                logoImageView.leadingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor, constant: 10.scale),
                logoImageView.widthAnchor.constraint(equalToConstant: 138.scale),
                logoImageView.heightAnchor.constraint(equalToConstant: 48.scale),
 
                // dateLabelContainer Constraints inside containerBackgroundView
-               dateLabelContainer.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 4.scale),
-               dateLabelContainer.leadingAnchor.constraint(equalTo: logoImageView.leadingAnchor, constant: 8.scale),
+               dateLabelContainer.topAnchor.constraint(equalTo: containerBackgroundView.bottomAnchor, constant: 14.scale),
+               dateLabelContainer.leadingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor, constant: 8.scale),
                dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale),
-               dateLabelContainer.heightAnchor.constraint(equalToConstant: 24.scale),
+               dateLabelContainer.heightAnchor.constraint(equalToConstant: 28.scale),
 
-               dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -10.scale),
+               dateLabel.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: -4.5.scale),
                dateLabel.centerYAnchor.constraint(equalTo: dateLabelContainer.centerYAnchor),
                dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor, constant: 10.scale),
                dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
 
-               pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -33.scale),
+               pencilEditImageView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: -36.scale),
                pencilEditImageView.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
                pencilEditImageView.widthAnchor.constraint(equalToConstant: 24.scale),
                pencilEditImageView.heightAnchor.constraint(equalToConstant: 24.scale),
@@ -337,7 +341,7 @@ private extension TicketEditCell {
                rightArrowImageView.heightAnchor.constraint(equalToConstant: 24.scale),
 
                // CollectionView Constraints
-               collectionView.topAnchor.constraint(equalTo: containerBackgroundView.bottomAnchor, constant: 10.scale),
+               collectionView.topAnchor.constraint(equalTo: dateLabelContainer.bottomAnchor, constant: 10.scale),
                collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
                collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
                collectionViewHeightConstraint,
