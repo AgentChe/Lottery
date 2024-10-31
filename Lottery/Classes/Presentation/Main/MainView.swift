@@ -19,7 +19,7 @@ final class MainView: UIView {
         super.init(frame: frame)
         
         makeConstraints()
-        tabView.alpha = 0
+        tabView.alpha = 1
     }
     
     required init?(coder: NSCoder) {

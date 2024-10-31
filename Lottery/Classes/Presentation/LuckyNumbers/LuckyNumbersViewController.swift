@@ -308,7 +308,7 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
+        return UIEdgeInsets(top: 16.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
