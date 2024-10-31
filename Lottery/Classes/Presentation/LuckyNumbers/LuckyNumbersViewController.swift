@@ -315,7 +315,7 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
         let game = nextDraws[indexPath.item]
         var cellHeight = 210.scale
         if let myLuckyNumbers = game.myLuckyNumbers, !myLuckyNumbers.isEmpty {
-            cellHeight = 270.scale + CGFloat(max(0, myLuckyNumbers.count)) * (40.scale + 6.scale)
+            cellHeight = 270.scale + CGFloat(max(0, myLuckyNumbers.count)) * (40.scale + 16.scale)
         } else {
             cellHeight = 155.scale
         }

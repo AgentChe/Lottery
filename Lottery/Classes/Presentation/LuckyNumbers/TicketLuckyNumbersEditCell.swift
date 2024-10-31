@@ -146,7 +146,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 16).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
             }
@@ -179,7 +179,7 @@ private extension TicketLuckyNumbersEditCell {
         numbersStringArray.append(newSection)
         
         // Update the collection view height constraint
-        collectionViewHeightConstraint.constant = CGFloat(numbersStringArray.count) * (40 + 6).scale + 5.scale
+        collectionViewHeightConstraint.constant = CGFloat(numbersStringArray.count) * (40 + 16).scale + 5.scale
         
         collectionView.reloadData()
         
@@ -418,11 +418,11 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if numbersStringArray.count == 1 {
-            return UIEdgeInsets(top: 6.scale,
+            return UIEdgeInsets(top: 16.scale,
                                 left: numbersStringArray[0].count == 6 ? 0.scale : 0.scale, bottom: 0.scale,
                                 right:  numbersStringArray[0].count == 6 ? 0.scale : 0.scale)
         } else {
-            return UIEdgeInsets(top: 6.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+            return UIEdgeInsets(top: 16.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         }
     }
     
@@ -448,9 +448,9 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
                 // Calculate the width for each cell
                 let availableWidth = totalWidth - sideMargins - cellSpacing
                 let cellWidth = availableWidth / CGFloat(numberOfCells)
-                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale)
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 16).scale)
             } else {
-              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 6).scale)
+              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 16).scale)
               }
             collectionViewHeightConstraint.isActive = true
             

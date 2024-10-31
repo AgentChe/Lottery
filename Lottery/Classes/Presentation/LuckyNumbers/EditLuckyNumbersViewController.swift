@@ -266,10 +266,10 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
+                          height: CGFloat(numbersStringArray.count) * (cellWidth + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale + 85.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 61.scale + 50.scale + 30.scale + 85.scale )
         }
     }
     

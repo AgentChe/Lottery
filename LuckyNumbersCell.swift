@@ -57,7 +57,7 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 6.scale
-        layout.minimumLineSpacing = 6.scale
+        layout.minimumLineSpacing = 16.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
