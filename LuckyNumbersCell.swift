@@ -118,13 +118,14 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
                                             numbers: game.myLuckyNumbers ?? [])
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
+                editLuckyNumbersVC.luckyNumbersCell = self
                 editLuckyNumbersVC.lotteryPatterns = lotteryPatterns
                 delegate?.navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
             }
         }
     }
     
-    @objc private func removeButtonTapped() {
+    @objc  func removeButtonTapped() {
         let alertVC = LuckyNumbersAlertViewController()
         
         alertVC.onConfirmDelete = { [weak self] in
@@ -143,6 +144,9 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
                             print("LuckyNumbersCell.RemoveButton".localized)
                             DispatchQueue.main.async {
                                 self?.delegate?.fetchLotteries(for: nil)
+                                if let luckyNumbersViewController = self?.delegate?.navigationController?.viewControllers[1] {
+                                    self?.delegate?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                                }
                             }
                         }
                         gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in

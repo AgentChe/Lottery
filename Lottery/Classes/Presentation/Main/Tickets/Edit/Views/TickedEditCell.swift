@@ -513,12 +513,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     private func removeTicket() {
-        // Code to remove the ticket from the data source and update the UI
-        numbersStringArray.removeAll()
-        // Further logic to notify the delegate or update the data model
-        
-        collectionView.reloadData()
-        // Notify the delegate or view controller about the deletion
+        parentvc?.deleteTicketButtonTapped()
     }
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

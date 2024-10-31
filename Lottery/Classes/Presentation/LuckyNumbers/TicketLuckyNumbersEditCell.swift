@@ -32,6 +32,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
          imageView.image = UIImage(named: "EditTickets.RightArrow")
          imageView.translatesAutoresizingMaskIntoConstraints = false
          imageView.contentMode = .scaleAspectFit
+         imageView.alpha = 0
          return imageView
      }()
 
@@ -342,7 +343,7 @@ private extension TicketLuckyNumbersEditCell {
     }
     
     @objc func dateLabelTapped() {
-        presentDatePicker()
+       //  presentDatePicker()
     }
     
     func presentDatePicker() {
@@ -429,7 +430,8 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     func removeItem(at indexPath: IndexPath) {
         // Check if it's the only row left
         if numbersStringArray.count == 1 && indexPath.section == 0 {
-            presentDeleteConfirmationAlert()
+          //  presentDeleteConfirmationAlert()
+            removeTicket()
         } else {
             // Normal removal process
             numbersStringArray.remove(at: indexPath.section)
@@ -480,12 +482,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
     }
     
     private func removeTicket() {
-        // Code to remove the ticket from the data source and update the UI
-        numbersStringArray.removeAll()
-        // Further logic to notify the delegate or update the data model
-        
-        collectionView.reloadData()
-        // Notify the delegate or view controller about the deletion
+        parentvc?.luckyNumbersCell?.removeButtonTapped()
     }
     // Implementing sizeForItemAt to dynamically set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

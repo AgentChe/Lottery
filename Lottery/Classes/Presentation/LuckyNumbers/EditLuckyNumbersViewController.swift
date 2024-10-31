@@ -17,6 +17,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             collectionView.collectionViewLayout.invalidateLayout()
         }
     }
+    weak var luckyNumbersCell: LuckyNumbersCell?
     var collectionView: UICollectionView!
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
@@ -354,8 +355,10 @@ extension EditLuckyNumbersViewController {
             switch result {
             case .success(let success):
                 if success {
-                    DispatchQueue.main.async {
-                        self?.navigationController?.popViewController(animated: true)
+                    gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                        DispatchQueue.main.async {
+                            self?.navigationController?.popViewController(animated: true)
+                        }
                     }
                 } else {
                     DispatchQueue.main.async {
