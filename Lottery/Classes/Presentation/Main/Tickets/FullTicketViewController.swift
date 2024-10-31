@@ -38,7 +38,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .clear//.red
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()

@@ -110,9 +110,9 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0.scale,
-                            left: 0.scale,
+                            left: 5.scale,
                             bottom: 0.scale,
-                            right:  0.scale)
+                            right: 0.scale)
     }
 
     func convertTo2DStringArray(_ intArray: [[Int]]) -> [[String]] {

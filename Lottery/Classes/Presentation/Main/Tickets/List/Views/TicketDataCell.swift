@@ -92,7 +92,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium) // Replace with your custom font if needed
+        label.font = Fonts.Inter.medium(size: 12.scale) // Replace with your custom font if needed
         label.textColor = .lightGray // Replace with your custom color if needed
         return label
     }()
@@ -149,7 +149,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         
         setupViews()
         setupWinnerAndEditButton()
-        backgroundColor = .yellow
+        backgroundColor = .clear//.yellow
     }
     private func setupWinnerAndEditButton() {
         contentView.addSubview(winnerImageView)
@@ -167,7 +167,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
             editButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.scale)
         ])
     }
-
+ 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

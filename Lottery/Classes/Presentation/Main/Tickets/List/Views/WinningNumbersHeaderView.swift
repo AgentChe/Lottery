@@ -34,7 +34,7 @@ class WinningNumbersHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
-        backgroundColor = .systemPink
+        backgroundColor = .clear//.systemPink
     }
     
     required init?(coder: NSCoder) {

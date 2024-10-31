@@ -23,7 +23,7 @@ class TicketHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
-        backgroundColor = .systemCyan
+        backgroundColor = .clear//.systemCyan
     }
     
     required init?(coder: NSCoder) {
