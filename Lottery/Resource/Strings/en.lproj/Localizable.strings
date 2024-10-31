@@ -30,6 +30,7 @@
 "Main.Draws" = "Draws";
 "Main.LuckyNumbers" = "Lucky Numbers";
 "Main.MyTickets" = "My Tickets";
+"Main.Generaotr" = "Generator";
 
 // MARK: Paygate
 "Paygate.Title" = "UNLOCK PREMIUM STATUS";

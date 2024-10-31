@@ -9,14 +9,13 @@ import UIKit
 
 final class TabView: UIView {
     enum Tab {
-        case draws, luckyNumbers, myTickets
+        case draws, generator
     }
     
     lazy var divider = makeDivider()
     lazy var drawsItem = makeItem(code: "Main.Draws")
-    lazy var luckyNumbersItem = makeItem(code: "Main.LuckyNumbers")
-    lazy var myTicketsItem = makeItem(code: "Main.MyTickets")
-    
+    lazy var generatorItem = makeItem(code: "Main.Generator")
+  
     var selectedTab = Tab.draws {
         didSet {
             update()
@@ -25,7 +24,6 @@ final class TabView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-    
         makeConstraints()
     }
     
@@ -38,8 +36,7 @@ final class TabView: UIView {
 private extension TabView {
     func update() {
         drawsItem.marked = selectedTab == .draws
-        luckyNumbersItem.marked = selectedTab == .luckyNumbers
-        myTicketsItem.marked = selectedTab == .myTickets
+        generatorItem.marked = selectedTab == .generator
     }
 }
 
@@ -57,21 +54,14 @@ private extension TabView {
             drawsItem.leadingAnchor.constraint(equalTo: leadingAnchor),
             drawsItem.bottomAnchor.constraint(equalTo: bottomAnchor),
             drawsItem.topAnchor.constraint(equalTo: divider.bottomAnchor),
-            drawsItem.widthAnchor.constraint(equalTo: luckyNumbersItem.widthAnchor)
+            drawsItem.widthAnchor.constraint(equalTo: generatorItem.widthAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            luckyNumbersItem.leadingAnchor.constraint(equalTo: drawsItem.trailingAnchor),
-            luckyNumbersItem.bottomAnchor.constraint(equalTo: bottomAnchor),
-            luckyNumbersItem.topAnchor.constraint(equalTo: divider.bottomAnchor),
-            luckyNumbersItem.widthAnchor.constraint(equalTo: myTicketsItem.widthAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            myTicketsItem.leadingAnchor.constraint(equalTo: luckyNumbersItem.trailingAnchor),
-            myTicketsItem.bottomAnchor.constraint(equalTo: bottomAnchor),
-            myTicketsItem.topAnchor.constraint(equalTo: divider.bottomAnchor),
-            myTicketsItem.trailingAnchor.constraint(equalTo: trailingAnchor)
+            generatorItem.leadingAnchor.constraint(equalTo: drawsItem.trailingAnchor),
+            generatorItem.bottomAnchor.constraint(equalTo: bottomAnchor),
+            generatorItem.topAnchor.constraint(equalTo: divider.bottomAnchor),
+            generatorItem.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
 }

@@ -11,12 +11,10 @@ final class MainViewCoordinator {
     weak var parentVC: MainViewController?
     
     lazy var drawsVC = NavigationController(rootViewController: drawsController)
-    lazy var luckyNumbersVC = NavigationController(rootViewController: luckyNumbersController)
-    lazy var myTicketsVC = NavigationController(rootViewController: myTicketsController)
+    lazy var generatorVC = NavigationController(rootViewController: generatorController)
     
-    private lazy var drawsController = DrawsViewController() 
-    private lazy var luckyNumbersController = LuckyNumbersViewController()
-    private lazy var myTicketsController = TicketsViewController()
+    private lazy var drawsController = DrawsViewController()
+    private lazy var generatorController = GeneratorViewController()
     
     private var previousVC: UIViewController?
     
@@ -30,10 +28,8 @@ final class MainViewCoordinator {
         switch tab {
         case .draws:
             changeVC(on: drawsVC)
-        case .luckyNumbers:
-            changeVC(on: luckyNumbersVC)
-        case .myTickets:
-            changeVC(on: myTicketsVC)
+        case .generator:
+            changeVC(on: generatorVC)
         }
     }
 }
@@ -56,6 +52,9 @@ private extension MainViewCoordinator {
         parentVC.addChild(vc)
         vc.view.frame = parentVC.mainView.container.bounds
         parentVC.mainView.container.addSubview(vc.view)
-        vc.willMove(toParent: parentVC)
+        vc.didMove(toParent: parentVC)
     }
 }
+
+
+
