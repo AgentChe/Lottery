@@ -361,20 +361,24 @@ private extension TicketEditCell {
     }
     
     func presentDatePicker() {
-        
-        datePickerContainer = UIView(frame: self.superview?.bounds ?? .zero)
-        datePickerContainer?.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        
-        customDatePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePickerContainer?.addSubview(customDatePicker)
-        self.superview?.addSubview(datePickerContainer!)
-        
-        NSLayoutConstraint.activate([
-            customDatePicker.centerYAnchor.constraint(equalTo: datePickerContainer!.centerYAnchor, constant: 50.scale),
-            customDatePicker.centerXAnchor.constraint(equalTo: datePickerContainer!.centerXAnchor),
-            customDatePicker.widthAnchor.constraint(equalTo: datePickerContainer!.widthAnchor, multiplier: 0.8.scale),
-            customDatePicker.heightAnchor.constraint(equalToConstant: 485.scale)
-        ])
+        endEditing(true)
+        delay(0.3) { [weak self] in
+            guard let self = self else { return }
+            self.datePickerContainer = UIView(frame: self.superview?.bounds ?? .zero)
+            self.datePickerContainer?.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            
+            self.customDatePicker.translatesAutoresizingMaskIntoConstraints = false
+            
+            self.datePickerContainer?.addSubview(self.customDatePicker)
+            self.superview?.addSubview(self.datePickerContainer!)
+            
+            NSLayoutConstraint.activate([
+                self.customDatePicker.centerYAnchor.constraint(equalTo: self.datePickerContainer!.centerYAnchor, constant: 50.scale),
+                self.customDatePicker.centerXAnchor.constraint(equalTo: self.datePickerContainer!.centerXAnchor),
+                self.customDatePicker.widthAnchor.constraint(equalTo: self.datePickerContainer!.widthAnchor, multiplier: 0.8.scale),
+                self.customDatePicker.heightAnchor.constraint(equalToConstant: 485.scale)
+            ])
+        }
     }
     
     func dismissDatePicker() {
