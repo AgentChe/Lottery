@@ -67,7 +67,7 @@ private extension MainView {
     
     func makeTabView() -> TabView {
         let view = TabView()
-        view.backgroundColor = Appearance.mono100
+        view.backgroundColor = Appearance.main400
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view
