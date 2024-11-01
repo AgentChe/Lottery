@@ -139,8 +139,20 @@ class GeneratorViewController: UIViewController {
         return label
     }()
     
+    var generateButton: UIButton = {
+          let button = UIButton(type: .system)
+          button.translatesAutoresizingMaskIntoConstraints = false
+          button.setTitle("Generate", for: .normal)
+          button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+          button.backgroundColor = .systemBlue
+          button.layer.cornerRadius = 8
+          button.setTitleColor(.white, for: .normal)
+          return button
+      }()
+    
     // Constraints for selectLinesView's bottom
-    var selectLinesViewBottomConstraintCollapsed: NSLayoutConstraint!
+
+    private var selectLinesViewHeightConstraintCollapsed: NSLayoutConstraint!
     var selectLinesViewBottomConstraintExpanded: NSLayoutConstraint!
     
     // MARK: - Gestures
@@ -163,25 +175,31 @@ class GeneratorViewController: UIViewController {
     // MARK: - Setup Methods
     
     func setupViews() {
-        view.addSubview(backgroundfullView)
-        backgroundfullView.addSubview(selectStateView)
-        selectStateView.addSubview(stateTitleLabel)
-        selectStateView.addSubview(stateNameLabel)
-        
-        backgroundfullView.addSubview(selectLotteryView)
-        selectLotteryView.addSubview(gameTitleLabel)
-        selectLotteryView.addSubview(gameNameLabel)
-        
-        backgroundfullView.addSubview(selectLinesView)
-        selectLinesView.addSubview(linesTitleLabel)
-        selectLinesView.addSubview(linesCountLabel)
-        selectLinesView.addSubview(customPickerView)
-        selectLinesView.addSubview(amountLabel)
-        
-        customPickerView.addSubview(minusButton)
-        customPickerView.addSubview(numberLabel)
-        customPickerView.addSubview(plusButton)
-    }
+         view.addSubview(backgroundfullView)
+         
+         // Add existing views to backgroundfullView
+         backgroundfullView.addSubview(selectStateView)
+         selectStateView.addSubview(stateTitleLabel)
+         selectStateView.addSubview(stateNameLabel)
+         
+         backgroundfullView.addSubview(selectLotteryView)
+         selectLotteryView.addSubview(gameTitleLabel)
+         selectLotteryView.addSubview(gameNameLabel)
+         
+         backgroundfullView.addSubview(selectLinesView)
+         selectLinesView.addSubview(linesTitleLabel)
+         selectLinesView.addSubview(linesCountLabel)
+         selectLinesView.addSubview(customPickerView)
+         selectLinesView.addSubview(amountLabel)
+         
+         customPickerView.addSubview(minusButton)
+         customPickerView.addSubview(numberLabel)
+         customPickerView.addSubview(plusButton)
+         
+         // Add the generate button
+         backgroundfullView.addSubview(generateButton)
+     }
+
     
     func setupGestures() {
         stateTapGesture.addTarget(self, action: #selector(selectStateViewTapped))
@@ -196,7 +214,8 @@ class GeneratorViewController: UIViewController {
         minusButton.addTarget(self, action: #selector(decreaseNumber), for: .touchUpInside)
         plusButton.addTarget(self, action: #selector(increaseNumber), for: .touchUpInside)
     }
-    
+  
+ 
     func setupConstraints() {
         setupBackgroundConstraints()
         setupSelectStateViewConstraints()
@@ -204,6 +223,7 @@ class GeneratorViewController: UIViewController {
         setupSelectLinesViewConstraints()
         setupCustomPickerViewConstraints()
         setupAmountLabelConstraints()
+        setupGenerateButtonConstraints()
     }
 
     private func setupBackgroundConstraints() {
@@ -215,86 +235,6 @@ class GeneratorViewController: UIViewController {
         ])
     }
 
-    private func setupSelectStateViewConstraints() {
-        NSLayoutConstraint.activate([
-            selectStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            selectStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            selectStateView.widthAnchor.constraint(equalToConstant: 343),
-            selectStateView.heightAnchor.constraint(equalToConstant: 56),
-            
-            stateTitleLabel.leadingAnchor.constraint(equalTo: selectStateView.leadingAnchor, constant: 16),
-            stateTitleLabel.centerYAnchor.constraint(equalTo: selectStateView.centerYAnchor),
-            
-            stateNameLabel.trailingAnchor.constraint(equalTo: selectStateView.trailingAnchor, constant: -16),
-            stateNameLabel.centerYAnchor.constraint(equalTo: selectStateView.centerYAnchor),
-            stateNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: stateTitleLabel.trailingAnchor, constant: 8)
-        ])
-    }
-
-    private func setupSelectLotteryViewConstraints() {
-        NSLayoutConstraint.activate([
-            selectLotteryView.topAnchor.constraint(equalTo: selectStateView.bottomAnchor, constant: 20),
-            selectLotteryView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            selectLotteryView.widthAnchor.constraint(equalToConstant: 343),
-            selectLotteryView.heightAnchor.constraint(equalToConstant: 56),
-            
-            gameTitleLabel.leadingAnchor.constraint(equalTo: selectLotteryView.leadingAnchor, constant: 16),
-            gameTitleLabel.centerYAnchor.constraint(equalTo: selectLotteryView.centerYAnchor),
-            
-            gameNameLabel.trailingAnchor.constraint(equalTo: selectLotteryView.trailingAnchor, constant: -16),
-            gameNameLabel.centerYAnchor.constraint(equalTo: selectLotteryView.centerYAnchor),
-            gameNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: gameTitleLabel.trailingAnchor, constant: 8)
-        ])
-    }
-
-    private func setupSelectLinesViewConstraints() {
-        NSLayoutConstraint.activate([
-            selectLinesView.topAnchor.constraint(equalTo: selectLotteryView.bottomAnchor, constant: 20),
-            selectLinesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            selectLinesView.widthAnchor.constraint(equalToConstant: 343),
-            
-            linesTitleLabel.leadingAnchor.constraint(equalTo: selectLinesView.leadingAnchor, constant: 16),
-            linesTitleLabel.topAnchor.constraint(equalTo: selectLinesView.topAnchor, constant: 8),
-            
-            linesCountLabel.trailingAnchor.constraint(equalTo: selectLinesView.trailingAnchor, constant: -16),
-            linesCountLabel.topAnchor.constraint(equalTo: selectLinesView.topAnchor, constant: 8),
-            linesCountLabel.leadingAnchor.constraint(greaterThanOrEqualTo: linesTitleLabel.trailingAnchor, constant: 8)
-        ])
-        
-        // Set up collapsed and expanded constraints for selectLinesView
-        selectLinesViewBottomConstraintCollapsed = selectLinesView.bottomAnchor.constraint(equalTo: linesCountLabel.bottomAnchor, constant: 8)
-        selectLinesViewBottomConstraintExpanded = selectLinesView.bottomAnchor.constraint(equalTo: customPickerView.bottomAnchor, constant: 8)
-        selectLinesViewBottomConstraintCollapsed.isActive = true
-    }
-
-    private func setupCustomPickerViewConstraints() {
-        NSLayoutConstraint.activate([
-            customPickerView.trailingAnchor.constraint(equalTo: selectLinesView.trailingAnchor, constant: -16),
-            customPickerView.topAnchor.constraint(equalTo: linesTitleLabel.bottomAnchor, constant: 8),
-            customPickerView.widthAnchor.constraint(equalToConstant: 122),
-            customPickerView.heightAnchor.constraint(equalToConstant: 60),
-            
-            minusButton.leadingAnchor.constraint(equalTo: customPickerView.leadingAnchor, constant: 8),
-            minusButton.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
-            minusButton.widthAnchor.constraint(equalToConstant: 30),
-            
-            plusButton.trailingAnchor.constraint(equalTo: customPickerView.trailingAnchor, constant: -8),
-            plusButton.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
-            plusButton.widthAnchor.constraint(equalToConstant: 30),
-            
-            numberLabel.leadingAnchor.constraint(equalTo: minusButton.trailingAnchor, constant: 8),
-            numberLabel.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor, constant: -8),
-            numberLabel.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor)
-        ])
-    }
-
-    private func setupAmountLabelConstraints() {
-        NSLayoutConstraint.activate([
-            amountLabel.leadingAnchor.constraint(equalTo: selectLinesView.leadingAnchor, constant: 16),
-            amountLabel.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
-            amountLabel.trailingAnchor.constraint(lessThanOrEqualTo: customPickerView.leadingAnchor, constant: -8)
-        ])
-    }
 
     
     // MARK: - Actions
@@ -316,28 +256,43 @@ class GeneratorViewController: UIViewController {
     }
     
     @objc func selectLinesViewTapped() {
-        if customPickerView.isHidden {
-            // Show custom picker and amount label
-            linesCountLabel.isHidden = true
-            amountLabel.isHidden = false
-            customPickerView.isHidden = false
-            
-            // Deactivate collapsed constraint
-            selectLinesViewBottomConstraintCollapsed.isActive = false
-            // Activate expanded constraint
-            selectLinesViewBottomConstraintExpanded.isActive = true
-            
-            UIView.animate(withDuration: 0) {
-                self.view.layoutIfNeeded()
-            }
-        }
-    }
+           if customPickerView.isHidden {
+               // Show custom picker and amount label
+               linesCountLabel.isHidden = true
+               amountLabel.isHidden = false
+               customPickerView.isHidden = false
+               
+               // Deactivate collapsed height constraint
+               selectLinesViewHeightConstraintCollapsed.isActive = false
+               // Activate expanded constraint
+               selectLinesViewBottomConstraintExpanded.isActive = true
+               
+               UIView.animate(withDuration: 0) {
+                   self.view.layoutIfNeeded()
+               }
+           } else {
+               // Hide custom picker and amount label
+               linesCountLabel.isHidden = false
+               amountLabel.isHidden = true
+               customPickerView.isHidden = true
+               
+               // Deactivate expanded constraint
+               selectLinesViewBottomConstraintExpanded.isActive = false
+               // Reactivate collapsed height constraint
+               selectLinesViewHeightConstraintCollapsed.isActive = true
+               
+               UIView.animate(withDuration: 0) {
+                   self.view.layoutIfNeeded()
+               }
+           }
+       }
     
     @objc func decreaseNumber() {
         var currentNumber = Int(numberLabel.text!) ?? 1
         if currentNumber > 1 {
             currentNumber -= 1
             numberLabel.text = "\(currentNumber)"
+            linesCountLabel.text = "\(currentNumber)"
         }
     }
     
@@ -345,33 +300,119 @@ class GeneratorViewController: UIViewController {
         var currentNumber = Int(numberLabel.text!) ?? 1
         currentNumber += 1
         numberLabel.text = "\(currentNumber)"
+        linesCountLabel.text = "\(currentNumber)"
+    }
+}
+//MARK: Setup constraints
+extension GeneratorViewController {
+
+    private func setupSelectStateViewConstraints() {
+        NSLayoutConstraint.activate([
+            selectStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
+            selectStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            selectStateView.widthAnchor.constraint(equalToConstant: 343.scale),
+            selectStateView.heightAnchor.constraint(equalToConstant: 56.scale),
+            
+            stateTitleLabel.leadingAnchor.constraint(equalTo: selectStateView.leadingAnchor, constant: 16.scale),
+            stateTitleLabel.centerYAnchor.constraint(equalTo: selectStateView.centerYAnchor),
+            
+            stateNameLabel.trailingAnchor.constraint(equalTo: selectStateView.trailingAnchor, constant: -16.scale),
+            stateNameLabel.centerYAnchor.constraint(equalTo: selectStateView.centerYAnchor),
+            stateNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: stateTitleLabel.trailingAnchor, constant: 8.scale)
+        ])
+    }
+
+    private func setupSelectLotteryViewConstraints() {
+        NSLayoutConstraint.activate([
+            selectLotteryView.topAnchor.constraint(equalTo: selectStateView.bottomAnchor, constant: 20.scale),
+            selectLotteryView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            selectLotteryView.widthAnchor.constraint(equalToConstant: 343.scale),
+            selectLotteryView.heightAnchor.constraint(equalToConstant: 56.scale),
+            
+            gameTitleLabel.leadingAnchor.constraint(equalTo: selectLotteryView.leadingAnchor, constant: 16.scale),
+            gameTitleLabel.centerYAnchor.constraint(equalTo: selectLotteryView.centerYAnchor),
+            
+            gameNameLabel.trailingAnchor.constraint(equalTo: selectLotteryView.trailingAnchor, constant: -16.scale),
+            gameNameLabel.centerYAnchor.constraint(equalTo: selectLotteryView.centerYAnchor),
+            gameNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: gameTitleLabel.trailingAnchor, constant: 8.scale)
+        ])
+    }
+
+    private func setupSelectLinesViewConstraints() {
+        NSLayoutConstraint.activate([
+            selectLinesView.topAnchor.constraint(equalTo: selectLotteryView.bottomAnchor, constant: 20.scale),
+            selectLinesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            selectLinesView.widthAnchor.constraint(equalToConstant: 343.scale),
+            
+            linesTitleLabel.leadingAnchor.constraint(equalTo: selectLinesView.leadingAnchor, constant: 16.scale),
+            linesTitleLabel.topAnchor.constraint(equalTo: selectLinesView.topAnchor, constant: 16.scale),
+            
+            linesCountLabel.trailingAnchor.constraint(equalTo: selectLinesView.trailingAnchor, constant: -16.scale),
+            linesCountLabel.topAnchor.constraint(equalTo: selectLinesView.topAnchor, constant: 16.scale),
+            linesCountLabel.leadingAnchor.constraint(greaterThanOrEqualTo: linesTitleLabel.trailingAnchor, constant: 8.scale)
+        ])
+        
+        // Add collapsed height constraint
+        selectLinesViewHeightConstraintCollapsed = selectLinesView.heightAnchor.constraint(equalToConstant: 56.scale)
+        selectLinesViewHeightConstraintCollapsed.isActive = true
+        
+        // Expanded constraint (initially inactive)
+        selectLinesViewBottomConstraintExpanded = selectLinesView.bottomAnchor.constraint(equalTo: customPickerView.bottomAnchor, constant: 8.scale)
+        
+    }
+    private func setupCustomPickerViewConstraints() {
+        NSLayoutConstraint.activate([
+            customPickerView.trailingAnchor.constraint(equalTo: selectLinesView.trailingAnchor, constant: -16.scale),
+            customPickerView.topAnchor.constraint(equalTo: linesTitleLabel.bottomAnchor, constant: 8.scale),
+            customPickerView.widthAnchor.constraint(equalToConstant: 122.scale),
+            customPickerView.heightAnchor.constraint(equalToConstant: 60.scale),
+            
+            minusButton.leadingAnchor.constraint(equalTo: customPickerView.leadingAnchor, constant: 8.scale),
+            minusButton.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
+            minusButton.widthAnchor.constraint(equalToConstant: 30.scale),
+            
+            plusButton.trailingAnchor.constraint(equalTo: customPickerView.trailingAnchor, constant: -8.scale),
+            plusButton.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
+            plusButton.widthAnchor.constraint(equalToConstant: 30.scale),
+            
+            numberLabel.leadingAnchor.constraint(equalTo: minusButton.trailingAnchor, constant: 8.scale),
+            numberLabel.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor, constant: -8.scale),
+            numberLabel.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor)
+        ])
+    }
+
+    private func setupAmountLabelConstraints() {
+        NSLayoutConstraint.activate([
+            amountLabel.leadingAnchor.constraint(equalTo: selectLinesView.leadingAnchor, constant: 16.scale),
+            amountLabel.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
+            amountLabel.trailingAnchor.constraint(lessThanOrEqualTo: customPickerView.leadingAnchor, constant: -8.scale)
+        ])
+    }
+
+    private func setupGenerateButtonConstraints() {
+        NSLayoutConstraint.activate([
+            generateButton.topAnchor.constraint(equalTo: selectLinesView.bottomAnchor, constant: 20.scale),
+            generateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            generateButton.widthAnchor.constraint(equalToConstant: 343.scale),
+            generateButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        ])
     }
 }
 
-
 extension GeneratorViewController {
     private func setupNavigationBarTitle() {
-        // Create a custom back button
         let backButton = UIButton(type: .custom)
-        
-        // Set the custom image for the button
         if let image = UIImage(named: "Generator.navigaitonBarTitle") {
             backButton.setImage(image, for: .normal)
         }
-        
-        // Disable autoresizing mask translation
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
-        
-        // Add a target to handle back navigation
         backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
         
-        // Create a container view to hold the button
         let containerView = UIView()
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(backButton)
         
-        // Set constraints for the button within the container
         NSLayoutConstraint.activate([
             backButton.widthAnchor.constraint(equalToConstant: 341.scale),
             backButton.heightAnchor.constraint(equalToConstant: 26.scale),
@@ -379,13 +420,11 @@ extension GeneratorViewController {
             backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
         
-        // Set constraints for the container view
         NSLayoutConstraint.activate([
             containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
             containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
         ])
         
-        // Create a UIBarButtonItem with the container view
         let backButtonItem = UIBarButtonItem(customView: containerView)
       
         guard let navigationBar = navigationController?.navigationBar else { return }
@@ -393,10 +432,8 @@ extension GeneratorViewController {
         navigationBar.shadowImage = UIImage()
         navigationBar.isTranslucent = true
         navigationBar.backgroundColor = .clear
-        
-        // Replace the default back button with the custom button
         navigationItem.leftBarButtonItem = backButtonItem
-        navigationItem.hidesBackButton = true // Hide the default back button
+        navigationItem.hidesBackButton = true
     }
     @objc private func customBackButtonTapped() {
         // Perform back navigation
