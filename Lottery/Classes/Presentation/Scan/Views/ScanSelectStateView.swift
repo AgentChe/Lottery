@@ -10,7 +10,7 @@ import UIKit
 final class ScanSelectStateView: UIView {
     
     // MARK: - UI Components
-    
+    var fromGenerator: Bool = false
     let continueButton: UIButton = {
         let button = UIButton()
         let attrs = TextAttributes()
@@ -73,8 +73,7 @@ final class ScanSelectStateView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
        
-        setupView()
-        setupTableView()
+       
     }
     
     required init?(coder: NSCoder) {
@@ -106,7 +105,7 @@ extension ScanSelectStateView {
 
 // MARK: - Private Methods
 
-private extension ScanSelectStateView {
+ extension ScanSelectStateView {
     func setupView() {
         backgroundColor = Appearance.main400
         
@@ -116,16 +115,26 @@ private extension ScanSelectStateView {
         addSubview(preloader) // Add preloader to the view
         addSubview(middlePreloader) // Add middle preloader to the view
         setupConstraints()
+        
+        if fromGenerator {
+            descriptionLabel.alpha = 0
+        }
     }
     
     func setupConstraints() {
+        if fromGenerator == false {
+            NSLayoutConstraint.activate([
+                
+                descriptionLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10.scale),
+                descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.scale),
+                descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale)
+            ])
+        }
+        
         NSLayoutConstraint.activate([
-          
-            descriptionLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10.scale),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.scale),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             
-            stateTableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
+       
+            stateTableView.topAnchor.constraint(equalTo: fromGenerator == true ? safeAreaLayoutGuide.topAnchor :  descriptionLabel.bottomAnchor, constant: fromGenerator == true ? 0.scale : 20.scale),
             stateTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             stateTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stateTableView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.scale),

@@ -20,7 +20,19 @@ class ScanSelectStateViewController: UIViewController {
     }
     
     override func loadView() {
+      
+        if let navigationController {
+            if let firstViewController = navigationController.viewControllers.first {
+                if firstViewController.isKind(of: GeneratorViewController.self) {
+                    selectStateView.fromGenerator = true
+                    selectStateView.layoutSubviews()
+                }
+            }
+        }
         view = selectStateView
+        selectStateView.setupView()
+        selectStateView.setupTableView()
+        
     }
     
     override func viewDidLoad() {
