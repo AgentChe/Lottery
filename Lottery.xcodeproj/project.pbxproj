@@ -84,6 +84,7 @@
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
 		A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */; };
 		A355F8C22CD3C37800329FE3 /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */; };
+		A355F8C52CD52DD400329FE3 /* GeneratedNumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C42CD52DCC00329FE3 /* GeneratedNumbersViewController.swift */; };
 		A3668DAD2C19BFCF00754446 /* NotchedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */; };
 		A3668DB22C1A1C9300754446 /* EditTicketVIewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */; };
 		A3668DB42C1B366C00754446 /* TickedEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB32C1B366B00754446 /* TickedEditCell.swift */; };
@@ -346,6 +347,7 @@
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
 		A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
 		A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
+		A355F8C42CD52DCC00329FE3 /* GeneratedNumbersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedNumbersViewController.swift; sourceTree = "<group>"; };
 		A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedBackgroundView.swift; sourceTree = "<group>"; };
 		A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketVIewController.swift; sourceTree = "<group>"; };
 		A3668DB32C1B366B00754446 /* TickedEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedEditCell.swift; sourceTree = "<group>"; };
@@ -739,6 +741,7 @@
 			children = (
 				A355F8C32CD3C3A300329FE3 /* Views */,
 				A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */,
+				A355F8C42CD52DCC00329FE3 /* GeneratedNumbersViewController.swift */,
 			);
 			path = Generator;
 			sourceTree = "<group>";
@@ -1786,6 +1789,7 @@
 				A327493A2C29859400E9F79A /* VisionRectangleDetector.swift in Sources */,
 				DE42B1AE2BFF3CB200FF61B0 /* ScreenSize.swift in Sources */,
 				DE42B1CB2BFF3CB200FF61B0 /* SplashViewController.swift in Sources */,
+				A355F8C52CD52DD400329FE3 /* GeneratedNumbersViewController.swift in Sources */,
 				A37557FB2C345B270028DB95 /* TickedEditScanCell.swift in Sources */,
 				DE42B18E2BFF3CB200FF61B0 /* RequestReview.swift in Sources */,
 				A32749432C29859400E9F79A /* CGRect+Utils.swift in Sources */,

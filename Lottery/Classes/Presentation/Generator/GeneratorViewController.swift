@@ -12,6 +12,7 @@ class GeneratorViewController: UIViewController {
     var selectedLottery: Int?
     var lines: Int?
     
+    var lotteryPatterns: [LotteryPattern] = []
     private var lotteries: [Lottery] = []
     private let contentManager = ContentManager()
     
@@ -169,6 +170,7 @@ class GeneratorViewController: UIViewController {
         button.backgroundColor = Appearance.main100
         button.layer.cornerRadius = 22.scale
         button.setTitleColor(Appearance.mono100, for: .normal)
+        button.addTarget(self, action: #selector(generateNumbers), for: .touchUpInside)
         return button
     }()
     
@@ -194,6 +196,7 @@ class GeneratorViewController: UIViewController {
         setupConstraints()
         fetchStates()
         fetchLotteries()
+        fetchLotteriesPatterns()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -521,6 +524,13 @@ extension GeneratorViewController {
 }
 
 extension GeneratorViewController {
+    @objc func generateNumbers () {
+        let generatedNumbersViewContorller = GeneratedNumbersViewController()
+        navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
+    }
+}
+
+extension GeneratorViewController {
     func fetchLotteries() {
         contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -547,6 +557,19 @@ extension GeneratorViewController {
             }
         }
     }
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
+    }
+
     func presentTryAgainViewController(with error: Error) {
         let vc = TryAgainViewController.make(error: error) { [weak self] in
             self?.fetchStates()
@@ -572,3 +595,5 @@ extension GeneratorViewController {
         }
     }
 }
+
+
