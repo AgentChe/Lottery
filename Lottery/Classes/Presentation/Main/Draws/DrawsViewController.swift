@@ -63,6 +63,11 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         view.updateConstraintsIfNeeded()
         if let currentCollectionView = segmentedControl.currentIndex == 0 ? nextDrawsCollectionView : pastDrawsCollectionView {
         }
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+        }
+        
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

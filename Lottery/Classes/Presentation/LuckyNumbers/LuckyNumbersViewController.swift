@@ -135,7 +135,7 @@ final class LuckyNumbersViewController: UIViewController {
         
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
-            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+            updateMainViewControllerConstraints(for: mainViewController)
         }
     }
     

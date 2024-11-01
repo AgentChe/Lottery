@@ -680,8 +680,18 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         // navigationController?.navigationBar.isTranslucent = false
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
-            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+           // updateMainViewControllerConstraints(for: mainViewController)
             fetchLotteries()
+            
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController)
+          //  fetchLotteries()
             
         }
     }
