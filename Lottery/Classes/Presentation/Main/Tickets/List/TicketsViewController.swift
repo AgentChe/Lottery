@@ -984,21 +984,21 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView
-        
-        if mainView.tabViewBottomConstraint?.constant != newConstant {
-            // Deactivate and nil the old constraint if it's different
-            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
-                oldTabViewBottomConstraint.isActive = false
-                mainView.tabViewBottomConstraint = nil
-            }
-            
-            // Create and activate the new constraint
-            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
-            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
-            newTabViewBottomConstraint.isActive = true
-            
-            // Call layoutIfNeeded to apply the changes
-            mainView.layoutIfNeeded()
-        }
+        tabView.alpha = 0
+//        if mainView.tabViewBottomConstraint?.constant != newConstant {
+//            // Deactivate and nil the old constraint if it's different
+//            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
+//                oldTabViewBottomConstraint.isActive = false
+//                mainView.tabViewBottomConstraint = nil
+//            }
+//            
+//            // Create and activate the new constraint
+//            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
+//            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
+//            newTabViewBottomConstraint.isActive = true
+//            
+//            // Call layoutIfNeeded to apply the changes
+//            mainView.layoutIfNeeded()
+//        }
     }
 }

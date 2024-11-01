@@ -27,10 +27,10 @@
 "Splash.Loading" = "Loading...";
 
 // MARK: Main
-"Main.Draws" = "Draws";
+"Main.Draws" = "Accounts";
 "Main.LuckyNumbers" = "Lucky Numbers";
 "Main.MyTickets" = "My Tickets";
-"Main.Generaotr" = "Generator";
+"Main.Generator" = "Generator";
 
 // MARK: Paygate
 "Paygate.Title" = "UNLOCK PREMIUM STATUS";

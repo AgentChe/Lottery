@@ -228,7 +228,7 @@ extension DrawsViewController {
             premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
             premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
             premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale)
+            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -80.scale)
         ])
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
@@ -634,7 +634,7 @@ extension DrawsViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
+        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 10.scale : 155.scale
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
         return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 60.scale), left: 0, bottom: bottomInset, right: 0)
@@ -917,6 +917,7 @@ private extension DrawsViewController {
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView
+        tabView.alpha = 1
         if mainView.tabViewBottomConstraint?.constant != newConstant {
             if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
                 oldTabViewBottomConstraint.isActive = false
