@@ -27,24 +27,27 @@ class GeneratorViewController: UIViewController {
     var selectStateView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .lightGray
+        view.backgroundColor = Appearance.mono100
+        view.layer.cornerRadius = 16.scale
         return view
     }()
     
     var selectLotteryView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .lightGray
+        view.backgroundColor = Appearance.mono100
+        view.layer.cornerRadius = 16.scale
         return view
     }()
     
     var selectLinesView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .lightGray
+        view.backgroundColor = Appearance.mono100
         // Set content hugging and compression resistance priorities
         view.setContentHuggingPriority(.required, for: .vertical)
         view.setContentCompressionResistancePriority(.required, for: .vertical)
+        view.layer.cornerRadius = 16.scale
         return view
     }()
     
@@ -52,6 +55,8 @@ class GeneratorViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "State"
+        label.font = Fonts.Inter.medium(size: 16.scale)
+        label.textColor = Appearance.mono200
         return label
     }()
     
@@ -59,6 +64,8 @@ class GeneratorViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Game"
+        label.font = Fonts.Inter.medium(size: 16.scale)
+        label.textColor = Appearance.mono200
         return label
     }()
     
@@ -66,6 +73,8 @@ class GeneratorViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Lines"
+        label.font = Fonts.Inter.medium(size: 16.scale)
+        label.textColor = Appearance.mono200
         return label
     }()
     
@@ -74,6 +83,8 @@ class GeneratorViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Select the state"
         label.textAlignment = .right
+        label.font = Fonts.Inter.bold(size: 14.scale)
+        label.textColor = Appearance.main300Calendar
         return label
     }()
     
@@ -82,6 +93,8 @@ class GeneratorViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Select the game"
         label.textAlignment = .right
+        label.font = Fonts.Inter.bold(size: 14.scale)
+        label.textColor = Appearance.main300Calendar
         return label
     }()
     
@@ -90,6 +103,8 @@ class GeneratorViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Choose amount"
         label.textAlignment = .right
+        label.font = Fonts.Inter.bold(size: 14.scale)
+        label.textColor = Appearance.main300Calendar
         return label
     }()
     
@@ -98,7 +113,8 @@ class GeneratorViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Amount"
         label.textAlignment = .right
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = Fonts.Inter.bold(size: 14.scale)
+        label.textColor = Appearance.mono200
         label.isHidden = true
         return label
     }()
@@ -107,26 +123,24 @@ class GeneratorViewController: UIViewController {
     var customPickerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.backgroundColor = .clear
         view.isHidden = true
         return view
     }()
     
     var minusButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("-", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 30)
+        button.setImage(UIImage(named: "Generator.minus"), for: .normal)
+        button.contentMode = .center
         return button
     }()
     
     var plusButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("+", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 30)
+        button.setImage(UIImage(named: "Generator.plus"), for: .normal)
+        button.contentMode = .center
         return button
     }()
     
@@ -135,23 +149,24 @@ class GeneratorViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "1"
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = Fonts.Inter.bold(size: 14.scale)
+        label.textColor = Appearance.mono200
         return label
     }()
     
     var generateButton: UIButton = {
-          let button = UIButton(type: .system)
-          button.translatesAutoresizingMaskIntoConstraints = false
-          button.setTitle("Generate", for: .normal)
-          button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
-          button.backgroundColor = .systemBlue
-          button.layer.cornerRadius = 8
-          button.setTitleColor(.white, for: .normal)
-          return button
-      }()
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Generate", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.backgroundColor = Appearance.main100
+        button.layer.cornerRadius = 22.scale
+        button.setTitleColor(Appearance.mono100, for: .normal)
+        return button
+    }()
     
     // Constraints for selectLinesView's bottom
-
+    
     private var selectLinesViewHeightConstraintCollapsed: NSLayoutConstraint!
     var selectLinesViewBottomConstraintExpanded: NSLayoutConstraint!
     
@@ -175,31 +190,31 @@ class GeneratorViewController: UIViewController {
     // MARK: - Setup Methods
     
     func setupViews() {
-         view.addSubview(backgroundfullView)
-         
-         // Add existing views to backgroundfullView
-         backgroundfullView.addSubview(selectStateView)
-         selectStateView.addSubview(stateTitleLabel)
-         selectStateView.addSubview(stateNameLabel)
-         
-         backgroundfullView.addSubview(selectLotteryView)
-         selectLotteryView.addSubview(gameTitleLabel)
-         selectLotteryView.addSubview(gameNameLabel)
-         
-         backgroundfullView.addSubview(selectLinesView)
-         selectLinesView.addSubview(linesTitleLabel)
-         selectLinesView.addSubview(linesCountLabel)
-         selectLinesView.addSubview(customPickerView)
-         selectLinesView.addSubview(amountLabel)
-         
-         customPickerView.addSubview(minusButton)
-         customPickerView.addSubview(numberLabel)
-         customPickerView.addSubview(plusButton)
-         
-         // Add the generate button
-         backgroundfullView.addSubview(generateButton)
-     }
-
+        view.addSubview(backgroundfullView)
+        
+        // Add existing views to backgroundfullView
+        backgroundfullView.addSubview(selectStateView)
+        selectStateView.addSubview(stateTitleLabel)
+        selectStateView.addSubview(stateNameLabel)
+        
+        backgroundfullView.addSubview(selectLotteryView)
+        selectLotteryView.addSubview(gameTitleLabel)
+        selectLotteryView.addSubview(gameNameLabel)
+        
+        backgroundfullView.addSubview(selectLinesView)
+        selectLinesView.addSubview(linesTitleLabel)
+        selectLinesView.addSubview(linesCountLabel)
+        selectLinesView.addSubview(customPickerView)
+        selectLinesView.addSubview(amountLabel)
+        
+        customPickerView.addSubview(minusButton)
+        customPickerView.addSubview(numberLabel)
+        customPickerView.addSubview(plusButton)
+        
+        // Add the generate button
+        backgroundfullView.addSubview(generateButton)
+    }
+    
     
     func setupGestures() {
         stateTapGesture.addTarget(self, action: #selector(selectStateViewTapped))
@@ -214,8 +229,8 @@ class GeneratorViewController: UIViewController {
         minusButton.addTarget(self, action: #selector(decreaseNumber), for: .touchUpInside)
         plusButton.addTarget(self, action: #selector(increaseNumber), for: .touchUpInside)
     }
-  
- 
+    
+    
     func setupConstraints() {
         setupBackgroundConstraints()
         setupSelectStateViewConstraints()
@@ -225,7 +240,7 @@ class GeneratorViewController: UIViewController {
         setupAmountLabelConstraints()
         setupGenerateButtonConstraints()
     }
-
+    
     private func setupBackgroundConstraints() {
         NSLayoutConstraint.activate([
             backgroundfullView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -234,8 +249,8 @@ class GeneratorViewController: UIViewController {
             backgroundfullView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
-
+    
+    
     
     // MARK: - Actions
     
@@ -256,36 +271,40 @@ class GeneratorViewController: UIViewController {
     }
     
     @objc func selectLinesViewTapped() {
-           if customPickerView.isHidden {
-               // Show custom picker and amount label
-               linesCountLabel.isHidden = true
-               amountLabel.isHidden = false
-               customPickerView.isHidden = false
-               
-               // Deactivate collapsed height constraint
-               selectLinesViewHeightConstraintCollapsed.isActive = false
-               // Activate expanded constraint
-               selectLinesViewBottomConstraintExpanded.isActive = true
-               
-               UIView.animate(withDuration: 0) {
-                   self.view.layoutIfNeeded()
-               }
-           } else {
-               // Hide custom picker and amount label
-               linesCountLabel.isHidden = false
-               amountLabel.isHidden = true
-               customPickerView.isHidden = true
-               
-               // Deactivate expanded constraint
-               selectLinesViewBottomConstraintExpanded.isActive = false
-               // Reactivate collapsed height constraint
-               selectLinesViewHeightConstraintCollapsed.isActive = true
-               
-               UIView.animate(withDuration: 0) {
-                   self.view.layoutIfNeeded()
-               }
-           }
-       }
+        if customPickerView.isHidden {
+            // Show custom picker and amount label
+            linesCountLabel.isHidden = true
+            amountLabel.isHidden = false
+            customPickerView.isHidden = false
+            
+            // Deactivate collapsed height constraint
+            selectLinesViewHeightConstraintCollapsed.isActive = false
+            // Activate expanded constraint
+            selectLinesViewBottomConstraintExpanded.isActive = true
+            
+            linesCountLabel.textColor = Appearance.mono200
+            var currentNumber = Int(numberLabel.text!) ?? 1
+            linesCountLabel.text = "\(currentNumber)"
+         
+            UIView.animate(withDuration: 0) {
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            // Hide custom picker and amount label
+            linesCountLabel.isHidden = false
+            amountLabel.isHidden = true
+            customPickerView.isHidden = true
+            
+            // Deactivate expanded constraint
+            selectLinesViewBottomConstraintExpanded.isActive = false
+            // Reactivate collapsed height constraint
+            selectLinesViewHeightConstraintCollapsed.isActive = true
+            
+            UIView.animate(withDuration: 0) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
     
     @objc func decreaseNumber() {
         var currentNumber = Int(numberLabel.text!) ?? 1
@@ -305,7 +324,7 @@ class GeneratorViewController: UIViewController {
 }
 //MARK: Setup constraints
 extension GeneratorViewController {
-
+    
     private func setupSelectStateViewConstraints() {
         NSLayoutConstraint.activate([
             selectStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
@@ -321,7 +340,7 @@ extension GeneratorViewController {
             stateNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: stateTitleLabel.trailingAnchor, constant: 8.scale)
         ])
     }
-
+    
     private func setupSelectLotteryViewConstraints() {
         NSLayoutConstraint.activate([
             selectLotteryView.topAnchor.constraint(equalTo: selectStateView.bottomAnchor, constant: 20.scale),
@@ -337,7 +356,7 @@ extension GeneratorViewController {
             gameNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: gameTitleLabel.trailingAnchor, constant: 8.scale)
         ])
     }
-
+    
     private func setupSelectLinesViewConstraints() {
         NSLayoutConstraint.activate([
             selectLinesView.topAnchor.constraint(equalTo: selectLotteryView.bottomAnchor, constant: 20.scale),
@@ -367,20 +386,22 @@ extension GeneratorViewController {
             customPickerView.widthAnchor.constraint(equalToConstant: 122.scale),
             customPickerView.heightAnchor.constraint(equalToConstant: 60.scale),
             
-            minusButton.leadingAnchor.constraint(equalTo: customPickerView.leadingAnchor, constant: 8.scale),
+            minusButton.leadingAnchor.constraint(equalTo: customPickerView.leadingAnchor, constant: 0.scale),
             minusButton.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
-            minusButton.widthAnchor.constraint(equalToConstant: 30.scale),
+            minusButton.widthAnchor.constraint(equalToConstant: 40.scale),
+            minusButton.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            plusButton.trailingAnchor.constraint(equalTo: customPickerView.trailingAnchor, constant: -8.scale),
+            plusButton.trailingAnchor.constraint(equalTo: customPickerView.trailingAnchor, constant: 0.scale),
             plusButton.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor),
-            plusButton.widthAnchor.constraint(equalToConstant: 30.scale),
+            plusButton.widthAnchor.constraint(equalToConstant: 40.scale),
+            plusButton.heightAnchor.constraint(equalToConstant: 40.scale),
             
             numberLabel.leadingAnchor.constraint(equalTo: minusButton.trailingAnchor, constant: 8.scale),
             numberLabel.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor, constant: -8.scale),
             numberLabel.centerYAnchor.constraint(equalTo: customPickerView.centerYAnchor)
         ])
     }
-
+    
     private func setupAmountLabelConstraints() {
         NSLayoutConstraint.activate([
             amountLabel.leadingAnchor.constraint(equalTo: selectLinesView.leadingAnchor, constant: 16.scale),
@@ -388,7 +409,7 @@ extension GeneratorViewController {
             amountLabel.trailingAnchor.constraint(lessThanOrEqualTo: customPickerView.leadingAnchor, constant: -8.scale)
         ])
     }
-
+    
     private func setupGenerateButtonConstraints() {
         NSLayoutConstraint.activate([
             generateButton.topAnchor.constraint(equalTo: selectLinesView.bottomAnchor, constant: 20.scale),
@@ -426,7 +447,7 @@ extension GeneratorViewController {
         ])
         
         let backButtonItem = UIBarButtonItem(customView: containerView)
-      
+        
         guard let navigationBar = navigationController?.navigationBar else { return }
         navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationBar.shadowImage = UIImage()
@@ -437,6 +458,6 @@ extension GeneratorViewController {
     }
     @objc private func customBackButtonTapped() {
         // Perform back navigation
-      //  navigationController?.popViewController(animated: true)
+        //  navigationController?.popViewController(animated: true)
     }
 }
