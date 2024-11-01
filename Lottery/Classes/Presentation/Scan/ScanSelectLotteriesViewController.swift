@@ -34,7 +34,17 @@ class ScanSelectLotteriesViewController: UIViewController {
     }
     
     override func loadView() {
+        if let navigationController {
+            if let firstViewController = navigationController.viewControllers.first {
+                if firstViewController.isKind(of: GeneratorViewController.self) {
+                    selectLotteryView.fromGenerator = true
+                    selectLotteryView.layoutSubviews()
+                }
+            }
+        }
         view = selectLotteryView
+        selectLotteryView.setupView()
+        selectLotteryView.setupTableView()
         
     }
     
