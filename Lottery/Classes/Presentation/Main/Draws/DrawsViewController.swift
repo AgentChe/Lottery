@@ -332,10 +332,17 @@ extension DrawsViewController {
     @objc func changeStateButtonTapped() {
         let scanOnboardingViewController = ScanOnboardingViewController.make()
         scanOnboardingViewController.fromDrawsViewController = true
+     
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
+        }
+       
         if let navigationController = self.navigationController {
             navigationController.setNavigationBarHidden(false, animated: false)
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
         } else {
+           
             present(scanOnboardingViewController, animated: true, completion: nil)
         }
     }
