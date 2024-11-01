@@ -412,7 +412,7 @@ extension GeneratorViewController {
     
     private func setupGenerateButtonConstraints() {
         NSLayoutConstraint.activate([
-            generateButton.topAnchor.constraint(equalTo: selectLinesView.bottomAnchor, constant: 20.scale),
+            generateButton.topAnchor.constraint(equalTo: selectLinesView.bottomAnchor, constant: 24.scale),
             generateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             generateButton.widthAnchor.constraint(equalToConstant: 343.scale),
             generateButton.heightAnchor.constraint(equalToConstant: 44.scale)
