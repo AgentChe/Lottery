@@ -12,6 +12,13 @@ class GeneratorViewController: UIViewController {
     var selectedLottery: Int?
     var lines: Int?
     
+    private var lotteries: [Lottery] = []
+    private let contentManager = ContentManager()
+    
+    private var states: [State] = []
+    
+    
+  
     // MARK: - Views
     
     private let backgroundfullView: UIImageView = {
@@ -185,6 +192,8 @@ class GeneratorViewController: UIViewController {
         setupViews()
         setupGestures()
         setupConstraints()
+        fetchStates()
+        fetchLotteries()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -268,6 +277,11 @@ class GeneratorViewController: UIViewController {
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
             self.selectedState = selectedState
+            if let state = states.filter { $0.id == selectedState}.first {
+                stateNameLabel.text = "\(state.name)"
+                stateNameLabel.textColor = Appearance.mono200
+            }
+            
             navigationController?.popToRootViewController(animated: true)
         }
         
@@ -294,6 +308,10 @@ class GeneratorViewController: UIViewController {
             guard let self = self else { return }
             if let selectedGame = selectedGames.first {
                 self.selectedLottery = selectedGame
+                if let lottery = lotteries.filter { $0.id == selectedGame}.first {
+                    gameNameLabel.text = "\(lottery.name)"
+                    gameNameLabel.textColor = Appearance.mono200
+                }
                 navigationController?.popToRootViewController(animated: true)
             }
         }
@@ -499,6 +517,41 @@ extension GeneratorViewController {
     @objc private func customBackButtonTapped() {
         // Perform back navigation
         //  navigationController?.popViewController(animated: true)
+    }
+}
+
+extension GeneratorViewController {
+    func fetchLotteries() {
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
+                }
+            }
+        }
+    }
+    
+    func fetchStates() {
+        contentManager.fetchStates(forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let states):
+                    self?.states = states
+                case .failure(let error):
+                    self?.presentTryAgainViewController(with: error)
+                }
+            }
+        }
+    }
+    func presentTryAgainViewController(with error: Error) {
+        let vc = TryAgainViewController.make(error: error) { [weak self] in
+            self?.fetchStates()
+        }
+        self.present(vc, animated: true)
     }
 }
 
