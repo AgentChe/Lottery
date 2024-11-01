@@ -8,8 +8,8 @@ struct RandomNumberRequest {
 
 class GeneratorViewController: UIViewController {
     
-    var state: String?
-    var lotteryId: String?
+    var selectedState: Int?
+    var selectedLottery: Int?
     var lines: Int?
     
     // MARK: - Views
@@ -187,6 +187,14 @@ class GeneratorViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+        }
+    }
+    
     // MARK: - Setup Methods
     
     func setupViews() {
@@ -256,18 +264,50 @@ class GeneratorViewController: UIViewController {
     
     @objc func selectStateViewTapped() {
         // Push a UIViewController onto the navigation stack
-        let stateVC = UIViewController()
-        stateVC.view.backgroundColor = .white
-        stateVC.title = "Select State"
-        navigationController?.pushViewController(stateVC, animated: true)
+        let selectStateVC = ScanSelectStateViewController()
+        selectStateVC.onContinue = { [weak self] selectedState in
+            guard let self = self else { return }
+            self.selectedState = selectedState
+            navigationController?.popToRootViewController(animated: true)
+        }
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController)
+        }
+        navigationController?.pushViewController(selectStateVC, animated: true)
     }
     
     @objc func selectLotteryViewTapped() {
-        // Push a UIViewController onto the navigation stack
-        let lotteryVC = UIViewController()
-        lotteryVC.view.backgroundColor = .white
-        lotteryVC.title = "Select Game"
-        navigationController?.pushViewController(lotteryVC, animated: true)
+        guard let selectedState = selectedState else {
+              let alert = UIAlertController(
+                  title: "State Not Selected",
+                  message: "Please choose a state before selecting a lottery game.",
+                  preferredStyle: .alert
+              )
+              alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+              present(alert, animated: true, completion: nil)
+              return
+          }
+        let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: false)
+        selectGameVC.onContinue = { [weak self] selectedGames in
+            guard let self = self else { return }
+            if let selectedGame = selectedGames.first {
+                self.selectedLottery = selectedGame
+                navigationController?.popToRootViewController(animated: true)
+            }
+        }
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController)
+        }
+        // Push the SelectLotteriesViewController onto the navigation stack
+        if let navigationController = navigationController {
+            navigationController.pushViewController(selectGameVC, animated: true)
+        }
+        
+       
     }
     
     @objc func selectLinesViewTapped() {
@@ -459,5 +499,23 @@ extension GeneratorViewController {
     @objc private func customBackButtonTapped() {
         // Perform back navigation
         //  navigationController?.popViewController(animated: true)
+    }
+}
+
+extension GeneratorViewController {
+    func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
+        let mainView = mainViewController.mainView
+        let tabView = mainView.tabView
+        tabView.alpha = 1
+        if mainView.tabViewBottomConstraint?.constant != newConstant {
+            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
+                oldTabViewBottomConstraint.isActive = false
+                mainView.tabViewBottomConstraint = nil
+            }
+            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
+            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
+            newTabViewBottomConstraint.isActive = true
+            mainView.layoutIfNeeded()
+        }
     }
 }

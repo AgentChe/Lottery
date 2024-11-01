@@ -27,7 +27,18 @@ class ScanSelectStateViewController: UIViewController {
         super.viewDidLoad()
         setupButton()
         fetchProfile()
-        setupNavigationBackButton()
+        if let navigationController {
+            if let firstViewController = navigationController.viewControllers.first {
+                if firstViewController.isKind(of: GeneratorViewController.self) {
+                    setupNavigationBackButtonFromGenerator()
+                } else {
+                    setupNavigationBackButton()
+                }
+            }
+        }
+        
+      
+        
         configureNavigationBar()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -114,7 +125,46 @@ private extension ScanSelectStateViewController {
         }
         self.present(vc, animated: true)
     }
-    
+    func setupNavigationBackButtonFromGenerator() {
+        let backButton = UIButton(type: .custom)
+        
+        // Set the custom image for the button
+        if let image = UIImage(named: "Scan.SelectState") {
+            backButton.setImage(image, for: .normal)
+        }
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.imageView?.contentMode = .scaleAspectFit
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -26.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        let backButtonItem = UIBarButtonItem(customView: containerView)
+        
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.shadowImage = UIImage()
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear
+        navigationItem.leftBarButtonItem = backButtonItem
+        
+        // Replace the default back button with the custom button
+        parent?.navigationItem.leftBarButtonItem = backButtonItem
+        parent?.navigationItem.hidesBackButton = true // Hide the default back button
+    }
     func setupNavigationBackButton() {
         let backButton = UIButton(type: .custom)
         
