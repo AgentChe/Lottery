@@ -359,7 +359,7 @@ extension DrawsViewController {
                 chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
                 chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
                 chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),
-                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)
+                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 140.scale)
             ])
 
             view.layoutIfNeeded()
@@ -887,7 +887,14 @@ private extension DrawsViewController {
                 let scanViewController = ScanViewController()
                 scanViewController.stateId = 888
                 scanViewController.lotteryId = 888
+                if let navigationController = getRootViewController() as? NavigationController,
+                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                    self.updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
+                  //  fetchLotteries()
+                    
+                }
                 if let navigationController = self.navigationController {
+                    
                     navigationController.pushViewController(scanViewController, animated: true)
                     navigationController.setNavigationBarHidden(false, animated: false)
                 } else {
@@ -911,6 +918,7 @@ private extension DrawsViewController {
             }
         }))
         alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
+      
         self.present(alert, animated: true, completion: nil)
     }
 
