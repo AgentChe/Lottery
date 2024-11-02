@@ -50,6 +50,8 @@ class GeneratedNumbersViewController: UIViewController {
         button.layer.cornerRadius = 22.scale
         button.layer.borderWidth = 1.scale
         button.layer.borderColor = Appearance.main500.cgColor
+        button.addTarget(self, action: #selector(pickAgain), for: .touchUpInside)
+
         return button
     }()
 
@@ -97,6 +99,9 @@ class GeneratedNumbersViewController: UIViewController {
         }
     }
     
+    @objc func pickAgain() {
+        startSpinAnimation()
+    }
     private func setupSubviews() {
         view.addSubview(backgroundfullView)
         backgroundfullView.addSubview(spinImageView)
@@ -155,6 +160,10 @@ class GeneratedNumbersViewController: UIViewController {
     }
     
     private func startSpinAnimation() {
+        self.spinImageView.alpha = 1
+        self.generateNumbersLabel.alpha = 1
+        self.numbersImageView.alpha = 1
+        
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
         rotation.toValue = CGFloat.pi * 20
         rotation.duration = 5
@@ -166,7 +175,6 @@ class GeneratedNumbersViewController: UIViewController {
         
         firstButton.setTitleAlpha(0.4, for: .normal)
         secondButton.setTitleAlpha(0.4, for: .normal)
-        
     }
 }
 
