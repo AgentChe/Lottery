@@ -39,6 +39,32 @@ class GeneratedNumbersViewController: UIViewController {
         return imageView
     }()
     
+    // Define the buttons
+    private let firstButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Pick again", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.setTitleColor(Appearance.mono200, for: .normal) // Adjust the color as needed
+        button.backgroundColor = Appearance.mono100 // Adjust the color as needed
+        button.layer.cornerRadius = 22.scale
+        button.layer.borderWidth = 1.scale
+        button.layer.borderColor = Appearance.main500.cgColor
+        return button
+    }()
+
+    private let secondButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Use as Lucky Numbers", for: .normal)
+        button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
+        button.setTitleColor(Appearance.mono100, for: .normal) // Adjust the color as needed
+        button.backgroundColor = Appearance.main100 // Adjust the color as needed
+        button.layer.cornerRadius = 22.scale
+        return button
+    }()
+
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let navigationController = getRootViewController() as? NavigationController,
@@ -59,19 +85,25 @@ class GeneratedNumbersViewController: UIViewController {
             self.spinImageView.layer.removeAnimation(forKey: "rotateAnimation")
             
             // Fade out the spinImageView and generateNumbersLabel
-            UIView.animate(withDuration: 0) {
-                self.spinImageView.alpha = 0
-                self.generateNumbersLabel.alpha = 0
-                self.numbersImageView.alpha = 0
-            }
+            
+            self.spinImageView.alpha = 0
+            self.generateNumbersLabel.alpha = 0
+            self.numbersImageView.alpha = 0
+            self.firstButton.isUserInteractionEnabled = true
+            self.secondButton.isUserInteractionEnabled = true
+            
+            self.firstButton.setTitleAlpha(1, for: .normal)
+            self.secondButton.setTitleAlpha(1, for: .normal)
         }
     }
     
     private func setupSubviews() {
         view.addSubview(backgroundfullView)
-        view.addSubview(spinImageView)
-        view.addSubview(generateNumbersLabel)
-        view.addSubview(numbersImageView)
+        backgroundfullView.addSubview(spinImageView)
+        backgroundfullView.addSubview(generateNumbersLabel)
+        backgroundfullView.addSubview(numbersImageView)
+        backgroundfullView.addSubview(firstButton)
+        backgroundfullView.addSubview(secondButton)
     }
     
     private func setupConstraints() {
@@ -104,6 +136,22 @@ class GeneratedNumbersViewController: UIViewController {
             numbersImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             numbersImageView.topAnchor.constraint(equalTo: generateNumbersLabel.bottomAnchor, constant: 24.scale)
         ])
+        // Constraints for the second button, positioned above the first button
+        NSLayoutConstraint.activate([
+            secondButton.widthAnchor.constraint(equalToConstant: 343.scale),
+            secondButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            secondButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
+            secondButton.bottomAnchor.constraint(equalTo: firstButton.topAnchor, constant: -12.scale) // Adjust the constant as needed
+        ])
+        
+        NSLayoutConstraint.activate([
+            firstButton.widthAnchor.constraint(equalToConstant: 343.scale),
+            firstButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            firstButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
+            firstButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.scale) // Adjust the constant as needed
+        ])
+
+
     }
     
     private func startSpinAnimation() {
@@ -112,6 +160,13 @@ class GeneratedNumbersViewController: UIViewController {
         rotation.duration = 5
         rotation.repeatCount = .infinity
         spinImageView.layer.add(rotation, forKey: "rotateAnimation")
+        
+        firstButton.isUserInteractionEnabled = false
+        secondButton.isUserInteractionEnabled = false
+        
+        firstButton.setTitleAlpha(0.4, for: .normal)
+        secondButton.setTitleAlpha(0.4, for: .normal)
+        
     }
 }
 
@@ -172,6 +227,23 @@ extension GeneratedNumbersViewController {
             mainView.tabViewBottomConstraint = newTabViewBottomConstraint
             newTabViewBottomConstraint.isActive = true
             mainView.layoutIfNeeded()
+        }
+    }
+}
+extension UIButton {
+    func setTitleAlpha(_ alpha: CGFloat, for state: UIControl.State) {
+        guard let currentTitle = title(for: state),
+              let currentTitleColor = titleColor(for: state) else { return }
+
+        let colorWithAlpha = currentTitleColor.withAlphaComponent(alpha)
+        let attributedTitle = NSAttributedString(
+            string: currentTitle,
+            attributes: [.foregroundColor: colorWithAlpha]
+        )
+
+        UIView.performWithoutAnimation {
+            setAttributedTitle(attributedTitle, for: state)
+            layoutIfNeeded() // Forces the layout to update without animation
         }
     }
 }
