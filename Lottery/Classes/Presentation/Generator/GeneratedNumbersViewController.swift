@@ -2,10 +2,19 @@ import UIKit
 
 class GeneratedNumbersViewController: UIViewController {
     
+
     var bonusIdx: [Int] = []
-    var numbers: [[Int]] = [[12,23,34,45,56,67],
-                            [19,26,35,43,54,67],
-                            [15,23,30,48,55,61]]
+    var numbers: [[Int]] = [
+        [12,23,34,45,56,67],
+        [19,26,35,43,54,67],
+        [15,23,30,48,55,61],
+        [12,23,34,45,56,67],
+        [19,26,35,43,54,67],
+        [19,26,35,43,54,67],
+        [15,23,30,48,55,61],
+        [12,23,34,45,56,67],
+        [19,26,35,43,54,67],
+    ]
     
     private let backgroundfullView: UIImageView = {
         let imageView = UIImageView()
@@ -109,7 +118,7 @@ class GeneratedNumbersViewController: UIViewController {
         setupConstraints()
         startSpinAnimation()
         
-        delay(5) {
+        delay(0.5) {
             // Remove the rotation animation
             self.spinImageView.layer.removeAnimation(forKey: "rotateAnimation")
             
@@ -224,24 +233,28 @@ extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UI
  
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == 0 {
-            return CGSize(width: collectionView.bounds.width, height: 300.scale) // Customize the height as needed
+            let cellHeight = CGFloat(numbers.count)*(40.scale + 10.scale + 4.scale) + 20.scale
+            return CGSize(width: collectionView.bounds.width, height: cellHeight)
         }
         if indexPath.item == 1 {
-            return CGSize(width: collectionView.bounds.width, height: 100.scale) // Customize the height as needed
+            return CGSize(width: collectionView.bounds.width, height: 100.scale)
         }
 
         if indexPath.item == 2 {
-            return CGSize(width: collectionView.bounds.width, height: 300.scale) // Customize the height as needed
+            return CGSize(width: collectionView.bounds.width, height: 300.scale)
         }
 
         fatalError()
     }
      
      func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-         switch indexPath.section {
+         switch indexPath.item {
          case 0:
              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GeneratedNumbersCell.reusableIdentifier, for: indexPath) as! GeneratedNumbersCell
-          
+             cell.bonusIdx = bonusIdx
+             cell.numbers = numbers
+             
+             cell.configure()
              return cell
          case 1:
              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChanceCell.reusableIdentifier, for: indexPath) as! ChanceCell
