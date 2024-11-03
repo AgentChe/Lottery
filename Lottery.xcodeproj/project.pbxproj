@@ -85,6 +85,9 @@
 		A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */; };
 		A355F8C22CD3C37800329FE3 /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */; };
 		A355F8C52CD52DD400329FE3 /* GeneratedNumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C42CD52DCC00329FE3 /* GeneratedNumbersViewController.swift */; };
+		A355F8C72CD71A8100329FE3 /* ChanceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C62CD71A7F00329FE3 /* ChanceCell.swift */; };
+		A355F8C92CD71A9B00329FE3 /* StatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C82CD71A9700329FE3 /* StatsCell.swift */; };
+		A355F8CC2CD725C700329FE3 /* GeneratedNumbersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8CB2CD725BF00329FE3 /* GeneratedNumbersCell.swift */; };
 		A3668DAD2C19BFCF00754446 /* NotchedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */; };
 		A3668DB22C1A1C9300754446 /* EditTicketVIewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */; };
 		A3668DB42C1B366C00754446 /* TickedEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3668DB32C1B366B00754446 /* TickedEditCell.swift */; };
@@ -348,6 +351,9 @@
 		A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
 		A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
 		A355F8C42CD52DCC00329FE3 /* GeneratedNumbersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedNumbersViewController.swift; sourceTree = "<group>"; };
+		A355F8C62CD71A7F00329FE3 /* ChanceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChanceCell.swift; sourceTree = "<group>"; };
+		A355F8C82CD71A9700329FE3 /* StatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsCell.swift; sourceTree = "<group>"; };
+		A355F8CB2CD725BF00329FE3 /* GeneratedNumbersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedNumbersCell.swift; sourceTree = "<group>"; };
 		A3668DAC2C19BFCF00754446 /* NotchedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedBackgroundView.swift; sourceTree = "<group>"; };
 		A3668DB12C1A1C9300754446 /* EditTicketVIewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketVIewController.swift; sourceTree = "<group>"; };
 		A3668DB32C1B366B00754446 /* TickedEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedEditCell.swift; sourceTree = "<group>"; };
@@ -749,6 +755,9 @@
 		A355F8C32CD3C3A300329FE3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A355F8C62CD71A7F00329FE3 /* ChanceCell.swift */,
+				A355F8CB2CD725BF00329FE3 /* GeneratedNumbersCell.swift */,
+				A355F8C82CD71A9700329FE3 /* StatsCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1887,13 +1896,16 @@
 				A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */,
 				A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */,
 				A3FF55792C07E62D00E81771 /* ListTicketsRequest.swift in Sources */,
+				A355F8C72CD71A8100329FE3 /* ChanceCell.swift in Sources */,
 				A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */,
 				A3FF55872C0CC37500E81771 /* WelcomeViewController.swift in Sources */,
+				A355F8CC2CD725C700329FE3 /* GeneratedNumbersCell.swift in Sources */,
 				DE42B19C2BFF3CB200FF61B0 /* UIColor+Extension.swift in Sources */,
 				A3FD9EA82C11CB0F000FAD68 /* NextGameCell.swift in Sources */,
 				A3FC07A32C8AB54300A668C5 /* ScratchOffCell.swift in Sources */,
 				DE42B1AF2BFF3CB200FF61B0 /* TextAttributes.swift in Sources */,
 				DE42B1D52BFF3CB200FF61B0 /* PurchaseValidationObserver.swift in Sources */,
+				A355F8C92CD71A9B00329FE3 /* StatsCell.swift in Sources */,
 				DE42B1B42BFF3CB200FF61B0 /* GlobalDefinitions.swift in Sources */,
 				DE42B2052BFF50E300FF61B0 /* NetworkSession.swift in Sources */,
 				A327496F2C29859400E9F79A /* ScannerViewController.swift in Sources */,

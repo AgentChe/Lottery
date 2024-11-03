@@ -1,7 +1,12 @@
 import UIKit
 
 class GeneratedNumbersViewController: UIViewController {
-  
+    
+    var bonusIdx: [Int] = []
+    var numbers: [[Int]] = [[12,23,34,45,56,67],
+                            [19,26,35,43,54,67],
+                            [15,23,30,48,55,61]]
+    
     private let backgroundfullView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "TicketsVCBackgroundImage")
@@ -65,6 +70,28 @@ class GeneratedNumbersViewController: UIViewController {
         button.layer.cornerRadius = 22.scale
         return button
     }()
+    
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 12
+        layout.minimumInteritemSpacing = 12
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .clear
+        collectionView.alpha = 0 // Initially hidden
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        collectionView.register(GeneratedNumbersCell.self, forCellWithReuseIdentifier: GeneratedNumbersCell.reusableIdentifier)
+        collectionView.register(ChanceCell.self, forCellWithReuseIdentifier: ChanceCell.reusableIdentifier)
+        collectionView.register(StatsCell.self, forCellWithReuseIdentifier: StatsCell.reusableIdentifier)
+        
+        return collectionView
+    }()
+    
+    
 
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,6 +118,7 @@ class GeneratedNumbersViewController: UIViewController {
             self.spinImageView.alpha = 0
             self.generateNumbersLabel.alpha = 0
             self.numbersImageView.alpha = 0
+            self.collectionView.alpha = 1
             self.firstButton.isUserInteractionEnabled = true
             self.secondButton.isUserInteractionEnabled = true
             
@@ -109,6 +137,7 @@ class GeneratedNumbersViewController: UIViewController {
         backgroundfullView.addSubview(numbersImageView)
         backgroundfullView.addSubview(firstButton)
         backgroundfullView.addSubview(secondButton)
+        backgroundfullView.addSubview(collectionView)
     }
     
     private func setupConstraints() {
@@ -155,7 +184,12 @@ class GeneratedNumbersViewController: UIViewController {
             firstButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
             firstButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.scale) // Adjust the constant as needed
         ])
-
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
+            collectionView.bottomAnchor.constraint(equalTo: secondButton.topAnchor, constant: -6.scale)
+        ])
 
     }
     
@@ -178,6 +212,55 @@ class GeneratedNumbersViewController: UIViewController {
     }
 }
 
+extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+         return 1 // Three different sections for each cell type
+     }
+     
+     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+         return 3 // Assuming one cell per section, adjust as needed
+     }
+ 
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.item == 0 {
+            return CGSize(width: collectionView.bounds.width, height: 300.scale) // Customize the height as needed
+        }
+        if indexPath.item == 1 {
+            return CGSize(width: collectionView.bounds.width, height: 100.scale) // Customize the height as needed
+        }
+
+        if indexPath.item == 2 {
+            return CGSize(width: collectionView.bounds.width, height: 300.scale) // Customize the height as needed
+        }
+
+        fatalError()
+    }
+     
+     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+         switch indexPath.section {
+         case 0:
+             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GeneratedNumbersCell.reusableIdentifier, for: indexPath) as! GeneratedNumbersCell
+          
+             return cell
+         case 1:
+             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChanceCell.reusableIdentifier, for: indexPath) as! ChanceCell
+             // Configure your ChanceCell
+             return cell
+         case 2:
+             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatsCell.reusableIdentifier, for: indexPath) as! StatsCell
+             // Configure your StatsCell
+             return cell
+         default:
+             fatalError("Unexpected section")
+         }
+     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 16.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+    }
+     
+}
 
 extension GeneratedNumbersViewController {
     private func setupNavigationBarTitle() {
@@ -196,7 +279,7 @@ extension GeneratedNumbersViewController {
         NSLayoutConstraint.activate([
             backButton.widthAnchor.constraint(equalToConstant: 341.scale),
             backButton.heightAnchor.constraint(equalToConstant: 26.scale),
-            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 0.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -3.scale),
             backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
         

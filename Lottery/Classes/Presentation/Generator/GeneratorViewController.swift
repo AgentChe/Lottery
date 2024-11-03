@@ -526,6 +526,9 @@ extension GeneratorViewController {
 extension GeneratorViewController {
     @objc func generateNumbers () {
         let generatedNumbersViewContorller = GeneratedNumbersViewController()
+        if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == selectedLottery }.first {
+            generatedNumbersViewContorller.bonusIdx = pattern.bonusIdx
+        }
         navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
     }
 }
