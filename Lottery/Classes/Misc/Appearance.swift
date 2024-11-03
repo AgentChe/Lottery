@@ -26,4 +26,10 @@ struct Appearance {
     static let main300Calendar = UIColor(integralRed: 128, green: 139, blue: 150, alpha: 0.35)
     static let mono20 = mono200.withAlphaComponent(0.007)
     static let witeBcgBorderColor: UIColor = UIColor(red: 178/255, green: 112/255, blue: 157/255, alpha: 1.0)
+    static let chanceLabelColor: UIColor = UIColor(red: 229/255, green: 233/255, blue: 245/255, alpha: 1.0)
+    static let statsGreen: UIColor = UIColor(red: 78/255, green: 155/255, blue: 87/255, alpha: 1.0)
+    static let statsOrange: UIColor = UIColor(red: 234/255, green: 159/255, blue: 33/255, alpha: 1.0)
+    
+    
+    
 }

@@ -2,7 +2,7 @@ import UIKit
 
 class GeneratedNumbersViewController: UIViewController {
     
-
+    
     var bonusIdx: [Int] = []
     var numbers: [[Int]] = [
         [12,23,34,45,56,67],
@@ -15,6 +15,7 @@ class GeneratedNumbersViewController: UIViewController {
         [12,23,34,45,56,67],
         [19,26,35,43,54,67],
     ]
+    var chanceString = "Your chance of matching all numbers with this combination is 2 in 292201338"
     
     private let backgroundfullView: UIImageView = {
         let imageView = UIImageView()
@@ -65,10 +66,10 @@ class GeneratedNumbersViewController: UIViewController {
         button.layer.borderWidth = 1.scale
         button.layer.borderColor = Appearance.main500.cgColor
         button.addTarget(self, action: #selector(pickAgain), for: .touchUpInside)
-
+        
         return button
     }()
-
+    
     private let secondButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -80,11 +81,11 @@ class GeneratedNumbersViewController: UIViewController {
         return button
     }()
     
-    private lazy var collectionView: UICollectionView = {
+    private lazy var statsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 12
-        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 16.scale
+        layout.minimumInteritemSpacing = 16.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +93,7 @@ class GeneratedNumbersViewController: UIViewController {
         collectionView.alpha = 0 // Initially hidden
         collectionView.dataSource = self
         collectionView.delegate = self
-        
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.register(GeneratedNumbersCell.self, forCellWithReuseIdentifier: GeneratedNumbersCell.reusableIdentifier)
         collectionView.register(ChanceCell.self, forCellWithReuseIdentifier: ChanceCell.reusableIdentifier)
         collectionView.register(StatsCell.self, forCellWithReuseIdentifier: StatsCell.reusableIdentifier)
@@ -101,7 +102,7 @@ class GeneratedNumbersViewController: UIViewController {
     }()
     
     
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -127,7 +128,7 @@ class GeneratedNumbersViewController: UIViewController {
             self.spinImageView.alpha = 0
             self.generateNumbersLabel.alpha = 0
             self.numbersImageView.alpha = 0
-            self.collectionView.alpha = 1
+            self.statsCollectionView.alpha = 1
             self.firstButton.isUserInteractionEnabled = true
             self.secondButton.isUserInteractionEnabled = true
             
@@ -146,7 +147,7 @@ class GeneratedNumbersViewController: UIViewController {
         backgroundfullView.addSubview(numbersImageView)
         backgroundfullView.addSubview(firstButton)
         backgroundfullView.addSubview(secondButton)
-        backgroundfullView.addSubview(collectionView)
+        backgroundfullView.addSubview(statsCollectionView)
     }
     
     private func setupConstraints() {
@@ -194,12 +195,12 @@ class GeneratedNumbersViewController: UIViewController {
             firstButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.scale) // Adjust the constant as needed
         ])
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
-            collectionView.bottomAnchor.constraint(equalTo: secondButton.topAnchor, constant: -6.scale)
+            statsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
+            statsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            statsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
+            statsCollectionView.bottomAnchor.constraint(equalTo: secondButton.topAnchor, constant: -6.scale)
         ])
-
+        
     }
     
     private func startSpinAnimation() {
@@ -218,61 +219,78 @@ class GeneratedNumbersViewController: UIViewController {
         
         firstButton.setTitleAlpha(0.4, for: .normal)
         secondButton.setTitleAlpha(0.4, for: .normal)
+        
+        statsCollectionView.alpha = 0
     }
 }
 
 extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-         return 1 // Three different sections for each cell type
-     }
-     
-     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-         return 3 // Assuming one cell per section, adjust as needed
-     }
- 
+        return 1 // Three different sections for each cell type
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3 // Assuming one cell per section, adjust as needed
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == 0 {
             let cellHeight = CGFloat(numbers.count)*(40.scale + 10.scale + 4.scale) + 20.scale
             return CGSize(width: collectionView.bounds.width, height: cellHeight)
         }
         if indexPath.item == 1 {
-            return CGSize(width: collectionView.bounds.width, height: 100.scale)
+            return CGSize(width: collectionView.bounds.width, height: 69.scale)
         }
-
+        
         if indexPath.item == 2 {
-            return CGSize(width: collectionView.bounds.width, height: 300.scale)
+            return CGSize(width: collectionView.bounds.width, height: 496.scale)
         }
-
+        
         fatalError()
     }
-     
-     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-         switch indexPath.item {
-         case 0:
-             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GeneratedNumbersCell.reusableIdentifier, for: indexPath) as! GeneratedNumbersCell
-             cell.bonusIdx = bonusIdx
-             cell.numbers = numbers
-             
-             cell.configure()
-             return cell
-         case 1:
-             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChanceCell.reusableIdentifier, for: indexPath) as! ChanceCell
-             // Configure your ChanceCell
-             return cell
-         case 2:
-             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatsCell.reusableIdentifier, for: indexPath) as! StatsCell
-             // Configure your StatsCell
-             return cell
-         default:
-             fatalError("Unexpected section")
-         }
-     }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch indexPath.item {
+        case 0:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GeneratedNumbersCell.reusableIdentifier, for: indexPath) as! GeneratedNumbersCell
+            cell.bonusIdx = bonusIdx
+            cell.numbers = numbers
+            
+            cell.configure()
+            return cell
+        case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChanceCell.reusableIdentifier, for: indexPath) as! ChanceCell
+            
+
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineHeightMultiple = 1 // Set your desired line height multiple here
+            
+            let attributes: [NSAttributedString.Key: Any] = [
+                .paragraphStyle: paragraphStyle,
+                .font: Fonts.Inter.regular(size: 14.scale), // Ensure this matches your font
+                .foregroundColor: Appearance.mono200
+            ]
+            
+            let attributedString = NSAttributedString(string: chanceString, attributes: attributes)
+            cell.chanceLabel.attributedText = attributedString
+            
+            
+            
+            return cell
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatsCell.reusableIdentifier, for: indexPath) as! StatsCell
+            // Configure your StatsCell
+            return cell
+        default:
+            fatalError("Unexpected section")
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 16.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
+        return UIEdgeInsets(top: 16.scale, left: 0.scale, bottom: 14.scale, right: 0.scale)
     }
-     
+    
 }
 
 extension GeneratedNumbersViewController {
@@ -338,13 +356,13 @@ extension UIButton {
     func setTitleAlpha(_ alpha: CGFloat, for state: UIControl.State) {
         guard let currentTitle = title(for: state),
               let currentTitleColor = titleColor(for: state) else { return }
-
+        
         let colorWithAlpha = currentTitleColor.withAlphaComponent(alpha)
         let attributedTitle = NSAttributedString(
             string: currentTitle,
             attributes: [.foregroundColor: colorWithAlpha]
         )
-
+        
         UIView.performWithoutAnimation {
             setAttributedTitle(attributedTitle, for: state)
             layoutIfNeeded() // Forces the layout to update without animation
