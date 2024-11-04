@@ -81,7 +81,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
-        setupNavigationBar()
+       // setupNavigationBar()
         setupNavigationBarTitle()
         fetchLotteriesPatterns()
         
@@ -95,7 +95,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketLuckyNumbersEditCell.self, forCellWithReuseIdentifier: "TicketLuckyNumbersEditCellId")
-        
+        collectionView.layer.masksToBounds = true
         collectionView.contentInset = UIEdgeInsets(top: 15.scale, left: 0, bottom: 30.scale, right: 0)
         
         view.addSubview(collectionView)
@@ -120,7 +120,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             // CollectionView constraints
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10.scale),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -204,21 +204,51 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     }
     
     private func setupNavigationBarTitle() {
-        guard let backButtonImage = UIImage(named: "luckyNumberEmptyHeader") else { return }
-        
         let backButton = UIButton(type: .custom)
-        backButton.setImage(backButtonImage, for: .normal)
+        if let image = UIImage(named: "luckyNumbersBackButtonImage") {
+            backButton.setImage(image, for: .normal)
+        }
+        // Disable autoresizing mask translation
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
-        backButton.backgroundColor = .clear
-        backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
-        backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
         
-        let barButtonItem = UIBarButtonItem(customView: backButton)
+        // Add a target to handle back navigation
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
         
-        self.navigationItem.leftBarButtonItem = barButtonItem
+        // Create a container view to hold the button
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        // Set constraints for the button within the container
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -35.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        // Set constraints for the container view
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        // Create a UIBarButtonItem with the container view
+        let backButtonItem = UIBarButtonItem(customView: containerView)
+      
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.shadowImage = UIImage()
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear
+        
+        // Replace the default back button with the custom button
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true // Hide the default back button
     }
     
-    @objc func handleBackButton() {
+    @objc func customBackButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
