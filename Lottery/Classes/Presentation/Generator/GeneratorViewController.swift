@@ -16,10 +16,34 @@ class GeneratorViewController: UIViewController {
     private var lotteries: [Lottery] = []
     private let contentManager = ContentManager()
     
+    private var nextDraws: [Game] = []
+    private let gamesManager: GamesManagerProtocol = GamesManager()
+    
     private var states: [State] = []
     
+    func fetchNextGames(for stateId: Int?) {
+        gamesManager.fetchNextGames(stateId: nil, forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let games):
+                    self?.nextDraws = games
+                    var lotteries: [Lottery] = []
+                    for game in games {
+                        for lottery in self!.lotteries {
+                            if game.lotteryId == lottery.id {
+                                lotteries.append(lottery)
+                            }
+                        }
+                    }
+                case .failure(let error):
+                    print("Failed to fetch next games: \(error)")
+                }
+            }
+        }
+    }
     
-  
+    
+    
     // MARK: - Views
     
     private let backgroundfullView: UIImageView = {
@@ -195,7 +219,6 @@ class GeneratorViewController: UIViewController {
         setupGestures()
         setupConstraints()
         fetchStates()
-        fetchLotteries()
         fetchLotteriesPatterns()
     }
     
@@ -540,7 +563,7 @@ extension GeneratorViewController {
                 switch result {
                 case .success(let lotteries):
                     self?.lotteries = lotteries
-                    
+                    self?.fetchNextGames(for: nil)
                 case .failure(let error):
                     print("Failed to fetch lotteries: \(error)")
                 }
@@ -554,6 +577,7 @@ extension GeneratorViewController {
                 switch result {
                 case .success(let states):
                     self?.states = states
+                    self?.fetchLotteries()
                 case .failure(let error):
                     self?.presentTryAgainViewController(with: error)
                 }
