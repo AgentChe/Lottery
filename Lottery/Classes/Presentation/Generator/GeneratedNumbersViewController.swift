@@ -2,8 +2,14 @@ import UIKit
 
 class GeneratedNumbersViewController: UIViewController {
     
+    var bonusIdx: [Int] = [] {
+        didSet {
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
     
-    var bonusIdx: [Int] = []
     var numbers: [[Int]] = [
         [12,23,34,45,56,67],
         [19,26,35,43,54,67],

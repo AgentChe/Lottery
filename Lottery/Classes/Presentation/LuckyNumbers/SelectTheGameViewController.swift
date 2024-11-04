@@ -44,6 +44,7 @@ final class SelectTheGameViewController: UIViewController {
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false
+        button.addTarget(self, action: #selector(selectButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -55,8 +56,6 @@ final class SelectTheGameViewController: UIViewController {
         setupNavigationBackButton()
         setupViews()
         fetchStateAndGames()
-        
-        selectButton.addTarget(self, action: #selector(selectButtonTapped), for: .touchUpInside)
     }
     
     func setupNavigationBackButton() {
