@@ -26,15 +26,17 @@ class GeneratorViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let games):
-                    self?.nextDraws = games
+                    guard let self = self else { return }
+                    self.nextDraws = games
                     var lotteries: [Lottery] = []
                     for game in games {
-                        for lottery in self!.lotteries {
+                        for lottery in self.lotteries {
                             if game.lotteryId == lottery.id {
                                 lotteries.append(lottery)
                             }
                         }
                     }
+                    self.lotteries = lotteries
                 case .failure(let error):
                     print("Failed to fetch next games: \(error)")
                 }
@@ -218,12 +220,13 @@ class GeneratorViewController: UIViewController {
         setupViews()
         setupGestures()
         setupConstraints()
-        fetchStates()
-        fetchLotteriesPatterns()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        fetchStates()
+        fetchLotteriesPatterns()
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
@@ -329,7 +332,7 @@ class GeneratorViewController: UIViewController {
               present(alert, animated: true, completion: nil)
               return
           }
-        let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: false)
+        let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: false, isFromGenerator: true, lotteriesForGeneratedViewController: self.lotteries)
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             if let selectedGame = selectedGames.first {

@@ -14,16 +14,18 @@ class ScanSelectLotteriesViewController: UIViewController {
     private let contentManager: ContentManagerProtocol = ContentManager()
     private var lotteries: [Lottery] = []
     private let stateId: Int?
-
+    private var isFromGenerator: Bool = false
     lazy var selectLotteryView = ScanSelectLotteryView(fromMenu: self.fromMenu)
 
     // Custom initializer to accept stateId
-    init(stateId: Int?, fromMenu: Bool = false) {
+    init(stateId: Int?, fromMenu: Bool = false, isFromGenerator: Bool = false, lotteriesForGeneratedViewController: [Lottery] = []) {
         self.stateId = stateId
         self.fromMenu = fromMenu
+        self.isFromGenerator = isFromGenerator
+        self.lotteriesForGeneratedViewController = lotteriesForGeneratedViewController
         super.init(nibName: nil, bundle: nil)
     }
-
+    var lotteriesForGeneratedViewController: [Lottery] = []
     required init?(coder: NSCoder) {
         self.stateId = nil
         super.init(coder: coder)
@@ -136,8 +138,10 @@ private extension ScanSelectLotteriesViewController {
             contentManager.fetchLotteries(forceUpdate: false, stateId: stateId) { [weak self] result in
                 switch result {
                 case .success(let lotteries):
-                    self?.lotteries = lotteries
-                    self?.selectLotteryView.updateGames(lotteries)
+                    guard let self = self else { return }
+                    self.lotteries = lotteries
+                 
+                    self.selectLotteryView.updateGames(lotteries)
                 case .failure(let error):
                     self?.presentTryAgainViewController(with: error)
                 }
@@ -146,8 +150,20 @@ private extension ScanSelectLotteriesViewController {
             contentManager.fetchLotteries(forceUpdate: false, stateId: stateId) { [weak self] result in
                 switch result {
                 case .success(let lotteries):
-                    self?.lotteries = lotteries
-                    self?.selectLotteryView.updateGames(lotteries)
+                    guard let self = self else { return }
+                    self.lotteries = lotteries
+                    if self.isFromGenerator {
+                        var filteredLotteries : [Lottery] = []
+                        for lottery in lotteries {
+                            for genLottery in self.lotteriesForGeneratedViewController {
+                                if lottery.id == genLottery.id {
+                                    filteredLotteries.append(lottery)
+                                }
+                            }
+                        }
+                        self.lotteries = filteredLotteries
+                    }
+                    self.selectLotteryView.updateGames( self.lotteries)
                 case .failure(let error):
                     self?.presentTryAgainViewController(with: error)
                 }
