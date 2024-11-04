@@ -106,8 +106,6 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
     }
     
     @objc private func editButtonTapped() {
-        print("LuckyNumbersCell.EditButton".localized)
-        
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
                 

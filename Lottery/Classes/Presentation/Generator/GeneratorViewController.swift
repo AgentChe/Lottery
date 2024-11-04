@@ -555,6 +555,10 @@ extension GeneratorViewController {
         if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == selectedLottery }.first {
             generatedNumbersViewContorller.bonusIdx = pattern.bonusIdx
         }
+        generatedNumbersViewContorller.lotteryPatterns = lotteryPatterns
+        generatedNumbersViewContorller.lotteries = lotteries
+        generatedNumbersViewContorller.selectedLottery = selectedLottery
+        generatedNumbersViewContorller.nextDraws = nextDraws
         navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
     }
 }

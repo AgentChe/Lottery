@@ -1,7 +1,12 @@
 import UIKit
 
 class GeneratedNumbersViewController: UIViewController {
-    
+ 
+    var lotteries: [Lottery] = []
+    var selectedLottery: Int?
+    var nextDraws: [Game] = []
+    var lotteryPatterns: [LotteryPattern] = []
+   
     var bonusIdx: [Int] = [] {
         didSet {
             for i in 0..<bonusIdx.count {
@@ -21,6 +26,7 @@ class GeneratedNumbersViewController: UIViewController {
         [12,23,34,45,56,67],
         [19,26,35,43,54,67],
     ]
+    
     var chanceString = "Your chance of matching all numbers with this combination is 2 in 292201338"
     
     private let backgroundfullView: UIImageView = {
@@ -61,7 +67,7 @@ class GeneratedNumbersViewController: UIViewController {
     }()
     
     // Define the buttons
-    private let firstButton: UIButton = {
+    private let pickAgainButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Pick again", for: .normal)
@@ -76,7 +82,7 @@ class GeneratedNumbersViewController: UIViewController {
         return button
     }()
     
-    private let secondButton: UIButton = {
+    private let goToEditLuckyNumbersButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Use as Lucky Numbers", for: .normal)
@@ -84,6 +90,7 @@ class GeneratedNumbersViewController: UIViewController {
         button.setTitleColor(Appearance.mono100, for: .normal) // Adjust the color as needed
         button.backgroundColor = Appearance.main100 // Adjust the color as needed
         button.layer.cornerRadius = 22.scale
+        button.addTarget(self, action: #selector(goToEditLuckyNumbers), for: .touchUpInside)
         return button
     }()
     
@@ -106,9 +113,6 @@ class GeneratedNumbersViewController: UIViewController {
         
         return collectionView
     }()
-    
-    
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -135,14 +139,38 @@ class GeneratedNumbersViewController: UIViewController {
             self.generateNumbersLabel.alpha = 0
             self.numbersImageView.alpha = 0
             self.statsCollectionView.alpha = 1
-            self.firstButton.isUserInteractionEnabled = true
-            self.secondButton.isUserInteractionEnabled = true
+            self.pickAgainButton.isUserInteractionEnabled = true
+            self.goToEditLuckyNumbersButton.isUserInteractionEnabled = true
             
-            self.firstButton.setTitleAlpha(1, for: .normal)
-            self.secondButton.setTitleAlpha(1, for: .normal)
+            self.pickAgainButton.setTitleAlpha(1, for: .normal)
+            self.goToEditLuckyNumbersButton.setTitleAlpha(1, for: .normal)
         }
     }
+    @objc func goToEditLuckyNumbers() {
+        var game: Game?
+        for g in nextDraws {
+            if g.lotteryId == selectedLottery {
+                game = g
+                break
+            }
+        }
+        guard let game = game else { return }
+        
+        for lottery in lotteries {
+            if lottery.id == selectedLottery {
+                let ticket: Ticket = Ticket(id: 0,
+                                            lotteryId: lottery.id,
+                                            pictureUrl: lottery.logoUrl,
+                                            date: game.date,
+                                            numbers: numbers)
+                
+                let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
     
+                editLuckyNumbersVC.lotteryPatterns = lotteryPatterns
+                navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
+            }
+        }
+    }
     @objc func pickAgain() {
         startSpinAnimation()
     }
@@ -151,8 +179,8 @@ class GeneratedNumbersViewController: UIViewController {
         backgroundfullView.addSubview(spinImageView)
         backgroundfullView.addSubview(generateNumbersLabel)
         backgroundfullView.addSubview(numbersImageView)
-        backgroundfullView.addSubview(firstButton)
-        backgroundfullView.addSubview(secondButton)
+        backgroundfullView.addSubview(pickAgainButton)
+        backgroundfullView.addSubview(goToEditLuckyNumbersButton)
         backgroundfullView.addSubview(statsCollectionView)
     }
     
@@ -188,23 +216,23 @@ class GeneratedNumbersViewController: UIViewController {
         ])
         // Constraints for the second button, positioned above the first button
         NSLayoutConstraint.activate([
-            secondButton.widthAnchor.constraint(equalToConstant: 343.scale),
-            secondButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            secondButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
-            secondButton.bottomAnchor.constraint(equalTo: firstButton.topAnchor, constant: -12.scale) // Adjust the constant as needed
+            goToEditLuckyNumbersButton.widthAnchor.constraint(equalToConstant: 343.scale),
+            goToEditLuckyNumbersButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            goToEditLuckyNumbersButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
+            goToEditLuckyNumbersButton.bottomAnchor.constraint(equalTo: pickAgainButton.topAnchor, constant: -12.scale) // Adjust the constant as needed
         ])
         
         NSLayoutConstraint.activate([
-            firstButton.widthAnchor.constraint(equalToConstant: 343.scale),
-            firstButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            firstButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
-            firstButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.scale) // Adjust the constant as needed
+            pickAgainButton.widthAnchor.constraint(equalToConstant: 343.scale),
+            pickAgainButton.heightAnchor.constraint(equalToConstant: 44.scale),
+            pickAgainButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
+            pickAgainButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.scale) // Adjust the constant as needed
         ])
         NSLayoutConstraint.activate([
             statsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
             statsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
             statsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
-            statsCollectionView.bottomAnchor.constraint(equalTo: secondButton.topAnchor, constant: -6.scale)
+            statsCollectionView.bottomAnchor.constraint(equalTo: goToEditLuckyNumbersButton.topAnchor, constant: -6.scale)
         ])
         
     }
@@ -220,11 +248,11 @@ class GeneratedNumbersViewController: UIViewController {
         rotation.repeatCount = .infinity
         spinImageView.layer.add(rotation, forKey: "rotateAnimation")
         
-        firstButton.isUserInteractionEnabled = false
-        secondButton.isUserInteractionEnabled = false
+        pickAgainButton.isUserInteractionEnabled = false
+        goToEditLuckyNumbersButton.isUserInteractionEnabled = false
         
-        firstButton.setTitleAlpha(0.4, for: .normal)
-        secondButton.setTitleAlpha(0.4, for: .normal)
+        pickAgainButton.setTitleAlpha(0.4, for: .normal)
+        goToEditLuckyNumbersButton.setTitleAlpha(0.4, for: .normal)
         
         statsCollectionView.alpha = 0
     }
