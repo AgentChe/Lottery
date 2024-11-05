@@ -193,10 +193,11 @@ class GeneratorViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Generate", for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
-        button.backgroundColor = Appearance.main100
+        button.backgroundColor = Appearance.main500
         button.layer.cornerRadius = 22.scale
-        button.setTitleColor(Appearance.mono100, for: .normal)
+        button.setTitleColor(Appearance.main300, for: .normal)
         button.addTarget(self, action: #selector(generateNumbers), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
@@ -309,6 +310,7 @@ class GeneratorViewController: UIViewController {
             if let state = states.filter { $0.id == selectedState}.first {
                 stateNameLabel.text = "\(state.name)"
                 stateNameLabel.textColor = Appearance.mono200
+                
             }
             
             navigationController?.popToRootViewController(animated: true)
@@ -340,6 +342,13 @@ class GeneratorViewController: UIViewController {
                 if let lottery = lotteries.filter { $0.id == selectedGame}.first {
                     gameNameLabel.text = "\(lottery.name)"
                     gameNameLabel.textColor = Appearance.mono200
+                    
+                    if linesCountLabel.isHidden == true || linesCountLabel.text != "Choose amount" {
+                        generateButton.isEnabled = true
+                        generateButton.backgroundColor = Appearance.main100
+                        generateButton.setTitleColor(Appearance.mono100, for: .normal)
+                    }
+                    
                 }
                 navigationController?.popToRootViewController(animated: true)
             }
@@ -372,7 +381,11 @@ class GeneratorViewController: UIViewController {
             linesCountLabel.textColor = Appearance.mono200
             var currentNumber = Int(numberLabel.text!) ?? 1
             linesCountLabel.text = "\(currentNumber)"
-         
+            if gameNameLabel.text != "Select the game" {
+                generateButton.isEnabled = true
+                generateButton.backgroundColor = Appearance.main100
+                generateButton.setTitleColor(Appearance.mono100, for: .normal)
+            }
             UIView.animate(withDuration: 0) {
                 self.view.layoutIfNeeded()
             }
@@ -407,6 +420,8 @@ class GeneratorViewController: UIViewController {
         currentNumber += 1
         numberLabel.text = "\(currentNumber)"
         linesCountLabel.text = "\(currentNumber)"
+        
+      
     }
 }
 //MARK: Setup constraints
