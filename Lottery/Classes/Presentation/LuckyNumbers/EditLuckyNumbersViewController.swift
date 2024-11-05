@@ -81,7 +81,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
-       // setupNavigationBar()
+        // setupNavigationBar()
         setupNavigationBarTitle()
         fetchLotteriesPatterns()
         
@@ -114,7 +114,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         fetchLotteriesPatterns()
-
+        
     }
     
     private func setupConstraints() {
@@ -176,7 +176,30 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                     gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
                         DispatchQueue.main.async {
                             if let luckyNumbersViewController = self?.navigationController?.viewControllers[1] {
-                                self?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                                
+                                CATransaction.begin()
+                                CATransaction.setCompletionBlock { [weak self] in
+                                    if luckyNumbersViewController.isKind(of: GeneratedNumbersViewController.self) {
+                                        if let navigationController = getRootViewController() as? NavigationController,
+                                           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                                         
+                                            if let navigationController = (mainViewController.children.first as? NavigationController) {
+                                                let drawsViewController = navigationController.viewControllers.first as! DrawsViewController
+                                                drawsViewController.numbersButtonTapped()
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                                if luckyNumbersViewController.isKind(of: GeneratedNumbersViewController.self) {
+                                    if let navigationController = getRootViewController() as? NavigationController,
+                                       let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                                        mainViewController.coordinator.change(tab: TabView.Tab.draws)
+                                    }
+                                    self?.navigationController?.popToRootViewController(animated: false)
+                                } else {self?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                                }
+                                CATransaction.commit()
                             }
                         }
                     }
@@ -236,7 +259,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         
         // Create a UIBarButtonItem with the container view
         let backButtonItem = UIBarButtonItem(customView: containerView)
-      
+        
         guard let navigationBar = navigationController?.navigationBar else { return }
         navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationBar.shadowImage = UIImage()
