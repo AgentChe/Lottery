@@ -2,7 +2,7 @@ import UIKit
 import AVFoundation
 import Lottie
 
-class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,PushNotificationsDelegate {
 
     struct ScrollViewState {
         var previousScrollOffset: CGFloat = 0.0
@@ -176,8 +176,70 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupNoGamesAddedImageView()
         setupLayoutConstraints()
         setupPremiumAnimationView()
+        PushNotificationsManager.shared.add(observer: self)
         
     }
+    func pushNotificationsDidReceive(authorizationStatus: PushNotificationsAuthorizationStatus) {
+         // Handle if needed
+     }
+
+     func pushNotificationsDidReceive(token: String?) {
+         // Handle if needed
+     }
+
+     func pushNotificationsDidReceive(model: PushNotificationsModel) {
+         handlePushNotification(model: model)
+     }
+    func handlePushNotification(model: PushNotificationsModel) {
+           // Extract userInfo from the notification model
+           guard let userInfo = model.userInfo as? [String: Any],
+                 let customData = userInfo["customData"] as? [String: Any],
+                 let screen = customData["screen"] as? String else {
+               print("Invalid notification payload structure.")
+               return
+           }
+
+           // Determine the screen to navigate to based on the notification content
+           switch screen {
+           case "ticket_details":
+               // Retrieve the ticket ID from the notification data if available
+               if let ticketID = customData["ticket_id"] as? String {
+                   //navigateToTicketDetails(ticketID: ticketID)
+                   print("ticketId: \(ticketID)")
+                   if let navigationController = self.navigationController {
+                       print(navigationController.viewControllers)
+                       let topViewController = navigationController.viewControllers.last
+                       if let topViewController = topViewController {
+                           if !topViewController.isKind(of: TicketsViewController.self) {
+                               myTicketsController.pushDriven = true
+                               if let ticketID = Int(ticketID) {
+                                   myTicketsController.ticketIDFromPush = ticketID
+                               }
+                               navigationController.pushViewController(myTicketsController, animated: true)
+                               navigationController.setNavigationBarHidden(false, animated: false)
+                           } else {
+                               if let ticketsViewController = topViewController as? TicketsViewController {
+                                   if let ticketID = Int(ticketID) {
+                                       ticketsViewController.pushDriven = true
+                                       ticketsViewController.ticketIDFromPush = ticketID
+                                       ticketsViewController.viewTicket(withId: ticketID)
+                                   }
+                               }
+                           }
+                       }
+                   }
+               } else {
+                   print("Ticket ID not found in notification payload.")
+               }
+               
+           default:
+               // Handle other cases or log for debugging purposes
+               print("Unhandled notification screen: \(screen)")
+           }
+       }
+     deinit {
+         PushNotificationsManager.shared.remove(observer: self)
+     }
 
     private var previousScrollOffset: CGFloat = .zero
     private var initialContentOffset: CGFloat = 0.0

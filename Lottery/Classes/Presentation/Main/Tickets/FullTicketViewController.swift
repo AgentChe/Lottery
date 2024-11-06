@@ -225,7 +225,7 @@ extension FullTicketViewController {
                     for game in games {
                         if game.lotteryId == self?.ticket.lotteryId {
                             if let self = self {
-                                print("date: \(self.formatTimeIntervalAsDate(game.date))")
+                               // print("date: \(self.formatTimeIntervalAsDate(game.date))")
                                 if self.isSameDay(timeInterval1: game.date,
                                                   timeInterval2: self.ticket.date) {
                                     self.pastDraws.append(game)

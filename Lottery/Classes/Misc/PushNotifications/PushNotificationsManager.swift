@@ -6,6 +6,7 @@
 //
 
 import FirebaseMessaging
+import Firebase
 
 protocol PushNotificationsDelegate: AnyObject {
     func pushNotificationsDidReceive(authorizationStatus: PushNotificationsAuthorizationStatus)
@@ -13,7 +14,7 @@ protocol PushNotificationsDelegate: AnyObject {
     func pushNotificationsDidReceive(model: PushNotificationsModel)
 }
 
-final class PushNotificationsManager: NSObject {
+final class PushNotificationsManager: NSObject, MessagingDelegate {
     static let shared = PushNotificationsManager()
     
     private let notificationsCenter = UNUserNotificationCenter.current()
@@ -22,8 +23,8 @@ final class PushNotificationsManager: NSObject {
     
     private override init() {
         super.init()
-        
         notificationsCenter.delegate = self
+        Messaging.messaging().delegate = self
     }
 }
 
@@ -32,6 +33,13 @@ extension PushNotificationsManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         received(userInfo: response.notification.request.content.userInfo)
     }
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                  willPresent notification: UNNotification,
+                                  withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+          print("userNotificationCenter(_:willPresent:) called")
+          received(userInfo: notification.request.content.userInfo)
+          completionHandler([])
+      }
 }
 
 // MARK: Public
@@ -71,6 +79,7 @@ extension PushNotificationsManager {
 
     
     func add(observer: PushNotificationsDelegate) {
+        
         let weakly = observer as AnyObject
         delegates.append(Weak<PushNotificationsDelegate>(weakly))
         delegates = delegates.filter { $0.weak != nil }
@@ -93,11 +102,16 @@ extension PushNotificationsManager {
         received(pushToken: nil, error: error)
     }
     
-    func application(didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        received(userInfo: userInfo)
-        
-        completionHandler(.noData)
-    }
+    func application(didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                       fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+          if UIApplication.shared.applicationState != .active {
+              print("application(didReceiveRemoteNotification:) called in background")
+              received(userInfo: userInfo)
+          } else {
+              print("application(didReceiveRemoteNotification:) called in foreground")
+          }
+          completionHandler(.noData)
+      }
 }
 
 // MARK: Private
@@ -120,5 +134,66 @@ private extension PushNotificationsManager {
         DispatchQueue.main.async { [weak self] in
             self?.delegates.forEach { $0.weak?.pushNotificationsDidReceive(model: model) }
         }
+    }
+}
+
+extension PushNotificationsManager {
+    // MARK: MessagingDelegate
+     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+         guard let fcmToken = fcmToken else { return }
+         print("Получен FCM-токен: \(fcmToken)")
+         
+         // Отправка FCM-токена на сервер
+         sendFCMTokenToServer(fcmToken)
+         
+         // Уведомление делегатов
+         DispatchQueue.main.async { [weak self] in
+             self?.delegates.forEach { $0.weak?.pushNotificationsDidReceive(token: fcmToken) }
+         }
+     }
+    private func sendFCMTokenToServer(_ fcmToken: String) {
+        let sessionManager: SessionManagerProtocol = SessionManager()
+        guard let url = URL(string: "https://lottery.camplain-apps.com/profile/push_token") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            fatalError()
+            return
+        }
+        
+        let parameters: [String: Any] = [
+            "api_key":  GlobalDefinitions.apiKey,
+            "user_token": userToken,
+            "registration_token": fcmToken
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+        } catch {
+            print("Ошибка сериализации JSON: \(error)")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Ошибка отправки FCM-токена на сервер: \(error)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("Некорректный ответ от сервера")
+                return
+            }
+            
+            if httpResponse.statusCode == 200 {
+                print("FCM-токен успешно отправлен на сервер")
+            } else {
+                print("Не удалось отправить FCM-токен на сервер: HTTP \(httpResponse.statusCode)")
+            }
+        }
+        task.resume()
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 import AVFoundation
-
+ 
 extension Notification.Name {
     static let ticketDeleted = Notification.Name("TicketDeletedNotification")
 }
@@ -16,7 +16,8 @@ extension Notification.Name {
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
    
     var customTransitionManager: FullTicketCustomTransitionManager?
-
+    var pushDriven: Bool = false
+    var ticketIDFromPush: Int? = 0
     func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int]) {
           let fullTicketVC = FullTicketViewController()
           fullTicketVC.bonusIdx = bonusIdx
@@ -325,6 +326,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         fetchLotteriesPatterns()
         NotificationCenter.default.addObserver(self, selector: #selector(handleTicketDeleted), name: .ticketDeleted, object: nil)
+        
     }
     @objc private func handleTicketDeleted() {
             // Call fetchTickets to refresh the UI
@@ -684,6 +686,14 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             fetchLotteries()
             
         }
+        if pushDriven {
+            if let ticketID = ticketIDFromPush {
+                viewTicket(withId: ticketID)
+                
+                
+            }
+        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -1000,5 +1010,31 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 //            // Call layoutIfNeeded to apply the changes
 //            mainView.layoutIfNeeded()
 //        }
+    }
+}
+
+
+extension TicketsViewController {
+    func indexOfTicket(withId id: Int) -> Int? {
+        return tickets.firstIndex { $0.id == id }
+    }
+    func viewTicket(withId id: Int)  {
+        let indexOfTicket = indexOfTicket(withId: id)
+        if let indexOfTicket {
+            let indexPath =  IndexPath(item: indexOfTicket, section: 0)
+            ticketsCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+            if let ticketCell = ticketsCollectionView.cellForItem(at:indexPath) as? TicketCell {
+                ticketCell.delegate = self
+                var bonusIdx : [Int] = []
+                if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == tickets[indexPath.item].lotteryId }.first {
+                    bonusIdx = pattern.bonusIdx
+                }
+                self.viewAllButtonTapped(for: ticketCell, ticket: tickets[indexPath.item], bonusIdx: bonusIdx)
+                
+            }
+            
+        }
+        ticketIDFromPush = nil
+        pushDriven = false
     }
 }

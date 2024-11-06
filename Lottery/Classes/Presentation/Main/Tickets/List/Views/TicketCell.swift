@@ -91,7 +91,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     private var numbersCollectionViewBottomToEditButtonConstraint: NSLayoutConstraint!
     private var editButtonBottomConstraint: NSLayoutConstraint!
     
-    @objc private func viewAllButtonTapped() {
+    @objc  func viewAllButtonTapped() {
         //delegate?.editButtonTapped(for: self)
         if let ticket = ticket {
             delegate?.viewAllButtonTapped(for: self, ticket: ticket, bonusIdx: bonusIdx)
