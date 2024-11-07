@@ -10,7 +10,7 @@ import Kingfisher
 
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
-    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket,bonusIdx: [Int])
+    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int], completion: (() -> Void)?)
 }
 
 class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,TicketNumbersRowCellDelegate {
@@ -94,7 +94,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     @objc  func viewAllButtonTapped() {
         //delegate?.editButtonTapped(for: self)
         if let ticket = ticket {
-            delegate?.viewAllButtonTapped(for: self, ticket: ticket, bonusIdx: bonusIdx)
+            delegate?.viewAllButtonTapped(for: self, ticket: ticket, bonusIdx: bonusIdx, completion: nil)
         }
         
     }

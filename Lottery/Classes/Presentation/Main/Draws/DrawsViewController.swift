@@ -188,64 +188,72 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
          // Handle if needed
      }
 
-     func pushNotificationsDidReceive(model: PushNotificationsModel) {
-         handlePushNotification(model: model)
-     }
-    func handlePushNotification(model: PushNotificationsModel) {
-           // Extract userInfo from the notification model
-           guard let userInfo = model.userInfo as? [String: Any],
-                 let customData = userInfo["customData"] as? [String: Any],
-                 let screen = customData["screen"] as? String else {
-               print("Invalid notification payload structure.")
-               return
-           }
+    func pushNotificationsDidReceive(model: PushNotificationsModel, completion: @escaping () -> Void) {
+        handlePushNotification(model: model, completion: completion)
+    }
 
-           // Determine the screen to navigate to based on the notification content
-           switch screen {
-           case "ticket_details":
-               
-               if let ticketID = customData["ticket_id"] as? String {
-                   
-                   print("ticketId: \(ticketID)")
-                   if let navigationController = self.navigationController {
-                       
-                       var topViewController = navigationController.viewControllers.last
-                       topViewController?.presentedViewController?.dismiss(animated: false)
-                      navigationController.popToRootViewController(animated: false)
-                       delay(1) {
-                          topViewController = navigationController.viewControllers.last
-                           goto()
-                       }
-                       func goto() {
-                           if let topViewController = topViewController {
-                               if !topViewController.isKind(of: TicketsViewController.self) {
-                                   myTicketsController.pushDriven = true
-                                   if let ticketID = Int(ticketID) {
-                                       myTicketsController.ticketIDFromPush = ticketID
-                                   }
-                                   navigationController.pushViewController(myTicketsController, animated: true)
-                                   navigationController.setNavigationBarHidden(false, animated: false)
-                               } else {
-                                   if let ticketsViewController = topViewController as? TicketsViewController {
-                                       if let ticketID = Int(ticketID) {
-                                           ticketsViewController.pushDriven = true
-                                           ticketsViewController.ticketIDFromPush = ticketID
-                                           ticketsViewController.viewTicket(withId: ticketID)
-                                       }
-                                   }
-                               }
-                           }
-                       }
-                   }
-               } else {
-                   print("Ticket ID not found in notification payload.")
-               }
-               
-           default:
-               // Handle other cases or log for debugging purposes
-               print("Unhandled notification screen: \(screen)")
-           }
-       }
+    func handlePushNotification(model: PushNotificationsModel, completion: @escaping () -> Void) {
+        // Extract userInfo from the notification model
+        guard let userInfo = model.userInfo as? [String: Any],
+              let customData = userInfo["customData"] as? [String: Any],
+              let screen = customData["screen"] as? String else {
+            print("Invalid notification payload structure.")
+            completion() // Call completion if data is invalid
+            return
+        }
+
+        // Determine the screen to navigate to based on the notification content
+        switch screen {
+        case "ticket_details":
+            if let ticketIDString = customData["ticket_id"] as? String,
+               let ticketID = Int(ticketIDString) {
+                print("ticketId: \(ticketID)")
+                navigateToTicketDetails(ticketID: ticketID, completion: completion)
+            } else {
+                print("Ticket ID not found in notification payload.")
+                completion()
+            }
+        default:
+            // Handle other cases or log for debugging purposes
+            print("Unhandled notification screen: \(screen)")
+            completion()
+        }
+    }
+
+    // DrawsViewController.swift
+
+    func navigateToTicketDetails(ticketID: Int, completion: @escaping () -> Void) {
+        guard let navigationController = self.navigationController else {
+            completion()
+            return
+        }
+
+        // Dismiss any presented view controllers
+        navigationController.presentedViewController?.dismiss(animated: false, completion: nil)
+
+        // Pop to root view controller
+        navigationController.popToRootViewController(animated: false)
+
+        // Delay to ensure the navigation stack is updated
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if let ticketsViewController = navigationController.viewControllers.last as? TicketsViewController {
+                ticketsViewController.pushDriven = true
+                ticketsViewController.ticketIDFromPush = ticketID
+                ticketsViewController.ticketViewCompletion = completion
+            } else {
+                // Instantiate or get the TicketsViewController
+                let ticketsViewController = self.myTicketsController
+                ticketsViewController.pushDriven = true
+                ticketsViewController.ticketIDFromPush = ticketID
+                ticketsViewController.ticketViewCompletion = completion
+
+                navigationController.pushViewController(ticketsViewController, animated: true)
+                navigationController.setNavigationBarHidden(false, animated: false)
+            }
+        }
+    }
+
+    
      deinit {
          PushNotificationsManager.shared.remove(observer: self)
      }

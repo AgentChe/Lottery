@@ -16,30 +16,38 @@ extension Notification.Name {
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
    
     var customTransitionManager: FullTicketCustomTransitionManager?
+
     var pushDriven: Bool = false
     var ticketIDFromPush: Int? = 0
-    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int]) {
-          let fullTicketVC = FullTicketViewController()
-          fullTicketVC.bonusIdx = bonusIdx
-          fullTicketVC.ticket = ticket
-          fullTicketVC.lotteries = lotteries
-          fullTicketVC.lotteryPatterns = lotteryPatterns
+    var ticketViewCompletion: (() -> Void)?
 
-          // Embed in a UINavigationController
-          let navController = UINavigationController(rootViewController: fullTicketVC)
-          navController.modalPresentationStyle = .overFullScreen
+    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int], completion: (() -> Void)? = nil) {
+        let fullTicketVC = FullTicketViewController()
+        fullTicketVC.bonusIdx = bonusIdx
+        fullTicketVC.ticket = ticket
+        fullTicketVC.lotteries = lotteries
 
-          // Initialize and set up the custom transition manager
-          let customTransitionManager = FullTicketCustomTransitionManager()
-          navController.transitioningDelegate = customTransitionManager
-          customTransitionManager.setupGestureRecognizer(in: navController)
+        // Embed in a UINavigationController
+        let navController = UINavigationController(rootViewController: fullTicketVC)
+        navController.modalPresentationStyle = .overFullScreen
 
-          // Retain the transition manager
-          self.customTransitionManager = customTransitionManager
+        // Initialize and set up the custom transition manager
+        let customTransitionManager = FullTicketCustomTransitionManager()
+        navController.transitioningDelegate = customTransitionManager
+        customTransitionManager.setupGestureRecognizer(in: navController)
 
-          // Present the navigation controller
-          present(navController, animated: true, completion: nil)
-      }
+        // Retain the transition manager
+        self.customTransitionManager = customTransitionManager
+
+        // Present the navigation controller
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            completion?() // Call the completion handler here after presentation completes
+        }
+        present(navController, animated: true, completion: nil)
+        CATransaction.commit()
+    }
+
     
     private var lotteries: [Lottery] = []
     
@@ -686,13 +694,15 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             fetchLotteries()
             
         }
-        if pushDriven {
-            if let ticketID = ticketIDFromPush {
-                viewTicket(withId: ticketID)
-                
-                
-            }
-        }
+        if pushDriven, let ticketID = ticketIDFromPush {
+               viewTicket(withId: ticketID) {
+                   // Call the completion handler after the ticket is viewed
+                   self.ticketViewCompletion?()
+                   self.ticketViewCompletion = nil // Prevent potential retain cycles
+               }
+               pushDriven = false
+               ticketIDFromPush = nil
+           }
 
     }
     
@@ -1018,23 +1028,42 @@ extension TicketsViewController {
     func indexOfTicket(withId id: Int) -> Int? {
         return tickets.firstIndex { $0.id == id }
     }
-    func viewTicket(withId id: Int)  {
-        let indexOfTicket = indexOfTicket(withId: id)
-        if let indexOfTicket {
-            let indexPath =  IndexPath(item: indexOfTicket, section: 0)
-            ticketsCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
-            if let ticketCell = ticketsCollectionView.cellForItem(at:indexPath) as? TicketCell {
-                ticketCell.delegate = self
-                var bonusIdx : [Int] = []
-                if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == tickets[indexPath.item].lotteryId }.first {
-                    bonusIdx = pattern.bonusIdx
+    func viewTicket(withId id: Int, completion: @escaping () -> Void) {
+            let indexOfTicket = indexOfTicket(withId: id)
+            if let indexOfTicket {
+                let indexPath = IndexPath(item: indexOfTicket, section: 0)
+                ticketsCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+                ticketsCollectionView.layoutIfNeeded()
+                if let ticketCell = ticketsCollectionView.cellForItem(at: indexPath) as? TicketCell {
+                    ticketCell.delegate = self
+                    var bonusIdx: [Int] = []
+                    if let pattern = lotteryPatterns.first(where: { $0.id == tickets[indexPath.item].lotteryId }) {
+                        bonusIdx = pattern.bonusIdx
+                    }
+                    self.viewAllButtonTapped(for: ticketCell, ticket: tickets[indexPath.item], bonusIdx: bonusIdx) {
+                        completion()
+                    }
+                } else {
+                    // The cell might not be loaded yet
+                    ticketsCollectionView.performBatchUpdates(nil) { _ in
+                        if let ticketCell = self.ticketsCollectionView.cellForItem(at: indexPath) as? TicketCell {
+                            ticketCell.delegate = self
+                            var bonusIdx: [Int] = []
+                            if let pattern = self.lotteryPatterns.first(where: { $0.id == self.tickets[indexPath.item].lotteryId }) {
+                                bonusIdx = pattern.bonusIdx
+                            }
+                            self.viewAllButtonTapped(for: ticketCell, ticket: self.tickets[indexPath.item], bonusIdx: bonusIdx) {
+                                completion()
+                            }
+                        } else {
+                            completion()
+                        }
+                    }
                 }
-                self.viewAllButtonTapped(for: ticketCell, ticket: tickets[indexPath.item], bonusIdx: bonusIdx)
-                
+            } else {
+                completion()
             }
-            
+            ticketIDFromPush = nil
+            pushDriven = false
         }
-        ticketIDFromPush = nil
-        pushDriven = false
-    }
 }
