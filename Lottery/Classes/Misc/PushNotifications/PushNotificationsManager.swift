@@ -37,8 +37,9 @@ extension PushNotificationsManager: UNUserNotificationCenterDelegate {
                                   willPresent notification: UNNotification,
                                   withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
           print("userNotificationCenter(_:willPresent:) called")
-          received(userInfo: notification.request.content.userInfo)
-          completionHandler([])
+        completionHandler([.alert, .sound])
+          //received(userInfo: notification.request.content.userInfo)
+          //completionHandler([])
       }
 }
 
@@ -92,27 +93,6 @@ extension PushNotificationsManager {
     }
 }
 
-// MARK: Public (AppDelegate triggers)
-extension PushNotificationsManager {
-    func application(didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        received(pushToken: deviceToken, error: nil)
-    }
-    
-    func application(didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        received(pushToken: nil, error: error)
-    }
-    
-    func application(didReceiveRemoteNotification userInfo: [AnyHashable : Any],
-                       fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-          if UIApplication.shared.applicationState != .active {
-              print("application(didReceiveRemoteNotification:) called in background")
-              received(userInfo: userInfo)
-          } else {
-              print("application(didReceiveRemoteNotification:) called in foreground")
-          }
-          completionHandler(.noData)
-      }
-}
 
 // MARK: Private
 private extension PushNotificationsManager {
