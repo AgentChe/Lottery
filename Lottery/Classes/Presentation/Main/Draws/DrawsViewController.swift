@@ -169,6 +169,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = Appearance.main400
         setupCollectionViews()
         setupSegmentedControl()
@@ -202,27 +203,35 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
            // Determine the screen to navigate to based on the notification content
            switch screen {
            case "ticket_details":
-               // Retrieve the ticket ID from the notification data if available
+               
                if let ticketID = customData["ticket_id"] as? String {
-                   //navigateToTicketDetails(ticketID: ticketID)
+                   
                    print("ticketId: \(ticketID)")
                    if let navigationController = self.navigationController {
-                       print(navigationController.viewControllers)
-                       let topViewController = navigationController.viewControllers.last
-                       if let topViewController = topViewController {
-                           if !topViewController.isKind(of: TicketsViewController.self) {
-                               myTicketsController.pushDriven = true
-                               if let ticketID = Int(ticketID) {
-                                   myTicketsController.ticketIDFromPush = ticketID
-                               }
-                               navigationController.pushViewController(myTicketsController, animated: true)
-                               navigationController.setNavigationBarHidden(false, animated: false)
-                           } else {
-                               if let ticketsViewController = topViewController as? TicketsViewController {
+                       
+                       var topViewController = navigationController.viewControllers.last
+                       topViewController?.presentedViewController?.dismiss(animated: false)
+                      navigationController.popToRootViewController(animated: false)
+                       delay(1) {
+                          topViewController = navigationController.viewControllers.last
+                           goto()
+                       }
+                       func goto() {
+                           if let topViewController = topViewController {
+                               if !topViewController.isKind(of: TicketsViewController.self) {
+                                   myTicketsController.pushDriven = true
                                    if let ticketID = Int(ticketID) {
-                                       ticketsViewController.pushDriven = true
-                                       ticketsViewController.ticketIDFromPush = ticketID
-                                       ticketsViewController.viewTicket(withId: ticketID)
+                                       myTicketsController.ticketIDFromPush = ticketID
+                                   }
+                                   navigationController.pushViewController(myTicketsController, animated: true)
+                                   navigationController.setNavigationBarHidden(false, animated: false)
+                               } else {
+                                   if let ticketsViewController = topViewController as? TicketsViewController {
+                                       if let ticketID = Int(ticketID) {
+                                           ticketsViewController.pushDriven = true
+                                           ticketsViewController.ticketIDFromPush = ticketID
+                                           ticketsViewController.viewTicket(withId: ticketID)
+                                       }
                                    }
                                }
                            }
