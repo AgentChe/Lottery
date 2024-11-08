@@ -233,7 +233,11 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 
         // Pop to root view controller
         navigationController.popToRootViewController(animated: false)
-
+       
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            mainViewController.coordinator.change(tab: TabView.Tab.draws)
+        }
         // Delay to ensure the navigation stack is updated
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if let ticketsViewController = navigationController.viewControllers.last as? TicketsViewController {

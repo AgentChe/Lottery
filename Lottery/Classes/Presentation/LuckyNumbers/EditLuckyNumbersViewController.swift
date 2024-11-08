@@ -176,7 +176,6 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                     gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
                         DispatchQueue.main.async {
                             if let luckyNumbersViewController = self?.navigationController?.viewControllers[1] {
-                                
                                 CATransaction.begin()
                                 CATransaction.setCompletionBlock { [weak self] in
                                     if luckyNumbersViewController.isKind(of: GeneratedNumbersViewController.self) {
@@ -188,7 +187,6 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                                                 drawsViewController.numbersButtonTapped()
                                             }
                                         }
-                                        
                                     }
                                 }
                                 if luckyNumbersViewController.isKind(of: GeneratedNumbersViewController.self) {
