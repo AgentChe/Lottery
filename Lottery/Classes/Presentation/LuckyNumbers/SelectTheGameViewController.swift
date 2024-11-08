@@ -146,7 +146,9 @@ final class SelectTheGameViewController: UIViewController {
                                     lotteryId: selectedGame.lotteryId,
                                     pictureUrl: pictureUrl,
                                     date: selectedGame.date,
-                                    numbers: [])
+                                    numbers: [],
+                                    status: ""
+        )
         
         let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: selectedGame, lotteries: lotteries)
         navigationController?.pushViewController(editLuckyNumbersVC, animated: true)

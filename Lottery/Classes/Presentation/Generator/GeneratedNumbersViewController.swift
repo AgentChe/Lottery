@@ -162,7 +162,9 @@ class GeneratedNumbersViewController: UIViewController {
                                             lotteryId: lottery.id,
                                             pictureUrl: lottery.logoUrl,
                                             date: game.date,
-                                            numbers: numbers)
+                                            numbers: numbers,
+                                            status:""
+                )
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
     

@@ -113,7 +113,9 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
                                             lotteryId: game.lotteryId,
                                             pictureUrl: lottery.logoUrl,
                                             date: game.date,
-                                            numbers: game.myLuckyNumbers ?? [])
+                                            numbers: game.myLuckyNumbers ?? [],
+                                            status:""
+                )
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
                 editLuckyNumbersVC.luckyNumbersCell = self

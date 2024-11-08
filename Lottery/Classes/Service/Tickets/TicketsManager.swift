@@ -5,6 +5,7 @@
 
 import Foundation
 
+// MARK: - TicketsManagerProtocol
 protocol TicketsManagerProtocol {
     func addTicket(lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
     func editTicket(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], completion: @escaping (Result<Ticket, Error>) -> Void)
@@ -12,6 +13,7 @@ protocol TicketsManagerProtocol {
     func deleteTicket(id: Int, completion: @escaping (Result<ResultResponse, Error>) -> Void)
 }
 
+// MARK: - TicketsManager Class
 final class TicketsManager {
     private let dispatcher: RequestDispatcherProtocol = RequestDispatcher()
     private let sessionManager: SessionManagerProtocol = SessionManager()
@@ -21,7 +23,7 @@ final class TicketsManager {
     }
 }
 
-// MARK: - TicketsManagerProtocol
+// MARK: - TicketsManagerProtocol Implementation
 extension TicketsManager: TicketsManagerProtocol {
     func listTickets(forceUpdate: Bool = false, completion: @escaping (Result<[Ticket], Error>) -> Void) {
         if !forceUpdate, let cachedTickets: [Ticket] = loadFromCache(forKey: Constants.ticketsCacheKey) {
@@ -35,14 +37,11 @@ extension TicketsManager: TicketsManagerProtocol {
         }
         let request = ListTicketsRequest(userToken: userToken)
         let operation = APIOperation(endPoint: request)
-        
         let operationId = UUID().uuidString
         
-        // Set the operation in Operations
         Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
         
         operation.execute(dispatcher: dispatcher) { result, error in
-            // Remove the operation from Operations
             Operations.shared.removeTicketsManagerOperation(forKey: operationId)
             DispatchQueue.main.async {
                 if let error = error {
@@ -66,14 +65,11 @@ extension TicketsManager: TicketsManagerProtocol {
 
         let request = AddTicketRequest(userToken: userToken, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
-
         let operationId = UUID().uuidString
 
-        // Set the operation in Operations
         Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
 
         performRequest(request) { (result: Result<LotteryResponse, Error>) in
-            // Remove the operation from Operations
             Operations.shared.removeTicketsManagerOperation(forKey: operationId)
 
             switch result {
@@ -94,14 +90,11 @@ extension TicketsManager: TicketsManagerProtocol {
 
         let request = EditTicketRequest(userToken: userToken, id: id, lotteryId: lotteryId, pictureUrl: pictureUrl, date: date, numbers: numbers)
         let operation = APIOperation(endPoint: request)
-
         let operationId = UUID().uuidString
 
-        // Set the operation in Operations
         Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
 
         performRequest(request) { (result: Result<LotteryResponse, Error>) in
-            // Remove the operation from Operations
             Operations.shared.removeTicketsManagerOperation(forKey: operationId)
 
             switch result {
@@ -124,11 +117,9 @@ extension TicketsManager: TicketsManagerProtocol {
         let operation = APIOperation(endPoint: request)
         let operationId = UUID().uuidString
 
-        // Set the operation in Operations
         Operations.shared.setTicketsManagerOperation(operation, forKey: operationId)
 
         performRequest(request) { (result: Result<ResultResponse, Error>) in
-            // Remove the operation from Operations
             Operations.shared.removeTicketsManagerOperation(forKey: operationId)
 
             switch result {
@@ -221,17 +212,16 @@ struct LotteryResponse: Codable {
     let image_url: String?
     let date: Double
     let numbers: [[Int]]
+    let status: String
 
     func ticket() -> Ticket {
-        Ticket(
+        return Ticket(
             id: id,
             lotteryId: lotteryId,
-            pictureUrl: {
-                guard let path = image_url else { return nil }
-                return URL(string: path)
-            }(),
+            pictureUrl: image_url.flatMap { URL(string: $0) },
             date: date,
-            numbers: numbers
+            numbers: numbers,
+            status: status
         )
     }
 }
@@ -239,3 +229,4 @@ struct LotteryResponse: Codable {
 struct ResultResponse: Codable {
     let result: Bool
 }
+
