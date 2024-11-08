@@ -81,6 +81,9 @@
 		A35112F32C9883EA0060D261 /* Animation01.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F22C9883EA0060D261 /* Animation01.json */; };
 		A35112F52C9884D80060D261 /* Animation02.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F42C9884D70060D261 /* Animation02.json */; };
 		A35112F92C98CDF40060D261 /* Premium.json in Resources */ = {isa = PBXBuildFile; fileRef = A35112F82C98CDF40060D261 /* Premium.json */; };
+		A3513DA62CDE209A000D0951 /* GeneratorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DA52CDE2094000D0951 /* GeneratorResponse.swift */; };
+		A3513DA92CDE20B8000D0951 /* GenerateNumbersRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DA82CDE20B3000D0951 /* GenerateNumbersRequest.swift */; };
+		A3513DAC2CDE2123000D0951 /* GeneratorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DAB2CDE2119000D0951 /* GeneratorManager.swift */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
 		A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */; };
 		A355F8C22CD3C37800329FE3 /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */; };
@@ -347,6 +350,9 @@
 		A35112F22C9883EA0060D261 /* Animation01.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation01.json; sourceTree = "<group>"; };
 		A35112F42C9884D70060D261 /* Animation02.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Animation02.json; sourceTree = "<group>"; };
 		A35112F82C98CDF40060D261 /* Premium.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Premium.json; sourceTree = "<group>"; };
+		A3513DA52CDE2094000D0951 /* GeneratorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorResponse.swift; sourceTree = "<group>"; };
+		A3513DA82CDE20B3000D0951 /* GenerateNumbersRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateNumbersRequest.swift; sourceTree = "<group>"; };
+		A3513DAB2CDE2119000D0951 /* GeneratorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorManager.swift; sourceTree = "<group>"; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
 		A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
 		A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
@@ -740,6 +746,32 @@
 				A32749302C29859400E9F79A /* ScanViewController.swift */,
 			);
 			path = Scanner;
+			sourceTree = "<group>";
+		};
+		A3513DA42CDE2017000D0951 /* Generator */ = {
+			isa = PBXGroup;
+			children = (
+				A3513DAB2CDE2119000D0951 /* GeneratorManager.swift */,
+				A3513DAA2CDE210F000D0951 /* Model */,
+				A3513DA72CDE20AB000D0951 /* Request */,
+			);
+			path = Generator;
+			sourceTree = "<group>";
+		};
+		A3513DA72CDE20AB000D0951 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				A3513DA82CDE20B3000D0951 /* GenerateNumbersRequest.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		A3513DAA2CDE210F000D0951 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A3513DA52CDE2094000D0951 /* GeneratorResponse.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		A355F8BF2CD3C34800329FE3 /* Generator */ = {
@@ -1374,6 +1406,7 @@
 			isa = PBXGroup;
 			children = (
 				A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */,
+				A3513DA42CDE2017000D0951 /* Generator */,
 				A3FF55552C07E09D00E81771 /* Content */,
 				DE42B20B2BFF576700FF61B0 /* Profile */,
 				A3FF55642C07E42000E81771 /* Games */,
@@ -1703,6 +1736,7 @@
 				A3282B172C20A1B5006EED71 /* CustomAlertViewController.swift in Sources */,
 				A3AE801C2C2CA19600E5B473 /* SelectGameCell.swift in Sources */,
 				A39B2B312C0E1DC10024FC9F /* SuggestNewGameRequest.swift in Sources */,
+				A3513DA92CDE20B8000D0951 /* GenerateNumbersRequest.swift in Sources */,
 				A32748BF2C25E79B00E9F79A /* ScanSelectStateView.swift in Sources */,
 				A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */,
 				DE42B1F02BFF463B00FF61B0 /* TabItemView.swift in Sources */,
@@ -1713,6 +1747,7 @@
 				DE42B19D2BFF3CB200FF61B0 /* UIDevice+Extension.swift in Sources */,
 				DE42B1F22BFF464300FF61B0 /* TabView.swift in Sources */,
 				A30A95142CD0302400912E17 /* EditTicketRowCollectionCell.swift in Sources */,
+				A3513DA62CDE209A000D0951 /* GeneratorResponse.swift in Sources */,
 				A32749392C29859400E9F79A /* QuadrilateralView.swift in Sources */,
 				A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */,
 				A3FF555F2C07E26700E81771 /* FetchLotteriesRequest.swift in Sources */,
@@ -1748,6 +1783,7 @@
 				A32748C12C28E98C00E9F79A /* ScanSelectLotteriesViewController.swift in Sources */,
 				A327493D2C29859400E9F79A /* ZoomGestureController.swift in Sources */,
 				DE42B1A02BFF3CB200FF61B0 /* UIView+RxExtension.swift in Sources */,
+				A3513DAC2CDE2123000D0951 /* GeneratorManager.swift in Sources */,
 				A39B2B3A2C0F5B880024FC9F /* LotteryCell.swift in Sources */,
 				DE42B2192BFF666F00FF61B0 /* TryAgainView.swift in Sources */,
 				A3FF55662C07E42D00E81771 /* Game.swift in Sources */,

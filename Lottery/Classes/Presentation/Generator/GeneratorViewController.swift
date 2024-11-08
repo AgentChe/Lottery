@@ -566,15 +566,31 @@ extension GeneratorViewController {
 
 extension GeneratorViewController {
     @objc func generateNumbers () {
-        let generatedNumbersViewContorller = GeneratedNumbersViewController()
-        if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == selectedLottery }.first {
-            generatedNumbersViewContorller.bonusIdx = pattern.bonusIdx
+        let generatorManager = GeneratorManager()
+        if let selectedLottery = selectedLottery {
+            generatorManager.generateNumbers(lotteryId: selectedLottery, lines: 5) { result in
+                switch result {
+                case .success(let response):
+                    // Handle success
+                    print("Generated Numbers: \(response.numbers)")
+                    print("Score of Numbers: \(response.scoreOfNumbers.value)")
+                    // Access other analytics as needed
+                case .failure(let error):
+                    // Handle error
+                    print("Error generating numbers: \(error.localizedDescription)")
+                }
+            }
         }
-        generatedNumbersViewContorller.lotteryPatterns = lotteryPatterns
-        generatedNumbersViewContorller.lotteries = lotteries
-        generatedNumbersViewContorller.selectedLottery = selectedLottery
-        generatedNumbersViewContorller.nextDraws = nextDraws
-        navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
+        
+//        let generatedNumbersViewContorller = GeneratedNumbersViewController()
+//        if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == selectedLottery }.first {
+//            generatedNumbersViewContorller.bonusIdx = pattern.bonusIdx
+//        }
+//        generatedNumbersViewContorller.lotteryPatterns = lotteryPatterns
+//        generatedNumbersViewContorller.lotteries = lotteries
+//        generatedNumbersViewContorller.selectedLottery = selectedLottery
+//        generatedNumbersViewContorller.nextDraws = nextDraws
+//        navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
     }
 }
 

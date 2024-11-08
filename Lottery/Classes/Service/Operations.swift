@@ -9,11 +9,24 @@ class Operations {
     private var gamesManagerOperations: [String: any APIOperationProtocol] = [:]
     private var ticketsManagerOperations: [String: any APIOperationProtocol] = [:]
     private var profileManagerOperations: [String: any APIOperationProtocol] = [:]
+    private var generatorOperations: [String: APIOperation] = [:]
     
     
     private let operationsQueue = DispatchQueue(label: "com.example.OperationsQueue")
     
     // MARK: - Methods for contentManagerOperations
+    
+
+      func setGeneratorManagerOperation(_ operation: APIOperation?, forKey key: String) {
+          if let operation = operation {
+              generatorOperations[key] = operation
+          }
+      }
+
+      func removeGeneratorManagerOperation(forKey key: String) {
+          generatorOperations.removeValue(forKey: key)
+      }
+ 
     func setContentManagerOperation(_ operation: any APIOperationProtocol, forKey key: String) {
         operationsQueue.sync {
             contentManagerOperations[key] = operation
