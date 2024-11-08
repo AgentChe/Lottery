@@ -12,11 +12,20 @@ extension Notification.Name {
     static let ticketDeleted = Notification.Name("TicketDeletedNotification")
 }
 
+enum TicketFilter {
+    case all
+    case upcoming
+    case winners
+    case nonWinners
+}
 
 class TicketsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TicketCellDelegate,UIScrollViewDelegate {
    
     var customTransitionManager: FullTicketCustomTransitionManager?
 
+    private var currentFilter: TicketFilter = .all
+    private var filteredTickets = [Ticket]()
+    
     var pushDriven: Bool = false
     var ticketIDFromPush: Int? = 0
     var ticketViewCompletion: (() -> Void)?
@@ -57,13 +66,36 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var tickets = [Ticket]() {
         didSet {
-            if tickets.count > 0 {
-                self.noTicketsImageView.isHidden = true
-                self.noTicketsLabel.isHidden = true
-                self.scanLotteryTicketButton.isHidden = true
-            }
+            applyCurrentFilter()
         }
     }
+    private func applyCurrentFilter() {
+        switch currentFilter {
+        case .all:
+            filteredTickets = tickets
+        case .upcoming:
+            filteredTickets = tickets.filter { $0.status == "Upcoming" }
+        case .winners:
+            filteredTickets = tickets.filter { $0.status == "Winners" }
+        case .nonWinners:
+            filteredTickets = tickets.filter { $0.status == "Non-winners" }
+        }
+        ticketsCollectionView.reloadData()
+
+        // Update the UI based on whether there are tickets to display
+        if filteredTickets.isEmpty {
+            ticketsCollectionView.isHidden = true
+            noTicketsImageView.isHidden = false
+            noTicketsLabel.isHidden = false
+            scanLotteryTicketButton.isHidden = false
+        } else {
+            ticketsCollectionView.isHidden = false
+            noTicketsImageView.isHidden = true
+            noTicketsLabel.isHidden = true
+            scanLotteryTicketButton.isHidden = true
+        }
+    }
+
     private var scratchoffs = [ScratchOff]() {
         didSet {
             self.scratchoffs = scratchoffs ?? []
@@ -302,14 +334,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         setupNavigationBarTitle()
         
-        // Add buttons to the stack view
-        buttonsStackView.addArrangedSubview(allButton)
-        buttonsStackView.addArrangedSubview(upcomingButton)
-        buttonsStackView.addArrangedSubview(winnersButton)
-        buttonsStackView.addArrangedSubview(nonWinnersButton)
         
-        // Add the stack view to the backgroundView
-        backgroundView.addSubview(buttonsStackView)
         
         setupTicketsCollectionView()
         setupScratchoffsCollectionView()
@@ -323,6 +348,19 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         backgroundView.addSubview(scanScratchOffTicketButton)
         backgroundView.addSubview(scanLotteryTicketButton)
         
+        // Add buttons to the stack view
+        buttonsStackView.addArrangedSubview(allButton)
+        buttonsStackView.addArrangedSubview(upcomingButton)
+        buttonsStackView.addArrangedSubview(winnersButton)
+        buttonsStackView.addArrangedSubview(nonWinnersButton)
+        
+        // Add the stack view to the backgroundView
+        backgroundView.addSubview(buttonsStackView)
+        allButton.addTarget(self, action: #selector(allButtonTapped), for: .touchUpInside)
+        upcomingButton.addTarget(self, action: #selector(upcomingButtonTapped), for: .touchUpInside)
+        winnersButton.addTarget(self, action: #selector(winnersButtonTapped), for: .touchUpInside)
+        nonWinnersButton.addTarget(self, action: #selector(nonWinnersButtonTapped), for: .touchUpInside)
+    
         setupLayoutConstraints()
         noScratchOffsImageView.isHidden = true
         scanScratchOffTicketButton.isHidden = true
@@ -333,8 +371,28 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         backgroundView.bringSubviewToFront(scanLotteryTicketButton)
         
         fetchLotteriesPatterns()
+      
         NotificationCenter.default.addObserver(self, selector: #selector(handleTicketDeleted), name: .ticketDeleted, object: nil)
         
+    }
+    @objc func allButtonTapped() {
+        currentFilter = .all
+        applyCurrentFilter()
+    }
+
+    @objc func upcomingButtonTapped() {
+        currentFilter = .upcoming
+        applyCurrentFilter()
+    }
+
+    @objc func winnersButtonTapped() {
+        currentFilter = .winners
+        applyCurrentFilter()
+    }
+
+    @objc func nonWinnersButtonTapped() {
+        currentFilter = .nonWinners
+        applyCurrentFilter()
     }
     @objc private func handleTicketDeleted() {
             // Call fetchTickets to refresh the UI
@@ -834,7 +892,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == ticketsCollectionView {
-            return tickets.count
+            return filteredTickets.count
         } else if collectionView == scratchoffsCollectionView {
             return scratchoffs.count
         }
@@ -844,12 +902,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == ticketsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketCell.reuseIdentifier, for: indexPath) as! TicketCell
-            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == tickets[indexPath.item].lotteryId }.first {
+            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == filteredTickets[indexPath.item].lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.lotteries = self.lotteries
-            cell.ticket = tickets[indexPath.item]
-            cell.configure(with: tickets[indexPath.item])
+            cell.ticket = filteredTickets[indexPath.item]
+            cell.configure(with: filteredTickets[indexPath.item])
             cell.delegate = self
             return cell
         } else {
@@ -860,7 +918,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == ticketsCollectionView {
-            let ticket = tickets[indexPath.item]
+            let ticket = filteredTickets[indexPath.item]
             let ticketDate = Date(timeIntervalSince1970: ticket.date)
             let now = Date()
             let numbersCount = ticket.numbers.count
@@ -906,7 +964,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     // MARK: - TicketCellDelegate Method
     func editButtonTapped(for cell: TicketCell) {
         guard let indexPath = ticketsCollectionView.indexPath(for: cell) else { return }
-        let ticket = tickets[indexPath.item]
+        let ticket = filteredTickets[indexPath.item]
         let editVC = EditTicketViewController(ticket: ticket)
         editVC.lotteries = self.lotteries
         navigationController?.pushViewController(editVC, animated: true)
@@ -1037,13 +1095,13 @@ extension TicketsViewController {
                 if let ticketCell = ticketsCollectionView.cellForItem(at: indexPath) as? TicketCell {
                     ticketCell.delegate = self
                     var bonusIdx: [Int] = []
-                    if let pattern = lotteryPatterns.first(where: { $0.id == tickets[indexPath.item].lotteryId }) {
+                    if let pattern = lotteryPatterns.first(where: { $0.id == filteredTickets[indexPath.item].lotteryId }) {
                         bonusIdx = pattern.bonusIdx
                     }
                     for i in 0..<bonusIdx.count {
                         bonusIdx[i] = bonusIdx[i] + 1
                     }
-                    self.viewAllButtonTapped(for: ticketCell, ticket: tickets[indexPath.item], bonusIdx: bonusIdx) {
+                    self.viewAllButtonTapped(for: ticketCell, ticket: filteredTickets[indexPath.item], bonusIdx: bonusIdx) {
                         completion()
                     }
                 } else {
@@ -1052,11 +1110,11 @@ extension TicketsViewController {
                         if let ticketCell = self.ticketsCollectionView.cellForItem(at: indexPath) as? TicketCell {
                             ticketCell.delegate = self
                             var bonusIdx: [Int] = []
-                            if let pattern = self.lotteryPatterns.first(where: { $0.id == self.tickets[indexPath.item].lotteryId }) {
+                            if let pattern = self.lotteryPatterns.first(where: { $0.id == self.filteredTickets[indexPath.item].lotteryId }) {
                                 bonusIdx = pattern.bonusIdx
                             }
                             
-                            self.viewAllButtonTapped(for: ticketCell, ticket: self.tickets[indexPath.item], bonusIdx: bonusIdx) {
+                            self.viewAllButtonTapped(for: ticketCell, ticket: self.filteredTickets[indexPath.item], bonusIdx: bonusIdx) {
                                 completion()
                             }
                         } else {

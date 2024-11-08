@@ -212,7 +212,7 @@ struct LotteryResponse: Codable {
     let image_url: String?
     let date: Double
     let numbers: [[Int]]
-    let status: String
+
 
     func ticket() -> Ticket {
         return Ticket(
@@ -221,7 +221,7 @@ struct LotteryResponse: Codable {
             pictureUrl: image_url.flatMap { URL(string: $0) },
             date: date,
             numbers: numbers,
-            status: status
+            status: "Upcoming"
         )
     }
 }
