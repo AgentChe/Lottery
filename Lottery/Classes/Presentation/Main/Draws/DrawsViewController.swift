@@ -253,8 +253,6 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             let pastDrawsButton = self.segmentedControl.buttonsCollection[0]
             self.segmentedControl.segmentTapped(pastDrawsButton)
             completion()
-
-            
         }
     }
     

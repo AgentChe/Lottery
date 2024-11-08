@@ -1040,6 +1040,9 @@ extension TicketsViewController {
                     if let pattern = lotteryPatterns.first(where: { $0.id == tickets[indexPath.item].lotteryId }) {
                         bonusIdx = pattern.bonusIdx
                     }
+                    for i in 0..<bonusIdx.count {
+                        bonusIdx[i] = bonusIdx[i] + 1
+                    }
                     self.viewAllButtonTapped(for: ticketCell, ticket: tickets[indexPath.item], bonusIdx: bonusIdx) {
                         completion()
                     }
@@ -1052,6 +1055,7 @@ extension TicketsViewController {
                             if let pattern = self.lotteryPatterns.first(where: { $0.id == self.tickets[indexPath.item].lotteryId }) {
                                 bonusIdx = pattern.bonusIdx
                             }
+                            
                             self.viewAllButtonTapped(for: ticketCell, ticket: self.tickets[indexPath.item], bonusIdx: bonusIdx) {
                                 completion()
                             }

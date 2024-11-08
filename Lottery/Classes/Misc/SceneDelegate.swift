@@ -40,10 +40,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
         
         // Check if the app was launched by a notification
-        if let notificationResponse = connectionOptions.notificationResponse {
-            let userInfo = notificationResponse.notification.request.content.userInfo
-            handleNotification(userInfo: userInfo)
-        }
+//        if let notificationResponse = connectionOptions.notificationResponse {
+//                   let userInfo = notificationResponse.notification.request.content.userInfo
+//                   PushNotificationsManager.shared.received(userInfo: userInfo)
+//               }
     }
     private func handleNotification(userInfo: [AnyHashable: Any]) {
            // Extract the notification data

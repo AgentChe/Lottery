@@ -37,7 +37,7 @@ final class PushNotificationsManager: NSObject, MessagingDelegate {
 extension PushNotificationsManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         received(userInfo: response.notification.request.content.userInfo)
-        completionHandler() // Call the completion handler to let the system know we're done
+        completionHandler()
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -50,7 +50,16 @@ extension PushNotificationsManager: UNUserNotificationCenterDelegate {
         // completionHandler([])
     }
 }
-
+// MARK: Public (AppDelegate triggers)
+extension PushNotificationsManager {
+    func application(didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        received(pushToken: deviceToken, error: nil)
+    }
+    
+    func application(didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        received(pushToken: nil, error: error)
+    }
+}
 // MARK: Public
 extension PushNotificationsManager {
     func retriveAuthorizationStatus(handler: ((PushNotificationsAuthorizationStatus) -> Void)?) {
@@ -88,6 +97,8 @@ extension PushNotificationsManager {
         let weakly = observer as AnyObject
         delegates.append(Weak<PushNotificationsDelegate>(weakly))
         delegates = delegates.filter { $0.weak != nil }
+        
+        processNextNotification()
     }
     
     func remove(observer: PushNotificationsDelegate) {
@@ -97,8 +108,8 @@ extension PushNotificationsManager {
     }
 }
 
-// MARK: Private
-private extension PushNotificationsManager {
+// MARK:
+ extension PushNotificationsManager {
     func received(pushToken: Data?, error: Error?) {
         Messaging.messaging().apnsToken = pushToken
         
@@ -125,32 +136,44 @@ private extension PushNotificationsManager {
     }
     
     // Process notifications one by one
-    private func processNextNotification() {
-        notificationQueue.async {
-            guard !self.isProcessingNotification, let nextNotification = self.pendingNotifications.first else {
-                return
-            }
-            
-            self.isProcessingNotification = true
-            self.pendingNotifications.removeFirst()
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                
-                let dispatchGroup = DispatchGroup()
-                for delegate in self.delegates {
-                    dispatchGroup.enter()
-                    delegate.weak?.pushNotificationsDidReceive(model: nextNotification) {
-                        dispatchGroup.leave()
-                    }
-                }
-                dispatchGroup.notify(queue: .main) {
-                    self.isProcessingNotification = false
-                    self.processNextNotification()
-                }
-            }
-        }
-    }
+     private func processNextNotification() {
+         notificationQueue.async {
+             guard !self.isProcessingNotification else {
+                 return
+             }
+             
+             // Check if there's a pending notification
+             guard let nextNotification = self.pendingNotifications.first else {
+                 return
+             }
+             
+             // Check if there are any delegates
+             let delegates = self.delegates.compactMap { $0.weak }
+             if delegates.isEmpty {
+                 // No delegates to process the notification, wait and try again later
+                 return
+             }
+             
+             self.isProcessingNotification = true
+             self.pendingNotifications.removeFirst()
+             
+             DispatchQueue.main.async { [weak self] in
+                 guard let self = self else { return }
+                 
+                 let dispatchGroup = DispatchGroup()
+                 for delegate in delegates {
+                     dispatchGroup.enter()
+                     delegate.pushNotificationsDidReceive(model: nextNotification) {
+                         dispatchGroup.leave()
+                     }
+                 }
+                 dispatchGroup.notify(queue: .main) {
+                     self.isProcessingNotification = false
+                     self.processNextNotification()
+                 }
+             }
+         }
+     }
 }
 
 extension PushNotificationsManager {
