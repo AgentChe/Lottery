@@ -215,6 +215,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
             }
         case "past_draws":
             navigateToPastDraws(completion: completion)
+        case "next_draws":
+            navigateToNextDraws(completion: completion)
         default:
             // Handle other cases or log for debugging purposes
             print("Unhandled notification screen: \(screen)")
@@ -222,6 +224,40 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         }
     }
 
+    func navigateToNextDraws( completion: @escaping () -> Void) {
+        guard let navigationController = self.navigationController else {
+            completion()
+            return
+        }
+
+        // Dismiss any presented view controllers
+        navigationController.presentedViewController?.dismiss(animated: false, completion: nil)
+
+        // Pop to root view controller
+        navigationController.popToRootViewController(animated: false)
+        
+        if let chooseScanOptionView = view.subviews.first(where: { $0 is ChooseScanOptionView }) as? ChooseScanOptionView {
+            chooseScanOptionView.transform = .identity
+            self.dimView.alpha = 0
+            chooseScanOptionView.removeFromSuperview()
+            self.dimView.removeFromSuperview()
+
+        }
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            mainViewController.coordinator.change(tab: TabView.Tab.draws)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let pastDrawsButton = self.segmentedControl.buttonsCollection[0]
+            self.segmentedControl.segmentTapped(pastDrawsButton)
+            completion()
+
+            
+        }
+    }
+    
     func navigateToPastDraws( completion: @escaping () -> Void) {
         guard let navigationController = self.navigationController else {
             completion()
