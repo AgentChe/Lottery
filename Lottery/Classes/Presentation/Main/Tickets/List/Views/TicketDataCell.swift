@@ -58,8 +58,6 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         didSet {
             // Configure the view when data is updated
             if !pastDraws.isEmpty {
-                editButton.isHidden = pastDraws.count > 0 ? true : false
-                winnerImageView.isHidden = pastDraws.count > 0 ? false : true
                 winningNumbers = pastDraws.first?.winningNumbers ?? []
                 configure()
                 updateCollectionViewHeights()
@@ -73,8 +71,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     // Property to track if this ticket is a winning ticket
     var isTheWinner: Bool = false {
         didSet {
-            editButton.isHidden = !isTheWinner
-            winnerImageView.isHidden = isTheWinner
+            editButton.isHidden = isTheWinner
+            winnerImageView.isHidden = !isTheWinner
             updateCollectionViewHeights()
         }
     }
@@ -237,7 +235,9 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         } else {
             ticketImageView.image = nil
         }
-        
+        winnerImageView.isHidden = !isTheWinner
+        editButton.isHidden = isTheWinner
+       
         updateCollectionViewHeights() // Adjust heights based on `isTheWinner`
     }
     

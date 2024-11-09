@@ -14,9 +14,10 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    var isTheWinner: Bool = true {
+    var isTheWinner: Bool = false {
         didSet {
            // updateWinnerAndEditButtonVisibility()
+            ticketDataCollectionView.reloadData()
         }
     }
     
@@ -55,7 +56,6 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         super.viewWillAppear(animated)
         fetchTickets()
     }
-    
     func fetchTickets() {
         ticketsManager.listTickets(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
@@ -64,10 +64,9 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
                     for ticket in tickets {
                         if ticket.id == self?.ticket.id {
                             self?.ticket = ticket
-                            self?.updateViewConstraints()
+                            // Update isTheWinner based on ticket.status
+                            self?.isTheWinner = ticket.status == "Winner"
                             self?.ticketDataCollectionView.reloadData()
-                            // Ticket not found, dismiss
-                            NotificationCenter.default.post(name: .ticketDeleted, object: nil)
                             return
                         }
                     }
@@ -82,6 +81,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
             }
         }
     }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -181,7 +181,7 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketDataCell", for: indexPath) as! TicketDataCell
         cell.ticket = ticket
-        cell.isTheWinner = isTheWinner
+        cell.isTheWinner = self.isTheWinner // Pass the updated isTheWinner value
         cell.bonusIdx = bonusIdx
         cell.lotteries = lotteries
         cell.delegate = self
@@ -191,6 +191,7 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
         }
         return cell
     }
+
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout

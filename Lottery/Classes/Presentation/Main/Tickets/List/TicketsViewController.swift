@@ -746,12 +746,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         scanButtonIsTapped = false
         // navigationController?.navigationBar.barTintColor = Appearance.main400
         // navigationController?.navigationBar.isTranslucent = false
-        if let navigationController = getRootViewController() as? NavigationController,
-           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+    //    if let navigationController = getRootViewController() as? NavigationController,
+     //      let mainViewController = navigationController.viewControllers.first as? MainViewController {
            // updateMainViewControllerConstraints(for: mainViewController)
             fetchLotteries()
             
-        }
+       // }
         if pushDriven, let ticketID = ticketIDFromPush {
                viewTicket(withId: ticketID) {
                    // Call the completion handler after the ticket is viewed
