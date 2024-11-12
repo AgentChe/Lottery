@@ -8,13 +8,17 @@
 import UIKit
 import Kingfisher
 
-class PastGameCell: UICollectionViewCell {
+class PastGameCell: UICollectionViewCell,PastDrawsLuckyNumbersRowCellDelegate {
+  
+    
     private var backgroundImageView = UIImageView()
     private let whiteBackgroundView = UIView()
     var whiteBackgroundTopConstraint: NSLayoutConstraint!
     var whiteBackgroundHeightConstraint: NSLayoutConstraint!
     var bonusIdx: [Int] = []
-    
+  
+    private var luckyNumberCells: [LuckyNumbersRowCollecitonViewCell] = []
+  
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
@@ -122,8 +126,17 @@ class PastGameCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+     
+    func luckyNumbersRowCell(_ cell: LuckyNumbersRowCollecitonViewCell, didScroll contentOffset: CGPoint) {
+          for otherCell in luckyNumberCells {
+              if otherCell != cell {
+                  otherCell.myLuckyNumbersCollectionView.contentOffset = contentOffset
+              }
+          }
+      }
     override func prepareForReuse() {
         super.prepareForReuse()
+        luckyNumberCells = []
         logoImageView.kf.cancelDownloadTask()
     }
 }
@@ -491,9 +504,11 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
             }
             cell.bonusIdx = bonusIdx
             cell.indexPath = indexPath
+            cell.delegate = self
             cell.winningNumbers = winningNumbers
             cell.myLuckyNumbers = myLuckyNumbers
             cell.config()
+            luckyNumberCells.append(cell)
             return cell
         }
         
