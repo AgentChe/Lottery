@@ -15,18 +15,16 @@ class GeneratedNumbersViewController: UIViewController {
         }
     }
     
-    var numbers: [[Int]] = [
-        [12,23,34,45,56,67],
-        [19,26,35,43,54,67],
-        [15,23,30,48,55,61],
-        [12,23,34,45,56,67],
-        [19,26,35,43,54,67],
-        [19,26,35,43,54,67],
-        [15,23,30,48,55,61],
-        [12,23,34,45,56,67],
-        [19,26,35,43,54,67],
-    ]
-    
+    var numbers: [[Int]] = []{
+        didSet {
+            statsCollectionView.reloadData()
+        }
+    }
+    var generatedResponce: GeneratorResponse? {
+        didSet {
+            statsCollectionView.reloadData()
+        }
+    }
     var chanceString = "Your chance of matching all numbers with this combination is 2 in 292201338"
     
     private let backgroundfullView: UIImageView = {
@@ -311,12 +309,13 @@ extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UI
             let attributedString = NSAttributedString(string: chanceString, attributes: attributes)
             cell.chanceLabel.attributedText = attributedString
             
-            
-            
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatsCell.reusableIdentifier, for: indexPath) as! StatsCell
             // Configure your StatsCell
+            if let response = generatedResponce {
+                cell.config(response)
+            }
             return cell
         default:
             fatalError("Unexpected section")

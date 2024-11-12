@@ -11,7 +11,11 @@ class GeneratedNumbersCell: UICollectionViewCell {
  
     
     static let reusableIdentifier: String = "GeneratedNumbersCell"
-    var numbers : [[Int]] = []
+    var numbers : [[Int]] = [] {
+        didSet {
+            ticketNumbersCollectionView.reloadData()
+        }
+    }
     var bonusIdx: [Int] = []
     
     private var ticketNumbersCollectionViewHeightConstraint: NSLayoutConstraint!

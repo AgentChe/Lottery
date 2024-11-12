@@ -325,15 +325,15 @@ class GeneratorViewController: UIViewController {
     
     @objc func selectLotteryViewTapped() {
         guard let selectedState = selectedState else {
-              let alert = UIAlertController(
-                  title: "State Not Selected",
-                  message: "Please choose a state before selecting a lottery game.",
-                  preferredStyle: .alert
-              )
-              alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-              present(alert, animated: true, completion: nil)
-              return
-          }
+            let alert = UIAlertController(
+                title: "State Not Selected",
+                message: "Please choose a state before selecting a lottery game.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
         let selectGameVC = ScanSelectLotteriesViewController(stateId: selectedState, fromMenu: false, isFromGenerator: true, lotteriesForGeneratedViewController: self.lotteries)
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
@@ -363,7 +363,7 @@ class GeneratorViewController: UIViewController {
             navigationController.pushViewController(selectGameVC, animated: true)
         }
         
-       
+        
     }
     
     @objc func selectLinesViewTapped() {
@@ -421,7 +421,7 @@ class GeneratorViewController: UIViewController {
         numberLabel.text = "\(currentNumber)"
         linesCountLabel.text = "\(currentNumber)"
         
-      
+        
     }
 }
 //MARK: Setup constraints
@@ -568,12 +568,17 @@ extension GeneratorViewController {
     @objc func generateNumbers () {
         let generatorManager = GeneratorManager()
         if let selectedLottery = selectedLottery {
-            generatorManager.generateNumbers(lotteryId: selectedLottery, lines: 5) { result in
+            let lines = Int(numberLabel.text ?? "0") ?? 0
+            generatorManager.generateNumbers(lotteryId: selectedLottery, lines: lines) { result in
                 switch result {
                 case .success(let response):
                     // Handle success
+                    
                     print("Generated Numbers: \(response.numbers)")
                     print("Score of Numbers: \(response.scoreOfNumbers.value)")
+                    DispatchQueue.main.async {
+                       goToGeneratedNumbers(generatedNumbersResponce: response )
+                    }
                     // Access other analytics as needed
                 case .failure(let error):
                     // Handle error
@@ -581,16 +586,20 @@ extension GeneratorViewController {
                 }
             }
         }
-        
-//        let generatedNumbersViewContorller = GeneratedNumbersViewController()
-//        if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == selectedLottery }.first {
-//            generatedNumbersViewContorller.bonusIdx = pattern.bonusIdx
-//        }
-//        generatedNumbersViewContorller.lotteryPatterns = lotteryPatterns
-//        generatedNumbersViewContorller.lotteries = lotteries
-//        generatedNumbersViewContorller.selectedLottery = selectedLottery
-//        generatedNumbersViewContorller.nextDraws = nextDraws
-//        navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
+        func goToGeneratedNumbers(generatedNumbersResponce:  GeneratorResponse) {
+            
+            let generatedNumbersViewContorller = GeneratedNumbersViewController()
+            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == selectedLottery }.first {
+                generatedNumbersViewContorller.bonusIdx = pattern.bonusIdx
+            }
+            generatedNumbersViewContorller.numbers = generatedNumbersResponce.numbers
+            generatedNumbersViewContorller.lotteryPatterns = lotteryPatterns
+            generatedNumbersViewContorller.generatedResponce = generatedNumbersResponce
+            generatedNumbersViewContorller.lotteries = lotteries
+            generatedNumbersViewContorller.selectedLottery = selectedLottery
+            generatedNumbersViewContorller.nextDraws = nextDraws
+            navigationController?.pushViewController(generatedNumbersViewContorller, animated: true)
+        }
     }
 }
 
@@ -634,7 +643,7 @@ extension GeneratorViewController {
             }
         }
     }
-
+    
     func presentTryAgainViewController(with error: Error) {
         let vc = TryAgainViewController.make(error: error) { [weak self] in
             self?.fetchStates()

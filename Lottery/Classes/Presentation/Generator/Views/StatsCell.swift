@@ -43,72 +43,72 @@ class StatsCell: UICollectionViewCell {
     }()
     
     // Detailed stats labels and lines
-        private let scoreOfNumbersLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            
-            // Set up the text with increased kerning
-            let text = "score of numbers".uppercased()
-            let attributedString = NSAttributedString(
-                string: text,
-                attributes: [
-                    .font: Fonts.Inter.medium(size: 12.scale),
-                    .foregroundColor: Appearance.mono200,
-                    .kern: 1.5 // Adjust the kern value as needed
-                ]
-            )
-            
-            label.attributedText = attributedString
-            label.textAlignment = .left
-            return label
-        }()
+    private let scoreOfNumbersLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         
-        private let scoreOfNumberActualNumberLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "0%"
-            label.font = Fonts.Inter.extraBold(size: 24.scale)
-            label.textColor = Appearance.statsGreen
-            return label
-        }()
+        // Set up the text with increased kerning
+        let text = "score of numbers".uppercased()
+        let attributedString = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.mono200,
+                .kern: 1.5 // Adjust the kern value as needed
+            ]
+        )
         
-        private let firstDashedImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.image = UIImage(named: "FullTicket.Spearator")
-            imageView.contentMode = .scaleAspectFit
-            return imageView
-        }()
+        label.attributedText = attributedString
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private let scoreOfNumberActualNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "0%"
+        label.font = Fonts.Inter.extraBold(size: 24.scale)
+        label.textColor = Appearance.statsGreen
+        return label
+    }()
+    
+    private let firstDashedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "FullTicket.Spearator")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    private let numbersFrequencyLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         
-        private let numbersFrequencyLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            
-            // Set up the text with increased kerning
-            let text = "regular numbers frequency".uppercased()
-            let attributedString = NSAttributedString(
-                string: text,
-                attributes: [
-                    .font: Fonts.Inter.medium(size: 12.scale),
-                    .foregroundColor: Appearance.mono200,
-                    .kern: 1.5 // Adjust the kern value as needed
-                ]
-            )
-            
-            label.attributedText = attributedString
-            label.textAlignment = .left
-            return label
-        }()
+        // Set up the text with increased kerning
+        let text = "regular numbers frequency".uppercased()
+        let attributedString = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.mono200,
+                .kern: 1.5 // Adjust the kern value as needed
+            ]
+        )
         
-        private let numbersFrequencyActualNumberLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "0%"
-            label.font = Fonts.Inter.extraBold(size: 24.scale)
-            label.textColor = Appearance.statsOrange
-            return label
-        }()
-        
+        label.attributedText = attributedString
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private let numbersFrequencyActualNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "0%"
+        label.font = Fonts.Inter.extraBold(size: 24.scale)
+        label.textColor = Appearance.statsOrange
+        return label
+    }()
+    
     private let numbersFrequencyDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -132,44 +132,44 @@ class StatsCell: UICollectionViewCell {
         label.numberOfLines = 2
         return label
     }()
-
-        private let secondDashedImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.image = UIImage(named: "FullTicket.Spearator")
-            imageView.contentMode = .scaleAspectFit
-            return imageView
-        }()
+    
+    private let secondDashedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "FullTicket.Spearator")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    private let skippedNumbersAnalyticsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         
-        private let skippedNumbersAnalyticsLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            
-            // Set up the text with increased kerning
-            let text = "skipped numbers analytics".uppercased()
-            let attributedString = NSAttributedString(
-                string: text,
-                attributes: [
-                    .font: Fonts.Inter.medium(size: 12.scale),
-                    .foregroundColor: Appearance.mono200,
-                    .kern: 1.5 // Adjust the kern value as needed
-                ]
-            )
-            
-            label.attributedText = attributedString
-            label.textAlignment = .left
-            return label
-        }()
+        // Set up the text with increased kerning
+        let text = "skipped numbers analytics".uppercased()
+        let attributedString = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.mono200,
+                .kern: 1.5 // Adjust the kern value as needed
+            ]
+        )
         
-        private let skippedNumbersAnalyticsActualNumberLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "0%"
-            label.font = Fonts.Inter.extraBold(size: 24.scale)
-            label.textColor = Appearance.statsGreen
-            return label
-        }()
-        
+        label.attributedText = attributedString
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private let skippedNumbersAnalyticsActualNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "0%"
+        label.font = Fonts.Inter.extraBold(size: 24.scale)
+        label.textColor = Appearance.statsGreen
+        return label
+    }()
+    
     private let skippedNumbersAnalyticsActualNumberDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -193,46 +193,46 @@ class StatsCell: UICollectionViewCell {
         label.numberOfLines = 2
         return label
     }()
-
+    
+    
+    private let thirdDashedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "FullTicket.Spearator")
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
+    private let consecutiveNumbersAnalyticsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         
-        private let thirdDashedImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.image = UIImage(named: "FullTicket.Spearator")
-            imageView.contentMode = .scaleAspectFit
-            imageView.layer.masksToBounds = true
-            return imageView
-        }()
+        // Set up the text with increased kerning
+        let text = "consecutive numers analytics".uppercased()
+        let attributedString = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.mono200,
+                .kern: 1.5 // Adjust the kern value as needed
+            ]
+        )
         
-        private let consecutiveNumbersAnalyticsLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            
-            // Set up the text with increased kerning
-            let text = "consecutive numers analytics".uppercased()
-            let attributedString = NSAttributedString(
-                string: text,
-                attributes: [
-                    .font: Fonts.Inter.medium(size: 12.scale),
-                    .foregroundColor: Appearance.mono200,
-                    .kern: 1.5 // Adjust the kern value as needed
-                ]
-            )
-            
-            label.attributedText = attributedString
-            label.textAlignment = .left
-            return label
-        }()
-        
-        private let consecutiveNumbersAnalyticsActualNumberLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "0%"
-            label.font = Fonts.Inter.extraBold(size: 24.scale)
-            label.textColor = Appearance.statsGreen
-            return label
-        }()
-        
+        label.attributedText = attributedString
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private let consecutiveNumbersAnalyticsActualNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "0%"
+        label.font = Fonts.Inter.extraBold(size: 24.scale)
+        label.textColor = Appearance.statsGreen
+        return label
+    }()
+    
     private let analyticDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -256,20 +256,84 @@ class StatsCell: UICollectionViewCell {
         label.numberOfLines = 2
         return label
     }()
-
-
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            backgroundColor = .orange
-            layer.cornerRadius = 16.scale
-            layer.masksToBounds = true
-            setupSubviews()
-        }
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .orange
+        layer.cornerRadius = 16.scale
+        layer.masksToBounds = true
+        setupSubviews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func config(_ response: GeneratorResponse) {
+        scoreOfNumberActualNumberLabel.text = response.scoreOfNumbers.value
+     
+        numbersFrequencyActualNumberLabel.text = response.regularNumbersFrequency.value
+        // Set up the text and paragraph style
+        let text = response.regularNumbersFrequency.infoDescription
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.4
         
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+        // Create an attributed string with the paragraph style
+        let attributedText = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.main300,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+        numbersFrequencyDescriptionLabel.attributedText = attributedText
         
+      
+        
+        
+        skippedNumbersAnalyticsActualNumberLabel.text = response.skippedNumbersAnalytics.value
+        // Set up the text and paragraph style
+        let skippedNumbers_text = response.skippedNumbersAnalytics.infoDescription
+        let skippedNumbers_paragraphStyle = NSMutableParagraphStyle()
+        skippedNumbers_paragraphStyle.lineHeightMultiple = 1.4
+        
+        // Create an attributed string with the paragraph style
+        let skippedNumbers_attributedText = NSAttributedString(
+            string: skippedNumbers_text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.main300,
+                .paragraphStyle: skippedNumbers_paragraphStyle
+            ]
+        )
+        
+        skippedNumbersAnalyticsActualNumberDescriptionLabel.attributedText = skippedNumbers_attributedText
+        
+        
+        consecutiveNumbersAnalyticsActualNumberLabel.text = response.consecutiveNumbersAnalytics.value
+        
+        // Set up the text and paragraph style
+        let consecutiveNumbers_text = response.consecutiveNumbersAnalytics.infoDescription
+        let consecutiveNumbers_paragraphStyle = NSMutableParagraphStyle()
+        consecutiveNumbers_paragraphStyle.lineHeightMultiple = 1.4
+        
+        // Create an attributed string with the paragraph style
+        let consecutiveNumbers_attributedText = NSAttributedString(
+            string: consecutiveNumbers_text,
+            attributes: [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: Appearance.main300,
+                .paragraphStyle: consecutiveNumbers_paragraphStyle
+            ]
+        )
+        
+        analyticDescriptionLabel.attributedText = consecutiveNumbers_attributedText
+        
+        
+    }
+    
     private func setupSubviews() {
         // Add background and main label
         insertSubview(backgroundImageView, at: 0)
@@ -303,7 +367,7 @@ class StatsCell: UICollectionViewCell {
          skippedNumbersAnalyticsActualNumberDescriptionLabel, thirdDashedImageView,
          consecutiveNumbersAnalyticsLabel, consecutiveNumbersAnalyticsActualNumberLabel, analyticDescriptionLabel
         ].forEach { whiteBackgroundView.addSubview($0) }
-
+        
         // Set up constraints for each label and dashed line
         NSLayoutConstraint.activate([
             // Score of Numbers
@@ -369,8 +433,8 @@ class StatsCell: UICollectionViewCell {
             analyticDescriptionLabel.widthAnchor.constraint(equalToConstant: 311.scale),
             analyticDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
-
-
+        
+        
     }
-
+    
 }
