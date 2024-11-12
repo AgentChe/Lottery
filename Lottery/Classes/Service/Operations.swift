@@ -9,7 +9,7 @@ class Operations {
     private var gamesManagerOperations: [String: any APIOperationProtocol] = [:]
     private var ticketsManagerOperations: [String: any APIOperationProtocol] = [:]
     private var profileManagerOperations: [String: any APIOperationProtocol] = [:]
-    private var generatorOperations: [String: APIOperation] = [:]
+    private var generatorOperations: [String: any APIOperationProtocol] = [:]
     
     
     private let operationsQueue = DispatchQueue(label: "com.example.OperationsQueue")
