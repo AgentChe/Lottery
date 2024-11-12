@@ -551,6 +551,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             }
             fetchTickets()
             
+            
         } else {
             
             buttonsStackViewHeightConstraint?.constant = 0.scale
@@ -858,11 +859,11 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                         self?.noScratchoffLabel.isHidden = true
                         self?.scanScratchOffTicketButton.isHidden = true
                         if self?.tickets.count != 0 {
-                            self?.ticketsCollectionView.isHidden = false
-                            self?.noTicketsImageView.isHidden = true
-                            self?.noTicketsLabel.isHidden = true
-                            self?.scanLotteryTicketButton.isHidden = true
-                            
+//                            self?.ticketsCollectionView.isHidden = false
+//                            self?.noTicketsImageView.isHidden = true
+//                            self?.noTicketsLabel.isHidden = true
+//                            self?.scanLotteryTicketButton.isHidden = true
+//                            
                             
                             
                         } else {
