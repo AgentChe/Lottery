@@ -67,32 +67,32 @@ class WinningNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionVie
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as! NumberCell
         if numbers.count > indexPath.item {
             let number = numbers[indexPath.item]
-            configureCell(cell, withNumber: number, comparisonArray: winningNumbers, indexPath: indexPath)
-            if bonusIdx.contains(indexPath.item) {
-                for winNumArray in winningNumbers {
-                    if winNumArray.last != number {
-                        cell.numberLabel.textColor = Appearance.main100
-                        cell.layer.borderColor = Appearance.main100.cgColor
-                        cell.backgroundViewContainer.backgroundColor = UIColor(hex: "#D9E2FA", alpha: 0.2)
-                        cell.backgroundViewContainer.alpha = 0.5
-                    }
-                }
-            }
+            configureCell(cell, withNumber: number, comparisonArray: myLuckyNumbers, indexPath: indexPath)
+//            if bonusIdx.contains(indexPath.item) {
+//                for winNumArray in winningNumbers {
+//                    if winNumArray.last != number {
+//                        cell.numberLabel.textColor = Appearance.main100
+//                        cell.layer.borderColor = Appearance.main100.cgColor
+//                        cell.backgroundViewContainer.backgroundColor = UIColor(hex: "#D9E2FA", alpha: 0.2)
+//                        cell.backgroundViewContainer.alpha = 0.5
+//                    }
+//                }
+//            }
         }
         return cell
     }
     private func configureCell(_ cell: NumberCell, withNumber number: Int, comparisonArray: [[Int]], indexPath: IndexPath) {
-        if comparisonArray.count == 0 {
-            return
+        cell.numberLabel.textColor = Appearance.mono100
+        if comparisonArray.count != 0 {
+            var lastIndex = comparisonArray[0].count - 1
+            if bonusIdx.contains(indexPath.item) {
+             
+            } else {
+                cell.numberLabel.textColor = Appearance.mono100
+            }
 
         }
-        var lastIndex = comparisonArray[0].count - 1
-        if bonusIdx.contains(indexPath.item) {
-         
-        } else {
-            cell.numberLabel.textColor = Appearance.mono100
-        }
-        
+       
         
         let allNumbers = Set(comparisonArray.flatMap({ $0 }))
         let isHighlight = allNumbers.contains(number)

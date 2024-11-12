@@ -158,6 +158,7 @@ extension PastGameCell {
         logoImageView.contentMode = .scaleAspectFit
         myLuckyNumbers = game.myLuckyNumbers ?? []
         winningNumbers = game.winningNumbers ?? []
+        print("winningNumbers: \(winningNumbers)")
         
         
         if let image = UIImage(named:  myLuckyNumbers != [] ? "pastDrawDefBcg" : "pastDrawNoLuckyNumbers") {
@@ -504,7 +505,7 @@ extension PastGameCell: UICollectionViewDataSource, UICollectionViewDelegateFlow
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == winningNumbersCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WinningNumbersRowCollecitonViewCell.reuseIdentifier, for: indexPath) as? WinningNumbersRowCollecitonViewCell else {
-                fatalError("Could not dequeue cell with identifier: LuckyNumbersRowCollecitonViewCell")
+                fatalError("Could not dequeue cell with identifier: WinningNumbersRowCollecitonViewCell")
             }
             cell.bonusIdx = bonusIdx
             cell.indexPath = indexPath
