@@ -125,7 +125,6 @@ class GeneratedNumbersViewController: UIViewController {
         self.spinImageView.layer.removeAnimation(forKey: "rotateAnimation")
         
         // Fade out the spinImageView and generateNumbersLabel
-        
         self.spinImageView.alpha = 0
         self.generateNumbersLabel.alpha = 0
         self.numbersImageView.alpha = 0
@@ -142,7 +141,7 @@ class GeneratedNumbersViewController: UIViewController {
         setupSubviews()
         setupNavigationBarTitle()
         setupConstraints()
-        startSpinAnimation()
+        startSpinAnimationBegin()
         
         delay(Double(Int.random(in: 3...5))) {
             self.stopLoadingAnimation()
@@ -240,7 +239,25 @@ class GeneratedNumbersViewController: UIViewController {
         ])
         
     }
-    
+    private func startSpinAnimationBegin() {
+        self.spinImageView.alpha = 1
+        self.generateNumbersLabel.alpha = 1
+        self.numbersImageView.alpha = 1
+        
+        let rotation = CABasicAnimation(keyPath: "transform.rotation")
+        rotation.toValue = CGFloat.pi * 20
+        rotation.duration = 5
+        rotation.repeatCount = .infinity
+        spinImageView.layer.add(rotation, forKey: "rotateAnimation")
+        
+        pickAgainButton.isUserInteractionEnabled = false
+        goToEditLuckyNumbersButton.isUserInteractionEnabled = false
+        
+        pickAgainButton.setTitleAlpha(0.4, for: .normal)
+        goToEditLuckyNumbersButton.setTitleAlpha(0.4, for: .normal)
+        
+        statsCollectionView.alpha = 0
+    }
     private func startSpinAnimation() {
         self.spinImageView.alpha = 1
         self.generateNumbersLabel.alpha = 1
@@ -262,7 +279,7 @@ class GeneratedNumbersViewController: UIViewController {
         
         let generatorManager = GeneratorManager()
         if let selectedLottery = selectedLottery {
-            let lines = numbers.last?.count ?? 0
+            let lines = numbers.count 
             generatorManager.generateNumbers(lotteryId: selectedLottery, lines: lines) { result in
                 switch result {
                 case .success(let response):

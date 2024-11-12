@@ -62,7 +62,7 @@ final class GeneratorManager: GeneratorManagerProtocol {
             }
             
             // Print HTTP Status Code
-            print("HTTP Status Code: \(httpResponse.statusCode)")
+           // print("HTTP Status Code: \(httpResponse.statusCode)")
             
             // Print Response Data
             if let data = data, let dataString = String(data: data, encoding: .utf8) {

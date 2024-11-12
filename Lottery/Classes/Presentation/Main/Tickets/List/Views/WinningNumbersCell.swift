@@ -42,7 +42,7 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
     func config() {
         winningNumbersWithLabels = convertTo2DStringArray(winningNumbers)
         ticketNumbersWithLabels = convertTo2DStringArray(ticketNumbers)
-        print("ticketsNumbersWithLabels", winningNumbersWithLabels)
+        //print("ticketsNumbersWithLabels", winningNumbersWithLabels)
         winningNumbersRowNumbersCollectionView.reloadData()
     }
     override init(frame: CGRect) {

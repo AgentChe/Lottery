@@ -574,8 +574,8 @@ extension GeneratorViewController {
                 case .success(let response):
                     // Handle success
                     
-                    print("Generated Numbers: \(response.numbers)")
-                    print("Score of Numbers: \(response.scoreOfNumbers.value)")
+                    print("Generated Numbers: \(response.numbers.count)")
+                 
                     DispatchQueue.main.async {
                        goToGeneratedNumbers(generatedNumbersResponce: response )
                     }

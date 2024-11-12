@@ -40,7 +40,7 @@ class LuckyNumbersRowCollectionViewCell: UICollectionViewCell, UICollectionViewD
     }
     func config() {
         ticketsNumbersWithLabels = convertTo2DStringArray(ticketNumbers)
-        print("ticketsNumbersWithLabels", ticketsNumbersWithLabels)
+        //print("ticketsNumbersWithLabels", ticketsNumbersWithLabels)
         ticketNumbersCollectionView.reloadData()
     }
     override init(frame: CGRect) {
