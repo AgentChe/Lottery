@@ -146,6 +146,7 @@ class PastGameCell: UICollectionViewCell,PastDrawsLuckyNumbersRowCellDelegate , 
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        winningNumberCells = []
         luckyNumberCells = []
         logoImageView.kf.cancelDownloadTask()
     }

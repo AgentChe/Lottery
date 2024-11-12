@@ -85,6 +85,7 @@
 		A3513DA92CDE20B8000D0951 /* GenerateNumbersRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DA82CDE20B3000D0951 /* GenerateNumbersRequest.swift */; };
 		A3513DAC2CDE2123000D0951 /* GeneratorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DAB2CDE2119000D0951 /* GeneratorManager.swift */; };
 		A3513DAE2CE353ED000D0951 /* WinningNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DAD2CE353E4000D0951 /* WinningNumbersRowCollecitonViewCell.swift */; };
+		A3513DB02CE363C7000D0951 /* NextDrawsWinningNumbersRowCollecitonViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3513DAF2CE363C4000D0951 /* NextDrawsWinningNumbersRowCollecitonViewCell.swift */; };
 		A355D7DA2C1901F200FCDCAC /* NumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */; };
 		A355F8BE2CD2286300329FE3 /* LuckyNumbersRowCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */; };
 		A355F8C22CD3C37800329FE3 /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */; };
@@ -355,6 +356,7 @@
 		A3513DA82CDE20B3000D0951 /* GenerateNumbersRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateNumbersRequest.swift; sourceTree = "<group>"; };
 		A3513DAB2CDE2119000D0951 /* GeneratorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorManager.swift; sourceTree = "<group>"; };
 		A3513DAD2CE353E4000D0951 /* WinningNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinningNumbersRowCollecitonViewCell.swift; sourceTree = "<group>"; };
+		A3513DAF2CE363C4000D0951 /* NextDrawsWinningNumbersRowCollecitonViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextDrawsWinningNumbersRowCollecitonViewCell.swift; sourceTree = "<group>"; };
 		A355D7D92C1901F200FCDCAC /* NumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTicketCell.swift; sourceTree = "<group>"; };
 		A355F8BD2CD2284A00329FE3 /* LuckyNumbersRowCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuckyNumbersRowCollectionViewCell.swift; sourceTree = "<group>"; };
 		A355F8C12CD3C37100329FE3 /* GeneratorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
@@ -988,6 +990,7 @@
 			children = (
 				A32691352CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift */,
 				A3513DAD2CE353E4000D0951 /* WinningNumbersRowCollecitonViewCell.swift */,
+				A3513DAF2CE363C4000D0951 /* NextDrawsWinningNumbersRowCollecitonViewCell.swift */,
 				A3FD9EA52C11CAFE000FAD68 /* PastGameCell.swift */,
 				A32691372CA1992A00504DA3 /* NoVerticalScrollCollectionView.swift */,
 				A3EF37222C174E1D00753C41 /* NumberCell.swift */,
@@ -1935,6 +1938,7 @@
 				DE42B1B02BFF3CB200FF61B0 /* Weak.swift in Sources */,
 				A3FF55892C0CC38C00E81771 /* SelectStateViewController.swift in Sources */,
 				A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */,
+				A3513DB02CE363C7000D0951 /* NextDrawsWinningNumbersRowCollecitonViewCell.swift in Sources */,
 				A3FF55792C07E62D00E81771 /* ListTicketsRequest.swift in Sources */,
 				A355F8C72CD71A8100329FE3 /* ChanceCell.swift in Sources */,
 				A3FF558D2C0CC3C100E81771 /* WelcomeView.swift in Sources */,

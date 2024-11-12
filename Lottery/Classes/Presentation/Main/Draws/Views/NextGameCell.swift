@@ -9,7 +9,15 @@
 import UIKit
 import Kingfisher
 
-class NextGameCell: UICollectionViewCell {
+class NextGameCell: UICollectionViewCell,NextDrawsWinningNumbersRowCellDelegate {
+    func luckyNumbersRowCell(_ cell: NextDrawsWinningNumbersRowCollecitonViewCell, didScroll contentOffset: CGPoint) {
+        for otherCell in winningNumberCells {
+            if otherCell != cell {
+                otherCell.myLuckyNumbersCollectionView.contentOffset = contentOffset
+            }
+        }
+    }
+    private var winningNumberCells: [NextDrawsWinningNumbersRowCollecitonViewCell] = []
     
     private var backgroundImageView = UIImageView()
     var bonusIdx: [Int] = []
@@ -31,13 +39,13 @@ class NextGameCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var winningNumbersCollectionView: UICollectionView = {
+    lazy var winningNumbersCollectionView: NoVerticalScrollCollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 8.scale
         layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = NoVerticalScrollCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
@@ -46,7 +54,7 @@ class NextGameCell: UICollectionViewCell {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.layer.masksToBounds = false
-        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+        collectionView.register(NextDrawsWinningNumbersRowCollecitonViewCell.self, forCellWithReuseIdentifier: NextDrawsWinningNumbersRowCollecitonViewCell.reuseIdentifier)
         return collectionView
     }()
     
@@ -84,9 +92,8 @@ class NextGameCell: UICollectionViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-        //    logoImageView.kf.cancelDownloadTask()
+        winningNumberCells = []
     }
-    
 }
 
 // MARK: - Public Methods
@@ -421,6 +428,10 @@ private extension NextGameCell {
 }
 
 extension NextGameCell:  UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let viewWidth = frame.width
+        return CGSize(width: viewWidth , height: 40.scale)
+    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
         return UIEdgeInsets(top: 1.scale,
@@ -429,22 +440,24 @@ extension NextGameCell:  UICollectionViewDataSource, UICollectionViewDelegateFlo
                             right:  16.scale)
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return winningNumbers.count ?? 0
+        return winningNumbers != [] ? 1 : 0
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == winningNumbersCollectionView {
-            return winningNumbers.first?.count ?? 0
+            return winningNumbers.count ?? 0
         }
         return 0
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
-            fatalError("Could not dequeue cell with identifier: NumberCell")
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NextDrawsWinningNumbersRowCollecitonViewCell.reuseIdentifier, for: indexPath) as? NextDrawsWinningNumbersRowCollecitonViewCell else {
+            fatalError("Could not dequeue cell with identifier: NextDrawsWinningNumbersRowCollecitonViewCell")
         }
-        
-        if collectionView == winningNumbersCollectionView {
-            configureCellForWinningNumbers(cell, at: indexPath)
-        }
+        cell.bonusIdx = bonusIdx
+        cell.indexPath = indexPath
+        cell.delegate = self
+        cell.winningNumbers = winningNumbers
+        cell.config()
+        winningNumberCells.append(cell)
         return cell
     }
     private func configureCellForWinningNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
