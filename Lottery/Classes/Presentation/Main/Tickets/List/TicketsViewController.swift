@@ -73,12 +73,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         switch currentFilter {
         case .all:
             filteredTickets = tickets
+            updateButtonStyles(selectedButton: allButton)
         case .upcoming:
             filteredTickets = tickets.filter { $0.status == "Upcoming" }
+            updateButtonStyles(selectedButton: upcomingButton)
         case .winners:
             filteredTickets = tickets.filter { $0.status == "Winners" }
+            updateButtonStyles(selectedButton: winnersButton)
         case .nonWinners:
             filteredTickets = tickets.filter { $0.status == "Non-winners" }
+            updateButtonStyles(selectedButton: nonWinnersButton)
         }
         ticketsCollectionView.reloadData()
 
@@ -123,7 +127,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         button.titleLabel?.font = Fonts.Inter.medium(size: 14.scale)
         button.backgroundColor = UIColor.clear
         button.layer.borderWidth = 1.scale
-        button.layer.borderColor = Appearance.ticketsBorderColor.cgColor
+        button.layer.borderColor = Appearance.mono200.cgColor
         button.setTitleColor(Appearance.mono200, for: .normal)
         button.layer.cornerRadius = 20.scale
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -334,8 +338,6 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         
         setupNavigationBarTitle()
         
-        
-        
         setupTicketsCollectionView()
         setupScratchoffsCollectionView()
         setupScanButton()
@@ -378,26 +380,44 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     @objc func allButtonTapped() {
         currentFilter = .all
         applyCurrentFilter()
+        updateButtonStyles(selectedButton: allButton)
     }
 
     @objc func upcomingButtonTapped() {
         currentFilter = .upcoming
         applyCurrentFilter()
+        updateButtonStyles(selectedButton: upcomingButton)
     }
 
     @objc func winnersButtonTapped() {
         currentFilter = .winners
         applyCurrentFilter()
+        updateButtonStyles(selectedButton: winnersButton)
     }
 
     @objc func nonWinnersButtonTapped() {
         currentFilter = .nonWinners
         applyCurrentFilter()
+        updateButtonStyles(selectedButton: nonWinnersButton)
     }
+
+    func updateButtonStyles(selectedButton: UIButton) {
+        let buttons = [allButton, upcomingButton, winnersButton, nonWinnersButton]
+        for button in buttons {
+            if button == selectedButton {
+                button.layer.borderColor = Appearance.mono200.cgColor
+                button.titleLabel?.font = Fonts.Inter.semiBold(size: 14.scale)
+            } else {
+                button.layer.borderColor = Appearance.ticketsBorderColor.cgColor
+                button.titleLabel?.font = Fonts.Inter.medium(size: 14.scale)
+            }
+        }
+    }
+
     @objc private func handleTicketDeleted() {
             // Call fetchTickets to refresh the UI
             fetchTickets()
-        }
+    }
     deinit {
            // Remove observer when the view controller is deinitialized
            NotificationCenter.default.removeObserver(self, name: .ticketDeleted, object: nil)
@@ -1069,12 +1089,12 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 //                oldTabViewBottomConstraint.isActive = false
 //                mainView.tabViewBottomConstraint = nil
 //            }
-//            
+//
 //            // Create and activate the new constraint
 //            let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
 //            mainView.tabViewBottomConstraint = newTabViewBottomConstraint
 //            newTabViewBottomConstraint.isActive = true
-//            
+//
 //            // Call layoutIfNeeded to apply the changes
 //            mainView.layoutIfNeeded()
 //        }
