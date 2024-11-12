@@ -138,6 +138,4 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
     
 }
 
-extension Notification.Name {
-    static let syncScroll = Notification.Name("syncScroll")
-}
+ 
