@@ -1,7 +1,5 @@
 import UIKit
 
-import UIKit
-
 class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning, UIViewControllerInteractiveTransitioning, UIGestureRecognizerDelegate {
 
     var isPresenting = false
@@ -9,7 +7,7 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
     var panGestureRecognizer: UIPanGestureRecognizer!
     weak var viewController: UIViewController?
     var transitionContext: UIViewControllerContextTransitioning?
-    var initialCenter: CGPoint = .zero
+    var initialCenter: CGPoint =  CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
     var percentComplete: CGFloat = 0.0
 
     // Dim view for background
@@ -36,9 +34,9 @@ class FullTicketCustomTransitionManager: NSObject, UIViewControllerTransitioning
             interactiveDismiss = true
             viewController?.dismiss(animated: true, completion: nil)
         case .changed:
-            if translation.y >= 0 {
+            if translation.y > 0 {
                 let newCenterY = initialCenter.y + translation.y
-                view.center = CGPoint(x: initialCenter.x, y: newCenterY)
+                view.center = CGPoint(x: initialCenter.x , y: newCenterY)
                 transitionContext?.updateInteractiveTransition(percentComplete)
                 dimView?.alpha = 1 - percentComplete
             } else {

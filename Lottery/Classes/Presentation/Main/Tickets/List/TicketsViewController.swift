@@ -42,6 +42,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
         // Initialize and set up the custom transition manager
         let customTransitionManager = FullTicketCustomTransitionManager()
+        customTransitionManager.initialCenter = view.center
         navController.transitioningDelegate = customTransitionManager
         customTransitionManager.setupGestureRecognizer(in: navController)
 
@@ -319,6 +320,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
 
     override func viewDidLoad() {
         super.viewDidLoad()
+       
         view.addSubview(backgroundfullView)
         view.backgroundColor = Appearance.main400
         NSLayoutConstraint.activate([
