@@ -71,7 +71,9 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchStateAndGames()
+        self.fetchStateAndGames()
+    
+        
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
@@ -820,6 +822,7 @@ extension DrawsViewController {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             let game = nextDraws[indexPath.item]
+            print("PastDraws.count:", self.pastDraws.count)
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
                     if let pattern: LotteryPattern = lotteryPatterns.filter({ $0.id == game.lotteryId }).first {

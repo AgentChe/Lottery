@@ -174,7 +174,7 @@ final class ScanOnboardingViewController: UIViewController {
             presentTryAgainViewController(with: ContentError(.notContent))
             return
         }
-        
+
         profileManager.setProfile(lotteries: selectedLotteries, state: stateId) { [weak self] result in
             switch result {
             case .success:
@@ -182,56 +182,52 @@ final class ScanOnboardingViewController: UIViewController {
                     let nextStep = self?.determineNextStep() ?? .main
                     self?.goToNext(at: nextStep)
                 } else {
-                    if self?.fromMenu == true {
-                        self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
-                        self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
-                    }
-                
-                    let rootViewController =  self?.navigationController?.viewControllers.first
+                  
+
+                    // Begin the asynchronous tasks
                     Task {
-                        
-//                        let contentManager = ContentManager()
-//                     async let lotteriesResult =   contentManager.fetchLotteries(forceUpdate: true)  { [weak self] result in
-//                        }
-//                      async let lpResult = contentManager.fetchLotteriesPattern(forceUpdate: true) { [weak self] result in
-//                            
-//                        }
-                        
                         let gamesManager = GamesManager()
-                        
-                        async let nextGamesResult = gamesManager.fetchNextGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
-                            
-                        }
-                        async let pastGamesResult = gamesManager.fetchPastGames(stateId: self?.fromMenu == true ? stateId : nil, forceUpdate: true) { [weak self] result in
-                            
-                        }
-                        
-                        // Wait for both results to complete
                         do {
+                            let stateIdParam = self?.fromMenu == true ? stateId : nil
+                            // Use async methods and await their completion
+                            async let nextGamesResult = gamesManager.fetchNextGamesAsync(
+                                stateId: stateIdParam,
+                                forceUpdate: true
+                            )
+                            async let pastGamesResult = gamesManager.fetchPastGamesAsync(
+                                stateId: stateIdParam,
+                                forceUpdate: true
+                            )
+
+                            // Await both results
                             let nextGames = try await nextGamesResult
                             let pastGames = try await pastGamesResult
-                         //   let ltteries = try await lotteriesResult
-                         //   let lp = try await lpResult
-                            
-                            // Process both results
-                            // Handle nextGames and pastGames here
+
+                            // Process both results if necessary
+
+                            // Ensure UI updates are on the main thread
+                            if self?.fromMenu == true {
+                                self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
+                                self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false
+                            }
+                            DispatchQueue.main.async { [weak self] in
+                                self?.navigationController?.popToRootViewController(animated: true)
+                            }
                         } catch {
-                            // Handle error
-                            self?.presentTryAgainViewController(with: ContentError(.notContent))
+                            // Handle errors and present error UI on the main thread
+                            DispatchQueue.main.async { [weak self] in
+                                self?.presentTryAgainViewController(with: ContentError(.notContent))
+                            }
                             return
                         }
                     }
-                    
-                    self?.navigationController?.popToRootViewController(animated: true)
-                    //                    delay(0.7) {
-                    //                        rootViewController?.dismiss(animated: true)
-                    //                    }
                 }
             case .failure(let error):
                 self?.presentTryAgainViewController(with: error)
             }
         }
     }
+
     
     private func determineNextStep() -> Step {
         let sessionManager = SessionManager()
