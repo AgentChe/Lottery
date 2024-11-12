@@ -120,6 +120,23 @@ class GeneratedNumbersViewController: UIViewController {
         }
     }
     
+    fileprivate func stopLoadingAnimation() {
+        // Remove the rotation animation
+        self.spinImageView.layer.removeAnimation(forKey: "rotateAnimation")
+        
+        // Fade out the spinImageView and generateNumbersLabel
+        
+        self.spinImageView.alpha = 0
+        self.generateNumbersLabel.alpha = 0
+        self.numbersImageView.alpha = 0
+        self.statsCollectionView.alpha = 1
+        self.pickAgainButton.isUserInteractionEnabled = true
+        self.goToEditLuckyNumbersButton.isUserInteractionEnabled = true
+        
+        self.pickAgainButton.setTitleAlpha(1, for: .normal)
+        self.goToEditLuckyNumbersButton.setTitleAlpha(1, for: .normal)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubviews()
@@ -127,21 +144,8 @@ class GeneratedNumbersViewController: UIViewController {
         setupConstraints()
         startSpinAnimation()
         
-        delay(0.5) {
-            // Remove the rotation animation
-            self.spinImageView.layer.removeAnimation(forKey: "rotateAnimation")
-            
-            // Fade out the spinImageView and generateNumbersLabel
-            
-            self.spinImageView.alpha = 0
-            self.generateNumbersLabel.alpha = 0
-            self.numbersImageView.alpha = 0
-            self.statsCollectionView.alpha = 1
-            self.pickAgainButton.isUserInteractionEnabled = true
-            self.goToEditLuckyNumbersButton.isUserInteractionEnabled = true
-            
-            self.pickAgainButton.setTitleAlpha(1, for: .normal)
-            self.goToEditLuckyNumbersButton.setTitleAlpha(1, for: .normal)
+        delay(Double(Int.random(in: 3...5))) {
+            self.stopLoadingAnimation()
         }
     }
     @objc func goToEditLuckyNumbers() {
@@ -255,6 +259,31 @@ class GeneratedNumbersViewController: UIViewController {
         goToEditLuckyNumbersButton.setTitleAlpha(0.4, for: .normal)
         
         statsCollectionView.alpha = 0
+        
+        let generatorManager = GeneratorManager()
+        if let selectedLottery = selectedLottery {
+            let lines = numbers.last?.count ?? 0
+            generatorManager.generateNumbers(lotteryId: selectedLottery, lines: lines) { result in
+                switch result {
+                case .success(let response):
+                    // Handle success
+                    
+                    print("Generated Numbers: \(response.numbers)")
+                    print("Score of Numbers: \(response.scoreOfNumbers.value)")
+                    delay(Double(Int.random(in: 3...5))) {
+                        DispatchQueue.main.async {
+                            self.numbers = response.numbers
+                            self.generatedResponce = response
+                            self.stopLoadingAnimation()
+                        }
+                    }
+                    // Access other analytics as needed
+                case .failure(let error):
+                    // Handle error
+                    print("Error generating numbers: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
 
