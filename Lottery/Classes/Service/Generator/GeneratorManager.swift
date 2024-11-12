@@ -66,7 +66,7 @@ final class GeneratorManager: GeneratorManagerProtocol {
             
             // Print Response Data
             if let data = data, let dataString = String(data: data, encoding: .utf8) {
-               // print("Response data: \(dataString)")
+                print("Response data: \(dataString)")
             }
             
             // Check for Success Status Code

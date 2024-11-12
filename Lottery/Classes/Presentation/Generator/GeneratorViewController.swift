@@ -20,7 +20,13 @@ class GeneratorViewController: UIViewController {
     private let gamesManager: GamesManagerProtocol = GamesManager()
     
     private var states: [State] = []
-    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        indicator.color = .white
+        return indicator
+    }()
     func fetchNextGames(for stateId: Int?) {
         gamesManager.fetchNextGames(stateId: nil, forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
@@ -216,12 +222,17 @@ class GeneratorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Appearance.mono100
         setupNavigationBarTitle()
         setupViews()
         setupGestures()
         setupConstraints()
         
+        generateButton.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: generateButton.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: generateButton.centerYAnchor)
+        ])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -233,7 +244,13 @@ class GeneratorViewController: UIViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
         }
     }
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Stop the activity indicator and reset the button title
+        activityIndicator.stopAnimating()
+        generateButton.setTitle("Generate", for: .normal)
+    }
     // MARK: - Setup Methods
     
     func setupViews() {
@@ -566,6 +583,8 @@ extension GeneratorViewController {
 
 extension GeneratorViewController {
     @objc func generateNumbers () {
+        generateButton.setTitle("", for: .normal)
+        activityIndicator.startAnimating()
         let generatorManager = GeneratorManager()
         if let selectedLottery = selectedLottery {
             let lines = Int(numberLabel.text ?? "0") ?? 0
@@ -575,13 +594,17 @@ extension GeneratorViewController {
                     // Handle success
                     
                     print("Generated Numbers: \(response.numbers.count)")
-                 
+                    
                     DispatchQueue.main.async {
-                       goToGeneratedNumbers(generatedNumbersResponce: response )
+                        self.activityIndicator.stopAnimating()
+                        self.generateButton.setTitle("Generate", for: .normal)
+                        goToGeneratedNumbers(generatedNumbersResponce: response )
                     }
                     // Access other analytics as needed
                 case .failure(let error):
                     // Handle error
+                    self.activityIndicator.stopAnimating()
+                    self.generateButton.setTitle("Generate", for: .normal)
                     print("Error generating numbers: \(error.localizedDescription)")
                 }
             }
