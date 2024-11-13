@@ -155,6 +155,8 @@ class PastGameCell: UICollectionViewCell,PastDrawsLuckyNumbersRowCellDelegate , 
 // MARK: - Public Methods
 extension PastGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
+        jackpotTitleLabel.alpha = 1
+        
         logoImageView.image = UIImage(named: "")
         logoImageView.contentMode = .scaleAspectFit
         myLuckyNumbers = game.myLuckyNumbers ?? []
@@ -276,7 +278,7 @@ extension PastGameCell {
                     
                     jackpotTitleLabel.alpha = 1
                 }
-                
+               
                 if  doesURLContain(lottery.logoUrl.absoluteString, word: "cash4") {
                     //                    logoImageLeadingConstraint.isActive = false
                     //                    logoImageWidthConstraint.isActive = false
