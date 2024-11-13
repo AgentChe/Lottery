@@ -25,7 +25,7 @@ class GeneratedNumbersViewController: UIViewController {
             statsCollectionView.reloadData()
         }
     }
-    var chanceString = "Your chance of matching all numbers with this combination is 2 in 292201338"
+    var chanceString = ""
     
     private let backgroundfullView: UIImageView = {
         let imageView = UIImageView()
@@ -311,62 +311,60 @@ extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3 // Assuming one cell per section, adjust as needed
+        // If chanceString is empty, return only 2 cells (GeneratedNumbersCell and StatsCell)
+        return chanceString.isEmpty ? 2 : 3
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == 0 {
-            let cellHeight = CGFloat(numbers.count)*(40.scale + 10.scale + 4.scale) + 20.scale
+            let cellHeight = CGFloat(numbers.count) * (40.scale + 10.scale + 4.scale) + 20.scale
             return CGSize(width: collectionView.bounds.width, height: cellHeight)
         }
-        if indexPath.item == 1 {
+        if !chanceString.isEmpty && indexPath.item == 1 {
             return CGSize(width: collectionView.bounds.width, height: 69.scale)
         }
-        
-        if indexPath.item == 2 {
+        if indexPath.item == (chanceString.isEmpty ? 1 : 2) {
             return CGSize(width: collectionView.bounds.width, height: 496.scale)
         }
         
         fatalError()
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.item {
-        case 0:
+        if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GeneratedNumbersCell.reusableIdentifier, for: indexPath) as! GeneratedNumbersCell
             cell.bonusIdx = bonusIdx
             cell.numbers = numbers
-            
             cell.configure()
             return cell
-        case 1:
+        }
+        
+        if !chanceString.isEmpty && indexPath.item == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChanceCell.reusableIdentifier, for: indexPath) as! ChanceCell
-            
-
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineHeightMultiple = 1 // Set your desired line height multiple here
-            
+            paragraphStyle.lineHeightMultiple = 1
             let attributes: [NSAttributedString.Key: Any] = [
                 .paragraphStyle: paragraphStyle,
-                .font: Fonts.Inter.regular(size: 14.scale), // Ensure this matches your font
+                .font: Fonts.Inter.regular(size: 14.scale),
                 .foregroundColor: Appearance.mono200
             ]
-            
             let attributedString = NSAttributedString(string: chanceString, attributes: attributes)
             cell.chanceLabel.attributedText = attributedString
-            
             return cell
-        case 2:
+        }
+        
+        let statsCellIndex = chanceString.isEmpty ? 1 : 2
+        if indexPath.item == statsCellIndex {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatsCell.reusableIdentifier, for: indexPath) as! StatsCell
-            // Configure your StatsCell
             if let response = generatedResponce {
                 cell.config(response)
             }
             return cell
-        default:
-            fatalError("Unexpected section")
         }
+        
+        fatalError("Unexpected indexPath.item")
     }
+
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 16.scale, left: 0.scale, bottom: 14.scale, right: 0.scale)
