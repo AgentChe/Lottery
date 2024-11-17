@@ -19,7 +19,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
  
         }
         gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
-   
+            
         }
       
         let contentManager = ContentManager()

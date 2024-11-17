@@ -88,16 +88,19 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         ticketsCollectionView.reloadData()
 
         // Update the UI based on whether there are tickets to display
-        if filteredTickets.isEmpty {
-            ticketsCollectionView.isHidden = true
-            noTicketsImageView.isHidden = false
-            noTicketsLabel.isHidden = false
-            scanLotteryTicketButton.isHidden = false
-        } else {
-            ticketsCollectionView.isHidden = false
-            noTicketsImageView.isHidden = true
-            noTicketsLabel.isHidden = true
-            scanLotteryTicketButton.isHidden = true
+        if segmentedControl.currentIndex == 0 {
+            if filteredTickets.isEmpty {
+                ticketsCollectionView.isHidden = true
+                noTicketsImageView.isHidden = false
+                noTicketsLabel.isHidden = false
+                scanLotteryTicketButton.isHidden = false
+            } else {
+                
+                ticketsCollectionView.isHidden = false
+                noTicketsImageView.isHidden = true
+                noTicketsLabel.isHidden = true
+                scanLotteryTicketButton.isHidden = true
+            }
         }
     }
 
@@ -375,6 +378,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         backgroundView.bringSubviewToFront(scanLotteryTicketButton)
         
         fetchLotteriesPatterns()
+        
       
         NotificationCenter.default.addObserver(self, selector: #selector(handleTicketDeleted), name: .ticketDeleted, object: nil)
         
@@ -789,6 +793,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print("LOOK!: \(segmentedControl.currentIndex)")
+        
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
             updateMainViewControllerConstraints(for: mainViewController)
@@ -1055,7 +1061,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
-        if !SessionManager().hasActiveSubscriptions() {
+        if SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             
             if  let drawsViewController = self.navigationController?.viewControllers[0] as? DrawsViewController {
