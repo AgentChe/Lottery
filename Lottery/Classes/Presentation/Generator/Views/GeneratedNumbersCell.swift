@@ -31,6 +31,7 @@ class GeneratedNumbersCell: UICollectionViewCell {
         collectionView.register(TicketNumbersCollectionCell.self, forCellWithReuseIdentifier: TicketNumbersCollectionCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = Appearance.mono100
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
