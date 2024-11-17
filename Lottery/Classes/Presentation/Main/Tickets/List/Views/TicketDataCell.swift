@@ -108,6 +108,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = Appearance.mono100
         return collectionView
     }()
     
@@ -123,6 +124,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = Appearance.mono100
         return collectionView
     }()
     
@@ -147,7 +149,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         
         setupViews()
         setupWinnerAndEditButton()
-        backgroundColor = .clear//.yellow
+        backgroundColor = Appearance.mono100
     }
     private func setupWinnerAndEditButton() {
         contentView.addSubview(winnerImageView)

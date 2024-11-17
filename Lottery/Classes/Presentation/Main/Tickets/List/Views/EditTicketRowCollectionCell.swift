@@ -26,6 +26,7 @@ class EditTicketRowCollectionCell: UICollectionViewCell,EditNumberCellDelegate {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = Appearance.mono100
         return collectionView
     }()
     func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {

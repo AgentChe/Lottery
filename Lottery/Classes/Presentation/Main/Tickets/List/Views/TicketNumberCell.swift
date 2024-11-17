@@ -57,7 +57,7 @@ class TicketNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSou
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
-        
+        backgroundColor = Appearance.mono100
         
     }
     

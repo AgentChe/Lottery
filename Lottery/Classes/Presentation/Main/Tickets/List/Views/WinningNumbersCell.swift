@@ -48,7 +48,7 @@ class WinningNumbersCollectionCell: UICollectionViewCell, UICollectionViewDataSo
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
-        
+        backgroundColor = Appearance.mono100
         
     }
     
