@@ -802,7 +802,7 @@ extension DrawsViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 10.scale : 155.scale
+        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 80.scale : 155.scale
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
         return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 60.scale), left: 0, bottom: bottomInset, right: 0)
