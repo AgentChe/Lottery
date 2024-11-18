@@ -66,10 +66,12 @@ struct UploadResponse: Codable {
     let numbers: [[Int]]
     let date_of_game: Double?
 }
-
-struct ErrorResponse: Codable {
-    let detail: String
+enum UploadError: Error {
+    case invalidImageData
+    case invalidResponse
+    case serverError(String)
 }
+
 
 struct TicketScanUploadImage {
     let session: URLSession
@@ -110,6 +112,7 @@ struct TicketScanUploadImage {
         bodyData.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
         
         session.uploadTask(with: request, from: bodyData) { data, response, error in
+            print(  try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any])
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                   let imageUrl = json["image_url"] as? String,

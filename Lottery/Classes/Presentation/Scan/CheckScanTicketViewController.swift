@@ -95,6 +95,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             self.presentRecognitionErrorAlert(on: self)
         }
     }
+    
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -110,8 +111,10 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             }
         }
     }
+    
+    var uploadResponse: UploadResponse?
     // Custom initializer
-    init(ticket: Ticket) {
+    init(ticket: Ticket, uploadResponse: UploadResponse? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.numbersStringArray = [[]]
@@ -125,6 +128,12 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
         
+        if uploadResponse == nil {
+            self.badRecognition = true
+            self.presentRecognitionErrorAlert(on: self)
+        } else {
+            print("we here!")
+        }
 //        textRecognitionRequest = VNRecognizeTextRequest { request, error in
 //            guard let resultsViewController = self.resultsViewController else {
 //                print("resultsViewController is not set")
