@@ -152,44 +152,64 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             }
         }
     }
+   
+    
     @objc func deleteTicketButtonTapped() {
         // Convert numbersStringArray to [[Int]]
-        var numbersArray: [[Int]] = []
-        for section in numbersStringArray {
-            var intSection: [Int] = []
-            for numberString in section {
-                if let number = Int(numberString) {
-                    intSection.append(number)
-                }
-            }
-            numbersArray.append(intSection)
-        }
-
-        // Ensure we have a ticket to modify
-        guard let existingTicket = ticket else { return }
-
-        let id = existingTicket.id
-
-        // Create an instance of TicketsManager
-        let ticketsManager = TicketsManager()
-
-        // Call the deleteTicket method
-        ticketsManager.deleteTicket(id: id) { result in
-            switch result {
-            case .success:
-                print("Ticket deleted successfully")
-                DispatchQueue.main.async {
-                    ticketsManager.listTickets(forceUpdate: true) {
-                        [weak self] result in
-                        self?.navigationController?.popViewController(animated: true)
+        let alertVC = CustomAlertViewController()
+        
+        alertVC.onConfirmDelete = { [weak self] in
+            guard let self = self else { return }
+            // Code to remove the ticket here
+            var numbersArray: [[Int]] = []
+            for section in numbersStringArray {
+                var intSection: [Int] = []
+                for numberString in section {
+                    if let number = Int(numberString) {
+                        intSection.append(number)
                     }
                 }
-            case .failure(let error):
-                // Handle failure
-                print("Failed to delete the ticket: \(error)")
-                // Present an alert if needed
+                numbersArray.append(intSection)
             }
+
+            // Ensure we have a ticket to modify
+            guard let existingTicket = ticket else { return }
+
+            let id = existingTicket.id
+
+            // Create an instance of TicketsManager
+            let ticketsManager = TicketsManager()
+
+            // Call the deleteTicket method
+            ticketsManager.deleteTicket(id: id) { result in
+                switch result {
+                case .success:
+                    print("Ticket deleted successfully")
+                    DispatchQueue.main.async {
+                        ticketsManager.listTickets(forceUpdate: true) {
+                            [weak self] result in
+                            self?.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                case .failure(let error):
+                    // Handle failure
+                    print("Failed to delete the ticket: \(error)")
+                    // Present an alert if needed
+                }
+            }
+            
         }
+        
+        alertVC.onCancel = {
+            // Code to handle cancellation (if any)
+        }
+        
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        
+        
+       present(alertVC, animated: true, completion: nil)
+      
     }
 
 
