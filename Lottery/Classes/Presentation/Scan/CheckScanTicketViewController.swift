@@ -401,6 +401,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
                 // Convert the Date object to the desired string format
                 let formattedDate = dateFormatter.string(from: date)
                 cell.dateLabel.text = formattedDate.uppercased()
+                self.ticket?.date = date.timeIntervalSince1970
                 saveTicketButton.isEnabled = true
                 saveTicketButton.backgroundColor = Appearance.main100 
             }
