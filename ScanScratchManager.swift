@@ -73,8 +73,8 @@ struct ScanScratchManager {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        print("apiKey: \(GlobalDefinitions.apiKey)")
-        print("userToken: \(SessionManager().getSession()?.userToken )")
+        
+        
         request.addValue(GlobalDefinitions.apiKey, forHTTPHeaderField: "api_key")
         request.addValue(SessionManager().getSession()?.userToken ?? "", forHTTPHeaderField: "user_token")
         

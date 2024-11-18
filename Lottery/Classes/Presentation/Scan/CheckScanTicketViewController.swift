@@ -125,31 +125,32 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
         
-        textRecognitionRequest = VNRecognizeTextRequest { request, error in
-            guard let resultsViewController = self.resultsViewController else {
-                print("resultsViewController is not set")
-                return
-            }
-
-            if let requestResults = request.results as? [VNRecognizedTextObservation], !requestResults.isEmpty {
-                DispatchQueue.main.async {
-                    resultsViewController.addRecognizedText(recognizedText: requestResults)
-                }
-            } else {
-               
-                self.badRecognition = true
-                self.presentRecognitionErrorAlert(on: self)
-            }
-        }
+//        textRecognitionRequest = VNRecognizeTextRequest { request, error in
+//            guard let resultsViewController = self.resultsViewController else {
+//                print("resultsViewController is not set")
+//                return
+//            }
+//
+//            if let requestResults = request.results as? [VNRecognizedTextObservation], !requestResults.isEmpty {
+//                DispatchQueue.main.async {
+//                    resultsViewController.addRecognizedText(recognizedText: requestResults)
+//                }
+//            } else {
+//               
+//                self.badRecognition = true
+//                self.presentRecognitionErrorAlert(on: self)
+//            }
+//        }
 
         // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
-        textRecognitionRequest.recognitionLevel = .accurate
-
-        if #available(iOS 16.0, *) {
-            textRecognitionRequest.revision = VNRecognizeTextRequestRevision3
-        }
-
-        textRecognitionRequest.usesLanguageCorrection = true
+//        textRecognitionRequest.recognitionLevel = .accurate
+//
+//        if #available(iOS 16.0, *) {
+//            textRecognitionRequest.revision = VNRecognizeTextRequestRevision3
+//        }
+//
+//        textRecognitionRequest.usesLanguageCorrection = true
+        
         resultsViewController = self
     }
 
@@ -191,6 +192,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             saveTicketButton.alpha = 0
             rescanButton.alpha = 0
         }
+        
     }
 
     private func setupConstraints() {
