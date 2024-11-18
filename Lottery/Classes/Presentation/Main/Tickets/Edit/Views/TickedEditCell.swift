@@ -39,13 +39,16 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         didSet {
             delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
             checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
+            addScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
     
     weak var delegate: EditTicketViewControllerDelegate?
     weak var checkScanDelegate: CheckScanTicketViewController?
+    weak var addScanDelegate: AddScanTicketViewController?
     weak var parentvc: EditTicketViewController?
     weak var parentCheckScan: CheckScanTicketViewController?
+    weak var parentAddScan: AddScanTicketViewController?
  
     private let rightArrowImageView: UIImageView = {
          let imageView = UIImageView()
@@ -137,7 +140,12 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
        }
     func configure(ticket: Ticket) {
         self.ticket = ticket
-        numbersStringArray = convertTo2DStringArray(ticket.numbers) //ticket.numbers.map { $0.map { "\($0)" } }
+        if parentAddScan == nil {
+            numbersStringArray = convertTo2DStringArray(ticket.numbers) //ticket.numbers.map { $0.map { "\($0)" } }
+        } else {
+            numbersStringArray[0].insert("A", at: 0)
+        }
+      
         
         var lotteryLogoUrlString = lotteries.filter { $0.id == ticket.lotteryId }.first?.logoUrl
         if let url = lotteryLogoUrlString {
@@ -202,7 +210,7 @@ private extension TicketEditCell {
    
         delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
-    
+        addScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         collectionView.reloadData()
         
         
@@ -300,6 +308,7 @@ private extension TicketEditCell {
             self?.ticket?.date = selectedDate.timeIntervalSince1970
             self?.parentvc?.ticket?.date = selectedDate.timeIntervalSince1970
             self?.parentCheckScan?.ticket?.date = selectedDate.timeIntervalSince1970
+            self?.parentAddScan?.ticket?.date = selectedDate.timeIntervalSince1970
             self?.dismissDatePicker()
             
         }
@@ -507,7 +516,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             
             collectionView.reloadData()
             checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
-
+            addScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
     private func presentDeleteConfirmationAlert() {
