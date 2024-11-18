@@ -16,7 +16,17 @@ protocol RecognizedTextDataSource: AnyObject {
 class CheckScanTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var image: UIImage?
     var ticket: Ticket?
-    var lotteryPatterns: [LotteryPattern] = []
+    var lotteryPatterns: [LotteryPattern] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    var lotteries: [Lottery] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     private var contentManager: ContentManagerProtocol = ContentManager()
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -126,7 +136,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
-        collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
+        collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
         
         if uploadResponse == nil {
             self.badRecognition = true
@@ -181,7 +191,16 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         setupNavigationBar()
         setupNavigationBarTitle()
         fetchLotteriesPatterns()
- 
+        contentManager.fetchLotteries(forceUpdate: false, stateId: nil)  { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
+                }
+            }
+        }
 
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
 
@@ -208,6 +227,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             saveTicketButton.alpha = 0
             rescanButton.alpha = 0
         }
+         
         
     }
 
@@ -361,11 +381,12 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditScanCell", for: indexPath) as! TicketEditScanCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
         if let ticket = self.ticket {
             if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
+            cell.lotteries = self.lotteries
             cell.configure(ticket: ticket)
         }
         if let uploadResponse = uploadResponse {
@@ -384,8 +405,8 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
                 saveTicketButton.backgroundColor = Appearance.main100 
             }
         }
-        cell.delegate = self
-        cell.parentvc = self
+        cell.checkScanDelegate = self
+        cell.parentCheckScan = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -407,19 +428,22 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             let cellWidth = availableWidth / CGFloat(numberOfCells)
 
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale)
+                          height: CGFloat(numbersStringArray.count) * (40.scale + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale)
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         }
     }
 
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
+    
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
-                    return false
+            if section.count > 0 {
+                for i in 1..<section.count {
+                    if Int(section[i]) == nil {
+                        return false
+                    }
                 }
             }
         }
@@ -428,18 +452,9 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     // Method to update save button state based on validation
     func updateSaveButtonState() {
-        if let collectionView = collectionView {
-            let allNumbersValid = areAllNumbersValid()
-            
-            if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditScanCell {
-                let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
-                saveTicketButton.isEnabled = isValid
-                saveTicketButton.backgroundColor = isValid ? Appearance.main100 : .gray // Change the color to gray if not valid
-            } else {
-                saveTicketButton.isEnabled = false
-                saveTicketButton.backgroundColor  = .gray
-            }
-        }
+        let allNumbersValid = areAllNumbersValid()
+        saveTicketButton.isEnabled = allNumbersValid
+        saveTicketButton.backgroundColor = allNumbersValid ? Appearance.main100 : .gray // Change the color to gray if not valid
     }
 
     // Handle keyboard appearance

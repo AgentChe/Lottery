@@ -99,6 +99,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         pushViewController(selectGameVC, animated: true)
     }
     private func presentNotificationRequestViewController() {
+        
         guard let selectedState = selectedState else { return }
         updateProgress()
         let notificationRequestViewController = NotificationRequestViewController()

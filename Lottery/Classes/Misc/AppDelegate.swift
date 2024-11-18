@@ -20,8 +20,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         OtterScale.shared.initialize(host: GlobalDefinitions.otterScaleHost, apiKey: GlobalDefinitions.otterScaleApiKey)
         
         PurchaseValidationObserver.shared.startObserve()
-        _ = PushNotificationsManager.shared
         IAPManager.initialize()
+        
+      
         
         return true
     }
@@ -55,13 +56,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-//    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-//        PushNotificationsManager.shared.application(didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
-//    }
-//    
-//    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-//        PushNotificationsManager.shared.application(didFailToRegisterForRemoteNotificationsWithError: error)
-//    }
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        PushNotificationsManager.shared.application(didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        PushNotificationsManager.shared.application(didFailToRegisterForRemoteNotificationsWithError: error)
+    }
     
 //    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 //        PushNotificationsManager.shared.application(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)

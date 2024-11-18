@@ -38,12 +38,15 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     var numbersStringArray: [[String]] = [] {
         didSet {
             delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
+            checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
     
     weak var delegate: EditTicketViewControllerDelegate?
+    weak var checkScanDelegate: CheckScanTicketViewController?
     weak var parentvc: EditTicketViewController?
-    
+    weak var parentCheckScan: CheckScanTicketViewController?
+ 
     private let rightArrowImageView: UIImageView = {
          let imageView = UIImageView()
          imageView.image = UIImage(named: "EditTickets.RightArrow")
@@ -64,7 +67,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
     
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
-    private let dateLabel = TickedEditDatePaddedLabel()
+    let dateLabel = TickedEditDatePaddedLabel()
     private let pencilEditImageView = UIImageView()
     
     private var datePickerContainer: UIView?
@@ -196,10 +199,13 @@ private extension TicketEditCell {
         
         // Update the collection view height constraint
         collectionViewHeightConstraint.constant = CGFloat(numbersStringArray.count) * (40 + 16).scale + 5.scale
-        
+   
+        delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
+        checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
+    
         collectionView.reloadData()
         
-        delegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
+        
     }
 
     // Helper function to calculate the next label in sequence
@@ -293,6 +299,7 @@ private extension TicketEditCell {
             self?.updateDateLabel(with: selectedDate)
             self?.ticket?.date = selectedDate.timeIntervalSince1970
             self?.parentvc?.ticket?.date = selectedDate.timeIntervalSince1970
+            self?.parentCheckScan?.ticket?.date = selectedDate.timeIntervalSince1970
             self?.dismissDatePicker()
             
         }
@@ -471,7 +478,11 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     func removeItem(at indexPath: IndexPath) {
         // Check if it's the only row left
         if numbersStringArray.count == 1 && indexPath.section == 0 {
-            presentDeleteConfirmationAlert()
+            if parentvc != nil {
+                presentDeleteConfirmationAlert()
+            } else {
+                return
+            }
         } else {
             // Normal removal proceditTicketRowCollectionCelless
             numbersStringArray.remove(at: indexPath.section)
@@ -495,6 +506,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             collectionViewHeightConstraint.isActive = true
             
             collectionView.reloadData()
+            checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
 
         }
     }

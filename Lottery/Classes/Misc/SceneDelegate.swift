@@ -14,6 +14,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else {
             return
         }
+      
         let gamesManager = GamesManager()
         gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
  
@@ -34,10 +35,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             [weak self] result in
            
         }
-        
+          
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = SplashViewController.make()
         window?.makeKeyAndVisible()
+        _ = PushNotificationsManager.shared
         
         // Check if the app was launched by a notification
 //        if let notificationResponse = connectionOptions.notificationResponse {
