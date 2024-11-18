@@ -21,7 +21,13 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     var collectionView: UICollectionView!
-    
+    let deleteActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = Appearance.main300
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     private let saveTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("EditTicketViewController.UpdateTicket".localized, for: .normal)
@@ -113,6 +119,9 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         fetchLotteriesPatterns()
+        deleteTicketButton.addSubview(deleteActivityIndicator)
+           deleteActivityIndicator.centerXAnchor.constraint(equalTo: deleteTicketButton.centerXAnchor).isActive = true
+           deleteActivityIndicator.centerYAnchor.constraint(equalTo: deleteTicketButton.centerYAnchor).isActive = true
     }
     
     private func setupConstraints() {
@@ -155,11 +164,17 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
    
     
     @objc func deleteTicketButtonTapped() {
+        // Show activity indicator and disable button
+       
+
         // Convert numbersStringArray to [[Int]]
         let alertVC = CustomAlertViewController()
         
         alertVC.onConfirmDelete = { [weak self] in
             guard let self = self else { return }
+            deleteTicketButton.setTitle("", for: .normal)
+            deleteActivityIndicator.startAnimating()
+            deleteTicketButton.isEnabled = false
             // Code to remove the ticket here
             var numbersArray: [[Int]] = []
             for section in numbersStringArray {
@@ -172,44 +187,47 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
                 numbersArray.append(intSection)
             }
 
-            // Ensure we have a ticket to modify
             guard let existingTicket = ticket else { return }
-
             let id = existingTicket.id
-
-            // Create an instance of TicketsManager
             let ticketsManager = TicketsManager()
 
-            // Call the deleteTicket method
             ticketsManager.deleteTicket(id: id) { result in
-                switch result {
-                case .success:
-                    print("Ticket deleted successfully")
-                    DispatchQueue.main.async {
-                        ticketsManager.listTickets(forceUpdate: true) {
-                            [weak self] result in
+                DispatchQueue.main.async {
+                
+                    
+                    switch result {
+                    case .success:
+                        self.deleteActivityIndicator.stopAnimating()
+                        self.deleteTicketButton.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
+                        self.deleteTicketButton.isEnabled = true
+                        print("Ticket deleted successfully")
+                        ticketsManager.listTickets(forceUpdate: true) { [weak self] _ in
                             self?.navigationController?.popViewController(animated: true)
                         }
+                    case .failure(let error):
+                        print("Failed to delete the ticket: \(error)")
+                        self.deleteActivityIndicator.stopAnimating()
+                        self.deleteTicketButton.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
+                        self.deleteTicketButton.isEnabled = true
+                        let alert = UIAlertController(
+                            title: "EditTicketViewController.DeleteFailed.Title".localized,
+                            message: String(format: "EditTicketViewController.DeleteFailed.Message".localized, error.localizedDescription),
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                     }
-                case .failure(let error):
-                    // Handle failure
-                    print("Failed to delete the ticket: \(error)")
-                    // Present an alert if needed
                 }
             }
-            
         }
-        
+
         alertVC.onCancel = {
             // Code to handle cancellation (if any)
         }
         
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
-        
-        
-       present(alertVC, animated: true, completion: nil)
-      
+        present(alertVC, animated: true, completion: nil)
     }
 
 
