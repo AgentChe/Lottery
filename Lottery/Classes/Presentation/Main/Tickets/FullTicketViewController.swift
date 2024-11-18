@@ -45,6 +45,11 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
     }()
     
     func didTapEditButton(for ticket: Ticket) {
+        if let navigationController = navigationController {
+            if let transitionManager = navigationController.transitioningDelegate as? FullTicketCustomTransitionManager {
+                transitionManager.panGestureRecognizer.isEnabled = false
+            }
+        }
         let editVC = EditTicketViewController(ticket: ticket)
         editVC.lotteries = self.lotteries
         editVC.lotteryPatterns = self.lotteryPatterns
@@ -54,6 +59,11 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
  
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if let navigationController = navigationController {
+            if let transitionManager = navigationController.transitioningDelegate as? FullTicketCustomTransitionManager {
+                transitionManager.panGestureRecognizer.isEnabled = true
+            }
+        }
         fetchTickets()
     }
     func fetchTickets() {
