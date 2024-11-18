@@ -133,6 +133,13 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             self.presentRecognitionErrorAlert(on: self)
         } else {
             print("we here!")
+            if let uploadResponse = uploadResponse {
+                self.uploadResponse = uploadResponse
+                self.ticket?.numbers = uploadResponse.numbers
+                numbersStringArray = convertToFormattedStringArray(intArray:  uploadResponse.numbers)
+                collectionView.reloadData()
+            }
+            
         }
 //        textRecognitionRequest = VNRecognizeTextRequest { request, error in
 //            guard let resultsViewController = self.resultsViewController else {
@@ -361,6 +368,22 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             }
             cell.configure(ticket: ticket)
         }
+        if let uploadResponse = uploadResponse {
+            if let date_of_game = uploadResponse.date_of_game {
+                let date = Date(timeIntervalSince1970: date_of_game)
+                
+                // Create a DateFormatter to format the date
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MMM dd, yyyy"
+                dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensures consistent formatting
+                
+                // Convert the Date object to the desired string format
+                let formattedDate = dateFormatter.string(from: date)
+                cell.dateLabel.text = formattedDate.uppercased()
+                saveTicketButton.isEnabled = true
+                saveTicketButton.backgroundColor = Appearance.main100 
+            }
+        }
         cell.delegate = self
         cell.parentvc = self
         cell.layer.cornerRadius = 20.scale
@@ -407,6 +430,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     func updateSaveButtonState() {
         if let collectionView = collectionView {
             let allNumbersValid = areAllNumbersValid()
+            
             if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditScanCell {
                 let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
                 saveTicketButton.isEnabled = isValid

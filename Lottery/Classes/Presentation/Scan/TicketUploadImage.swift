@@ -91,7 +91,7 @@ struct TicketScanUploadImage {
         
     func upload(image: UIImage, completion: ((UploadResponse?) -> Void)? = nil) {
         guard let url = URL(string: "https://lottery.camplain-apps.com/api/tickets/upload"),
-              let jpegData = image.jpegData(compressionQuality: 0.5) else {
+              let jpegData = image.jpegData(compressionQuality: 1) else {
             completion?(nil)
             return
         }
@@ -112,7 +112,7 @@ struct TicketScanUploadImage {
         bodyData.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
         
         session.uploadTask(with: request, from: bodyData) { data, response, error in
-            print(  try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any])
+            
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                   let imageUrl = json["image_url"] as? String,

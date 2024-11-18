@@ -351,7 +351,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]], status: "")
         var uploadResponse: UploadResponse?
-        ticketScanUploadImage.upload(image: results.originalScan.image) { response in
+        ticketScanUploadImage.upload(image:  results.croppedScan.image) { response in
             if let response = response {
                 print("Image uploaded successfully.")
                 print("Image URL: \(response.image_url)")
@@ -374,7 +374,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         func goToCheckTicketViewController(uploadResponse: UploadResponse?) {
             let checkTicketViewController = CheckScanTicketViewController(ticket: ticket, uploadResponse: uploadResponse)
             
-            checkTicketViewController.image = results.originalScan.image
+            checkTicketViewController.image =  results.croppedScan.image
             checkTicketViewController.imageView.image = results.croppedScan.image
             let croppedImageSize = results.croppedScan.image.size
             checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
