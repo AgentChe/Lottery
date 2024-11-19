@@ -39,7 +39,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = SplashViewController.make()
         window?.makeKeyAndVisible()
-        _ = PushNotificationsManager.shared
+        
         
         // Check if the app was launched by a notification
 //        if let notificationResponse = connectionOptions.notificationResponse {

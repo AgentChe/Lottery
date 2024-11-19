@@ -22,7 +22,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         PurchaseValidationObserver.shared.startObserve()
         IAPManager.initialize()
         
-      
+        _ = PushNotificationsManager.shared
+        
         
         return true
     }

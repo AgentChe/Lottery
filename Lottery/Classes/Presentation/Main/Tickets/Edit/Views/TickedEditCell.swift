@@ -103,6 +103,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.register(EditScanNumberCell.self, forCellWithReuseIdentifier: EditScanNumberCell.reuseIdentifier)
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         collectionView.register(EditTicketRowCollectionCell.self, forCellWithReuseIdentifier: EditTicketRowCollectionCell.reuseIdentifier) //
+        collectionView.layer.masksToBounds = false
         
         return collectionView
     }()
