@@ -31,6 +31,7 @@ final class ScanSelectStateView: UIView {
         let preloader = UIActivityIndicatorView(style: .medium)
         preloader.translatesAutoresizingMaskIntoConstraints = false
         preloader.hidesWhenStopped = true
+        preloader.color = Appearance.mono100
         return preloader
     }()
     

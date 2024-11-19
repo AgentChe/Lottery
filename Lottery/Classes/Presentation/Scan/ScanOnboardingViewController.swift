@@ -43,7 +43,15 @@ final class ScanOnboardingViewController: UIViewController {
         let selectStateVC = ScanSelectStateViewController()
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
-            
+            DispatchQueue.main.async {
+                let attrs = TextAttributes()
+                    .textColor(.white)
+                    .font(Fonts.Inter.medium(size: 17.scale))
+                
+                let attributedTitle = "Continue".localized.attributed(with: attrs)
+                selectStateVC.selectStateView.continueButton.setAttributedTitle(attributedTitle, for: .normal)// Hide title
+                selectStateVC.selectStateView.preloader.stopAnimating()
+            }
             self.selectedState = selectedState
             if fromDrawsViewController {
                 saveProfile()

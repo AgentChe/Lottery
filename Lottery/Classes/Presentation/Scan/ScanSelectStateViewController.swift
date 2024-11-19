@@ -13,7 +13,7 @@ class ScanSelectStateViewController: UIViewController {
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     private var states: [State] = []
     var profile: Profile!
-    private let selectStateView = ScanSelectStateView()
+    let selectStateView = ScanSelectStateView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
@@ -125,10 +125,20 @@ private extension ScanSelectStateViewController {
         }
         
         // Show preloader and hide button
-        selectStateView.continueButton.isHidden = true
-        selectStateView.preloader.startAnimating()
+       // selectStateView.continueButton.isHidden = true
+        DispatchQueue.main.async {
+            let attrs = TextAttributes()
+                .textColor(.white)
+                .font(Fonts.Inter.medium(size: 17.scale))
+            
+            let attributedTitle = "".localized.attributed(with: attrs)
+              self.selectStateView.continueButton.setAttributedTitle(attributedTitle, for: .normal)// Hide title
+              self.selectStateView.preloader.startAnimating()
+              self.selectStateView.preloader.isHidden = false
+          }
         onContinue?(selectedState)
-        selectStateView.preloader.stopAnimating()
+
+        
     }
     
     func presentTryAgainViewController(with error: Error) {

@@ -31,7 +31,10 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         didSet {
             for i in 0..<bonusIdx.count {
                 bonusIdx[i] = bonusIdx[i] + 1
+                collectionView.reloadData()
+                
             }
+           
         }
     }
     var ticket: Ticket?
@@ -42,7 +45,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
             addScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
-    
+   
     weak var delegate: EditTicketViewControllerDelegate?
     weak var checkScanDelegate: CheckScanTicketViewController?
     weak var addScanDelegate: AddScanTicketViewController?
@@ -457,7 +460,9 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             cell.parentDelegate = self // Set the delegate
             cell.section = indexPath.section
             cell.numbers = numbersStringArray[indexPath.section]
+            
             cell.bonusIdx = bonusIdx
+            print("@ \(bonusIdx) \(numbersStringArray[indexPath.section].count), \(numbersStringArray[indexPath.section])")
             cell.collectionView.reloadData()
 
             

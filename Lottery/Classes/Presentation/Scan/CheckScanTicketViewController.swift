@@ -137,20 +137,33 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
-        
-        if uploadResponse == nil {
-            self.badRecognition = true
-            self.presentRecognitionErrorAlert(on: self)
-        } else {
-            print("we here!")
-            if let uploadResponse = uploadResponse {
-                self.uploadResponse = uploadResponse
-                self.ticket?.numbers = uploadResponse.numbers
-                numbersStringArray = convertToFormattedStringArray(intArray:  uploadResponse.numbers)
-                collectionView.reloadData()
+        self.fetchLotteriesPatterns()
+        self.contentManager.fetchLotteries(forceUpdate: false, stateId: nil)  { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    if uploadResponse == nil {
+                        self?.badRecognition = true
+                        if let self = self {
+                            self.presentRecognitionErrorAlert(on: self)
+                        }
+                    } else {
+                        print("we here!")
+                        if let uploadResponse = uploadResponse {
+                            self?.uploadResponse = uploadResponse
+                            self?.ticket?.numbers = uploadResponse.numbers
+                            self?.numbersStringArray = self?.convertToFormattedStringArray(intArray:  uploadResponse.numbers) ?? []
+                            self?.collectionView.reloadData()
+                        }
+                        
+                    }
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
+                }
             }
-            
         }
+       
 //        textRecognitionRequest = VNRecognizeTextRequest { request, error in
 //            guard let resultsViewController = self.resultsViewController else {
 //                print("resultsViewController is not set")
@@ -184,23 +197,18 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        lotteryPatterns = []
+        numbersStringArray = []
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
         setupNavigationBar()
         setupNavigationBarTitle()
-        fetchLotteriesPatterns()
-        contentManager.fetchLotteries(forceUpdate: false, stateId: nil)  { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let lotteries):
-                    self?.lotteries = lotteries
-                case .failure(let error):
-                    print("Failed to fetch lotteries: \(error)")
-                }
-            }
-        }
+        
+      
 
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
 
@@ -483,6 +491,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        
     }
 }
 
