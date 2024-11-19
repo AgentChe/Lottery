@@ -193,14 +193,14 @@ extension PushNotificationsManager {
     
     private func sendFCMTokenToServer(_ fcmToken: String) {
         let sessionManager: SessionManagerProtocol = SessionManager()
-        guard let url = URL(string: "https://lottery.camplain-apps.com/profile/push_token") else { return }
+        guard let url = URL(string: "https://lottery.camplain-apps.com/api/profile/push-token") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         guard let userToken = sessionManager.getSession()?.userToken else {
-            fatalError()
+            return
         }
         
         let parameters: [String: Any] = [

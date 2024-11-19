@@ -351,6 +351,10 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]], status: "")
         var uploadResponse: UploadResponse?
+        touchDown.isEnabled = false
+        self.continueButton.isUserInteractionEnabled = false
+        self.dimView?.startTextRotation()
+    
         ticketScanUploadImage.upload(image:  results.croppedScan.image) { response in
             if let response = response {
                 print("Image uploaded successfully.")
@@ -383,10 +387,8 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             }
             
             // checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
-            touchDown.isEnabled = false
-            
-            self.continueButton.isUserInteractionEnabled = false
-            if self.weDo {
+        
+             if self.weDo {
                 self.hideDimView()
                 self.touchDown.isEnabled = true
                 self.continueButton.isUserInteractionEnabled = true

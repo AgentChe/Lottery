@@ -199,4 +199,8 @@ class DimViewWithProgressBar: UIView {
         }
         removeFromSuperview()
     }
+    deinit {
+        timer?.invalidate()
+        timer = nil
+    }
 }
