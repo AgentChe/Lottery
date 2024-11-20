@@ -584,7 +584,7 @@ extension DrawsViewController {
         }, completion: { _ in
             chooseScanOptionView.removeFromSuperview()
             self.dimView.removeFromSuperview()
-            if !SessionManager().hasActiveSubscriptions() {
+            if SessionManager().hasActiveSubscriptions() {
                 self.scanButtonTapped()
             } else {
                 let vc = PaygateViewController.make()
@@ -1039,6 +1039,13 @@ private extension DrawsViewController {
                         scanViewController.stateId = 888
                         scanViewController.lotteryId = 888
                         if let navigationController = self.navigationController {
+                            if let r_navigationController = getRootViewController() as? NavigationController,
+                               let mainViewController = r_navigationController.viewControllers.first as? MainViewController {
+                                
+                                self.updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
+                              //  fetchLotteries()
+                                
+                            }
                             navigationController.pushViewController(scanViewController, animated: true)
                             navigationController.setNavigationBarHidden(false, animated: false)
                         } else {
@@ -1058,6 +1065,7 @@ private extension DrawsViewController {
                 scanViewController.lotteryId = 888
                 if let navigationController = getRootViewController() as? NavigationController,
                    let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                    
                     self.updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
                   //  fetchLotteries()
                     
