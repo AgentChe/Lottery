@@ -79,7 +79,8 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
         collectionView.register(EditScanNumberCell.self, forCellWithReuseIdentifier: EditScanNumberCell.reuseIdentifier)
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         collectionView.register(EditTicketRowCollectionCell.self, forCellWithReuseIdentifier: EditTicketRowCollectionCell.reuseIdentifier) //
-        
+        collectionView.layer.masksToBounds = false
+
         return collectionView
     }()
     var collectionViewHeightConstraint: NSLayoutConstraint!
@@ -92,7 +93,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
         addContainerBackgroundViewTapGesture()
         collectionView.dataSource = self
         collectionView.delegate = self
-        
+        collectionView.isScrollEnabled = false
         
     }
     
@@ -104,6 +105,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
         addContainerBackgroundViewTapGesture()
         collectionView.dataSource = self
         collectionView.delegate = self
+        
     }
     private func addContainerBackgroundViewTapGesture() {
            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(containerBackgroundViewTapped))
@@ -146,7 +148,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
             // Calculate the width for each cell
             let availableWidth = totalWidth - sideMargins - cellSpacing
             let cellWidth = availableWidth / CGFloat(numberOfCells)
-            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 16).scale)
+            collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 16).scale)
         } else {
             collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 10 + 10).scale)
             }
@@ -448,7 +450,7 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
                 // Calculate the width for each cell
                 let availableWidth = totalWidth - sideMargins - cellSpacing
                 let cellWidth = availableWidth / CGFloat(numberOfCells)
-                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 16).scale)
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 16).scale)
             } else {
               collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 16).scale)
               }
