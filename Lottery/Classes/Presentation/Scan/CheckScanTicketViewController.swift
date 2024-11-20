@@ -197,11 +197,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        lotteryPatterns = []
-        numbersStringArray = []
-    }
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400

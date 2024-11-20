@@ -31,6 +31,7 @@ class ScratchOffCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = Appearance.mono100
         imageView.image = UIImage(named: "") // Placeholder image
         return imageView
     }()
