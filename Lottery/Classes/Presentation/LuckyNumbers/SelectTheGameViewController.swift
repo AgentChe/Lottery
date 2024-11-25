@@ -44,6 +44,7 @@ final class SelectTheGameViewController: UIViewController {
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false
+        button.addTarget(self, action: #selector(selectButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -55,8 +56,6 @@ final class SelectTheGameViewController: UIViewController {
         setupNavigationBackButton()
         setupViews()
         fetchStateAndGames()
-        
-        selectButton.addTarget(self, action: #selector(selectButtonTapped), for: .touchUpInside)
     }
     
     func setupNavigationBackButton() {
@@ -147,7 +146,9 @@ final class SelectTheGameViewController: UIViewController {
                                     lotteryId: selectedGame.lotteryId,
                                     pictureUrl: pictureUrl,
                                     date: selectedGame.date,
-                                    numbers: [])
+                                    numbers: [],
+                                    status: ""
+        )
         
         let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: selectedGame, lotteries: lotteries)
         navigationController?.pushViewController(editLuckyNumbersVC, animated: true)

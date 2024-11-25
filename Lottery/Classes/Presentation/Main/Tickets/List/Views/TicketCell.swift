@@ -10,27 +10,36 @@ import Kingfisher
 
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
+    func viewAllButtonTapped(for cell: TicketCell, ticket: Ticket, bonusIdx: [Int], completion: (() -> Void)?)
 }
 
-class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,TicketNumbersRowCellDelegate {
     var lotteries: [Lottery] = []
-    var bonusIdx: [Int] = []
+    var ticket: Ticket?
+    var bonusIdx: [Int] = [] {
+        didSet {
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
+     
+    func ticketNumbersRowCell(_ cell: TicketNumbersRowCollectionViewCell, didScroll contentOffset: CGPoint) {
+        // Iterate over the visible cells in numbersCollectionView
+        for visibleCell in numbersCollectionView.visibleCells {
+            if let rowCell = visibleCell as? TicketNumbersRowCollectionViewCell, rowCell != cell {
+                rowCell.ticketNumbersCollectionView.contentOffset = contentOffset
+            }
+        }
+    }
     
     static let reuseIdentifier = "TicketCell"
     weak var delegate: TicketCellDelegate?
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = Fonts.Inter.bold(size: 14.scale)
-        label.textColor = Appearance.mono200
-        return label
-    }()
-    
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = Fonts.Inter.medium(size: 14.scale)
+        label.font = Fonts.Inter.medium(size: 12.scale)
         label.textColor = Appearance.lightGrayTextColor
         return label
     }()
@@ -51,14 +60,14 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return imageView
     }()
     
-    private let editButton: UIButton = {
+    private let viewAllButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("TicketCell.EditTicket".localized, for: .normal)
+        button.setTitle("TicketCell.ViewAll".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 22.scale // Rounded corners, half of height
-        button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(viewAllButtonTapped), for: .touchUpInside)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
         return button
     }()
@@ -66,8 +75,8 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     var numbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 6.scale
-        layout.minimumInteritemSpacing = 6.scale
+        layout.minimumLineSpacing = 12.scale
+        layout.minimumInteritemSpacing = 12.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -76,16 +85,20 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     }()
     
     private var numbers: [[Int]] = []
-
+    
     private var editButtonHeightConstraint: NSLayoutConstraint!
     private var numbersCollectionViewBottomConstraint: NSLayoutConstraint!
     private var numbersCollectionViewBottomToEditButtonConstraint: NSLayoutConstraint!
     private var editButtonBottomConstraint: NSLayoutConstraint!
-
-    @objc private func editButtonTapped() {
-        delegate?.editButtonTapped(for: self)
+    
+    @objc  func viewAllButtonTapped() {
+        //delegate?.editButtonTapped(for: self)
+        if let ticket = ticket {
+            delegate?.viewAllButtonTapped(for: self, ticket: ticket, bonusIdx: bonusIdx, completion: nil)
+        }
+        
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -103,33 +116,28 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         // Configure collection view data source and delegate
         numbersCollectionView.dataSource = self
         numbersCollectionView.delegate = self
-        numbersCollectionView.register(NumberTicketCell.self, forCellWithReuseIdentifier: NumberTicketCell.reuseIdentifier)
+        numbersCollectionView.register(TicketNumbersRowCollectionViewCell.self, forCellWithReuseIdentifier: TicketNumbersRowCollectionViewCell.reuseIdentifier)
         
         // Add subviews
         self.addSubview(ticketImageView)
-        self.addSubview(titleLabel)
         self.addSubview(dateLabel)
         self.addSubview(numbersCollectionView)
         self.addSubview(dashedLineImageView) // Add dashed line image view
-        self.addSubview(editButton)
+        self.addSubview(viewAllButton)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            ticketImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 16.scale),
-            ticketImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
+            ticketImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 26.scale),
+            ticketImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
             ticketImageView.widthAnchor.constraint(equalToConstant: 150.scale),
             ticketImageView.heightAnchor.constraint(equalToConstant: 50.scale),
             
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 23.scale),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
-            titleLabel.trailingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: -10.scale),
+            dateLabel.topAnchor.constraint(equalTo: ticketImageView.bottomAnchor, constant: 10.scale),
+            dateLabel.leadingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: 13.scale),
+            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
             
-            dateLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5.scale),
-            dateLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            dateLabel.trailingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: -10.scale),
-            
-            dashedLineImageView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 35.scale),
+            dashedLineImageView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 26.scale),
             dashedLineImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             dashedLineImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
@@ -139,17 +147,17 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             numbersCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10.scale),
         ])
         
-        editButtonHeightConstraint = editButton.heightAnchor.constraint(equalToConstant: 44.scale)
+        editButtonHeightConstraint = viewAllButton.heightAnchor.constraint(equalToConstant: 44.scale)
         editButtonHeightConstraint.isActive = true
         
         numbersCollectionViewBottomConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
-        numbersCollectionViewBottomToEditButtonConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: editButton.topAnchor, constant: -20.scale)
+        numbersCollectionViewBottomToEditButtonConstraint = numbersCollectionView.bottomAnchor.constraint(equalTo: viewAllButton.topAnchor, constant: -20.scale)
         
-        editButtonBottomConstraint = editButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
+        editButtonBottomConstraint = viewAllButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20.scale)
         
         NSLayoutConstraint.activate([
-            editButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
-            editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
+            viewAllButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
+            viewAllButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
         ])
     }
     
@@ -159,12 +167,10 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-
+        
         formatter.dateStyle = .medium
         
-        // Compare dates and set the title accordingly
-        titleLabel.text = ticketDate > now ? "TicketCell.NextDraw".localized : "TicketCell.PastDraw".localized
-        dateLabel.text = formatter.string(from: ticketDate)
+        dateLabel.text = formatter.string(from: ticketDate).uppercased()
         
         // Update numbers array for the collection view
         numbers = ticket.numbers
@@ -179,22 +185,16 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         }
         
         // Configure cell appearance based on draw date
-        if ticketDate > now {
-            editButton.isHidden = false
-            editButtonHeightConstraint.constant = 44.scale
-            editButtonBottomConstraint.isActive = true
-            numbersCollectionViewBottomToEditButtonConstraint.isActive = true
-            numbersCollectionViewBottomConstraint.isActive = false
-        } else {
-            editButton.isHidden = true
-            editButtonHeightConstraint.constant = 0.scale
-            editButtonBottomConstraint.isActive = false
-            numbersCollectionViewBottomConstraint.isActive = true
-            numbersCollectionViewBottomToEditButtonConstraint.isActive = false
-        }
+        
+        viewAllButton.isHidden = false
+        editButtonHeightConstraint.constant = 44.scale
+        editButtonBottomConstraint.isActive = true
+        numbersCollectionViewBottomToEditButtonConstraint.isActive = true
+        numbersCollectionViewBottomConstraint.isActive = false
+        
         
         setNeedsLayout()
-              
+        
         let shapeLayer = self.createCustomShapeLayer()
         self.layer.mask = shapeLayer
         
@@ -214,46 +214,37 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     // MARK: - UICollectionViewDataSource Methods
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return numbers.count
+        return numbers != [] ? 1 : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return numbers[section].count
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        let number = numbers[indexPath.section][indexPath.item]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TicketNumbersRowCollectionViewCell.reuseIdentifier, for: indexPath) as? TicketNumbersRowCollectionViewCell else {
+            fatalError("Could not dequeue cell with identifier: TicketNumbersRowCollectionViewCell")
+        }
+        cell.bonusIdx = bonusIdx
+        cell.indexPath = indexPath
+        cell.ticketNumbers = numbers
+        cell.section = indexPath.item
+        cell.delegate = self
         
-        // Determine if this is the last item in the section
-        let isLastItemInSection = bonusIdx.contains(indexPath.item)
-        cell.configure(with: number, isLastInSection: isLastItemInSection)
-        
+        cell.config()
         return cell
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout Methods
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Size each number cell
-        return CGSize(width: 40.scale, height: 40.scale)
+        let viewWidth = frame.width
+        return CGSize(width: viewWidth , height: 40.scale)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let itemCount = numbers[section].count
-        let totalCellWidth = CGFloat(40 * itemCount).scale
-        let totalSpacingWidth = CGFloat(10 * (itemCount - 1)).scale
         
-        let totalWidth = totalCellWidth + totalSpacingWidth
-        let inset: CGFloat
-        
-        if totalWidth < collectionView.bounds.width {
-            inset = ((collectionView.bounds.width - totalWidth) / 2).scale
-        } else {
-            inset = 0.scale
-        }
-        
-        return UIEdgeInsets(top: 15.scale, left: inset, bottom: 0.scale, right: inset)
+        return UIEdgeInsets(top: 15.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
     }
 }
 
@@ -272,13 +263,15 @@ extension TicketCell {
         // Start at the top-left corner
         path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
         
+        let upperSizeHeight: CGFloat = 128.scale
+        
         // Top edge
         path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
         
         // Right edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: upperSizeHeight - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
         
@@ -287,8 +280,8 @@ extension TicketCell {
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
         
         // Left edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: upperSizeHeight + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
         
@@ -313,6 +306,8 @@ extension TicketCell {
         let cornerRadius: CGFloat = 20.scale // Radius for the corners
         let cutoutRadius: CGFloat = 16.scale // Radius of each circular cutout (50x50, hence radius is 25)
         
+        let upperSizeHeight: CGFloat = 128.scale
+        
         // Start at the top-left corner
         path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
         
@@ -321,8 +316,8 @@ extension TicketCell {
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
         
         // Right edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.maxX, y: 100.scale - cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: upperSizeHeight - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
         
@@ -331,8 +326,8 @@ extension TicketCell {
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
         
         // Left edge with inward arc (cutout)
-        path.addLine(to: CGPoint(x: bounds.minX, y: 100.scale + cutoutRadius))
-        path.addArc(withCenter: CGPoint(x: bounds.minX, y: 100.scale), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: upperSizeHeight + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
         path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
         path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
         

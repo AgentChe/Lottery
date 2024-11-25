@@ -10,15 +10,6 @@ import UIKit
 class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var lotteryPatterns: [LotteryPattern] = []
     private var contentManager: ContentManagerProtocol = ContentManager()
-    private let label: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Appearance.main300
-        label.font = Fonts.Inter.medium(size: 14.scale)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
     var ticket: Ticket?
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -26,6 +17,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             collectionView.collectionViewLayout.invalidateLayout()
         }
     }
+    weak var luckyNumbersCell: LuckyNumbersCell?
     var collectionView: UICollectionView!
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
@@ -89,11 +81,10 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
-        setupNavigationBar()
+        // setupNavigationBar()
         setupNavigationBarTitle()
         fetchLotteriesPatterns()
-        label.text = "You can add additional row of lucky numbers by tapping plus button"
-        view.addSubview(label)
+        
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -104,8 +95,9 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketLuckyNumbersEditCell.self, forCellWithReuseIdentifier: "TicketLuckyNumbersEditCellId")
+        collectionView.layer.masksToBounds = true
+        collectionView.contentInset = UIEdgeInsets(top: 15.scale, left: 0, bottom: 30.scale, right: 0)
         
-        collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
@@ -122,18 +114,14 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
+        fetchLotteriesPatterns()
         
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20.scale),
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.widthAnchor.constraint(equalToConstant: 343.scale),
-            label.heightAnchor.constraint(equalToConstant: 48.scale),
-            
             // CollectionView constraints
-            collectionView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10.scale),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -165,6 +153,7 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             numbersArray.append(intSection)
         }
         
+        
         // Ensure we have a ticket to modify
         guard var existingTicket = ticket else { return }
         
@@ -188,7 +177,28 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
                     gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
                         DispatchQueue.main.async {
                             if let luckyNumbersViewController = self?.navigationController?.viewControllers[1] {
-                                self?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                                CATransaction.begin()
+                                CATransaction.setCompletionBlock { [weak self] in
+                                    if luckyNumbersViewController.isKind(of: GeneratedNumbersViewController.self) {
+                                        if let navigationController = getRootViewController() as? NavigationController,
+                                           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                                         
+                                            if let navigationController = (mainViewController.children.first as? NavigationController) {
+                                                let drawsViewController = navigationController.viewControllers.first as! DrawsViewController
+                                                drawsViewController.numbersButtonTapped()
+                                            }
+                                        }
+                                    }
+                                }
+                                if luckyNumbersViewController.isKind(of: GeneratedNumbersViewController.self) {
+                                    if let navigationController = getRootViewController() as? NavigationController,
+                                       let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                                        mainViewController.coordinator.change(tab: TabView.Tab.draws)
+                                    }
+                                    self?.navigationController?.popToRootViewController(animated: false)
+                                } else {self?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                                }
+                                CATransaction.commit()
                             }
                         }
                     }
@@ -216,21 +226,51 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
     }
     
     private func setupNavigationBarTitle() {
-        guard let backButtonImage = UIImage(named: "luckyNumberEmptyHeader") else { return }
-        
         let backButton = UIButton(type: .custom)
-        backButton.setImage(backButtonImage, for: .normal)
+        if let image = UIImage(named: "luckyNumbersBackButtonImage") {
+            backButton.setImage(image, for: .normal)
+        }
+        // Disable autoresizing mask translation
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.imageView?.contentMode = .scaleAspectFit
-        backButton.backgroundColor = .clear
-        backButton.frame = CGRect(x: 0, y: 0, width: 140, height: 26)
-        backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
         
-        let barButtonItem = UIBarButtonItem(customView: backButton)
+        // Add a target to handle back navigation
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
         
-        self.navigationItem.leftBarButtonItem = barButtonItem
+        // Create a container view to hold the button
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        // Set constraints for the button within the container
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -35.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        // Set constraints for the container view
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        // Create a UIBarButtonItem with the container view
+        let backButtonItem = UIBarButtonItem(customView: containerView)
+        
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.shadowImage = UIImage()
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear
+        
+        // Replace the default back button with the custom button
+        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.hidesBackButton = true // Hide the default back button
     }
     
-    @objc func handleBackButton() {
+    @objc func customBackButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
@@ -252,10 +292,12 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
-            cell.configure(ticket: ticket, game: game, lotteries: lotteries)
+            cell.lotteryPatterns = lotteryPatterns
+            cell.lotteries = self.lotteries
+            cell.configure(ticket: ticket)
         }
         cell.delegate = self
-        cell.parentVC = self
+        cell.parentvc = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -276,18 +318,18 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 61.scale + 50.scale + 30.scale + 85.scale )
         }
     }
     
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
+            for i in 1..<section.count {
+                if Int(section[i]) == nil {
                     return false
                 }
             }
@@ -365,8 +407,10 @@ extension EditLuckyNumbersViewController {
             switch result {
             case .success(let success):
                 if success {
-                    DispatchQueue.main.async {
-                        self?.navigationController?.popViewController(animated: true)
+                    gamesManager.fetchNextGames(stateId: nil, forceUpdate: true) { [weak self] result in
+                        DispatchQueue.main.async {
+                            self?.navigationController?.popViewController(animated: true)
+                        }
                     }
                 } else {
                     DispatchQueue.main.async {

@@ -27,9 +27,10 @@
 "Splash.Loading" = "Loading...";
 
 // MARK: Main
-"Main.Draws" = "Draws";
+"Main.Draws" = "Accounts";
 "Main.LuckyNumbers" = "Lucky Numbers";
 "Main.MyTickets" = "My Tickets";
+"Main.Generator" = "Generator";
 
 // MARK: Paygate
 "Paygate.Title" = "UNLOCK PREMIUM STATUS";
@@ -134,7 +135,7 @@
 // MARK: TicketCell
 "TicketCell.NextDraw" = "NEXT DRAW";
 "TicketCell.PastDraw" = "PAST DRAW";
-"TicketCell.EditTicket" = "Edit ticket";
+"TicketCell.ViewAll" = "View all";
 
 // MARK: CustomCalendarView
 "CustomCalendarView.Save" = "Save";
@@ -148,7 +149,7 @@
 "CustomCalendarView.Days.Saturday" = "Sa";
 
 // MARK: EditTicketViewController
-"EditTicketViewController.SaveTicket" = "Save ticket";
+"EditTicketViewController.UpdateTicket" = "Update ticket";
 "EditTicketViewController.DeleteTicket" = "Delete";
 "EditTicketViewController.TicketDeletedSuccessfully.Title" = "Ticket Deleted Successfully";
 "EditTicketViewController.TicketDeletedSuccessfully.Message" = "Your ticket has been successfully deleted.";
@@ -253,3 +254,17 @@
 
 //MARK: ScanSelectLotteryView
 "ScanSelectLotteryView.selectGames" = "Please select the game for which you want to scan the ticket.";
+
+//MARK: NotificationRequestViewController
+"NotificationRequestViewController.allow" = "Allow Notifications";
+"NotificationRequestViewController.later" = "Maybe later";
+"NotificationRequestViewController.allowHeaderLabel" = "ALLOW NOTIFICATIONS";
+"NotificationRequestViewController.allowDescritionLabel" = "Get notifications to never miss results and important updates about your tickets.";
+
+//MARK: SheetViewController
+"SheetViewController.headerLabelText" = "We can’t send you notifications";
+"SheetViewController.descriptionLabelText" = "Without the permission, we can’t notify you about any updates.";
+"SheetViewController.allowButton" = "Allow";
+"SheetViewController.denyButton" = "Ok";
+
+

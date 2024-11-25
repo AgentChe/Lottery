@@ -12,6 +12,7 @@ final class ScanSelectLotteryView: UIView {
     
     // MARK: - UI Components
     var fromMenu = false
+    var fromGenerator: Bool = false
     lazy var continueButton: UIButton = {
         let button = UIButton()
         let attrs = TextAttributes()
@@ -152,7 +153,7 @@ extension ScanSelectLotteryView {
 
 // MARK: - Private Methods
 
-private extension ScanSelectLotteryView {
+ extension ScanSelectLotteryView {
     func setupView() {
         backgroundColor = Appearance.main400
         addSubview(descriptionLabel)
@@ -161,6 +162,9 @@ private extension ScanSelectLotteryView {
         addSubview(preloader) // Add preloader to the view
         if fromMenu {
             addSubview(addAnotherGameButton)
+        }
+        if fromGenerator {
+            descriptionLabel.alpha = 0
         }
         setupConstraints()
         
@@ -196,13 +200,19 @@ private extension ScanSelectLotteryView {
                 
             ])
         } else {
+            if fromGenerator == false {
             NSLayoutConstraint.activate([
                   
                   descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 95.scale),
                   descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12.scale),
-                  descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale),
+                  descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.scale)
+                  ])
+            }
+                                        
+            NSLayoutConstraint.activate([
+     
                   
-                  gameTableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
+                gameTableView.topAnchor.constraint(equalTo: fromGenerator == true ? safeAreaLayoutGuide.topAnchor : descriptionLabel.bottomAnchor, constant: fromGenerator == true ? 0.scale : 20.scale),
                   gameTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
                   gameTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
                   gameTableView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.scale),

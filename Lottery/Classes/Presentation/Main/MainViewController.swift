@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 
+
 final class MainViewController: UIViewController {
     lazy var mainView = MainView()
     
@@ -19,14 +20,13 @@ final class MainViewController: UIViewController {
     
     private init(requestReview: Bool) {
         self.requestReview = requestReview
-        
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }  
-
+    }
+    
 //    override var preferredStatusBarStyle: UIStatusBarStyle {
 //        .lightContent
 //    }
@@ -54,7 +54,6 @@ final class MainViewController: UIViewController {
         requestReviewIfNeeded()
         addActionsToTabs()
     }
-    
 }
 
 // MARK: Make
@@ -80,11 +79,8 @@ private extension MainViewController {
                 mainView.tabView.drawsItem
                     .rx.tap.map { TabView.Tab.draws },
                 
-                mainView.tabView.luckyNumbersItem
-                    .rx.tap.map { TabView.Tab.luckyNumbers },
-                
-                mainView.tabView.myTicketsItem
-                    .rx.tap.map { TabView.Tab.myTickets }
+                mainView.tabView.generatorItem
+                    .rx.tap.map { TabView.Tab.generator }
             ])
             .bind(to: Binder(self) { base, tab in
                 base.update(selectedTab: tab)

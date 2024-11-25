@@ -183,7 +183,8 @@ final class ScanMenuViewController: UIViewController {
                                 lotteryId: lottery.id,
                                 pictureUrl: pictureUrl,
                                 date: Date().timeIntervalSince1970,
-                                numbers: []
+                                numbers: [],
+                                status: ""
                             )
                             
                             let addScanTicketVC = AddScanTicketViewController(ticket: ticket, lotteries: lotteries)

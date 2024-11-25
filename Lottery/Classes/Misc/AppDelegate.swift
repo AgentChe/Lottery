@@ -20,12 +20,26 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         OtterScale.shared.initialize(host: GlobalDefinitions.otterScaleHost, apiKey: GlobalDefinitions.otterScaleApiKey)
         
         PurchaseValidationObserver.shared.startObserve()
-        
         IAPManager.initialize()
+        
+        _ = PushNotificationsManager.shared
+        
         
         return true
     }
-    
+//    func userNotificationCenter(_ center: UNUserNotificationCenter,
+//                                willPresent notification: UNNotification,
+//                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+//        print("userNotificationCenter(_:willPresent:) called in foreground")
+//        
+//        // Decide how you want to present the notification when the app is in the foreground.
+//        // For example, you can show an alert and play a sound:
+//        completionHandler([.alert, .sound])
+//        
+//        // Optionally, you can update your app's UI or internal state here without acting as if the user tapped the notification.
+//        // Do not call 'received(userInfo:)' if you don't want to simulate a tap action.
+//    }
+
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
@@ -51,9 +65,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         PushNotificationsManager.shared.application(didFailToRegisterForRemoteNotificationsWithError: error)
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        PushNotificationsManager.shared.application(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
-    }
+//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//        PushNotificationsManager.shared.application(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
+//    }
 }
 
 extension UIImage {

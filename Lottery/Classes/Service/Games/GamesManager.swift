@@ -98,6 +98,7 @@ extension GamesManager: GamesManagerProtocol {
             } else if let gamesArray = result as? [[String: Any]] {
                 let games = gamesArray.compactMap { Game(response: $0) }
                 self.cacheGames(games: games, key: Constants.cachedPastGamesKey)
+                print("cachedGames: \(games.count)")
                 completion(.success(games))
             } else {
                 completion(.failure(ContentError(.notContent)))
@@ -216,5 +217,32 @@ extension GamesManager {
         }
 
         task.resume()
+    }
+}
+extension GamesManager {
+    func fetchPastGamesAsync(stateId: Int?, forceUpdate: Bool = false) async throws -> [Game] {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.fetchPastGames(stateId: stateId, forceUpdate: forceUpdate) { result in
+                switch result {
+                case .success(let games):
+                    continuation.resume(returning: games)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    func fetchNextGamesAsync(stateId: Int?, forceUpdate: Bool = false) async throws -> [Game] {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.fetchNextGames(stateId: stateId, forceUpdate: forceUpdate) { result in
+                switch result {
+                case .success(let games):
+                    continuation.resume(returning: games)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }

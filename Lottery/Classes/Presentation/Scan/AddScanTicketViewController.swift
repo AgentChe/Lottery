@@ -47,22 +47,12 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     
     // Custom
     
-    var lotteries: [Lottery]!
+    var lotteries: [Lottery] = []
     init(ticket: Ticket, lotteries: [Lottery]) {
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.lotteries = lotteries
-        print(lottery)
-        for lottery in lotteries {
-            if lottery.id == ticket.lotteryId {
-                self.lottery = lottery
-                if !doesURLContain(lottery.logoUrl.absoluteString, word: "2by2") {
-                    self.numbersStringArray = [["","","","","",""]]
-                } else {
-                    self.numbersStringArray = [["","","",""]]
-                }
-            }
-        }
+        
     }
     func doesURLContain(_ urlString: String, word: String) -> Bool {
         return urlString.lowercased().contains(word)
@@ -94,6 +84,20 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                 case .success(let patterns):
                     self?.lotteryPatterns = patterns
                     // Reload any UI or update any data structures as necessary
+                    
+                    if let lotteries = self?.lotteries,
+                        let ticket = self?.ticket {
+                        for lottery in lotteries {
+                            if lottery.id == ticket.lotteryId {
+                                for pattern in patterns {
+                                     if pattern.id == lottery.id {
+                                         self?.lottery = lottery
+                                         self?.numbersStringArray = [Array(repeating: "",count: pattern.itemCount)]
+                                    }
+                                }
+                            }
+                        }
+                    }
                     self?.collectionView.reloadData()
                   //  print("Successfully fetched lottery patterns: \(patterns)")
                 case .failure(let error):
@@ -116,7 +120,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
-        collectionView.register(ScanAddTicketNumbersEditCell.self, forCellWithReuseIdentifier: "ScanAddTicketNumbersEditCell")
+        collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
         
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
         
@@ -228,7 +232,8 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
                             guard let self = self else { return }
                             guard let navigationController = self.navigationController else { return }
                             guard let drawsViewController = navigationController.viewControllers.first as? DrawsViewController else { return }
-                            
+                            drawsViewController.isDrawScan = false
+                            drawsViewController.isScratchScan = false
                             // Modify the navigation stack to insert DrawsViewController right after the root view controller
                             var viewControllers = navigationController.viewControllers
                             // Ensure root view controller exists at index 0
@@ -307,15 +312,18 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanAddTicketNumbersEditCell", for: indexPath) as! ScanAddTicketNumbersEditCell
-        if let ticket = self.ticket, let lottery = self.lottery {
-            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == lottery.id }.first {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
+        if let ticket = self.ticket {
+            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
-            cell.configure(ticket: ticket, lottery: lottery, lotteries: lotteries, numbersStringArray: numbersStringArray)
+            cell.numbersStringArray = numbersStringArray
+            cell.lotteries = self.lotteries
+            cell.configure(ticket: ticket)
         }
-        cell.delegate = self
-        cell.parentvc = self
+        
+        cell.addScanDelegate = self
+        cell.parentAddScan = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -336,18 +344,18 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale)
+                          height: CGFloat(numbersStringArray.count) * (40.scale + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 61.scale + 50.scale + 30.scale)
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         }
     }
     
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
+            for i in 1..<section.count {
+                if Int(section[i]) == nil {
                     return false
                 }
             }
@@ -359,7 +367,7 @@ class AddScanTicketViewController: UIViewController, UICollectionViewDataSource,
     func updateSaveButtonState() {
         let allNumbersValid = areAllNumbersValid()
         
-        if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? ScanAddTicketNumbersEditCell {
+        if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditCell {
             let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
             saveTicketButton.isEnabled = isValid
             saveTicketButton.backgroundColor = isValid ? Appearance.main100 : .gray // Change the color to gray if not valid

@@ -13,21 +13,44 @@ class ScanSelectStateViewController: UIViewController {
     private let profileManager: ProfileManagerProtocol = ProfileManager()
     private var states: [State] = []
     var profile: Profile!
-    private let selectStateView = ScanSelectStateView()
+    let selectStateView = ScanSelectStateView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
     
     override func loadView() {
+      
+        if let navigationController {
+            if let firstViewController = navigationController.viewControllers.first {
+                if firstViewController.isKind(of: GeneratorViewController.self) {
+                    selectStateView.fromGenerator = true
+                    selectStateView.layoutSubviews()
+                }
+            }
+        }
         view = selectStateView
+        selectStateView.setupView()
+        selectStateView.setupTableView()
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupButton()
         fetchProfile()
-        setupNavigationBackButton()
+        if let navigationController {
+            if let firstViewController = navigationController.viewControllers.first {
+                if firstViewController.isKind(of: GeneratorViewController.self) {
+                    setupNavigationBackButtonFromGenerator()
+                } else {
+                    setupNavigationBackButton()
+                }
+            }
+        }
+        
+      
+        
         configureNavigationBar()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -102,10 +125,20 @@ private extension ScanSelectStateViewController {
         }
         
         // Show preloader and hide button
-        selectStateView.continueButton.isHidden = true
-        selectStateView.preloader.startAnimating()
+       // selectStateView.continueButton.isHidden = true
+        DispatchQueue.main.async {
+            let attrs = TextAttributes()
+                .textColor(.white)
+                .font(Fonts.Inter.medium(size: 17.scale))
+            
+            let attributedTitle = "".localized.attributed(with: attrs)
+              self.selectStateView.continueButton.setAttributedTitle(attributedTitle, for: .normal)// Hide title
+              self.selectStateView.preloader.startAnimating()
+              self.selectStateView.preloader.isHidden = false
+          }
         onContinue?(selectedState)
-        selectStateView.preloader.stopAnimating()
+
+        
     }
     
     func presentTryAgainViewController(with error: Error) {
@@ -114,7 +147,46 @@ private extension ScanSelectStateViewController {
         }
         self.present(vc, animated: true)
     }
-    
+    func setupNavigationBackButtonFromGenerator() {
+        let backButton = UIButton(type: .custom)
+        
+        // Set the custom image for the button
+        if let image = UIImage(named: "Scan.SelectState") {
+            backButton.setImage(image, for: .normal)
+        }
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.imageView?.contentMode = .scaleAspectFit
+        backButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(backButton)
+        
+        NSLayoutConstraint.activate([
+            backButton.widthAnchor.constraint(equalToConstant: 341.scale),
+            backButton.heightAnchor.constraint(equalToConstant: 26.scale),
+            backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -26.scale),
+            backButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalTo: backButton.widthAnchor),
+            containerView.heightAnchor.constraint(equalTo: backButton.heightAnchor)
+        ])
+        
+        let backButtonItem = UIBarButtonItem(customView: containerView)
+        
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.shadowImage = UIImage()
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear
+        navigationItem.leftBarButtonItem = backButtonItem
+        
+        // Replace the default back button with the custom button
+        parent?.navigationItem.leftBarButtonItem = backButtonItem
+        parent?.navigationItem.hidesBackButton = true // Hide the default back button
+    }
     func setupNavigationBackButton() {
         let backButton = UIButton(type: .custom)
         

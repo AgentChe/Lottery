@@ -19,7 +19,7 @@ final class MainView: UIView {
         super.init(frame: frame)
         
         makeConstraints()
-        tabView.alpha = 0
+        tabView.alpha = 1
     }
     
     required init?(coder: NSCoder) {
@@ -67,7 +67,7 @@ private extension MainView {
     
     func makeTabView() -> TabView {
         let view = TabView()
-        view.backgroundColor = Appearance.mono100
+        view.backgroundColor = Appearance.main400
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view

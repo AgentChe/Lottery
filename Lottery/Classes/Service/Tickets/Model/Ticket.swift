@@ -4,6 +4,7 @@
 //
 //  Created by Niiaz Khasanov on 5/30/24.
 //
+
 import Foundation
 
 struct Ticket: Codable {
@@ -12,13 +13,15 @@ struct Ticket: Codable {
     var pictureUrl: URL?
     var date: TimeInterval
     var numbers: [[Int]]
+    var status: String
 
     init?(response: Any) {
         guard let dict = response as? [String: Any],
               let id = dict["id"] as? Int,
               let lotteryId = dict["lotteryId"] as? Int,
               let date = dict["date"] as? TimeInterval,
-              let numbers = dict["numbers"] as? [[Int]] else {
+              let numbers = dict["numbers"] as? [[Int]],
+              let status = dict["status"] as? String else {
             return nil
         }
         self.id = id
@@ -26,14 +29,15 @@ struct Ticket: Codable {
         self.pictureUrl = URL(string: dict["image_url"] as? String ?? "")
         self.date = date
         self.numbers = numbers
+        self.status = status
     }
 
-    // New initializer
-    init(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]]) {
+    init(id: Int, lotteryId: Int, pictureUrl: URL?, date: TimeInterval, numbers: [[Int]], status: String) {
         self.id = id
         self.lotteryId = lotteryId
         self.pictureUrl = pictureUrl
         self.date = date
         self.numbers = numbers
+        self.status = status
     }
 }

@@ -70,7 +70,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+    private let ticketScanUploadImage = TicketScanUploadImage()
     private let image: UIImage
     private var quad: Quadrilateral
     private var zoomGestureController: ZoomGestureController!
@@ -238,7 +238,7 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         ImageManager.shared.addImageScans(results)
         
-        let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
+        let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]], status:"")
         
         let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
         
@@ -349,43 +349,62 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
         
         ImageManager.shared.addImageScans(results)
         
-        let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]])
-        
-        let checkTicketViewController = CheckScanTicketViewController(ticket: ticket)
-        
-        checkTicketViewController.image = results.originalScan.image
-        checkTicketViewController.imageView.image = results.croppedScan.image
-        let croppedImageSize = results.croppedScan.image.size
-        checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
-        if croppedImageSize.width / croppedImageSize.height < 3 {
-            checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
+        let ticket = Ticket(id: Int(Date().timeIntervalSince1970), lotteryId: lotteryId, pictureUrl: URL(string: "http://example.com/pic.png"), date: Date().timeIntervalSince1970, numbers: [[ ]], status: "")
+        var uploadResponse: UploadResponse?
+        touchDown.isEnabled = false
+        self.continueButton.isUserInteractionEnabled = false
+        self.dimView?.startTextRotation()
+    
+        ticketScanUploadImage.upload(image:  results.croppedScan.image) { response in
+            if let response = response {
+                print("Image uploaded successfully.")
+                print("Image URL: \(response.image_url)")
+                print("Numbers: \(response.numbers)")
+                print("Date of Game: \(response.date_of_game)")
+                
+                uploadResponse = response as? UploadResponse
+                DispatchQueue.main.async {
+                    goToCheckTicketViewController(uploadResponse: uploadResponse)
+                }
+            } else {
+                print("Failed to upload image")
+                DispatchQueue.main.async {
+                    goToCheckTicketViewController(uploadResponse: uploadResponse)
+                }
+            }
+      
         }
         
-        checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
-        touchDown.isEnabled = false
+        func goToCheckTicketViewController(uploadResponse: UploadResponse?) {
+            let checkTicketViewController = CheckScanTicketViewController(ticket: ticket, uploadResponse: uploadResponse)
+            
+            checkTicketViewController.image =  results.croppedScan.image
+            checkTicketViewController.imageView.image = results.croppedScan.image
+            let croppedImageSize = results.croppedScan.image.size
+            checkTicketViewController.imageView.contentMode = croppedImageSize.width / croppedImageSize.height < 3.125 ? .scaleAspectFill : .scaleAspectFit
+            if croppedImageSize.width / croppedImageSize.height < 3 {
+                checkTicketViewController.addGaussianBlurEffect(to: checkTicketViewController.imageView, withOverlayImage: "Scan.Search", target: checkTicketViewController, action: #selector(CheckScanTicketViewController.imageViewTapped))
+            }
+            
+            // checkTicketViewController.processImage(image: resultsGray.croppedScan.image)
         
-    //    delay(0.8) {
-      //      DispatchQueue.main.async {
-                self.continueButton.isUserInteractionEnabled = false
-                if self.weDo {
-                    self.hideDimView()
-                    self.touchDown.isEnabled = true
-                    self.continueButton.isUserInteractionEnabled = true
-                    
-                    // Prevent multiple pushes
-                    if self.navigationController?.topViewController != checkTicketViewController {
-                        self.navigationController?.pushViewController(checkTicketViewController, animated: true)
-                    }
-                    
-                } else {
-                    self.weDo = true
-                    self.showDimView()
-                    self.dimView?.alpha = 0
-                    self.continueButton.isUserInteractionEnabled = true
+             if self.weDo {
+                self.hideDimView()
+                self.touchDown.isEnabled = true
+                self.continueButton.isUserInteractionEnabled = true
+                
+                // Prevent multiple pushes
+                if self.navigationController?.topViewController != checkTicketViewController {
+                    self.navigationController?.pushViewController(checkTicketViewController, animated: true)
                 }
-   //         }
-   //     }
-
+                
+            } else {
+                self.weDo = true
+                self.showDimView()
+                self.dimView?.alpha = 0
+                self.continueButton.isUserInteractionEnabled = true
+            }
+        }
     }
     func showDimView() {
         dimView = DimViewWithProgressBar(frame: view.bounds)

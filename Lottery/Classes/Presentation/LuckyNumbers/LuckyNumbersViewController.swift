@@ -12,6 +12,17 @@ final class LuckyNumbersViewController: UIViewController {
     private var contentManager: ContentManagerProtocol = ContentManager()
     private var nextDraws: [Game] = []
     private var lotteries: [Lottery] = []
+    var lotteryPatterns: [LotteryPattern] = []
+    
+    private let backgroundfullView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "TicketsVCBackgroundImage")
+        imageView.contentMode = .scaleToFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
     
     private let imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "LuckyNumbers.Add"))
@@ -57,7 +68,6 @@ final class LuckyNumbersViewController: UIViewController {
         button.layer.cornerRadius = 22.scale
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        button.isEnabled = true // Initially disabled
         button.isHidden = true
         return button
     }()
@@ -77,18 +87,15 @@ final class LuckyNumbersViewController: UIViewController {
         return button
     }()
     
-    private lazy var nextDrawsCollectionView: UICollectionView = {
+    private lazy var luckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width - 32, height: 210.scale)
-        layout.minimumLineSpacing = 50.scale
+        layout.minimumLineSpacing = 16.scale
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         if #available(iOS 17.4, *) {
             collectionView.bouncesVertically = true
-        } else {
-            // Fallback on earlier versions
         }
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isHidden = true
@@ -105,6 +112,21 @@ final class LuckyNumbersViewController: UIViewController {
         setupNavigationBarTitle()
         setupViews()
         fetchLotteries(for: nil)
+        fetchLotteriesPatterns()
+    }
+    
+    func fetchLotteriesPatterns(for stateId: Int? = nil) {
+        contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let patterns):
+                    self?.lotteryPatterns = patterns
+                    self?.luckyNumbersCollectionView.reloadData()
+                case .failure(let error):
+                    print("Failed to fetch lottery patterns: \(error)")
+                }
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,7 +135,7 @@ final class LuckyNumbersViewController: UIViewController {
         
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
-            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+            updateMainViewControllerConstraints(for: mainViewController)
         }
     }
     
@@ -137,16 +159,17 @@ final class LuckyNumbersViewController: UIViewController {
                 switch result {
                 case .success(let games):
                     self?.nextDraws = games.filter { $0.myLuckyNumbers?.isEmpty == false }
-                    self?.nextDrawsCollectionView.isHidden = self?.nextDraws.isEmpty ?? true
-                    self?.addLuckyNumbersButton.isHidden = self?.nextDraws.isEmpty ?? true
-                    self?.imageView.isHidden = !(self?.nextDraws.isEmpty ?? false)
-                    self?.firstLabel.isHidden = !(self?.nextDraws.isEmpty ?? false)
-                    self?.secondLabel.isHidden = !(self?.nextDraws.isEmpty ?? false)
-                    self?.addButton.isHidden = !(self?.nextDraws.isEmpty ?? false)
-                    self?.nextDrawsCollectionView.reloadData()
+                    let isEmpty = self?.nextDraws.isEmpty ?? true
+                    self?.luckyNumbersCollectionView.isHidden = isEmpty
+                    self?.addLuckyNumbersButton.isHidden = isEmpty
+                    self?.imageView.isHidden = !isEmpty
+                    self?.firstLabel.isHidden = !isEmpty
+                    self?.secondLabel.isHidden = !isEmpty
+                    self?.addButton.isHidden = !isEmpty
+                    self?.luckyNumbersCollectionView.reloadData()
                 case .failure:
                     print("LuckyNumbersViewController.ErrorFetchGames".localized)
-                    self?.nextDrawsCollectionView.isHidden = true
+                    self?.luckyNumbersCollectionView.isHidden = true
                     self?.addLuckyNumbersButton.isHidden = true
                     self?.imageView.isHidden = false
                     self?.firstLabel.isHidden = false
@@ -158,10 +181,7 @@ final class LuckyNumbersViewController: UIViewController {
     }
     
     func setupNavigationBarTitle() {
-        // Create a custom back button
         let backButton = UIButton(type: .custom)
-        
-        // Set the custom image for the button
         if let image = UIImage(named: "luckyNumbersBackButtonImage") {
             backButton.setImage(image, for: .normal)
         }
@@ -193,60 +213,63 @@ final class LuckyNumbersViewController: UIViewController {
         
         // Create a UIBarButtonItem with the container view
         let backButtonItem = UIBarButtonItem(customView: containerView)
+      
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.shadowImage = UIImage()
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear
+        
         // Replace the default back button with the custom button
         navigationItem.leftBarButtonItem = backButtonItem
         navigationItem.hidesBackButton = true // Hide the default back button
     }
+    
     @objc private func customBackButtonTapped() {
-        // Perform back navigation
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func handleMenuTap() {
-        let menuVC = MenuViewController()
-        let navController = NavigationController(rootViewController: menuVC)
-        navController.modalPresentationStyle = .fullScreen
-        present(navController, animated: true, completion: nil)
-    }
-    
     func setupViews() {
-        view.addSubview(imageView)
-        view.addSubview(firstLabel)
-        view.addSubview(secondLabel)
-        view.addSubview(addButton)
-        view.addSubview(nextDrawsCollectionView)
-        view.addSubview(addLuckyNumbersButton)
+        view.addSubview(backgroundfullView)
+        
+        [imageView, firstLabel, secondLabel, addButton, luckyNumbersCollectionView, addLuckyNumbersButton].forEach {
+            backgroundfullView.addSubview($0)
+        }
+        
         NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50.scale),
+            backgroundfullView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundfullView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundfullView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundfullView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            imageView.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: backgroundfullView.centerYAnchor, constant: -50.scale),
             imageView.widthAnchor.constraint(equalToConstant: 130.scale),
             imageView.heightAnchor.constraint(equalToConstant: 130.scale),
             
             firstLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20.scale),
-            firstLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            firstLabel.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
             
             secondLabel.topAnchor.constraint(equalTo: firstLabel.bottomAnchor, constant: 8.scale),
-            secondLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            secondLabel.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
             
             addButton.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 20.scale),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            addButton.centerXAnchor.constraint(equalTo: backgroundfullView.centerXAnchor),
             
-            nextDrawsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            nextDrawsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nextDrawsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nextDrawsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            luckyNumbersCollectionView.topAnchor.constraint(equalTo: backgroundfullView.safeAreaLayoutGuide.topAnchor),
+            luckyNumbersCollectionView.leadingAnchor.constraint(equalTo: backgroundfullView.leadingAnchor),
+            luckyNumbersCollectionView.trailingAnchor.constraint(equalTo: backgroundfullView.trailingAnchor),
+            luckyNumbersCollectionView.bottomAnchor.constraint(equalTo: backgroundfullView.bottomAnchor),
             
-            addLuckyNumbersButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            addLuckyNumbersButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            addLuckyNumbersButton.leadingAnchor.constraint(equalTo: backgroundfullView.leadingAnchor, constant: 20.scale),
+            addLuckyNumbersButton.trailingAnchor.constraint(equalTo: backgroundfullView.trailingAnchor, constant: -20.scale),
             addLuckyNumbersButton.heightAnchor.constraint(equalToConstant: 44.scale),
-            addLuckyNumbersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
-            
-            
+            addLuckyNumbersButton.bottomAnchor.constraint(equalTo: backgroundfullView.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
         ])
     }
     
     @objc func addButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+        if  SessionManager().hasActiveSubscriptions() {
             let selectTheGameViewController = SelectTheGameViewController()
             if let navigationController = navigationController {
                 navigationController.pushViewController(selectTheGameViewController, animated: true)
@@ -275,24 +298,26 @@ extension LuckyNumbersViewController: UICollectionViewDataSource, UICollectionVi
         }
         
         let game = nextDraws[indexPath.item]
+        if let pattern = lotteryPatterns.first(where: { $0.id == game.lotteryId }) {
+            cell.bonusIdx = pattern.bonusIdx
+        }
+        cell.lotteryPatterns = lotteryPatterns
         cell.configure(game: game, lotteries: lotteries)
         cell.delegate = self
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 50.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
+        return UIEdgeInsets(top: 16.scale, left: 16.scale, bottom: 70.scale, right: 16.scale)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let game = nextDraws[indexPath.item]
         var cellHeight = 210.scale
-        if let myLuckyNumbers = game.myLuckyNumbers {
-            if myLuckyNumbers.isEmpty {
-                cellHeight = 155.scale
-            } else {
-                cellHeight = 150.scale + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(54.scale)
-            }
+        if let myLuckyNumbers = game.myLuckyNumbers, !myLuckyNumbers.isEmpty {
+            cellHeight = 270.scale + CGFloat(max(0, myLuckyNumbers.count)) * (40.scale + 16.scale)
+        } else {
+            cellHeight = 155.scale
         }
         return CGSize(width: collectionView.frame.width - 32, height: cellHeight)
     }
@@ -304,18 +329,13 @@ extension LuckyNumbersViewController {
         let tabView = mainView.tabView
         
         if mainView.tabViewBottomConstraint?.constant != newConstant {
-            // Deactivate and nil the old constraint if it's different
-            if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
-                oldTabViewBottomConstraint.isActive = false
-                mainView.tabViewBottomConstraint = nil
-            }
+            mainView.tabViewBottomConstraint?.isActive = false
+            mainView.tabViewBottomConstraint = nil
             
-            // Create and activate the new constraint
             let newTabViewBottomConstraint = tabView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: newConstant)
             mainView.tabViewBottomConstraint = newTabViewBottomConstraint
             newTabViewBottomConstraint.isActive = true
             
-            // Call layoutIfNeeded to apply the changes
             mainView.layoutIfNeeded()
         }
     }

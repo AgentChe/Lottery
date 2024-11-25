@@ -2,7 +2,7 @@ import UIKit
 import AVFoundation
 import Lottie
 
-class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,PushNotificationsDelegate {
 
     struct ScrollViewState {
         var previousScrollOffset: CGFloat = 0.0
@@ -63,10 +63,17 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         view.updateConstraintsIfNeeded()
         if let currentCollectionView = segmentedControl.currentIndex == 0 ? nextDrawsCollectionView : pastDrawsCollectionView {
         }
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+        }
+        
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchStateAndGames()
+        self.fetchStateAndGames()
+    
+        
     }
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
@@ -164,6 +171,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = Appearance.main400
         setupCollectionViews()
         setupSegmentedControl()
@@ -171,7 +179,165 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupNoGamesAddedImageView()
         setupLayoutConstraints()
         setupPremiumAnimationView()
+        PushNotificationsManager.shared.add(observer: self)
+        
     }
+    func pushNotificationsDidReceive(authorizationStatus: PushNotificationsAuthorizationStatus) {
+         // Handle if needed
+     }
+
+     func pushNotificationsDidReceive(token: String?) {
+         // Handle if needed
+     }
+
+    func pushNotificationsDidReceive(model: PushNotificationsModel, completion: @escaping () -> Void) {
+        handlePushNotification(model: model, completion: completion)
+    }
+
+    func handlePushNotification(model: PushNotificationsModel, completion: @escaping () -> Void) {
+        // Extract userInfo from the notification model
+        guard let userInfo = model.userInfo as? [String: Any],
+              let screen = userInfo["screen"] as? String else {
+            print("Invalid notification payload structure.")
+            completion() // Call completion if data is invalid
+            return
+        }
+
+        // Determine the screen to navigate to based on the notification content
+        switch screen {
+        case "ticket_details":
+            if let ticketIDString = userInfo["ticket_id"] as? String,
+               let ticketID = Int(ticketIDString) {
+                print("ticketId: \(ticketID)")
+                navigateToTicketDetails(ticketID: ticketID, completion: completion)
+            } else {
+                print("Ticket ID not found in notification payload.")
+                completion()
+            }
+        case "past_draws":
+            navigateToPastDraws(completion: completion)
+        case "next_draws":
+            navigateToNextDraws(completion: completion)
+        default:
+            // Handle other cases or log for debugging purposes
+            print("Unhandled notification screen: \(screen)")
+            completion()
+        }
+    }
+
+    func navigateToNextDraws( completion: @escaping () -> Void) {
+        guard let navigationController = self.navigationController else {
+            completion()
+            return
+        }
+
+        // Dismiss any presented view controllers
+        navigationController.presentedViewController?.dismiss(animated: false, completion: nil)
+
+        // Pop to root view controller
+        navigationController.popToRootViewController(animated: false)
+        
+        if let chooseScanOptionView = view.subviews.first(where: { $0 is ChooseScanOptionView }) as? ChooseScanOptionView {
+            chooseScanOptionView.transform = .identity
+            self.dimView.alpha = 0
+            chooseScanOptionView.removeFromSuperview()
+            self.dimView.removeFromSuperview()
+
+        }
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            mainViewController.coordinator.change(tab: TabView.Tab.draws)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let pastDrawsButton = self.segmentedControl.buttonsCollection[0]
+            self.segmentedControl.segmentTapped(pastDrawsButton)
+            completion()
+        }
+    }
+    
+    func navigateToPastDraws( completion: @escaping () -> Void) {
+        guard let navigationController = self.navigationController else {
+            completion()
+            return
+        }
+
+        // Dismiss any presented view controllers
+        navigationController.presentedViewController?.dismiss(animated: false, completion: nil)
+
+        // Pop to root view controller
+        navigationController.popToRootViewController(animated: false)
+        
+        if let chooseScanOptionView = view.subviews.first(where: { $0 is ChooseScanOptionView }) as? ChooseScanOptionView {
+            chooseScanOptionView.transform = .identity
+            self.dimView.alpha = 0
+            chooseScanOptionView.removeFromSuperview()
+            self.dimView.removeFromSuperview()
+
+        }
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            mainViewController.coordinator.change(tab: TabView.Tab.draws)
+        }
+        // Delay to ensure the navigation stack is updated
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let pastDrawsButton = self.segmentedControl.buttonsCollection[1]
+            self.segmentedControl.segmentTapped(pastDrawsButton)
+            completion()
+
+            
+        }
+    }
+
+    func navigateToTicketDetails(ticketID: Int, completion: @escaping () -> Void) {
+        guard let navigationController = self.navigationController else {
+            completion()
+            return
+        }
+
+        // Dismiss any presented view controllers
+        navigationController.presentedViewController?.dismiss(animated: false, completion: nil)
+
+        // Pop to root view controller
+        navigationController.popToRootViewController(animated: false)
+     
+        if let chooseScanOptionView = view.subviews.first(where: { $0 is ChooseScanOptionView }) as? ChooseScanOptionView {
+            chooseScanOptionView.transform = .identity
+            self.dimView.alpha = 0
+            chooseScanOptionView.removeFromSuperview()
+            self.dimView.removeFromSuperview()
+        }
+        
+        
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            mainViewController.coordinator.change(tab: TabView.Tab.draws)
+        }
+        // Delay to ensure the navigation stack is updated
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if let ticketsViewController = navigationController.viewControllers.last as? TicketsViewController {
+                ticketsViewController.pushDriven = true
+                ticketsViewController.ticketIDFromPush = ticketID
+                ticketsViewController.ticketViewCompletion = completion
+            } else {
+                // Instantiate or get the TicketsViewController
+                let ticketsViewController = self.myTicketsController
+                ticketsViewController.pushDriven = true
+                ticketsViewController.ticketIDFromPush = ticketID
+                ticketsViewController.ticketViewCompletion = completion
+
+                navigationController.pushViewController(ticketsViewController, animated: true)
+                navigationController.setNavigationBarHidden(false, animated: false)
+            }
+        }
+    }
+
+    
+     deinit {
+         PushNotificationsManager.shared.remove(observer: self)
+     }
 
     private var previousScrollOffset: CGFloat = .zero
     private var initialContentOffset: CGFloat = 0.0
@@ -222,7 +388,7 @@ extension DrawsViewController {
             premiumAnimationView.widthAnchor.constraint(equalToConstant: 199.scale),
             premiumAnimationView.heightAnchor.constraint(equalToConstant: 66.scale),
             premiumAnimationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
-            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.scale)
+            premiumAnimationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -80.scale)
         ])
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePremiumAnimationTap))
@@ -326,10 +492,17 @@ extension DrawsViewController {
     @objc func changeStateButtonTapped() {
         let scanOnboardingViewController = ScanOnboardingViewController.make()
         scanOnboardingViewController.fromDrawsViewController = true
+     
+        if let navigationController = getRootViewController() as? NavigationController,
+           let mainViewController = navigationController.viewControllers.first as? MainViewController {
+            updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
+        }
+       
         if let navigationController = self.navigationController {
             navigationController.setNavigationBarHidden(false, animated: false)
             navigationController.pushViewController(scanOnboardingViewController, animated: true)
         } else {
+           
             present(scanOnboardingViewController, animated: true, completion: nil)
         }
     }
@@ -353,7 +526,7 @@ extension DrawsViewController {
                 chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
                 chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
                 chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),
-                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200.scale)
+                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 140.scale)
             ])
 
             view.layoutIfNeeded()
@@ -421,8 +594,10 @@ extension DrawsViewController {
 
     @objc func numbersButtonTapped() {
         if let navigationController = self.navigationController {
-            navigationController.pushViewController(luckyNumbersController, animated: true)
-            navigationController.setNavigationBarHidden(false, animated: false)
+            if navigationController.topViewController != luckyNumbersController {
+                navigationController.pushViewController(luckyNumbersController, animated: true)
+                navigationController.setNavigationBarHidden(false, animated: false)
+            }
         } else {
             present(luckyNumbersVC, animated: true, completion: nil)
         }
@@ -430,8 +605,10 @@ extension DrawsViewController {
 
     @objc func myTicketsButtonTapped() {
         if let navigationController = self.navigationController {
-            navigationController.pushViewController(myTicketsController, animated: true)
-            navigationController.setNavigationBarHidden(false, animated: false)
+            if navigationController.topViewController != myTicketsController {
+                navigationController.pushViewController(myTicketsController, animated: true)
+                navigationController.setNavigationBarHidden(false, animated: false)
+            }
         } else {
             present(myTicketsVC, animated: true, completion: nil)
         }
@@ -624,7 +801,7 @@ extension DrawsViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 10.scale : 100.scale
+        let bottomInset: CGFloat = SessionManager().hasActiveSubscriptions() ? 80.scale : 155.scale
         let window = UIApplication.shared.keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 0
         return UIEdgeInsets(top: maxUpperMenuHeight + 45.scale + (ScreenSize.isIphoneXFamily ? 30.scale : 60.scale), left: 0, bottom: bottomInset, right: 0)
@@ -644,6 +821,7 @@ extension DrawsViewController {
         if collectionView == nextDrawsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NextGameCell", for: indexPath) as! NextGameCell
             let game = nextDraws[indexPath.item]
+            print("PastDraws.count:", self.pastDraws.count)
             for pastDraw in self.pastDraws {
                 if pastDraw.lotteryId == game.lotteryId {
                     if let pattern: LotteryPattern = lotteryPatterns.filter({ $0.id == game.lotteryId }).first {
@@ -860,6 +1038,13 @@ private extension DrawsViewController {
                         scanViewController.stateId = 888
                         scanViewController.lotteryId = 888
                         if let navigationController = self.navigationController {
+                            if let r_navigationController = getRootViewController() as? NavigationController,
+                               let mainViewController = r_navigationController.viewControllers.first as? MainViewController {
+                                
+                                self.updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
+                              //  fetchLotteries()
+                                
+                            }
                             navigationController.pushViewController(scanViewController, animated: true)
                             navigationController.setNavigationBarHidden(false, animated: false)
                         } else {
@@ -877,7 +1062,15 @@ private extension DrawsViewController {
                 let scanViewController = ScanViewController()
                 scanViewController.stateId = 888
                 scanViewController.lotteryId = 888
+                if let navigationController = getRootViewController() as? NavigationController,
+                   let mainViewController = navigationController.viewControllers.first as? MainViewController {
+                    
+                    self.updateMainViewControllerConstraints(for: mainViewController, newConstant: 300.scale)
+                  //  fetchLotteries()
+                    
+                }
                 if let navigationController = self.navigationController {
+                    
                     navigationController.pushViewController(scanViewController, animated: true)
                     navigationController.setNavigationBarHidden(false, animated: false)
                 } else {
@@ -901,12 +1094,14 @@ private extension DrawsViewController {
             }
         }))
         alert.addAction(UIAlertAction(title: "ScanMenuViewController.CancelButton".localized, style: .cancel, handler: nil))
+      
         self.present(alert, animated: true, completion: nil)
     }
 
     func updateMainViewControllerConstraints(for mainViewController: MainViewController, newConstant: CGFloat = ScreenSize.isIphoneXFamily ? 100.scale : 80.scale) {
         let mainView = mainViewController.mainView
         let tabView = mainView.tabView
+        tabView.alpha = 1
         if mainView.tabViewBottomConstraint?.constant != newConstant {
             if let oldTabViewBottomConstraint = mainView.tabViewBottomConstraint {
                 oldTabViewBottomConstraint.isActive = false

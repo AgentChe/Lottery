@@ -8,21 +8,45 @@
 import UIKit
 import Kingfisher
 
-class LuckyNumbersCell: UICollectionViewCell {
+class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         print("Touch!")
     }
+    
+    func luckyNumbersRowCell(_ cell: LuckyNumbersRowCollectionViewCell, didScroll contentOffset: CGPoint) {
+        // Iterate over the visible cells in numbersCollectionView
+        for visibleCell in myLuckyNumbersCollectionView.visibleCells {
+            if let rowCell = visibleCell as? LuckyNumbersRowCollectionViewCell, rowCell != cell {
+                rowCell.ticketNumbersCollectionView.contentOffset = contentOffset
+            }
+        }
+    }
+    
+    
     var game: Game!
     var lotteries: [Lottery]!
+    var lotteryPatterns : [LotteryPattern] = []
+    var bonusIdx: [Int] = [] {
+        didSet {
+            for i in 0..<bonusIdx.count {
+                bonusIdx[i] = bonusIdx[i] + 1
+            }
+        }
+    }
     weak var delegate: LuckyNumbersViewController?
     private let logoImageView = UIImageView()
     private let dateLabelContainer = UIView()
     private let dateLabel = UILabel()
     var logoImageLeadingConstraint: NSLayoutConstraint!
     var logoImageWidthConstraint: NSLayoutConstraint!
-
-    let dashedLineImageView: UIImageView = {
+    let dashedLineImageViewUpper: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "PastDraws.DashedLine")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    let dashedLineImageViewBottom: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "PastDraws.DashedLine")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -33,16 +57,16 @@ class LuckyNumbersCell: UICollectionViewCell {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 6.scale
-        layout.minimumLineSpacing = 6.scale
-        layout.itemSize = CGSize(width: 40.scale, height: 40.scale)
+        layout.minimumLineSpacing = 16.scale
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.isUserInteractionEnabled = false
-        collectionView.register(NumberCell.self, forCellWithReuseIdentifier: "NumberCell")
+        collectionView.isUserInteractionEnabled = true
+        collectionView.isScrollEnabled = false
+        collectionView.register(LuckyNumbersRowCollectionViewCell.self, forCellWithReuseIdentifier: LuckyNumbersRowCollectionViewCell.reuseIdentifier)
         return collectionView
     }()
     
@@ -82,8 +106,6 @@ class LuckyNumbersCell: UICollectionViewCell {
     }
     
     @objc private func editButtonTapped() {
-        print("LuckyNumbersCell.EditButton".localized)
-        
         for lottery in lotteries {
             if lottery.id == game.lotteryId {
                 
@@ -91,15 +113,19 @@ class LuckyNumbersCell: UICollectionViewCell {
                                             lotteryId: game.lotteryId,
                                             pictureUrl: lottery.logoUrl,
                                             date: game.date,
-                                            numbers: game.myLuckyNumbers ?? [])
+                                            numbers: game.myLuckyNumbers ?? [],
+                                            status:""
+                )
                 
                 let editLuckyNumbersVC = EditLuckyNumbersViewController(ticket: ticket, game: game, lotteries: lotteries)
+                editLuckyNumbersVC.luckyNumbersCell = self
+                editLuckyNumbersVC.lotteryPatterns = lotteryPatterns
                 delegate?.navigationController?.pushViewController(editLuckyNumbersVC, animated: true)
             }
         }
     }
     
-    @objc private func removeButtonTapped() {
+    @objc  func removeButtonTapped() {
         let alertVC = LuckyNumbersAlertViewController()
         
         alertVC.onConfirmDelete = { [weak self] in
@@ -118,6 +144,9 @@ class LuckyNumbersCell: UICollectionViewCell {
                             print("LuckyNumbersCell.RemoveButton".localized)
                             DispatchQueue.main.async {
                                 self?.delegate?.fetchLotteries(for: nil)
+                                if let luckyNumbersViewController = self?.delegate?.navigationController?.viewControllers[1] {
+                                    self?.delegate?.navigationController?.popToViewController(luckyNumbersViewController, animated: true)
+                                }
                             }
                         }
                         gamesManager.fetchPastGames(stateId: nil, forceUpdate: true) { [weak self] result in
@@ -196,6 +225,21 @@ extension LuckyNumbersCell {
         
         // Reload collection views with new data
         myLuckyNumbersCollectionView.reloadData()
+        
+        let shapeLayer = self.createCustomShapeLayer()
+        self.layer.mask = shapeLayer
+        
+        // Add the border layer
+        let borderLayer = self.createBorderLayer()
+        
+        if let subLayers = self.layer.sublayers {
+            for subLayer in subLayers {
+                if subLayer.isKind(of: CAShapeLayer.self) {
+                    subLayer.removeFromSuperlayer()
+                }
+            }
+        }
+        self.layer.addSublayer(borderLayer)
     }
     
     private func formatToMillions(_ value: String) -> String {
@@ -222,12 +266,12 @@ private extension LuckyNumbersCell {
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
         dateLabelContainer.translatesAutoresizingMaskIntoConstraints = false
-        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
-        dateLabelContainer.layer.shadowOpacity = 0.5
-        dateLabelContainer.layer.shadowRadius = 3.scale
-        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
+//        dateLabelContainer.layer.shadowColor = Appearance.dropShadowColor?.cgColor
+//        dateLabelContainer.layer.shadowOpacity = 0.5
+//        dateLabelContainer.layer.shadowRadius = 3.scale
+//        dateLabelContainer.layer.shadowOffset = CGSize(width: 0, height: 2.scale)
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
+        dateLabel.font = Fonts.Inter.medium(size: 12.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100
@@ -238,8 +282,9 @@ private extension LuckyNumbersCell {
         addSubview(logoImageView)
         addSubview(dateLabelContainer)
         dateLabelContainer.addSubview(dateLabel)
+        addSubview(dashedLineImageViewUpper)
         addSubview(myLuckyNumbersCollectionView)
-        addSubview(dashedLineImageView)
+        addSubview(dashedLineImageViewBottom)
         addSubview(editButton)
         addSubview(removeButton)
     }
@@ -248,13 +293,13 @@ private extension LuckyNumbersCell {
         logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: -15.scale)
         logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 188.scale)
         NSLayoutConstraint.activate([
-            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: -29.scale),
+            logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16.scale),
             logoImageLeadingConstraint,
             logoImageWidthConstraint,
             logoImageView.heightAnchor.constraint(equalToConstant: 58.scale),
             
-            dateLabelContainer.topAnchor.constraint(equalTo: topAnchor, constant: -16.scale),
-            dateLabelContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.scale),
+            dateLabelContainer.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 4.scale),
+            dateLabelContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             dateLabelContainer.widthAnchor.constraint(equalToConstant: 112.scale),
             dateLabelContainer.heightAnchor.constraint(equalToConstant: 32.scale),
             
@@ -263,53 +308,71 @@ private extension LuckyNumbersCell {
             dateLabel.widthAnchor.constraint(equalTo: dateLabelContainer.widthAnchor),
             dateLabel.heightAnchor.constraint(equalTo: dateLabelContainer.heightAnchor),
             
+            // Dashed Line View
+            dashedLineImageViewUpper.bottomAnchor.constraint(equalTo: dateLabelContainer.topAnchor, constant: 50.scale),
+            dashedLineImageViewUpper.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
+            dashedLineImageViewUpper.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
+            dashedLineImageViewUpper.heightAnchor.constraint(equalToConstant: 1.scale),
+            
+            
             // My Lucky Numbers CollectionView
-            myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 21.scale),
-            myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
-            myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
-            myLuckyNumbersCollectionView.bottomAnchor.constraint(equalTo: dashedLineImageView.topAnchor, constant: -20.scale),
+            myLuckyNumbersCollectionView.topAnchor.constraint(equalTo: topAnchor, constant: 165.scale),
+            myLuckyNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
+            myLuckyNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
+            myLuckyNumbersCollectionView.bottomAnchor.constraint(equalTo: dashedLineImageViewBottom.topAnchor, constant: -20.scale),
             
             // Dashed Line View
-            dashedLineImageView.bottomAnchor.constraint(equalTo: editButton.topAnchor, constant: -25.scale),
-            dashedLineImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
-            dashedLineImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
-            dashedLineImageView.heightAnchor.constraint(equalToConstant: 1.scale),
+            dashedLineImageViewBottom.bottomAnchor.constraint(equalTo: editButton.topAnchor, constant: -25.scale),
+            dashedLineImageViewBottom.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.scale),
+            dashedLineImageViewBottom.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0.scale),
+            dashedLineImageViewBottom.heightAnchor.constraint(equalToConstant: 1.scale),
             
             // Edit Button
-            editButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
-            editButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28.scale),
+            removeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
+            removeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28.scale),
             
             // Remove Button
-            removeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
-            removeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.scale),
+            editButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
+            editButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.scale),
         ])
     }
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let viewWidth = frame.width
+        return CGSize(width: viewWidth , height: 40.scale)
+    }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return myLuckyNumbers.count // Using the first set of numbers for simplicity
+        return 1 // Using the first set of numbers for simplicity
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return myLuckyNumbers.first?.count ?? 0 // Using the first set of numbers for simplicity
+        return myLuckyNumbers.count ?? 0 // Using the first set of numbers for simplicity
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NumberCell", for: indexPath) as? NumberCell else {
-            fatalError("Could not dequeue cell with identifier: NumberCell")
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LuckyNumbersRowCollectionViewCell.reuseIdentifier, for: indexPath) as? LuckyNumbersRowCollectionViewCell else {
+            fatalError("Could not dequeue cell with identifier: TicketNumbersRowCollectionViewCell")
         }
-        configureCellForLuckyNumbers(cell, at: indexPath)
+        
+        cell.bonusIdx = bonusIdx
+        cell.indexPath = indexPath
+        cell.ticketNumbers = game.myLuckyNumbers ?? []
+        cell.section = indexPath.item
+        cell.delegate = self
+        
+        cell.config()
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0.scale,
-                            left: myLuckyNumbers.first?.count == 6 ? 0.scale : 58.scale,
+                            left: 0,
                             bottom: 14.scale,
-                            right: myLuckyNumbers.first?.count == 6 ? 0.scale : -58.scale)
+                            right: 0)
     }
     
     private func configureCellForLuckyNumbers(_ cell: NumberCell, at indexPath: IndexPath) {
@@ -346,3 +409,100 @@ extension LuckyNumbersCell: UICollectionViewDataSource, UICollectionViewDelegate
         }
     }
 }
+
+extension LuckyNumbersCell  {
+    func createCustomShapeLayer() -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        
+        // Create a Bezier path resembling the ticket shape with 32.scale circular cutouts
+        let path = UIBezierPath()
+        
+        // Define the shape based on the cell's bounds
+        let bounds = self.bounds
+        let cornerRadius: CGFloat = 20.scale // Radius for the corners
+        let cutoutRadius: CGFloat = 16.scale // Radius for 32.scale diameter cutouts
+        
+        // Start at the top-left corner
+        path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
+        
+        let upperSizeHeight: CGFloat = 128.scale
+        
+        // Top edge
+        path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
+        
+        // Right edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: upperSizeHeight - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
+        
+        // Bottom edge
+        path.addLine(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
+        
+        // Left edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.minX, y: upperSizeHeight + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
+        
+        // Close the path
+        path.close()
+        
+        // Assign the path to the layer
+        layer.path = path.cgPath
+        layer.fillColor = UIColor.white.cgColor
+        
+        return layer
+    }
+    
+    func createBorderLayer() -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        
+        // Use the same path as the custom shape layer
+        let path = UIBezierPath()
+        
+        // Define the shape based on the cell's bounds
+        let bounds = self.bounds
+        let cornerRadius: CGFloat = 20.scale // Radius for the corners
+        let cutoutRadius: CGFloat = 16.scale // Radius of each circular cutout (50x50, hence radius is 25)
+        
+        let upperSizeHeight: CGFloat = 128.scale
+        
+        // Start at the top-left corner
+        path.move(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY))
+        
+        // Top edge
+        path.addLine(to: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi * 2, clockwise: true)
+        
+        // Right edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: upperSizeHeight - cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi * 1.5, endAngle: CGFloat.pi / 2, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.maxY - cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.maxX - cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: 0, endAngle: CGFloat.pi / 2, clockwise: true)
+        
+        // Bottom edge
+        path.addLine(to: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.maxY - cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi, clockwise: true)
+        
+        // Left edge with inward arc (cutout)
+        path.addLine(to: CGPoint(x: bounds.minX, y: upperSizeHeight + cutoutRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX, y: upperSizeHeight), radius: cutoutRadius, startAngle: CGFloat.pi / 2, endAngle: CGFloat.pi * 1.5, clockwise: false)
+        path.addLine(to: CGPoint(x: bounds.minX, y: bounds.minY + cornerRadius))
+        path.addArc(withCenter: CGPoint(x: bounds.minX + cornerRadius, y: bounds.minY + cornerRadius), radius: cornerRadius, startAngle: CGFloat.pi, endAngle: CGFloat.pi * 1.5, clockwise: true)
+        
+        // Close the path
+        path.close()
+        
+        // Assign the path to the layer
+        layer.path = path.cgPath
+        layer.strokeColor = Appearance.lightGrayBorderTicket.cgColor // Customize the border color
+        layer.lineWidth = 2.0 // Customize the border width
+        layer.fillColor = UIColor.clear.cgColor // Ensure the fill color is clear
+        
+        return layer
+    }
+}
+

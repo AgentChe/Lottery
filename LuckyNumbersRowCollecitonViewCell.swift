@@ -6,7 +6,9 @@
 //
 
 import UIKit
-
+protocol PastDrawsLuckyNumbersRowCellDelegate: AnyObject {
+    func luckyNumbersRowCell(_ cell: LuckyNumbersRowCollecitonViewCell, didScroll contentOffset: CGPoint)
+}
 class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     static let reuseIdentifier = "LuckyNumbersRowCollecitonViewCell"
     var bonusIdx: [Int] = []
@@ -14,7 +16,7 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
     var myLuckyNumbers: [[Int]] = []
     var indexPath: IndexPath!
     var numbers: [Int] = []
-
+    weak var delegate: PastDrawsLuckyNumbersRowCellDelegate?
     lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -38,7 +40,7 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
         super.init(frame: frame)
         setupCollectionView()
         // Listen for scroll sync notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(synchronizeScroll(notification:)), name: .syncScroll, object: nil)
+      //  NotificationCenter.default.addObserver(self, selector: #selector(synchronizeScroll(notification:)), name: .syncScroll, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -115,9 +117,9 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
     }
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        NotificationCenter.default.post(name: .syncScroll, object: nil, userInfo: ["offset": scrollView.contentOffset])
-    }
-
+        print(delegate)
+           delegate?.luckyNumbersRowCell(self, didScroll: scrollView.contentOffset)
+        }
     // MARK: - Synchronize Scroll
     @objc private func synchronizeScroll(notification: Notification) {
         guard let userInfo = notification.userInfo, let offset = userInfo["offset"] as? CGPoint else { return }
@@ -136,6 +138,4 @@ class LuckyNumbersRowCollecitonViewCell: UICollectionViewCell, UICollectionViewD
     
 }
 
-extension Notification.Name {
-    static let syncScroll = Notification.Name("syncScroll")
-}
+ 

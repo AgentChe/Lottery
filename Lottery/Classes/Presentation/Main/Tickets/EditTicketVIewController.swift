@@ -21,10 +21,16 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     var collectionView: UICollectionView!
-    
+    let deleteActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = Appearance.main300
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     private let saveTicketButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Save".localized, for: .normal)
+        button.setTitle("EditTicketViewController.UpdateTicket".localized, for: .normal)
         button.backgroundColor = Appearance.main100
         button.setTitleColor(Appearance.mono100, for: .normal)
         button.titleLabel?.font = Fonts.Inter.bold(size: 14.scale)
@@ -34,7 +40,11 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         button.isEnabled = false // Initially disabled
         return button
     }()
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+    }
     private let deleteTicketButton: UIButton = {
         let button = UIButton()
         button.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
@@ -90,7 +100,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         collectionView.backgroundColor = Appearance.main400
         collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
         
-        collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 16.scale, left: 0, bottom: 30.scale, right: 0)
         
         view.addSubview(collectionView)
         view.addSubview(saveTicketButton)
@@ -109,11 +119,14 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         fetchLotteriesPatterns()
+        deleteTicketButton.addSubview(deleteActivityIndicator)
+           deleteActivityIndicator.centerXAnchor.constraint(equalTo: deleteTicketButton.centerXAnchor).isActive = true
+           deleteActivityIndicator.centerYAnchor.constraint(equalTo: deleteTicketButton.centerYAnchor).isActive = true
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -148,70 +161,75 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             }
         }
     }
+   
+    
     @objc func deleteTicketButtonTapped() {
+        // Show activity indicator and disable button
+       
+
         // Convert numbersStringArray to [[Int]]
-        var numbersArray: [[Int]] = []
-        for section in numbersStringArray {
-            var intSection: [Int] = []
-            for numberString in section {
-                if let number = Int(numberString) {
-                    intSection.append(number)
-                }
-            }
-            numbersArray.append(intSection)
-        }
+        let alertVC = CustomAlertViewController()
         
-        // Ensure we have a ticket to modify
-        guard var existingTicket = ticket else { return }
-        
-        // Update the ticket's numbers
-        existingTicket.numbers = numbersArray
-        
-        // Get the necessary properties from the ticket to use in the editTicket method
-        let id = existingTicket.id
-        let lotteryId = existingTicket.lotteryId
-        
-        
-        let pictureUrl = existingTicket.pictureUrl
-        let date = existingTicket.date
-        
-        // Create an instance of TicketsManager (assuming you have a shared instance or create a new one)
-        let ticketsManager = TicketsManager()
-        
-        // Call the editTicket method
-        ticketsManager.deleteTicket(id: id) { result in
-            switch result {
-            case .success:
-                // Handle success (e.g., show a success message or pop the view controller)
-                print("Ticket deleted successfully")
-                DispatchQueue.main.async {
-                    ticketsManager.listTickets(forceUpdate: true) {
-                        [weak self] result in
-                        self?.navigationController?.popViewController(animated: true)
+        alertVC.onConfirmDelete = { [weak self] in
+            guard let self = self else { return }
+            deleteTicketButton.setTitle("", for: .normal)
+            deleteActivityIndicator.startAnimating()
+            deleteTicketButton.isEnabled = false
+            // Code to remove the ticket here
+            var numbersArray: [[Int]] = []
+            for section in numbersStringArray {
+                var intSection: [Int] = []
+                for numberString in section {
+                    if let number = Int(numberString) {
+                        intSection.append(number)
                     }
                 }
-                
-            case .failure(let error):
-                // Handle failure by presenting an alert to the user
-                print("Failed to delete the ticket: \(error)")
-                
+                numbersArray.append(intSection)
+            }
+
+            guard let existingTicket = ticket else { return }
+            let id = existingTicket.id
+            let ticketsManager = TicketsManager()
+
+            ticketsManager.deleteTicket(id: id) { result in
                 DispatchQueue.main.async {
-                    let alert = UIAlertController(
-                        title: "EditTicketViewController.DeleteFailed.Title".localized,
-                        message: String(format: "EditTicketViewController.DeleteFailed.Message".localized, error.localizedDescription),
-                        preferredStyle: .alert
-                    )
+                
                     
-                    // Add an OK button to the alert
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    
-                    // Present the alert
-                    self.present(alert, animated: true, completion: nil)
+                    switch result {
+                    case .success:
+                        self.deleteActivityIndicator.stopAnimating()
+                        self.deleteTicketButton.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
+                        self.deleteTicketButton.isEnabled = true
+                        print("Ticket deleted successfully")
+                        ticketsManager.listTickets(forceUpdate: true) { [weak self] _ in
+                            self?.navigationController?.popViewController(animated: true)
+                        }
+                    case .failure(let error):
+                        print("Failed to delete the ticket: \(error)")
+                        self.deleteActivityIndicator.stopAnimating()
+                        self.deleteTicketButton.setTitle("EditTicketViewController.DeleteTicket".localized, for: .normal)
+                        self.deleteTicketButton.isEnabled = true
+                        let alert = UIAlertController(
+                            title: "EditTicketViewController.DeleteFailed.Title".localized,
+                            message: String(format: "EditTicketViewController.DeleteFailed.Message".localized, error.localizedDescription),
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                    }
                 }
             }
         }
 
+        alertVC.onCancel = {
+            // Code to handle cancellation (if any)
+        }
+        
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        present(alertVC, animated: true, completion: nil)
     }
+
 
     @objc func saveTicketButtonTapped() {
         // Hide the title and show the activity indicator
@@ -251,7 +269,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             DispatchQueue.main.async {
                 // Stop the activity indicator and show the title
                 self.activityIndicator.stopAnimating()
-                self.saveTicketButton.setTitle("Save".localized, for: .normal)
+                self.saveTicketButton.setTitle("EditTicketViewController.UpdateTicket".localized, for: .normal)
                 self.saveTicketButton.isEnabled = true // Re-enable the button
             }
             switch result {
@@ -302,19 +320,19 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.setNeedsDisplay()
+       // navigationController?.navigationBar.isTranslucent = false
+      //  navigationController?.navigationBar.setNeedsDisplay()
     }
     @objc func handleBackButton() {
         navigationController?.popViewController(animated: true)
     }
 
     private func setupNavigationBar() {
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.tintColor = .red//Appearance.mono200
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
+//        navigationController?.navigationBar.isTranslucent = true
+//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        navigationController?.navigationBar.shadowImage = UIImage()
+//        navigationController?.navigationBar.tintColor = .red//Appearance.mono200
+//        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: Appearance.mono200]
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -324,7 +342,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
         if let ticket = self.ticket {
-            if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
+            if let pattern : LotteryPattern = lotteryPatterns.filter { $0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
             cell.lotteries = self.lotteries
@@ -353,10 +371,10 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
             let cellWidth = availableWidth / CGFloat(numberOfCells)
             
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40.scale + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale )
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         }
     }
     
@@ -364,8 +382,8 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
+            for i in 1..<section.count {
+                if Int(section[i]) == nil {
                     return false
                 }
             }
@@ -375,6 +393,7 @@ class EditTicketViewController: UIViewController, UICollectionViewDataSource, UI
 
     // Method to update save button state based on validation
     private func updateSaveButtonState() {
+        print("updateSaveButtonState")
         let allNumbersValid = areAllNumbersValid()
         saveTicketButton.isEnabled = allNumbersValid
         saveTicketButton.backgroundColor = allNumbersValid ? Appearance.main100 : .gray // Change the color to gray if not valid

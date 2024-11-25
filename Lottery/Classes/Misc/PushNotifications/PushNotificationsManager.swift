@@ -6,24 +6,30 @@
 //
 
 import FirebaseMessaging
+import Firebase
 
 protocol PushNotificationsDelegate: AnyObject {
     func pushNotificationsDidReceive(authorizationStatus: PushNotificationsAuthorizationStatus)
     func pushNotificationsDidReceive(token: String?)
-    func pushNotificationsDidReceive(model: PushNotificationsModel)
+    func pushNotificationsDidReceive(model: PushNotificationsModel, completion: @escaping () -> Void)
 }
 
-final class PushNotificationsManager: NSObject {
+final class PushNotificationsManager: NSObject, MessagingDelegate {
     static let shared = PushNotificationsManager()
     
     private let notificationsCenter = UNUserNotificationCenter.current()
     
     private var delegates = [Weak<PushNotificationsDelegate>]()
     
+    // Add properties to manage notification queue
+    private let notificationQueue = DispatchQueue(label: "com.yourapp.notificationQueue", attributes: .concurrent)
+    private var pendingNotifications: [PushNotificationsModel] = []
+    private var isProcessingNotification = false
+
     private override init() {
         super.init()
-        
         notificationsCenter.delegate = self
+        Messaging.messaging().delegate = self
     }
 }
 
@@ -31,9 +37,29 @@ final class PushNotificationsManager: NSObject {
 extension PushNotificationsManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         received(userInfo: response.notification.request.content.userInfo)
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                  willPresent notification: UNNotification,
+                                  withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("userNotificationCenter(_:willPresent:) called")
+        completionHandler([.alert, .sound])
+        // If you want to handle the notification when the app is in foreground, uncomment the following lines:
+        // received(userInfo: notification.request.content.userInfo)
+        // completionHandler([])
     }
 }
-
+// MARK: Public (AppDelegate triggers)
+extension PushNotificationsManager {
+    func application(didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        received(pushToken: deviceToken, error: nil)
+    }
+    
+    func application(didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        received(pushToken: nil, error: error)
+    }
+}
 // MARK: Public
 extension PushNotificationsManager {
     func retriveAuthorizationStatus(handler: ((PushNotificationsAuthorizationStatus) -> Void)?) {
@@ -56,14 +82,13 @@ extension PushNotificationsManager {
         }
     }
     
-    func requestAuthorization() {
+    func requestAuthorization(completion: @escaping (Bool) -> Void) {
         notificationsCenter.requestAuthorization(options: [.alert, .sound]) { granted, _ in
             DispatchQueue.main.async {
                 if granted {
                     UIApplication.shared.registerForRemoteNotifications()
-                } else {
-                    self.delegates.forEach { $0.weak?.pushNotificationsDidReceive(token: nil) }
                 }
+                completion(granted) // Call the completion handler with the result
             }
         }
     }
@@ -72,6 +97,8 @@ extension PushNotificationsManager {
         let weakly = observer as AnyObject
         delegates.append(Weak<PushNotificationsDelegate>(weakly))
         delegates = delegates.filter { $0.weak != nil }
+        
+        processNextNotification()
     }
     
     func remove(observer: PushNotificationsDelegate) {
@@ -81,25 +108,8 @@ extension PushNotificationsManager {
     }
 }
 
-// MARK: Public (AppDelegate triggers)
-extension PushNotificationsManager {
-    func application(didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        received(pushToken: deviceToken, error: nil)
-    }
-    
-    func application(didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        received(pushToken: nil, error: error)
-    }
-    
-    func application(didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        received(userInfo: userInfo)
-        
-        completionHandler(.noData)
-    }
-}
-
-// MARK: Private
-private extension PushNotificationsManager {
+// MARK:
+ extension PushNotificationsManager {
     func received(pushToken: Data?, error: Error?) {
         Messaging.messaging().apnsToken = pushToken
         
@@ -112,11 +122,117 @@ private extension PushNotificationsManager {
         }
     }
     
-    func received(userInfo: [AnyHashable : Any]) {
+    func received(userInfo: [AnyHashable: Any]) {
         let model = PushNotificationsModel(userInfo: userInfo)
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.delegates.forEach { $0.weak?.pushNotificationsDidReceive(model: model) }
+        enqueueNotification(model)
+    }
+    
+    // Enqueue the notification for sequential processing
+    private func enqueueNotification(_ model: PushNotificationsModel) {
+        notificationQueue.async(flags: .barrier) {
+            self.pendingNotifications.append(model)
+            self.processNextNotification()
         }
+    }
+    
+    // Process notifications one by one
+     private func processNextNotification() {
+         notificationQueue.async {
+             guard !self.isProcessingNotification else {
+                 return
+             }
+             
+             // Check if there's a pending notification
+             guard let nextNotification = self.pendingNotifications.first else {
+                 return
+             }
+             
+             // Check if there are any delegates
+             let delegates = self.delegates.compactMap { $0.weak }
+             if delegates.isEmpty {
+                 // No delegates to process the notification, wait and try again later
+                 return
+             }
+             
+             self.isProcessingNotification = true
+             self.pendingNotifications.removeFirst()
+             
+             DispatchQueue.main.async { [weak self] in
+                 guard let self = self else { return }
+                 
+                 let dispatchGroup = DispatchGroup()
+                 for delegate in delegates {
+                     dispatchGroup.enter()
+                     delegate.pushNotificationsDidReceive(model: nextNotification) {
+                         dispatchGroup.leave()
+                     }
+                 }
+                 dispatchGroup.notify(queue: .main) {
+                     self.isProcessingNotification = false
+                     self.processNextNotification()
+                 }
+             }
+         }
+     }
+}
+
+extension PushNotificationsManager {
+    // MARK: MessagingDelegate
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let fcmToken = fcmToken else { return }
+        print("Получен FCM-токен: \(fcmToken)")
+        
+        // Отправка FCM-токена на сервер
+        sendFCMTokenToServer(fcmToken)
+        
+        // Уведомление делегатов
+        DispatchQueue.main.async { [weak self] in
+            self?.delegates.forEach { $0.weak?.pushNotificationsDidReceive(token: fcmToken) }
+        }
+    }
+    
+    private func sendFCMTokenToServer(_ fcmToken: String) {
+        let sessionManager: SessionManagerProtocol = SessionManager()
+        guard let url = URL(string: "https://lottery.camplain-apps.com/api/profile/push-token") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let userToken = sessionManager.getSession()?.userToken else {
+            return
+        }
+        
+        let parameters: [String: Any] = [
+            "api_key":  GlobalDefinitions.apiKey,
+            "user_token": userToken,
+            "registration_token": fcmToken
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+        } catch {
+            print("Ошибка сериализации JSON: \(error)")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Ошибка отправки FCM-токена на сервер: \(error)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("Некорректный ответ от сервера")
+                return
+            }
+            
+            if httpResponse.statusCode == 200 {
+                print("FCM-токен успешно отправлен на сервер")
+            } else {
+                print("Не удалось отправить FCM-токен на сервер: HTTP \(httpResponse.statusCode)")
+            }
+        }
+        task.resume()
     }
 }

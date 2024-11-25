@@ -93,12 +93,22 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         selectGameVC.onContinue = { [weak self] selectedGames in
             guard let self = self else { return }
             self.selectedGames = selectedGames
-            self.completeOnboarding()
+//            self.completeOnboarding()
+            self.presentNotificationRequestViewController()
         }
         pushViewController(selectGameVC, animated: true)
     }
+    private func presentNotificationRequestViewController() {
+        
+        guard let selectedState = selectedState else { return }
+        updateProgress()
+        let notificationRequestViewController = NotificationRequestViewController()
+        notificationRequestViewController.modalPresentationStyle = .fullScreen
+        present(notificationRequestViewController, animated: true, completion: nil)
+    }
     
-    private func completeOnboarding() {
+    
+     func completeOnboarding() {
         markAsViewed()
         saveProfile()
     }

@@ -109,7 +109,16 @@ private extension SplashViewModel {
                                     let error = result.error() ?? ContentError(.notContent)
                                     single(result.isSuccess ? .success(()) : .failure(error))
                                 }
-                            } else {
+                            } else if otterScaleID.hasPrefix("cus_ios") {
+                                self.profileManager.syncTokens(
+                                    oldToken: OtterScale.shared.getAnonymousID(),
+                                    newToken: otterScaleID
+                                ) { result in
+                                    let error = result.error() ?? ContentError(.notContent)
+                                    single(result.isSuccess ? .success(()) : .failure(error))
+                                }
+                            }
+                            else {
                                 single(.success(()))
                             }
                         } else {

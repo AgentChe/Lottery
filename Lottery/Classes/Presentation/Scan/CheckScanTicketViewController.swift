@@ -16,7 +16,17 @@ protocol RecognizedTextDataSource: AnyObject {
 class CheckScanTicketViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var image: UIImage?
     var ticket: Ticket?
-    var lotteryPatterns: [LotteryPattern] = []
+    var lotteryPatterns: [LotteryPattern] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    var lotteries: [Lottery] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     private var contentManager: ContentManagerProtocol = ContentManager()
     var numbersStringArray: [[String]] = [] {
         didSet {
@@ -95,6 +105,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             self.presentRecognitionErrorAlert(on: self)
         }
     }
+    
     func fetchLotteriesPatterns(for stateId: Int? = nil) {
         contentManager.fetchLotteriesPattern(forceUpdate: false, stateId: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -110,8 +121,10 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             }
         }
     }
+    
+    var uploadResponse: UploadResponse?
     // Custom initializer
-    init(ticket: Ticket) {
+    init(ticket: Ticket, uploadResponse: UploadResponse? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.ticket = ticket
         self.numbersStringArray = [[]]
@@ -123,33 +136,60 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = Appearance.main400
-        collectionView.register(TicketEditScanCell.self, forCellWithReuseIdentifier: "TicketEditScanCell")
-        
-        textRecognitionRequest = VNRecognizeTextRequest { request, error in
-            guard let resultsViewController = self.resultsViewController else {
-                print("resultsViewController is not set")
-                return
-            }
-
-            if let requestResults = request.results as? [VNRecognizedTextObservation], !requestResults.isEmpty {
-                DispatchQueue.main.async {
-                    resultsViewController.addRecognizedText(recognizedText: requestResults)
+        collectionView.register(TicketEditCell.self, forCellWithReuseIdentifier: "TicketEditCell")
+        self.fetchLotteriesPatterns()
+        self.contentManager.fetchLotteries(forceUpdate: false, stateId: nil)  { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let lotteries):
+                    self?.lotteries = lotteries
+                    if uploadResponse == nil {
+                        self?.badRecognition = true
+                        if let self = self {
+                            self.presentRecognitionErrorAlert(on: self)
+                        }
+                    } else {
+                        print("we here!")
+                        if let uploadResponse = uploadResponse {
+                            self?.uploadResponse = uploadResponse
+                            self?.ticket?.numbers = uploadResponse.numbers
+                            self?.numbersStringArray = self?.convertToFormattedStringArray(intArray:  uploadResponse.numbers) ?? []
+                            self?.collectionView.reloadData()
+                        }
+                        
+                    }
+                case .failure(let error):
+                    print("Failed to fetch lotteries: \(error)")
                 }
-            } else {
-               
-                self.badRecognition = true
-                self.presentRecognitionErrorAlert(on: self)
             }
         }
+       
+//        textRecognitionRequest = VNRecognizeTextRequest { request, error in
+//            guard let resultsViewController = self.resultsViewController else {
+//                print("resultsViewController is not set")
+//                return
+//            }
+//
+//            if let requestResults = request.results as? [VNRecognizedTextObservation], !requestResults.isEmpty {
+//                DispatchQueue.main.async {
+//                    resultsViewController.addRecognizedText(recognizedText: requestResults)
+//                }
+//            } else {
+//               
+//                self.badRecognition = true
+//                self.presentRecognitionErrorAlert(on: self)
+//            }
+//        }
 
         // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
-        textRecognitionRequest.recognitionLevel = .accurate
-
-        if #available(iOS 16.0, *) {
-            textRecognitionRequest.revision = VNRecognizeTextRequestRevision3
-        }
-
-        textRecognitionRequest.usesLanguageCorrection = true
+//        textRecognitionRequest.recognitionLevel = .accurate
+//
+//        if #available(iOS 16.0, *) {
+//            textRecognitionRequest.revision = VNRecognizeTextRequestRevision3
+//        }
+//
+//        textRecognitionRequest.usesLanguageCorrection = true
+        
         resultsViewController = self
     }
 
@@ -157,14 +197,14 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Appearance.main400
         setupNavigationBar()
         setupNavigationBarTitle()
-        fetchLotteriesPatterns()
- 
+        
+      
 
         collectionView.contentInset = UIEdgeInsets(top: 40.scale, left: 0, bottom: 30.scale, right: 0)
 
@@ -191,6 +231,8 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             saveTicketButton.alpha = 0
             rescanButton.alpha = 0
         }
+         
+        
     }
 
     private func setupConstraints() {
@@ -343,15 +385,33 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditScanCell", for: indexPath) as! TicketEditScanCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketEditCell", for: indexPath) as! TicketEditCell
         if let ticket = self.ticket {
             if let pattern : LotteryPattern = lotteryPatterns.filter {$0.id == ticket.lotteryId }.first {
                 cell.bonusIdx = pattern.bonusIdx
             }
+            cell.lotteries = self.lotteries
             cell.configure(ticket: ticket)
         }
-        cell.delegate = self
-        cell.parentvc = self
+        if let uploadResponse = uploadResponse {
+            if let date_of_game = uploadResponse.date_of_game {
+                let date = Date(timeIntervalSince1970: date_of_game)
+                
+                // Create a DateFormatter to format the date
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MMM dd, yyyy"
+                dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensures consistent formatting
+                
+                // Convert the Date object to the desired string format
+                let formattedDate = dateFormatter.string(from: date)
+                cell.dateLabel.text = formattedDate.uppercased()
+                self.ticket?.date = date.timeIntervalSince1970
+                saveTicketButton.isEnabled = true
+                saveTicketButton.backgroundColor = Appearance.main100 
+            }
+        }
+        cell.checkScanDelegate = self
+        cell.parentCheckScan = self
         cell.layer.cornerRadius = 20.scale
         return cell
     }
@@ -373,19 +433,22 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
             let cellWidth = availableWidth / CGFloat(numberOfCells)
 
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (cellWidth + 6).scale + 41.scale + 15.scale + 50.scale + 30.scale)
+                          height: CGFloat(numbersStringArray.count) * (40.scale + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale )
         } else {
             return CGSize(width: 343.scale,
-                          height: CGFloat(numbersStringArray.count) * (40 + 10).scale + 41.scale + 15.scale + 50.scale + 30.scale)
+                          height: CGFloat(numbersStringArray.count) * (40 + 16).scale + 41.scale + 15.scale + 50.scale + 30.scale + 85.scale)
         }
     }
 
     // Validation method to check if all numbers are valid
     private func areAllNumbersValid() -> Bool {
+    
         for section in numbersStringArray {
-            for number in section {
-                if Int(number) == nil {
-                    return false
+            if section.count > 0 {
+                for i in 1..<section.count {
+                    if Int(section[i]) == nil {
+                        return false
+                    }
                 }
             }
         }
@@ -394,17 +457,9 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
 
     // Method to update save button state based on validation
     func updateSaveButtonState() {
-        if let collectionView = collectionView {
-            let allNumbersValid = areAllNumbersValid()
-            if let cell = collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TicketEditScanCell {
-                let isValid: Bool = allNumbersValid && cell.dateLabel.text != "MM/DD/YYY"
-                saveTicketButton.isEnabled = isValid
-                saveTicketButton.backgroundColor = isValid ? Appearance.main100 : .gray // Change the color to gray if not valid
-            } else {
-                saveTicketButton.isEnabled = false
-                saveTicketButton.backgroundColor  = .gray
-            }
-        }
+        let allNumbersValid = areAllNumbersValid()
+        saveTicketButton.isEnabled = allNumbersValid
+        saveTicketButton.backgroundColor = allNumbersValid ? Appearance.main100 : .gray // Change the color to gray if not valid
     }
 
     // Handle keyboard appearance
@@ -432,6 +487,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        
     }
 }
 

@@ -57,7 +57,7 @@ class TicketEditScanCell: UICollectionViewCell,RemoveCellDelegate {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.layer.masksToBounds = false
-        collectionView.register(EditNumberCell.self, forCellWithReuseIdentifier: "EditNumberCell")
+        collectionView.register(EditScanNumberCell.self, forCellWithReuseIdentifier: EditScanNumberCell.reuseIdentifier)
         collectionView.register(RemoveCell.self, forCellWithReuseIdentifier: "RemoveCell") // Register RemoveCell
         
         return collectionView
@@ -360,7 +360,7 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
             
             return cell
         } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditNumberCell", for: indexPath) as? EditNumberCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditScanNumberCell.reuseIdentifier, for: indexPath) as? EditScanNumberCell else {
                 return UICollectionViewCell()
             }
             
@@ -470,8 +470,8 @@ extension TicketEditScanCell: UICollectionViewDataSource, UICollectionViewDelega
     }
 }
 
-extension TicketEditScanCell: EditNumberCellDelegate {
-    func numberCell(_ cell: EditNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
+extension TicketEditScanCell: EditScanNumberCellDelegate {
+    func numberCell(_ cell: EditScanNumberCell, didUpdateNumber number: String, at indexPath: IndexPath) {
         guard indexPath.section < numbersStringArray.count,
               indexPath.item < numbersStringArray[indexPath.section].count else { return }
 
@@ -503,7 +503,7 @@ extension TicketEditScanCell: EditNumberCellDelegate {
 
                     // Get the next cell and make its text field the first responder
                     DispatchQueue.main.async {
-                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditNumberCell {
+                        if let nextCell = self.collectionView.cellForItem(at: nextIndexPath) as? EditScanNumberCell {
                             if nextCell.numberTextField.text?.count != 2 {
                                 nextCell.numberTextField.becomeFirstResponder()
                             }
@@ -519,7 +519,7 @@ extension TicketEditScanCell: EditNumberCellDelegate {
        
        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
            if indexPath.item < (numbersStringArray[safe: indexPath.section]?.count ?? 0) {
-               if let cell = collectionView.cellForItem(at: indexPath) as? EditNumberCell {
+               if let cell = collectionView.cellForItem(at: indexPath) as? EditScanNumberCell {
                    cell.numberTextField.becomeFirstResponder()
                }
            }
