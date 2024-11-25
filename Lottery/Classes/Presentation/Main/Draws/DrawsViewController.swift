@@ -197,8 +197,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     func handlePushNotification(model: PushNotificationsModel, completion: @escaping () -> Void) {
         // Extract userInfo from the notification model
         guard let userInfo = model.userInfo as? [String: Any],
-              let customData = userInfo["customData"] as? [String: Any],
-              let screen = customData["screen"] as? String else {
+              let screen = userInfo["screen"] as? String else {
             print("Invalid notification payload structure.")
             completion() // Call completion if data is invalid
             return
@@ -207,7 +206,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         // Determine the screen to navigate to based on the notification content
         switch screen {
         case "ticket_details":
-            if let ticketIDString = customData["ticket_id"] as? String,
+            if let ticketIDString = userInfo["ticket_id"] as? String,
                let ticketID = Int(ticketIDString) {
                 print("ticketId: \(ticketID)")
                 navigateToTicketDetails(ticketID: ticketID, completion: completion)
