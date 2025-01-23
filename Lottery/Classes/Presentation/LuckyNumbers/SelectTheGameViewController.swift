@@ -177,6 +177,8 @@ extension SelectTheGameViewController: UICollectionViewDataSource, UICollectionV
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM dd, yyyy" // Use the desired date format
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
+      
         let dateString = dateFormatter.string(from: date)
         
         cell.configure(with: dateString,

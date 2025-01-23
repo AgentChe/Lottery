@@ -225,6 +225,8 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy"
         formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(abbreviation: "GMT")
+       
         dateLabel.text = formatter.string(from: ticketDate).uppercased()
         
         // Update collection views with numbers

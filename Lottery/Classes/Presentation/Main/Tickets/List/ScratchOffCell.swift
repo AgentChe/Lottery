@@ -116,6 +116,7 @@ class ScratchOffCell: UICollectionViewCell {
         if let date = ticket.date {// Current date as Date object}
             let formatter = DateFormatter()
             formatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
+            formatter.timeZone = TimeZone(abbreviation: "GMT")
             formatter.locale = Locale(identifier: "en_US_POSIX")
             
             // Format and set the date label

@@ -116,6 +116,7 @@ extension NextGameCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         
         var formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
         dateLabel.text = formattedDate.uppercased() // Convert to uppercase
@@ -260,7 +261,7 @@ extension NextGameCell {
                     whiteBackgroundHeightConstraint.isActive = true
                     //
                     setNeedsLayout()
-                    
+                    print("Cash4Life Next: \(game.jackpot)")
                     jackpotLabel.text = game.jackpot != "" ? "\(game.jackpot) per day" : "UNDETERMINED"
                     dateContainerImageView.alpha = 0
                     dateLabel.alpha = 1

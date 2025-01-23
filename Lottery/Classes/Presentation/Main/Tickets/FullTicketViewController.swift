@@ -257,6 +257,7 @@ extension FullTicketViewController {
         let date = Date(timeIntervalSince1970: timeInterval)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MM yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         return dateFormatter.string(from: date)
     }
 }

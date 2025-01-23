@@ -18,6 +18,7 @@ final class ScanOnboardingViewController: UIViewController {
     var selectedState: Int?
     private var selectedLotteries: [Int] = []
     var selectGameVC: ScanSelectLotteriesViewController!
+    var selectStateVC: ScanSelectStateViewController!
     //private var stateId: Int?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,17 +41,18 @@ final class ScanOnboardingViewController: UIViewController {
     
     private func setupInitialViewControllerToChooseState() {
         // Set up the first view controller in the onboarding flow
-        let selectStateVC = ScanSelectStateViewController()
+        selectStateVC = ScanSelectStateViewController()
         selectStateVC.onContinue = { [weak self] selectedState in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 let attrs = TextAttributes()
                     .textColor(.white)
                     .font(Fonts.Inter.medium(size: 17.scale))
-                
-                let attributedTitle = "Continue".localized.attributed(with: attrs)
-                selectStateVC.selectStateView.continueButton.setAttributedTitle(attributedTitle, for: .normal)// Hide title
-                selectStateVC.selectStateView.preloader.stopAnimating()
+                if self.fromDrawsViewController {} else {
+                    let attributedTitle = "Continue".localized.attributed(with: attrs)
+                    self.selectStateVC.selectStateView.continueButton.setAttributedTitle(attributedTitle, for: .normal)// Hide title
+                    self.selectStateVC.selectStateView.preloader.stopAnimating()
+                }
             }
             self.selectedState = selectedState
             if fromDrawsViewController {
@@ -214,6 +216,19 @@ final class ScanOnboardingViewController: UIViewController {
                             // Process both results if necessary
 
                             // Ensure UI updates are on the main thread
+                            if self?.fromDrawsViewController == true {
+                                DispatchQueue.main.async {
+                                    self?.selectStateVC.selectStateView.preloader.stopAnimating()
+                                     self?.selectStateVC.selectStateView.continueButton.titleLabel?.isHidden = false
+                                    let attrs = TextAttributes()
+                                        .textColor(.white)
+                                        .font(Fonts.Inter.medium(size: 17.scale))
+                                    let attributedTitle = "Continue".localized.attributed(with: attrs)
+                                    self?.selectStateVC.selectStateView.continueButton.setAttributedTitle(attributedTitle, for: .normal)// Hide title
+                                }
+                                
+                            }
+
                             if self?.fromMenu == true {
                                 self?.selectGameVC.selectLotteryView.preloader.stopAnimating()
                                 self?.selectGameVC.selectLotteryView.continueButton.titleLabel?.isHidden = false

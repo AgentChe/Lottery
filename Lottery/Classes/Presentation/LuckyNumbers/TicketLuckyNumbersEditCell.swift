@@ -130,7 +130,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = formattedDate.uppercased()
         
@@ -373,6 +373,7 @@ private extension TicketLuckyNumbersEditCell {
     func updateDateLabel(with date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
     }

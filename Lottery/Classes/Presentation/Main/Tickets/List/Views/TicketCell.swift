@@ -162,12 +162,12 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     }
     
     func configure(with ticket: Ticket) {
-        let now = Date() // Current date as Date object
+        
         let ticketDate = Date(timeIntervalSince1970: ticket.date) // Convert TimeInterval to Date
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        
+        formatter.timeZone = TimeZone(abbreviation: "GMT") // Set to GMT (UTC)
         formatter.dateStyle = .medium
         
         dateLabel.text = formatter.string(from: ticketDate).uppercased()
