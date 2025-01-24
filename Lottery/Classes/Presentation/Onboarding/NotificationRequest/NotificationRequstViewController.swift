@@ -92,7 +92,7 @@ class NotificationRequestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = Appearance.main400
         setupLayout()
     }
     
