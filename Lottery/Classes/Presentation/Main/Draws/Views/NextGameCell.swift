@@ -265,8 +265,8 @@ extension NextGameCell {
                     setNeedsLayout()
                     print("Cash4Life Next: \(game.jackpot)")
                     jackpotLabel.text = game.jackpot != "" ? "\(game.jackpot) per day" : "UNDETERMINED"
-                    dateContainerImageView.alpha = 0
-                    dateLabel.alpha = 1
+                    dateContainerImageView.alpha = 1
+                    dateLabel.alpha = 0
                     jackpotTitleLabel.alpha = 0
                 }
                 
