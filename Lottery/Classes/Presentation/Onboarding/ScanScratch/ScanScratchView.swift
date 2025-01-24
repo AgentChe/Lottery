@@ -1,30 +1,8 @@
 import UIKit
 import Lottie
 import RiveRuntime
-final class ScanScratchView: UIView, RivePlayerDelegate {
-    func player(playedWithModel riveModel: RiveRuntime.RiveModel?) {
-        
-    }
-    
-    func player(pausedWithModel riveModel: RiveRuntime.RiveModel?) {
-        
-    }
-    
-    func player(loopedWithModel riveModel: RiveRuntime.RiveModel?, type: Int) {
-        
-    }
-    
-    func player(stoppedWithModel riveModel: RiveRuntime.RiveModel?) {
-        
-    }
-    var duration: Double = 0
-    func player(didAdvanceby seconds: Double, riveModel: RiveRuntime.RiveModel?) {
-        duration += seconds
-        if duration >= 3.0840116666804533 {
-        //    riveViewModel.stop()
-        }
-    }
-    
+final class ScanScratchView: UIView {
+ 
     
     // MARK: - UI Components
     
@@ -93,7 +71,6 @@ final class ScanScratchView: UIView, RivePlayerDelegate {
         let riveView = riveViewModel.createRiveView()
         riveView.translatesAutoresizingMaskIntoConstraints = false
         riveViewModel.play(loop:.oneShot) // Start the animation
-        riveView.playerDelegate = self
         return riveView
     }()
     
