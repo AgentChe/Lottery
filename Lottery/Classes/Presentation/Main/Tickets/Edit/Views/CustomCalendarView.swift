@@ -9,7 +9,13 @@ import UIKit
 
 class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
-    private let calendar = Calendar.current
+    private var calendar: Calendar = {
+        var cal = Calendar(identifier: .gregorian)
+        // Force GMT (UTC) time zone
+        cal.timeZone = TimeZone(secondsFromGMT: 0)!
+        return cal
+    }()
+
     private let dateFormatter = DateFormatter()
     private var selectedDate = Date()
     private var currentMonth: Date
@@ -176,6 +182,7 @@ class CustomCalendarView: UIView, UICollectionViewDelegate, UICollectionViewData
 
     private func updateHeader() {
         dateFormatter.dateFormat = "MMMM yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         headerLabel.text = dateFormatter.string(from: currentMonth)
         
         let previousButton = viewWithTag(1) as! UIButton

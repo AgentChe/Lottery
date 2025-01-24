@@ -35,7 +35,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         fullTicketVC.bonusIdx = bonusIdx
         fullTicketVC.ticket = ticket
         fullTicketVC.lotteries = lotteries
-
+        fullTicketVC.ticketsViewController = self
         // Embed in a UINavigationController
         let navController = UINavigationController(rootViewController: fullTicketVC)
         navController.modalPresentationStyle = .overFullScreen
