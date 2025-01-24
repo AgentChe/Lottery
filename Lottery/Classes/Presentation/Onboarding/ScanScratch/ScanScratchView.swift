@@ -1,7 +1,30 @@
 import UIKit
 import Lottie
-
-final class ScanScratchView: UIView {
+import RiveRuntime
+final class ScanScratchView: UIView, RivePlayerDelegate {
+    func player(playedWithModel riveModel: RiveRuntime.RiveModel?) {
+        
+    }
+    
+    func player(pausedWithModel riveModel: RiveRuntime.RiveModel?) {
+        
+    }
+    
+    func player(loopedWithModel riveModel: RiveRuntime.RiveModel?, type: Int) {
+        
+    }
+    
+    func player(stoppedWithModel riveModel: RiveRuntime.RiveModel?) {
+        
+    }
+    var duration: Double = 0
+    func player(didAdvanceby seconds: Double, riveModel: RiveRuntime.RiveModel?) {
+        duration += seconds
+        if duration >= 3.0840116666804533 {
+        //    riveViewModel.stop()
+        }
+    }
+    
     
     // MARK: - UI Components
     
@@ -62,14 +85,16 @@ final class ScanScratchView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private let animationView: LottieAnimationView = {
-        let animationView = LottieAnimationView(name: "Animation02")
-        animationView.contentMode = .scaleAspectFit
-        animationView.loopMode = .loop
-        animationView.translatesAutoresizingMaskIntoConstraints = false
-        animationView.play() // Starts the animation
-        return animationView
+  
+    private let riveViewModel = RiveViewModel(fileName: "lottery_welcome_screen_02", autoPlay: false)
+
+    private lazy var animationView: UIView = {
+        // Create a RiveView using RiveViewModel
+        let riveView = riveViewModel.createRiveView()
+        riveView.translatesAutoresizingMaskIntoConstraints = false
+        riveViewModel.play(loop:.oneShot) // Start the animation
+        riveView.playerDelegate = self
+        return riveView
     }()
     
     // Add new UILabel beneath the animation view
@@ -92,6 +117,7 @@ final class ScanScratchView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        
     }
     
     required init?(coder: NSCoder) {

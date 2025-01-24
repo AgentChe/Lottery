@@ -8,7 +8,7 @@ target 'Lottery' do
   pod 'lottie-ios'
   pod 'Kingfisher'
   pod 'Toast-Swift'
-  
+  pod 'RiveRuntime'
   pod 'RxSwift'
   pod 'RxCocoa'
   
