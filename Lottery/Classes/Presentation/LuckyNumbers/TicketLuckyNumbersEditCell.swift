@@ -438,7 +438,14 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
         } else {
             // Normal removal process
             numbersStringArray.remove(at: indexPath.section)
-            print("numbersStringArray: \(numbersStringArray.count)")
+            
+            // Reassign the first character (labels like A, B, C)
+            for (index, row) in numbersStringArray.enumerated() {
+                if !row.isEmpty {
+                    numbersStringArray[index][0] = String(UnicodeScalar(65 + index)!) // "A" + index
+                }
+            }
+
             collectionViewHeightConstraint.isActive = false
             // Get the number of cells in the last row
             if let firstNumberArray = numbersStringArray.first {
