@@ -513,7 +513,7 @@ extension GeneratorViewController {
             linesTitleLabel.topAnchor.constraint(equalTo: selectLinesView.topAnchor, constant: 16.scale),
             
             linesCountLabel.trailingAnchor.constraint(equalTo: selectLinesView.trailingAnchor, constant: -16.scale),
-            linesCountLabel.topAnchor.constraint(equalTo: selectLinesView.topAnchor, constant: 16.scale),
+            linesCountLabel.centerYAnchor.constraint(equalTo: linesTitleLabel.centerYAnchor, constant: 0.scale),
             linesCountLabel.leadingAnchor.constraint(greaterThanOrEqualTo: linesTitleLabel.trailingAnchor, constant: 8.scale)
         ])
         
