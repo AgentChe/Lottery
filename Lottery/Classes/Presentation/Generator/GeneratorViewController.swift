@@ -19,6 +19,9 @@ class GeneratorViewController: UIViewController {
     private var nextDraws: [Game] = []
     private let gamesManager: GamesManagerProtocol = GamesManager()
     
+   
+    private let profileManager: ProfileManagerProtocol = ProfileManager()
+    
     private var states: [State] = []
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -242,6 +245,30 @@ class GeneratorViewController: UIViewController {
         if let navigationController = getRootViewController() as? NavigationController,
            let mainViewController = navigationController.viewControllers.first as? MainViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
+        }
+        getProfile()
+    }
+    
+    private func getProfile() {
+        profileManager.getProfile(forceUpdate: false) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    guard let self = self else { return }
+                    if let stateId = profile.state {
+                        self.selectedState = stateId
+                        if let state = self.states.filter { $0.id == self.selectedState}.first {
+                            self.stateNameLabel.text = "\(state.name)"
+                            self.stateNameLabel.textColor = Appearance.mono200
+                        }
+                        
+                    } else {
+                        print("State ID is not available in profile")
+                    }
+                case .failure(let error):
+                    print("Failed to fetch profile: \(error)")
+                }
+            }
         }
     }
     override func viewWillDisappear(_ animated: Bool) {
