@@ -176,6 +176,7 @@ extension PastGameCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
         dateLabel.text = formattedDate.uppercased()
         
@@ -301,6 +302,7 @@ extension PastGameCell {
                     setNeedsLayout()
                     
                     jackpotTitleLabel.alpha = 0
+                    print("Cash4Life Past: \(game.jackpot)")
                     jackpotLabel.text = game.jackpot != "" ? "\(game.jackpot) per day" : "UNDETERMINED"
                     
                 }

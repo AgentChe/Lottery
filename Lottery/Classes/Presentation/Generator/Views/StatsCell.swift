@@ -1,4 +1,14 @@
 import UIKit
+class TopAlignedLabel: UILabel {
+    override func drawText(in rect: CGRect) {
+        let fittingSize = sizeThatFits(rect.size) // Get the size that fits the text
+        let adjustedRect = CGRect(
+            origin: CGPoint(x: rect.origin.x, y: rect.origin.y + 2.scale),
+            size: CGSize(width: rect.width, height: fittingSize.height)
+        )
+        super.drawText(in: adjustedRect)
+    }
+}
 
 class StatsCell: UICollectionViewCell {
     static let reusableIdentifier: String = "StatsCell"
@@ -112,7 +122,6 @@ class StatsCell: UICollectionViewCell {
     private let numbersFrequencyDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        
         // Set up the text and paragraph style
         let text = "69% of the numbers you selected have appeared more frequently than the average in the recent period"
         let paragraphStyle = NSMutableParagraphStyle()
@@ -170,9 +179,10 @@ class StatsCell: UICollectionViewCell {
         return label
     }()
     
-    private let skippedNumbersAnalyticsActualNumberDescriptionLabel: UILabel = {
-        let label = UILabel()
+    private let skippedNumbersAnalyticsActualNumberDescriptionLabel: TopAlignedLabel = {
+        let label = TopAlignedLabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
         
         // Set up the text and paragraph style
         let text = "76% of the numbers you selected have more missed draws"
@@ -190,10 +200,11 @@ class StatsCell: UICollectionViewCell {
         )
         
         label.attributedText = attributedText
-        label.numberOfLines = 2
+        label.textAlignment = .left // Adjust alignment as needed
+        
         return label
     }()
-    
+
     
     private let thirdDashedImageView: UIImageView = {
         let imageView = UIImageView()
@@ -409,7 +420,7 @@ class StatsCell: UICollectionViewCell {
             skippedNumbersAnalyticsActualNumberLabel.topAnchor.constraint(equalTo: skippedNumbersAnalyticsLabel.bottomAnchor, constant: 6.scale),
             skippedNumbersAnalyticsActualNumberLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             
-            skippedNumbersAnalyticsActualNumberDescriptionLabel.topAnchor.constraint(equalTo: skippedNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 1.5.scale),
+            skippedNumbersAnalyticsActualNumberDescriptionLabel.topAnchor.constraint(equalTo: skippedNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 0.scale),
             skippedNumbersAnalyticsActualNumberDescriptionLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             skippedNumbersAnalyticsActualNumberDescriptionLabel.trailingAnchor.constraint(equalTo: whiteBackgroundView.trailingAnchor, constant: -16.scale),
             skippedNumbersAnalyticsActualNumberDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale),
@@ -428,7 +439,7 @@ class StatsCell: UICollectionViewCell {
             consecutiveNumbersAnalyticsActualNumberLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             
             // Fourth Dashed Line
-            analyticDescriptionLabel.topAnchor.constraint(equalTo: consecutiveNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 1.5.scale),
+            analyticDescriptionLabel.topAnchor.constraint(equalTo: consecutiveNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 0.scale),
             analyticDescriptionLabel.centerXAnchor.constraint(equalTo: whiteBackgroundView.centerXAnchor),
             analyticDescriptionLabel.widthAnchor.constraint(equalToConstant: 311.scale),
             analyticDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale)

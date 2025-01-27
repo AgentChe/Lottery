@@ -118,7 +118,7 @@ class ScanAddTicketNumbersEditCell: UICollectionViewCell,RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-    
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: Date())
         dateLabel.text = "MM/DD/YYY"//formattedDate.uppercased()
         
@@ -312,6 +312,7 @@ private extension ScanAddTicketNumbersEditCell {
     func updateDateLabel(with date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
         parentvc?.ticket?.date = date.timeIntervalSince1970

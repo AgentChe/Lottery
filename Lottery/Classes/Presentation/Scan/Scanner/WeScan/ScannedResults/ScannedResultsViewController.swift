@@ -91,6 +91,7 @@ class ScannedResultsViewController: UIViewController, UICollectionViewDataSource
 
     private func formattedCurrentDate() -> String {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.dateFormat = "dd-MM-yy"
         return dateFormatter.string(from: Date())
     }

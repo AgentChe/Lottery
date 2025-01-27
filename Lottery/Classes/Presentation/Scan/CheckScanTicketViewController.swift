@@ -401,7 +401,7 @@ class CheckScanTicketViewController: UIViewController, UICollectionViewDataSourc
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MMM dd, yyyy"
                 dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensures consistent formatting
-                
+                dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
                 // Convert the Date object to the desired string format
                 let formattedDate = dateFormatter.string(from: date)
                 cell.dateLabel.text = formattedDate.uppercased()

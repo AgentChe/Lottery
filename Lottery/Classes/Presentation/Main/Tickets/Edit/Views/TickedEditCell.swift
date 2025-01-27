@@ -161,6 +161,7 @@ class TicketEditCell: UICollectionViewCell,RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = formattedDate.uppercased()
@@ -414,6 +415,7 @@ private extension TicketEditCell {
     func updateDateLabel(with date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
     }
@@ -488,8 +490,6 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             return UIEdgeInsets(top: 16.scale, left: 0.scale, bottom: 0.scale, right: 0.scale)
         }
     }
-    
-   
     func removeItem(at indexPath: IndexPath) {
         // Check if it's the only row left
         if numbersStringArray.count == 1 && indexPath.section == 0 {
@@ -499,32 +499,39 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
                 return
             }
         } else {
-            // Normal removal proceditTicketRowCollectionCelless
+            // Remove the row from the numbersStringArray
             numbersStringArray.remove(at: indexPath.section)
-            print("numbersStringArray: \(numbersStringArray.count)")
+
+            // Reassign the first character (labels like A, B, C)
+            for (index, row) in numbersStringArray.enumerated() {
+                if !row.isEmpty {
+                    numbersStringArray[index][0] = String(UnicodeScalar(65 + index)!) // "A" + index
+                }
+            }
+
+            // Update the collection view height constraint
             collectionViewHeightConstraint.isActive = false
-            // Get the number of cells in the last row
             if let firstNumberArray = numbersStringArray.first {
-                let numberOfCells = firstNumberArray.count + 1
-                // Calculate the available width based on the given constraints
+                let numberOfCells = firstNumberArray.count
                 let totalWidth: CGFloat = 343.scale
                 let sideMargins: CGFloat = 40.scale
-                let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells )
-                
-                // Calculate the width for each cell
+                let cellSpacing: CGFloat = 3.scale * CGFloat(numberOfCells)
+
                 let availableWidth = totalWidth - sideMargins - cellSpacing
                 let cellWidth = availableWidth / CGFloat(numberOfCells)
                 collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (cellWidth + 16).scale)
             } else {
-              collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 16).scale)
-              }
+                collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: CGFloat(numbersStringArray.count) * (40 + 16).scale)
+            }
             collectionViewHeightConstraint.isActive = true
-            
+
+            // Reload the collection view and notify delegates
             collectionView.reloadData()
             checkScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
             addScanDelegate?.updateSizeOfEditCell(numbersStringArray: numbersStringArray)
         }
     }
+
     private func presentDeleteConfirmationAlert() {
         let alertVC = CustomAlertViewController()
         

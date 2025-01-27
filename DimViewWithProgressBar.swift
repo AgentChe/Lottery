@@ -20,7 +20,7 @@ class DimViewWithProgressBar: UIView {
         "Analyzing the ticket...",
         "Your lucky moment is loading...",
         "Hold tight, luck is on its way...",
-        "Final stop is Drawing your luck..."
+        "Drawing your luck..."
     ]
     
     private var messageIndex = 0

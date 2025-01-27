@@ -35,7 +35,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         fullTicketVC.bonusIdx = bonusIdx
         fullTicketVC.ticket = ticket
         fullTicketVC.lotteries = lotteries
-
+        fullTicketVC.ticketsViewController = self
         // Embed in a UINavigationController
         let navController = UINavigationController(rootViewController: fullTicketVC)
         navController.modalPresentationStyle = .overFullScreen
@@ -90,16 +90,16 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         // Update the UI based on whether there are tickets to display
         if segmentedControl.currentIndex == 0 {
             if filteredTickets.isEmpty {
-                ticketsCollectionView.isHidden = true
-                noTicketsImageView.isHidden = false
-                noTicketsLabel.isHidden = false
-                scanLotteryTicketButton.isHidden = false
+                ticketsCollectionView.alpha = 0
+                noTicketsImageView.alpha = 1
+                noTicketsLabel.alpha = 1
+                scanLotteryTicketButton.alpha = 1
             } else {
                 
-                ticketsCollectionView.isHidden = false
-                noTicketsImageView.isHidden = true
-                noTicketsLabel.isHidden = true
-                scanLotteryTicketButton.isHidden = true
+                ticketsCollectionView.alpha = 1
+                noTicketsImageView.alpha = 0
+                noTicketsLabel.alpha = 0
+                scanLotteryTicketButton.alpha = 0
             }
         }
     }
@@ -107,9 +107,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     private var scratchoffs = [ScratchOff]() {
         didSet {
             self.scratchoffs = scratchoffs ?? []
-            self.noScratchOffsImageView.isHidden = true
-            self.noScratchoffLabel.isHidden = true
-            self.scanScratchOffTicketButton.isHidden = true
+            self.noScratchOffsImageView.alpha = 0
+            self.noScratchoffLabel.alpha = 0
+            self.scanScratchOffTicketButton.alpha = 0
             self.scratchoffsCollectionView.reloadData()
         }
     }
@@ -197,7 +197,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(scanScratchButtonTapped), for: .touchUpInside)
         button.isEnabled = true // Initially disabled
-        button.isHidden = true
+        button.alpha = 0
         return button
     }()
     
@@ -211,7 +211,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(scanButtonTapped), for: .touchUpInside)
         button.isEnabled = true // Initially disabled
-        button.isHidden = false
+        button.alpha = 1
         return button
     }()
     
@@ -369,9 +369,9 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         nonWinnersButton.addTarget(self, action: #selector(nonWinnersButtonTapped), for: .touchUpInside)
     
         setupLayoutConstraints()
-        noScratchOffsImageView.isHidden = true
-        scanScratchOffTicketButton.isHidden = true
-        noScratchoffLabel.isHidden = true
+        noScratchOffsImageView.alpha = 0
+        scanScratchOffTicketButton.alpha = 0
+        noScratchoffLabel.alpha = 0
         
         fetchLotteries()
         backgroundView.bringSubviewToFront(scanScratchOffTicketButton)
@@ -496,24 +496,25 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         // Mock data fetch for scratch-offs, implement real logic as needed
         // scratchoffs = [ScratchOff]  // Fetch scratch-offs data here
         scanScratchManager.list { scratchoffs in
+            print("HELL SCRATCH: \(scratchoffs)")
             DispatchQueue.main.async {
                 self.scratchoffs = scratchoffs ?? []
                 if self.segmentedControl.currentIndex == 1 {
                     if scratchoffs?.count ?? 0 > 0 {
-                        self.noScratchOffsImageView.isHidden = true
-                        self.scanScratchOffTicketButton.isHidden = true
-                        self.noTicketsLabel.isHidden = true
-                        self.noScratchoffLabel.isHidden = true
-                        self.noTicketsLabel.isHidden = true
-                        self.scanLotteryTicketButton.isHidden = true
+                        self.noScratchOffsImageView.alpha = 0
+                        self.scanScratchOffTicketButton.alpha = 0
+                        self.noTicketsLabel.alpha = 0
+                        self.noScratchoffLabel.alpha = 0
+                        self.noTicketsLabel.alpha = 0
+                        self.scanLotteryTicketButton.alpha = 0
                         self.scratchoffsCollectionView.reloadData()
                     } else {
-                        self.noScratchOffsImageView.isHidden = false
-                        self.scanScratchOffTicketButton.isHidden = false
-                        self.noTicketsLabel.isHidden = true
-                        self.noScratchoffLabel.isHidden = false
-                        self.noTicketsImageView.isHidden = true
-                        self.scanLotteryTicketButton.isHidden = true
+                        self.noScratchOffsImageView.alpha = 1
+                        self.scanScratchOffTicketButton.alpha = 1
+                        self.noTicketsLabel.alpha = 0
+                        self.noScratchoffLabel.alpha = 1
+                        self.noTicketsImageView.alpha = 0
+                        self.scanLotteryTicketButton.alpha = 0
                         self.view.setNeedsLayout()
                         self.view.setNeedsDisplay()
                     }
@@ -538,22 +539,22 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             scratchoffsCollectionViewTopConstraint?.isActive = true
             
             
-            buttonsStackView.isHidden = false
-            ticketsCollectionView.isHidden = false
-            scratchoffsCollectionView.isHidden = true
-            noScratchOffsImageView.isHidden = true
-            self.noTicketsLabel.isHidden = false
-            self.noScratchoffLabel.isHidden = true
-            scanScratchOffTicketButton.isHidden = true
-            noTicketsImageView.isHidden = false
-            scanLotteryTicketButton.isHidden = false
+            buttonsStackView.alpha = 1
+            ticketsCollectionView.alpha = 1
+            scratchoffsCollectionView.alpha = 0
+            noScratchOffsImageView.alpha = 0
+            self.noTicketsLabel.alpha = 1
+            self.noScratchoffLabel.alpha = 0
+            scanScratchOffTicketButton.alpha = 0
+            noTicketsImageView.alpha = 1
+            scanLotteryTicketButton.alpha = 1
             if tickets.count > 0 {
-                noTicketsImageView.isHidden = true
-                self.noTicketsLabel.isHidden = true
-                self.noScratchoffLabel.isHidden = true
-                scanLotteryTicketButton.isHidden = true
-                noScratchOffsImageView.isHidden = true
-                scanScratchOffTicketButton.isHidden = true
+                noTicketsImageView.alpha = 0
+                self.noTicketsLabel.alpha = 0
+                self.noScratchoffLabel.alpha = 0
+                scanLotteryTicketButton.alpha = 0
+                noScratchOffsImageView.alpha = 0
+                scanScratchOffTicketButton.alpha = 0
             }
             fetchTickets()
             
@@ -573,23 +574,23 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             scratchoffsCollectionViewTopConstraint?.isActive = true
             
             
-            buttonsStackView.isHidden = true
-            ticketsCollectionView.isHidden = true
-            scratchoffsCollectionView.isHidden = false
-            noTicketsImageView.isHidden = true
-            self.noTicketsLabel.isHidden = true
-            self.noScratchoffLabel.isHidden = false
-            scanLotteryTicketButton.isHidden = true
-            noScratchOffsImageView.isHidden = false
-            scanScratchOffTicketButton.isHidden = false
+            buttonsStackView.alpha = 0
+            ticketsCollectionView.alpha = 0
+            scratchoffsCollectionView.alpha = 1
+            noTicketsImageView.alpha = 0
+            self.noTicketsLabel.alpha = 0
+            self.noScratchoffLabel.alpha = 1
+            scanLotteryTicketButton.alpha = 0
+            noScratchOffsImageView.alpha = 1
+            scanScratchOffTicketButton.alpha = 1
             
             if scratchoffs.count > 0 {
-                noTicketsImageView.isHidden = true
-                self.noTicketsLabel.isHidden = true
-                self.noScratchoffLabel.isHidden = true
-                scanLotteryTicketButton.isHidden = true
-                noScratchOffsImageView.isHidden = true
-                scanScratchOffTicketButton.isHidden = true
+                noTicketsImageView.alpha = 0
+                self.noTicketsLabel.alpha = 0
+                self.noScratchoffLabel.alpha = 0
+                scanLotteryTicketButton.alpha = 0
+                noScratchOffsImageView.alpha = 0
+                scanScratchOffTicketButton.alpha = 0
             }
             fetchScratchoffs()
         }
@@ -614,7 +615,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         scratchoffsCollectionView.contentInset = UIEdgeInsets(top: 0.scale, left: 0, bottom: 30.scale, right: 0)
         
         backgroundView.addSubview(scratchoffsCollectionView)
-        scratchoffsCollectionView.isHidden = true // Initially hidden
+        scratchoffsCollectionView.alpha = 0 // Initially hidden
     }
     private func setupTicketsCollectionView() {
         let layout = UICollectionViewFlowLayout()
@@ -863,39 +864,39 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
                     self?.tickets = tickets.sorted(by: { $0.date > $1.date })
                     self?.ticketsCollectionView.reloadData()
                     if self?.segmentedControl.currentIndex == 0 {
-                        self?.noScratchOffsImageView.isHidden = true
-                        self?.noScratchoffLabel.isHidden = true
-                        self?.scanScratchOffTicketButton.isHidden = true
+                        self?.noScratchOffsImageView.alpha = 0
+                        self?.noScratchoffLabel.alpha = 0
+                        self?.scanScratchOffTicketButton.alpha = 0
                         if self?.tickets.count != 0 {
-//                            self?.ticketsCollectionView.isHidden = false
-//                            self?.noTicketsImageView.isHidden = true
-//                            self?.noTicketsLabel.isHidden = true
-//                            self?.scanLotteryTicketButton.isHidden = true
+//                            self?.ticketsCollectionView.alpha = 1
+//                            self?.noTicketsImageView.alpha = 0
+//                            self?.noTicketsLabel.alpha = 0
+//                            self?.scanLotteryTicketButton.alpha = 0
 //                            
                             
                             
                         } else {
-                            self?.ticketsCollectionView.isHidden = true
-                            self?.noTicketsImageView.isHidden = false
-                            self?.noTicketsLabel.isHidden = false
-                            self?.scanLotteryTicketButton.isHidden = false
+                            self?.ticketsCollectionView.alpha = 0
+                            self?.noTicketsImageView.alpha = 1
+                            self?.noTicketsLabel.alpha = 1
+                            self?.scanLotteryTicketButton.alpha = 1
                         }
                     }
                 case .failure:
                     if self?.segmentedControl.currentIndex == 0 {
-                        self?.noScratchOffsImageView.isHidden = true
-                        self?.noScratchoffLabel.isHidden = true
-                        self?.scanScratchOffTicketButton.isHidden = true
+                        self?.noScratchOffsImageView.alpha = 0
+                        self?.noScratchoffLabel.alpha = 0
+                        self?.scanScratchOffTicketButton.alpha = 0
                         if self?.tickets.count != 0 {
-                            self?.ticketsCollectionView.isHidden = false
-                            self?.noTicketsImageView.isHidden = true
-                            self?.noTicketsLabel.isHidden = true
-                            self?.scanLotteryTicketButton.isHidden = true
+                            self?.ticketsCollectionView.alpha = 1
+                            self?.noTicketsImageView.alpha = 0
+                            self?.noTicketsLabel.alpha = 0
+                            self?.scanLotteryTicketButton.alpha = 0
                         } else {
-                            self?.ticketsCollectionView.isHidden = true
-                            self?.noTicketsImageView.isHidden = false
-                            self?.noTicketsLabel.isHidden = false
-                            self?.scanLotteryTicketButton.isHidden = false
+                            self?.ticketsCollectionView.alpha = 0
+                            self?.noTicketsImageView.alpha = 1
+                            self?.noTicketsLabel.alpha = 1
+                            self?.scanLotteryTicketButton.alpha = 1
                         }
                     }
                     self?.showError()
@@ -976,8 +977,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
             
             // Initialize the CheckScratchOffTicketViewController with the selected scratch-off item
             let checkScratchoffViewController = CheckScratchOffTicketViewController(scratchOff: selectedScratchOff)
-            checkScratchoffViewController.saveTicketButton.isHidden = true
-            checkScratchoffViewController.rescanButton.isHidden = true
+            checkScratchoffViewController.saveTicketButton.alpha = 0
+            checkScratchoffViewController.rescanButton.alpha = 0
             // Push the CheckScratchOffTicketViewController onto the navigation stack
             self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
         }
@@ -1061,7 +1062,7 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         self.present(alert, animated: true, completion: nil)
     }
     @objc func scanButtonTapped() {
-        if SessionManager().hasActiveSubscriptions() {
+        if !SessionManager().hasActiveSubscriptions() {
             scanButtonIsTapped = true
             
             if  let drawsViewController = self.navigationController?.viewControllers[0] as? DrawsViewController {

@@ -64,6 +64,7 @@ class NextGameCell: UICollectionViewCell,NextDrawsWinningNumbersRowCellDelegate 
             .font(Fonts.Inter.bold(size: 12.scale))
             .textColor(Appearance.mono100)
             .letterSpacing(2)
+        
         label.attributedText = "latest winning numbers".uppercased().attributed(with: textAttributes)
         
         return label
@@ -101,6 +102,7 @@ extension NextGameCell {
     func configure(game: Game, lotteries: [Lottery]) {
         logoImageView.image = UIImage(named: "")
         logoImageView.contentMode = .scaleAspectFit
+       
         
         
         if self.frame.size.height == 232.scale {
@@ -116,6 +118,7 @@ extension NextGameCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent formatting
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         
         var formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: game.date))
         dateLabel.text = formattedDate.uppercased() // Convert to uppercase
@@ -260,10 +263,10 @@ extension NextGameCell {
                     whiteBackgroundHeightConstraint.isActive = true
                     //
                     setNeedsLayout()
-                    
+                    print("Cash4Life Next: \(game.jackpot)")
                     jackpotLabel.text = game.jackpot != "" ? "\(game.jackpot) per day" : "UNDETERMINED"
-                    dateContainerImageView.alpha = 0
-                    dateLabel.alpha = 1
+                    dateContainerImageView.alpha = 1
+                    dateLabel.alpha = 0
                     jackpotTitleLabel.alpha = 0
                 }
                 
@@ -356,9 +359,9 @@ private extension NextGameCell {
     }
     
     func setupLayoutConstraints() {
-        logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale)
+        logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale)
         logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 100.scale)
-        logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
+        logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 12.scale)
         jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 10.scale)
         
         whiteBackgroundHeightConstraint = whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.size.height == 232.scale ? 144.scale : 116.scale)
@@ -383,7 +386,7 @@ private extension NextGameCell {
             
             
             jackpotTitleTopConstraint,
-            jackpotTitleLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
+            jackpotTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             jackpotTitleLabel.heightAnchor.constraint(equalToConstant: 15.scale),
             
             jackpotLabel.topAnchor.constraint(equalTo: jackpotTitleLabel.bottomAnchor, constant: 5.scale),
@@ -410,13 +413,13 @@ private extension NextGameCell {
             
             
             
-            winningNumbersCollectionView.bottomAnchor.constraint(equalTo: latestWinningNumbersLabel.topAnchor, constant: -8.scale),
+            winningNumbersCollectionView.bottomAnchor.constraint(equalTo: latestWinningNumbersLabel.topAnchor, constant: -12.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale),
             
-            latestWinningNumbersLabel.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -10.scale),
-            latestWinningNumbersLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale),
+            latestWinningNumbersLabel.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -14.scale),
+            latestWinningNumbersLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             latestWinningNumbersLabel.heightAnchor.constraint(equalToConstant: 14.scale)
             
         ])

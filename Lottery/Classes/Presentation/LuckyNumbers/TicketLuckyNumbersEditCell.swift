@@ -130,7 +130,7 @@ class TicketLuckyNumbersEditCell: UICollectionViewCell, RemoveCellDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: ticket.date))
         dateLabel.text = formattedDate.uppercased()
         
@@ -373,6 +373,7 @@ private extension TicketLuckyNumbersEditCell {
     func updateDateLabel(with date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         let formattedDate = dateFormatter.string(from: date)
         dateLabel.text = formattedDate.uppercased()
     }
@@ -437,7 +438,14 @@ extension TicketLuckyNumbersEditCell: UICollectionViewDataSource, UICollectionVi
         } else {
             // Normal removal process
             numbersStringArray.remove(at: indexPath.section)
-            print("numbersStringArray: \(numbersStringArray.count)")
+            
+            // Reassign the first character (labels like A, B, C)
+            for (index, row) in numbersStringArray.enumerated() {
+                if !row.isEmpty {
+                    numbersStringArray[index][0] = String(UnicodeScalar(65 + index)!) // "A" + index
+                }
+            }
+
             collectionViewHeightConstraint.isActive = false
             // Get the number of cells in the last row
             if let firstNumberArray = numbersStringArray.first {

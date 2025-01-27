@@ -36,6 +36,7 @@ class NextDrawsWinningNumbersRowCollecitonViewCell: UICollectionViewCell, UIColl
     func config() {
         numbers = winningNumbers[indexPath.item]
         myLuckyNumbersCollectionView.reloadData()
+        
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -106,7 +107,7 @@ class NextDrawsWinningNumbersRowCollecitonViewCell: UICollectionViewCell, UIColl
         cell.backgroundViewContainer.alpha = isHighlight ? 1 : 0.5
        
         cell.layer.borderColor = isHighlight ? UIColor.clear.cgColor :  UIColor.clear.cgColor
-      
+        
         if bonusIdx.contains(indexPath.item) {
             cell.backgroundViewContainer.backgroundColor = Appearance.main100
             cell.backgroundViewContainer.alpha = 1

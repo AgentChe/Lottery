@@ -13,7 +13,7 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
             self.ticketDataCollectionView.reloadData()
         }
     }
-    
+    weak var ticketsViewController: TicketsViewController?
     var isTheWinner: Bool = false {
         didSet {
            // updateWinnerAndEditButtonVisibility()
@@ -66,6 +66,13 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
         }
         fetchTickets()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        ticketsViewController?.fetchLotteries()
+    }
+    
     func fetchTickets() {
         ticketsManager.listTickets(forceUpdate: false) { [weak self] result in
             DispatchQueue.main.async {
@@ -257,6 +264,7 @@ extension FullTicketViewController {
         let date = Date(timeIntervalSince1970: timeInterval)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MM yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         return dateFormatter.string(from: date)
     }
 }

@@ -181,6 +181,8 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
         setupPremiumAnimationView()
         PushNotificationsManager.shared.add(observer: self)
         
+        print("HELL: \(parent?.parent)")
+        
     }
     func pushNotificationsDidReceive(authorizationStatus: PushNotificationsAuthorizationStatus) {
          // Handle if needed
@@ -526,14 +528,23 @@ extension DrawsViewController {
                 chooseScanOptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
                 chooseScanOptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
                 chooseScanOptionView.heightAnchor.constraint(equalToConstant: 200.scale),
-                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 140.scale)
+                chooseScanOptionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 190.scale)
             ])
 
             view.layoutIfNeeded()
-
-            UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.2) {
+            if let navigationController = self.parent as? NavigationController {
+                if let mainViewController = navigationController.parent as? MainViewController {
+                    let mainView = mainViewController.mainView
+                    var tabView = mainView.tabView
+                    tabView.transform = CGAffineTransform(translationX: 0, y: 100.scale)
+                    mainView.layoutIfNeeded()
+                }
+            }
+        }
+        UIView.animate(withDuration: 0.3,delay: 0.2) {
                 self.dimView.alpha = 0.7
-                chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -250.scale)
+                chooseScanOptionView.transform = CGAffineTransform(translationX: 0, y: -225.scale)
                 self.view.layoutIfNeeded()
             }
             
@@ -553,9 +564,19 @@ extension DrawsViewController {
             UIView.animate(withDuration: 0.3, animations: {
                 chooseScanOptionView.transform = .identity
                 self.dimView.alpha = 0
+                self.view.layoutIfNeeded()
             }, completion: { _ in
-                chooseScanOptionView.removeFromSuperview()
+               chooseScanOptionView.removeFromSuperview()
                 self.dimView.removeFromSuperview()
+                UIView.animate(withDuration: 0.2, delay: 0.1) {
+                    if let navigationController = self.parent as? NavigationController {
+                        if let mainViewController = navigationController.parent as? MainViewController {
+                            let mainView = mainViewController.mainView
+                            var tabView = mainView.tabView
+                            tabView.transform = .identity
+                        }
+                    }
+                }
             })
         }
     }
@@ -569,6 +590,14 @@ extension DrawsViewController {
             chooseScanOptionView.transform = .identity
             self.dimView.alpha = 0
         }, completion: { _ in
+            
+            if let navigationController = self.parent as? NavigationController {
+                if let mainViewController = navigationController.parent as? MainViewController {
+                    let mainView = mainViewController.mainView
+                    var tabView = mainView.tabView
+                    tabView.transform = .identity
+                }
+            }
             chooseScanOptionView.removeFromSuperview()
             self.dimView.removeFromSuperview()
             self.rescanButtonTapped()
@@ -583,7 +612,14 @@ extension DrawsViewController {
         }, completion: { _ in
             chooseScanOptionView.removeFromSuperview()
             self.dimView.removeFromSuperview()
-            if SessionManager().hasActiveSubscriptions() {
+            if let navigationController = self.parent as? NavigationController {
+                if let mainViewController = navigationController.parent as? MainViewController {
+                    let mainView = mainViewController.mainView
+                    var tabView = mainView.tabView
+                    tabView.transform = .identity
+                }
+            }
+            if !SessionManager().hasActiveSubscriptions() {
                 self.scanButtonTapped()
             } else {
                 let vc = PaygateViewController.make()

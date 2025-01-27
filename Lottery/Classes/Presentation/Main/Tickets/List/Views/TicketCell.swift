@@ -7,6 +7,17 @@
 
 import UIKit
 import Kingfisher
+class HorizontalOnlyCollectionView: UICollectionView {
+    override var contentOffset: CGPoint {
+        get {
+            super.contentOffset
+        }
+        set {
+            // Allow horizontal scrolling but restrict vertical scrolling
+            super.contentOffset = CGPoint(x: newValue.x, y: 0)
+        }
+    }
+}
 
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
@@ -72,15 +83,16 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return button
     }()
     
-    var numbersCollectionView: UICollectionView = {
+    var numbersCollectionView: HorizontalOnlyCollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 12.scale
         layout.minimumInteritemSpacing = 12.scale
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = HorizontalOnlyCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
     
@@ -162,12 +174,12 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     }
     
     func configure(with ticket: Ticket) {
-        let now = Date() // Current date as Date object
+        
         let ticketDate = Date(timeIntervalSince1970: ticket.date) // Convert TimeInterval to Date
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy" // Custom format for "JUN 2, 2024"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        
+        formatter.timeZone = TimeZone(abbreviation: "GMT") // Set to GMT (UTC)
         formatter.dateStyle = .medium
         
         dateLabel.text = formatter.string(from: ticketDate).uppercased()

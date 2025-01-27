@@ -137,6 +137,7 @@
 		A3EF37312C184DD600753C41 /* TicketsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37302C184DD600753C41 /* TicketsViewController.swift */; };
 		A3EF37332C185D3500753C41 /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF37322C185D3500753C41 /* TicketCell.swift */; };
 		A3EF38202CB43D7E00D2C4B1 /* Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */; };
+		A3F997132D43829800B3C912 /* lottery_welcome_screen_02.riv in Resources */ = {isa = PBXBuildFile; fileRef = A3F997122D43829700B3C912 /* lottery_welcome_screen_02.riv */; };
 		A3FC079B2C89AA2100A668C5 /* ChooseScanOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */; };
 		A3FC079D2C89F56000A668C5 /* DimViewWithProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */; };
 		A3FC079F2C8A287100A668C5 /* ScanScratchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */; };
@@ -409,6 +410,7 @@
 		A3EF37302C184DD600753C41 /* TicketsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsViewController.swift; sourceTree = "<group>"; };
 		A3EF37322C185D3500753C41 /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
 		A3EF381F2CB43D7A00D2C4B1 /* Operations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operations.swift; sourceTree = "<group>"; };
+		A3F997122D43829700B3C912 /* lottery_welcome_screen_02.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = lottery_welcome_screen_02.riv; sourceTree = "<group>"; };
 		A3FC079A2C89AA2100A668C5 /* ChooseScanOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScanOptionView.swift; sourceTree = "<group>"; };
 		A3FC079C2C89F56000A668C5 /* DimViewWithProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimViewWithProgressBar.swift; sourceTree = SOURCE_ROOT; };
 		A3FC079E2C8A287100A668C5 /* ScanScratchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanScratchManager.swift; sourceTree = SOURCE_ROOT; };
@@ -1314,6 +1316,7 @@
 			children = (
 				DE42B15F2BFF3CB100FF61B0 /* Views */,
 				DE42B1612BFF3CB100FF61B0 /* OnboardingViewController.swift */,
+				A3F997122D43829700B3C912 /* lottery_welcome_screen_02.riv */,
 				A35112F42C9884D70060D261 /* Animation02.json */,
 				A35112F22C9883EA0060D261 /* Animation01.json */,
 				DE42B1602BFF3CB100FF61B0 /* OnboardingView.swift */,
@@ -1581,6 +1584,7 @@
 				DE42B1022BFF39BE00FF61B0 /* Frameworks */,
 				DE42B1032BFF39BE00FF61B0 /* Resources */,
 				ECAD730D7FFC615D36D945C4 /* [CP] Embed Pods Frameworks */,
+				86DE7CB485CC0BEC2655C82C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1668,6 +1672,7 @@
 				A32749502C29859400E9F79A /* flash@3x.png in Resources */,
 				A327494D2C29859400E9F79A /* enhance@3x.png in Resources */,
 				A35112F92C98CDF40060D261 /* Premium.json in Resources */,
+				A3F997132D43829800B3C912 /* lottery_welcome_screen_02.riv in Resources */,
 				DE42B1DA2BFF3CB900FF61B0 /* Localizable.strings in Resources */,
 				DE42B1152BFF39C000FF61B0 /* Base in Resources */,
 				A32749512C29859400E9F79A /* flashUnavailable.png in Resources */,
@@ -1698,6 +1703,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		86DE7CB485CC0BEC2655C82C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Lottery/Pods-Lottery-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Lottery/Pods-Lottery-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Lottery/Pods-Lottery-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		ECAD730D7FFC615D36D945C4 /* [CP] Embed Pods Frameworks */ = {
@@ -2135,7 +2157,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.iphone.tracker-tonight";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -2173,7 +2195,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.iphone.tracker-tonight";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
