@@ -31,6 +31,7 @@ class TicketNumbersRowCollectionViewCell: UICollectionViewCell, UICollectionView
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.alwaysBounceHorizontal = true
         collectionView.register(NumberTicketCell.self, forCellWithReuseIdentifier: NumberTicketCell.reuseIdentifier)
         return collectionView
     }()
@@ -55,7 +56,7 @@ class TicketNumbersRowCollectionViewCell: UICollectionViewCell, UICollectionView
 
     private func setupCollectionView() {
         contentView.addSubview(ticketNumbersCollectionView)
-
+        
         NSLayoutConstraint.activate([
             ticketNumbersCollectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
             ticketNumbersCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),

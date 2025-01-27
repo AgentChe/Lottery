@@ -55,21 +55,24 @@ class LuckyNumbersCell: UICollectionViewCell,LuckyNumbersRowCellDelegate {
     
     lazy var myLuckyNumbersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
+        layout.scrollDirection = .horizontal // Set horizontal scrolling
         layout.minimumInteritemSpacing = 6.scale
         layout.minimumLineSpacing = 16.scale
-        
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isUserInteractionEnabled = true
-        collectionView.isScrollEnabled = false
+        collectionView.isScrollEnabled = true // Ensure scrolling is enabled
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.bounces = true // Enable bouncing effect
+        collectionView.alwaysBounceHorizontal = true // Allow bounce even with small content
         collectionView.register(LuckyNumbersRowCollectionViewCell.self, forCellWithReuseIdentifier: LuckyNumbersRowCollectionViewCell.reuseIdentifier)
         return collectionView
     }()
-    
+
     let editButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "LuckyNumbers.Edit"), for: .normal)

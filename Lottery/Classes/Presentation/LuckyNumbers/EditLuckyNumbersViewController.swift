@@ -122,12 +122,13 @@ class EditLuckyNumbersViewController: UIViewController, UICollectionViewDataSour
         NSLayoutConstraint.activate([
             // CollectionView constraints
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.scale),
-            collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant: -10.scale),
+            collectionView.bottomAnchor.constraint(equalTo: saveTicketButton.topAnchor, constant:  -10.scale),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             saveTicketButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
             saveTicketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            saveTicketButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32.scale),
             saveTicketButton.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
         

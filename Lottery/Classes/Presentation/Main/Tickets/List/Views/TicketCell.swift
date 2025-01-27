@@ -7,6 +7,17 @@
 
 import UIKit
 import Kingfisher
+class HorizontalOnlyCollectionView: UICollectionView {
+    override var contentOffset: CGPoint {
+        get {
+            super.contentOffset
+        }
+        set {
+            // Allow horizontal scrolling but restrict vertical scrolling
+            super.contentOffset = CGPoint(x: newValue.x, y: 0)
+        }
+    }
+}
 
 protocol TicketCellDelegate: AnyObject {
     func editButtonTapped(for cell: TicketCell)
@@ -72,15 +83,16 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         return button
     }()
     
-    var numbersCollectionView: UICollectionView = {
+    var numbersCollectionView: HorizontalOnlyCollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 12.scale
         layout.minimumInteritemSpacing = 12.scale
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = HorizontalOnlyCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
     
