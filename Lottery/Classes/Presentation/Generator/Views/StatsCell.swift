@@ -439,7 +439,7 @@ class StatsCell: UICollectionViewCell {
             consecutiveNumbersAnalyticsActualNumberLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             
             // Fourth Dashed Line
-            analyticDescriptionLabel.topAnchor.constraint(equalTo: consecutiveNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 1.5.scale),
+            analyticDescriptionLabel.topAnchor.constraint(equalTo: consecutiveNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 0.scale),
             analyticDescriptionLabel.centerXAnchor.constraint(equalTo: whiteBackgroundView.centerXAnchor),
             analyticDescriptionLabel.widthAnchor.constraint(equalToConstant: 311.scale),
             analyticDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale)
