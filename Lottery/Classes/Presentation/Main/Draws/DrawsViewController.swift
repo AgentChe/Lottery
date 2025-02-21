@@ -553,10 +553,6 @@ extension DrawsViewController {
             dimView.addGestureRecognizer(dismissTapGesture)
             
             chooseScanOptionView.dismissButton.addTarget(self, action: #selector(dismissChooseScanOptionView(_:)), for: .touchUpInside)
-//        } else {
-//            let vc = PaygateViewController.make()
-//            present(vc, animated: true)
-//        }
     }
 
     @objc func dismissChooseScanOptionView(_ sender: UIButton) {
@@ -589,19 +585,24 @@ extension DrawsViewController {
         UIView.animate(withDuration: 0.3, animations: {
             chooseScanOptionView.transform = .identity
             self.dimView.alpha = 0
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
+            chooseScanOptionView.removeFromSuperview()
+            self?.dimView.removeFromSuperview()
             
-            if let navigationController = self.parent as? NavigationController {
+            if let navigationController = self?.parent as? NavigationController {
                 if let mainViewController = navigationController.parent as? MainViewController {
                     let mainView = mainViewController.mainView
                     var tabView = mainView.tabView
                     tabView.transform = .identity
                 }
             }
-            chooseScanOptionView.removeFromSuperview()
-            self.dimView.removeFromSuperview()
-            self.rescanButtonTapped()
             
+            if SessionManager().hasActiveSubscriptions() {
+                self?.rescanButtonTapped()
+            } else {
+                let vc = PaygateViewController.make()
+                self?.present(vc, animated: true)
+            }
         })
     }
 
@@ -609,21 +610,23 @@ extension DrawsViewController {
         UIView.animate(withDuration: 0.3, animations: {
             chooseScanOptionView.transform = .identity
             self.dimView.alpha = 0
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
             chooseScanOptionView.removeFromSuperview()
-            self.dimView.removeFromSuperview()
-            if let navigationController = self.parent as? NavigationController {
+            self?.dimView.removeFromSuperview()
+            
+            if let navigationController = self?.parent as? NavigationController {
                 if let mainViewController = navigationController.parent as? MainViewController {
                     let mainView = mainViewController.mainView
                     var tabView = mainView.tabView
                     tabView.transform = .identity
                 }
             }
-            if !SessionManager().hasActiveSubscriptions() {
-                self.scanButtonTapped()
+            
+            if SessionManager().hasActiveSubscriptions() {
+                self?.scanButtonTapped()
             } else {
                 let vc = PaygateViewController.make()
-                self.present(vc, animated: true)
+                self?.present(vc, animated: true)
             }
         })
     }

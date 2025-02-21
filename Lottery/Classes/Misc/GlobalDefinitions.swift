@@ -23,6 +23,6 @@ final class GlobalDefinitions {
     
     enum Paygate {
         static let defaultLifetime = "app.iphone.tracker.lifetime"
-        static let defaultMonthly = "app.iphone.tracker.monthly"
+        static let defaultMonthly = "app.iphone.tracker.weekly2"
     }
 }

@@ -40,7 +40,7 @@ private extension Paygate {
                   weight: .semiBold(22)),
             .init(component: .text("/"),
                   weight: .semiBold(22)),
-            .init(component: .text("Paygate.Price.Period".localized),
+            .init(component: .text("Paygate.Price.Period.Month".localized),
                   weight: .regular(12))
         ]
         let line3: [PaygateOptionLineComponent] = [
@@ -82,7 +82,7 @@ private extension Paygate {
                   weight: .semiBold(22)),
             .init(component: .text("/"),
                   weight: .semiBold(22)),
-            .init(component: .text("Paygate.Price.Period".localized),
+            .init(component: .text("Paygate.Price.Period.Week".localized),
                   weight: .regular(12))
         ]
         let line5: [PaygateOptionLineComponent] = [
