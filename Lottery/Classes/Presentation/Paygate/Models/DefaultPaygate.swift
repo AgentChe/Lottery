@@ -26,7 +26,7 @@ extension Paygate {
 // MARK: Private
 private extension Paygate {
     static func lifetime(lifetimePrice: ProductPrice, monthlyPrice: ProductPrice) -> PaygateOptionConfig {
-        let priceDiv: Double = lifetimePrice.priceValue / 12
+        let priceDiv: Double = lifetimePrice.priceValue / 52
         
         let diff = monthlyPrice.priceValue - priceDiv
         let discount = 100 / (monthlyPrice.priceValue / diff)
@@ -36,11 +36,11 @@ private extension Paygate {
                   weight: .bold(20))
         ]
         let line2: [PaygateOptionLineComponent] = [
-            .init(component: .price(12),
+            .init(component: .price(52),
                   weight: .semiBold(22)),
             .init(component: .text("/"),
                   weight: .semiBold(22)),
-            .init(component: .text("Paygate.Price.Period.Month".localized),
+            .init(component: .text("Paygate.Price.Period".localized),
                   weight: .regular(12))
         ]
         let line3: [PaygateOptionLineComponent] = [
@@ -69,12 +69,8 @@ private extension Paygate {
     }
     
     static func monthly() -> PaygateOptionConfig {
-        let usedProducts = OtterScale.shared.getUsedProducts()
-            .map { $0.appleAppStore } ?? []
-        let withTrial = !usedProducts.contains(GlobalDefinitions.Paygate.defaultMonthly)
-        
         let line1: [PaygateOptionLineComponent] = [
-            .init(component: .text(withTrial ? "Paygate.Monthly.Name1".localized : "Paygate.Monthly.Name2".localized),
+            .init(component: .text("Paygate.Monthly.Name2".localized),
                   weight: .bold(20))
         ]
         let line2: [PaygateOptionLineComponent] = [
@@ -82,11 +78,11 @@ private extension Paygate {
                   weight: .semiBold(22)),
             .init(component: .text("/"),
                   weight: .semiBold(22)),
-            .init(component: .text("Paygate.Price.Period.Week".localized),
+            .init(component: .text("Paygate.Price.Period".localized),
                   weight: .regular(12))
         ]
         let line5: [PaygateOptionLineComponent] = [
-            .init(component: .text(withTrial ? "Paygate.Monthly.Bottom1".localized : "Paygate.Monthly.Bottom2".localized),
+            .init(component: .text("Paygate.Monthly.Bottom2".localized),
                   weight: .regular(12))
         ]
         

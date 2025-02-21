@@ -42,16 +42,13 @@
 "Paygate.PrivacyPolicy" = "Privacy Policy";
 "Paygate.RestorePurchases" = "Restore Purchase";
 "Paygate.Failed" = "Failed to make purchase";
-"Paygate.Monthly.Name1" = "3 days for free";
 "Paygate.Monthly.Name2" = "Quick peek";
-"Paygate.Monthly.Bottom1" = "After 3-day trial";
 "Paygate.Monthly.Bottom2" = "Popular choice";
 "Paygate.Lifetime.Name" = "Lifetime";
 "Paygate.Lifetime.PriceDescription" = "\nIn terms of 1 year";
 "Paygate.Lifetime.BottomDescription" = "once";
 "Paygate.Discount" = "SAVE %i%%";
-"Paygate.Price.Period.Month" = "month";
-"Paygate.Price.Period.Week" = "week";
+"Paygate.Price.Period" = "week";
 
 // MARK: SuggestNewGame
 "SuggestNewGame.Header" = "SELECT THE GAME";
