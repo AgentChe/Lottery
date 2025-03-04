@@ -139,8 +139,8 @@ private extension ScanScratchView {
         NSLayoutConstraint.activate([
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
             animationView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            animationView.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 375.scale : 375.scale * 0.86),
-            animationView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 375.scale : 375.scale * 0.86)
+            animationView.widthAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 375.scale : 375.scale ),
+            animationView.heightAnchor.constraint(equalToConstant: ScreenSize.isIphoneXFamily ? 375.scale : 375.scale )
         ])
         
         // Set constraints for the description label

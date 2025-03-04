@@ -91,7 +91,6 @@ class NotificationRequestViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = Appearance.main400
         setupLayout()
     }
@@ -129,20 +128,20 @@ class NotificationRequestViewController: UIViewController {
             descriptionLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20.scale),
             
             // Notification Image Constraints
-            notificationImageView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.scale),
+            notificationImageView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 30.scale),
             notificationImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            notificationImageView.widthAnchor.constraint(equalToConstant: 327.scale),
-            notificationImageView.heightAnchor.constraint(equalToConstant: 93.scale),
+            notificationImageView.widthAnchor.constraint(equalToConstant: 333.scale),
+            notificationImageView.heightAnchor.constraint(equalToConstant: 106.scale),
             
             // Allow Button Constraints
-            allowButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            allowButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            allowButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            allowButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
             allowButton.heightAnchor.constraint(equalToConstant: 44.scale),
             allowButton.bottomAnchor.constraint(equalTo: denyButton.topAnchor, constant: -10.scale),
             
             // Deny Button Constraints
-            denyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.scale),
-            denyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.scale),
+            denyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.scale),
+            denyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.scale),
             denyButton.heightAnchor.constraint(equalToConstant: 44.scale),
             denyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.scale)
         ])
