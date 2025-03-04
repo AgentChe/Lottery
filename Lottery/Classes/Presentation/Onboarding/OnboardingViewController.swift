@@ -13,7 +13,8 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
-        setupProgressView()
+        //setupProgressView()
+        setupProgressViewInNavigationBar()
         setupInitialViewController()
     }
     
@@ -31,6 +32,41 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
             self.isNavigationBarHidden = true
         }
     }
+    private func setupProgressViewInNavigationBar() {
+        // 1. Make sure we have a navigation bar to work with
+        let navBar = self.navigationBar
+     
+        // 2. Add the progress view into the navigation bar hierarchy
+        navBar.addSubview(progressView)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.progressTintColor = Appearance.main100
+        progressView.trackTintColor = Appearance.main500
+        progressView.alpha = 0
+        
+        // 3. Try to grab the custom back button view
+        //    (leftBarButtonItem?.customView is what we set with `setCustomBackButton(for:)`)
+        if let backButtonView = topViewController?.navigationItem.leftBarButtonItem?.customView {
+            
+            // 4. Constrain progressView to the back button’s centerY.
+            //    Adjust leading/trailing as desired
+            NSLayoutConstraint.activate([
+                progressView.centerYAnchor.constraint(equalTo: backButtonView.centerYAnchor),
+                progressView.leadingAnchor.constraint(equalTo: navBar.leadingAnchor, constant: 64.scale),
+                progressView.trailingAnchor.constraint(equalTo: navBar.trailingAnchor, constant: -51.scale),
+                progressView.heightAnchor.constraint(equalToConstant: 6.scale)
+            ])
+            
+        } else {
+            // Fallback if for some reason there's no custom back button
+            NSLayoutConstraint.activate([
+                progressView.centerYAnchor.constraint(equalTo: navBar.centerYAnchor),
+                progressView.leadingAnchor.constraint(equalTo: navBar.leadingAnchor, constant: 64.scale),
+                progressView.trailingAnchor.constraint(equalTo: navBar.trailingAnchor, constant: -51.scale),
+                progressView.heightAnchor.constraint(equalToConstant: 6.scale )
+            ])
+        }
+    }
+
     private func setupProgressView() {
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.progressTintColor = Appearance.main100
@@ -39,7 +75,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         view.addSubview(progressView) // Add to view instead of navigationBar
         progressView.alpha = 0
         NSLayoutConstraint.activate([
-            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  54.scale),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:   54.scale),
             progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -54.scale),
             progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: ScreenSize.isIphoneXFamily ? 12.scale : 17.scale),
             progressView.heightAnchor.constraint(equalToConstant: 6.scale)
@@ -173,6 +209,7 @@ final class OnboardingViewController: UINavigationController, UINavigationContro
         if let image = UIImage(named: "onboardingBackButton") {
             backButton.setImage(image, for: .normal)
         }
+        //backButton.backgroundColor = .red
         backButton.frame = CGRect(x: 0, y: 0.scale, width: 50.scale, height: 45.scale)
         backButton.imageView?.contentMode = .scaleAspectFit
         backButton.addTarget(self, action: #selector(handleBackButtonTap), for: .touchUpInside)
@@ -218,3 +255,4 @@ extension OnboardingViewController {
         UserDefaults.standard.bool(forKey: OnboardingViewController.Constants.wasViewedKey)
     }
 }
+
