@@ -187,7 +187,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         // Set constraints for ticketImageView
         NSLayoutConstraint.activate([
             ticketImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 26.scale),
-            ticketImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.scale),
+            ticketImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.scale),
             ticketImageView.widthAnchor.constraint(equalToConstant: 150.scale),
             ticketImageView.heightAnchor.constraint(equalToConstant: 50.scale)
         ])
@@ -195,7 +195,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
         // Set constraints for dateLabel
         NSLayoutConstraint.activate([
             dateLabel.topAnchor.constraint(equalTo: ticketImageView.bottomAnchor, constant: 10.scale),
-            dateLabel.leadingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: 13.scale),
+            dateLabel.leadingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: 0.scale),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.scale),
             dateLabel.heightAnchor.constraint(equalToConstant: 24.scale)
         ])
