@@ -274,7 +274,7 @@ extension PastGameCell {
                     //                    logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.scale)
                     //                    logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 155.scale)
                     //                    logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 5.scale)
-                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: -3.scale)
+                    jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: -5.scale)
                     //                    whiteBackgroundHeightConstraint = whiteBackgroundView.heightAnchor.constraint(equalToConstant: 116.scale)
                     
                     //                    logoImageLeadingConstraint.isActive = true
