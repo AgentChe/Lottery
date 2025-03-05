@@ -72,7 +72,7 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     
     var isUpcoming : Bool = false {
         didSet {
-            editButton.isHidden = !isUpcoming
+            editButton.isHidden = !isUpcoming || isTheWinner
         }
     }
     var isTheWinner: Bool = false {

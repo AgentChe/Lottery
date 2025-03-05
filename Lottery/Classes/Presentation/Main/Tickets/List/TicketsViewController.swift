@@ -691,8 +691,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         buttonsStackView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor).isActive = true
         buttonsStackViewHeightConstraint = buttonsStackView.heightAnchor.constraint(equalToConstant: 40.scale)
         buttonsStackViewHeightConstraint?.isActive = true
-        buttonsStackView.leadingAnchor.constraint(greaterThanOrEqualTo: backgroundView.leadingAnchor, constant: 20.scale).isActive = true
-        buttonsStackView.trailingAnchor.constraint(lessThanOrEqualTo: backgroundView.trailingAnchor, constant: -20.scale).isActive = true
+        buttonsStackView.leadingAnchor.constraint(greaterThanOrEqualTo: backgroundView.leadingAnchor, constant: 10.scale).isActive = true
+        buttonsStackView.trailingAnchor.constraint(lessThanOrEqualTo: backgroundView.trailingAnchor, constant: -10.scale).isActive = true
         
         // Set constraints for buttons inside the stack view
         NSLayoutConstraint.activate([
