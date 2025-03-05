@@ -305,7 +305,7 @@ private extension NextGameCell {
         // Configure whiteBackgroundView
         whiteBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         whiteBackgroundView.backgroundColor = Appearance.mono100
-        whiteBackgroundView.layer.cornerRadius = 16.3.scale
+        whiteBackgroundView.layer.cornerRadius = 16.scale
         whiteBackgroundView.layer.borderWidth = 2.scale
         whiteBackgroundView.layer.borderColor = Appearance.witeBcgBorderColor.cgColor
         

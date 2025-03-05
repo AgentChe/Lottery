@@ -31,36 +31,43 @@ class PastGameCell: UICollectionViewCell,PastDrawsLuckyNumbersRowCellDelegate , 
     var logoImageWidthConstraint: NSLayoutConstraint!
     var logoImageTopConstraint: NSLayoutConstraint!
     var jackpotTitleTopConstraint: NSLayoutConstraint!
+    var winningNumbersTitleBottomConstraint: NSLayoutConstraint!
+
     
     private let winningNumbersTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "PastGameCell.WinningNumbers".localized
-        label.font = Fonts.Inter.bold(size: 12.scale)
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = Appearance.mono100
-        label.translatesAutoresizingMaskIntoConstraints = false
         
-        
-        let attributedText = NSMutableAttributedString(string: "PastGameCell.WinningNumbers".localized)
-        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length))
+        let attributedText = NSMutableAttributedString(
+            string: "PastGameCell.WinningNumbers".localized,
+            attributes: [
+                .font: Fonts.Inter.bold(size: 12.scale),
+                .kern: 2
+            ]
+        )
         
         label.attributedText = attributedText
         return label
     }()
+
     var myLuckyNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
     var winningNumbersCollectionViewHeightConstraint: NSLayoutConstraint!
     let myLuckyNumbersTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "PastGameCell.MyLuckyNumbers".localized
-        label.font = Fonts.Inter.bold(size: 12.scale)
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = Appearance.mono100
-        label.translatesAutoresizingMaskIntoConstraints = false
         
-        let attributedText = NSMutableAttributedString(string: "PastGameCell.MyLuckyNumbers".localized)
-        attributedText.addAttribute(.kern, value: 1.5, range: NSRange(location: 0, length: attributedText.length))
+        let attributedText = NSMutableAttributedString(
+            string: "PastGameCell.MyLuckyNumbers".localized,
+            attributes: [
+                .font: Fonts.Inter.bold(size: 12.scale),
+                .kern: 2
+            ]
+        )
         label.attributedText = attributedText
-        
         return label
     }()
     
@@ -336,7 +343,19 @@ extension PastGameCell {
             let cellHeight =  CGFloat(max(0, winningNumbers.count )) * CGFloat(40.scale + 8.scale) + 0.scale
             winningNumbersCollectionViewHeightConstraint =    winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: cellHeight)
         }
+        
         winningNumbersCollectionViewHeightConstraint.isActive = true
+        
+        if myLuckyNumbers == [] {
+            winningNumbersTitleBottomConstraint.isActive = false
+            winningNumbersTitleBottomConstraint = winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14.scale)
+            winningNumbersTitleBottomConstraint.isActive = true
+        } else {
+            winningNumbersTitleBottomConstraint.isActive = false
+            winningNumbersTitleBottomConstraint = winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 23.scale)
+            winningNumbersTitleBottomConstraint.isActive = true
+        }
+        
         setNeedsLayout()
         // Reload collection views with new data
         winningNumbersCollectionView.reloadData()
@@ -349,7 +368,7 @@ extension PastGameCell {
 // MARK: - Setup Methods
 private extension PastGameCell {
     func setupUI() {
-        backgroundColor = .white
+        backgroundColor = Appearance.mono100
         
         // Setup backgroundImageView
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -359,7 +378,7 @@ private extension PastGameCell {
         // Setup whiteBackgroundView
         whiteBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         whiteBackgroundView.backgroundColor = .white
-        whiteBackgroundView.layer.cornerRadius = 20.scale
+        whiteBackgroundView.layer.cornerRadius = 16.scale
         whiteBackgroundView.layer.borderWidth = 2.scale
         whiteBackgroundView.layer.borderColor = Appearance.witeBcgBorderColor.cgColor
         addSubview(whiteBackgroundView)
@@ -368,7 +387,7 @@ private extension PastGameCell {
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        dateLabel.font = Fonts.Inter.medium(size: 12.5.scale)
+        dateLabel.font = Fonts.Inter.medium(size: 12.scale)
         dateLabel.textAlignment = .center
         dateLabel.textColor = Appearance.main300
         dateLabel.backgroundColor = Appearance.mono100
@@ -400,15 +419,17 @@ private extension PastGameCell {
     
     
     func setupLayoutConstraints() {
+       
         myLuckyNumbersCollectionViewHeightConstraint = myLuckyNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
         winningNumbersCollectionViewHeightConstraint = winningNumbersCollectionView.heightAnchor.constraint(equalToConstant: 40.scale)
         logoImageLeadingConstraint = logoImageView.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale)
         logoImageWidthConstraint = logoImageView.widthAnchor.constraint(equalToConstant: 100.scale)
-        logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.scale)
+        logoImageTopConstraint = logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 12.scale)
         whiteBackgroundTopConstraint = whiteBackgroundView.topAnchor.constraint(equalTo: topAnchor)
         
         whiteBackgroundHeightConstraint =  whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.size.height >= 250.scale ? 144.scale : 116.scale)
         jackpotTitleTopConstraint = jackpotTitleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor , constant: 10.scale)
+        winningNumbersTitleBottomConstraint = winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 23.scale)
         
         NSLayoutConstraint.activate([
             // Background Image Constraints
@@ -443,13 +464,13 @@ private extension PastGameCell {
             
             
             // Winning Numbers CollectionView Constraints
-            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 8.scale),
+            winningNumbersCollectionView.topAnchor.constraint(equalTo: whiteBackgroundView.bottomAnchor, constant: 9.2.scale),
             winningNumbersCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             winningNumbersCollectionViewHeightConstraint,
             
             // Winning Numbers Title Label Constraints
-            winningNumbersTitleLabel.bottomAnchor.constraint(equalTo: winningNumbersCollectionView.bottomAnchor, constant: 23.scale),
+            winningNumbersTitleBottomConstraint,
             winningNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             winningNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
             
@@ -466,7 +487,7 @@ private extension PastGameCell {
             myLuckyNumbersCollectionViewHeightConstraint,
             
             // My Lucky Numbers Title Label Constraints
-            myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.scale),
+            myLuckyNumbersTitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14.scale),
             myLuckyNumbersTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.scale),
             myLuckyNumbersTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.scale),
         ])
@@ -643,5 +664,18 @@ extension UIView {
             currentView.constraints.forEach { $0.isActive = false }
             index += 1
         }
+    }
+}
+
+extension UIView {
+    func findCollectionView() -> UICollectionView? {
+        var superview = self.superview
+        while let view = superview {
+            if let collectionView = view as? UICollectionView {
+                return collectionView
+            }
+            superview = view.superview
+        }
+        return nil
     }
 }

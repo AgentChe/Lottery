@@ -261,6 +261,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     }
     
     func navigateToPastDraws( completion: @escaping () -> Void) {
+        
         guard let navigationController = self.navigationController else {
             completion()
             return
@@ -846,13 +847,13 @@ extension DrawsViewController {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 204.scale
                             } else {
-                                cellHeight = 116.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) + 3.scale
+                                cellHeight = 116.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 6.scale
                             }
                         } else {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 232.scale
                             } else {
-                                cellHeight = 144.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 5.scale
+                                cellHeight = 144.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 8.scale
                             }
                         }
                     }
@@ -899,18 +900,22 @@ extension DrawsViewController {
                 }
             }
             cell.configure(game: game, lotteries: lotteries)
-            cell.layer.cornerRadius = 20.scale
+            cell.layer.cornerRadius = 16.scale
+            cell.layer.masksToBounds = true
             cell.setNeedsLayout()
             return cell
         } else {
+            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
             if let pattern: LotteryPattern = lotteryPatterns.filter({ $0.id == game.lotteryId }).first {
                 cell.bonusIdx = pattern.bonusIdx
             }
+            
             cell.configure(game: game, lotteries: lotteries)
-            cell.layer.cornerRadius = 20.scale
+            cell.layer.cornerRadius = 16.scale
             cell.layer.masksToBounds = true
+            
             if let myLuckyNumbers = game.myLuckyNumbers {
                 if myLuckyNumbers.isEmpty {
                     cell.dashedLineImageView.alpha = 0
@@ -921,6 +926,7 @@ extension DrawsViewController {
                 }
             }
             cell.setNeedsLayout()
+            
             return cell
         }
     }
