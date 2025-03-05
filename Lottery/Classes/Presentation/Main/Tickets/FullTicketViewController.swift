@@ -20,6 +20,12 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
             ticketDataCollectionView.reloadData()
         }
     }
+    var isUpcoming: Bool = false {
+        didSet {
+           // updateWinnerAndEditButtonVisibility()
+            ticketDataCollectionView.reloadData()
+        }
+    }
     
     var previousContentOffsetY: CGFloat = 0.0
     
@@ -82,7 +88,9 @@ class FullTicketViewController: UIViewController, UICollectionViewDelegateFlowLa
                         if ticket.id == self?.ticket.id {
                             self?.ticket = ticket
                             // Update isTheWinner based on ticket.status
-                            self?.isTheWinner = ticket.status == "Winner"
+                            self?.isUpcoming = ticket.status == "Upcoming"
+                            self?.isTheWinner = ticket.status == "Winners"
+                            
                             self?.ticketDataCollectionView.reloadData()
                             return
                         }
@@ -198,7 +206,8 @@ extension FullTicketViewController: UICollectionViewDataSource, UIScrollViewDele
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TicketDataCell", for: indexPath) as! TicketDataCell
         cell.ticket = ticket
-        cell.isTheWinner = self.isTheWinner // Pass the updated isTheWinner value
+        cell.isUpcoming = self.isUpcoming
+        cell.isTheWinner = self.isTheWinner  
         cell.bonusIdx = bonusIdx
         cell.lotteries = lotteries
         cell.delegate = self

@@ -69,9 +69,15 @@ class TicketDataCell: UICollectionViewCell,TicketNumbersCollectionCellDelegate {
     
     
     // Property to track if this ticket is a winning ticket
+    
+    var isUpcoming : Bool = false {
+        didSet {
+            editButton.isHidden = !isUpcoming
+        }
+    }
     var isTheWinner: Bool = false {
         didSet {
-            editButton.isHidden = isTheWinner
+            editButton.isHidden = isTheWinner || !isUpcoming
             winnerImageView.isHidden = !isTheWinner
             updateCollectionViewHeights()
         }
