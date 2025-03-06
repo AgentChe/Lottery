@@ -7,6 +7,11 @@ class GeneratedNumbersViewController: UIViewController {
     var nextDraws: [Game] = []
     var lotteryPatterns: [LotteryPattern] = []
    
+    var numberOfLinesIn_numbersFrequencyDescriptionLabel: Int = 2
+    var numberOfLinesIn_skippedNumbersAnalyticsActualNumberDescriptionLabel: Int = 2
+    var numberOfLinesIn_analyticDescriptionLabel: Int = 2
+    
+    
     var bonusIdx: [Int] = [] {
         didSet {
             for i in 0..<bonusIdx.count {
@@ -324,12 +329,18 @@ extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UI
             return CGSize(width: collectionView.bounds.width, height: 69.scale)
         }
         if indexPath.item == (chanceString.isEmpty ? 1 : 2) {
-            return CGSize(width: collectionView.bounds.width, height: 496.scale)
+            if let generatedResponce = generatedResponce {
+                numberOfLinesIn_numbersFrequencyDescriptionLabel =  numberOfLines(for: generatedResponce.regularNumbersFrequency.infoDescription, font: Fonts.Inter.medium(size: 12.scale), width: 311.scale, lineHeightMultiple: 1.4)
+                numberOfLinesIn_skippedNumbersAnalyticsActualNumberDescriptionLabel =  numberOfLines(for: generatedResponce.skippedNumbersAnalytics.infoDescription, font: Fonts.Inter.medium(size: 12.scale), width: 311.scale, lineHeightMultiple: 1.4)
+                numberOfLinesIn_analyticDescriptionLabel =  numberOfLines(for: generatedResponce.consecutiveNumbersAnalytics.infoDescription, font: Fonts.Inter.medium(size: 12.scale), width: 311.scale, lineHeightMultiple: 1.4)
+            }
+            return CGSize(width: collectionView.bounds.width, height: 354.scale +  22.scale*CGFloat((numberOfLinesIn_numbersFrequencyDescriptionLabel + numberOfLinesIn_skippedNumbersAnalyticsActualNumberDescriptionLabel + numberOfLinesIn_analyticDescriptionLabel)))
+           // return CGSize(width: collectionView.bounds.width, height: 446.scale)
         }
         
         fatalError()
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GeneratedNumbersCell.reusableIdentifier, for: indexPath) as! GeneratedNumbersCell
@@ -353,9 +364,11 @@ extension GeneratedNumbersViewController: UICollectionViewDelegateFlowLayout, UI
             return cell
         }
         
+        
         let statsCellIndex = chanceString.isEmpty ? 1 : 2
         if indexPath.item == statsCellIndex {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatsCell.reusableIdentifier, for: indexPath) as! StatsCell
+            
             if let response = generatedResponce {
                 cell.config(response)
             }
@@ -430,6 +443,28 @@ extension GeneratedNumbersViewController {
             mainView.layoutIfNeeded()
         }
     }
+
+    func numberOfLines(for text: String, font: UIFont, width: CGFloat, lineHeightMultiple: CGFloat) -> Int {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .paragraphStyle: paragraphStyle
+        ]
+
+        let attributedText = NSAttributedString(string: text, attributes: attributes)
+        
+        let textSize = attributedText.boundingRect(
+            with: CGSize(width: width, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        )
+        
+        let lineHeight = font.lineHeight * lineHeightMultiple
+        return Int(ceil(textSize.height / lineHeight))
+    }
+
 }
 extension UIButton {
     func setTitleAlpha(_ alpha: CGFloat, for state: UIControl.State) {
