@@ -121,6 +121,7 @@ class GeneratorViewController: UIViewController {
         return label
     }()
     
+    var selectedStateName: String?
     let stateNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -240,6 +241,7 @@ class GeneratorViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         fetchStates()
         fetchLotteriesPatterns()
         if let navigationController = getRootViewController() as? NavigationController,
@@ -247,6 +249,7 @@ class GeneratorViewController: UIViewController {
             updateMainViewControllerConstraints(for: mainViewController, newConstant: 0.scale)
         }
         getProfile()
+       
     }
     
     private func getProfile() {
@@ -258,7 +261,7 @@ class GeneratorViewController: UIViewController {
                     if let stateId = profile.state {
                         self.selectedState = stateId
                         if let state = self.states.filter { $0.id == self.selectedState}.first {
-                            self.stateNameLabel.text = "\(state.name)"
+                            self.stateNameLabel.text = self.selectedStateName ?? "\(state.name)"
                             self.stateNameLabel.textColor = Appearance.mono200
                         }
                         
@@ -352,6 +355,7 @@ class GeneratorViewController: UIViewController {
             guard let self = self else { return }
             self.selectedState = selectedState
             if let state = states.filter { $0.id == selectedState}.first {
+                selectedStateName = "\(state.name)"
                 stateNameLabel.text = "\(state.name)"
                 stateNameLabel.textColor = Appearance.mono200
                 
