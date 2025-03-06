@@ -342,7 +342,7 @@ private extension TicketEditCell {
 
                // dateLabelContainer Constraints inside containerBackgroundView
                dateLabelContainer.topAnchor.constraint(equalTo: containerBackgroundView.bottomAnchor, constant: 14.scale),
-               dateLabelContainer.leadingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor, constant: 8.scale),
+               dateLabelContainer.leadingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor, constant: 0.scale),
                dateLabelContainer.widthAnchor.constraint(equalToConstant: 122.scale),
                dateLabelContainer.heightAnchor.constraint(equalToConstant: 28.scale),
 
@@ -364,7 +364,7 @@ private extension TicketEditCell {
 
                // CollectionView Constraints
                collectionView.topAnchor.constraint(equalTo: dateLabelContainer.bottomAnchor, constant: 10.scale),
-               collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
+               collectionView.leadingAnchor.constraint(equalTo: dateLabelContainer.leadingAnchor, constant: 0.scale),
                collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
                collectionViewHeightConstraint,
 
@@ -390,7 +390,7 @@ private extension TicketEditCell {
         endEditing(true)
         delay(0.3) { [weak self] in
             guard let self = self else { return }
-            self.datePickerContainer = UIView(frame: self.superview?.bounds ?? .zero)
+            self.datePickerContainer = UIView(frame: self.superview?.superview?.bounds ?? .zero)
             self.datePickerContainer?.backgroundColor = UIColor.black.withAlphaComponent(0.5)
             
             self.customDatePicker.translatesAutoresizingMaskIntoConstraints = false
@@ -399,7 +399,7 @@ private extension TicketEditCell {
             self.superview?.addSubview(self.datePickerContainer!)
             
             NSLayoutConstraint.activate([
-                self.customDatePicker.centerYAnchor.constraint(equalTo: self.datePickerContainer!.centerYAnchor, constant: ScreenSize.isIphoneXFamily ? 20.scale : 50.scale),
+                self.customDatePicker.topAnchor.constraint(equalTo: self.datePickerContainer!.topAnchor, constant: ScreenSize.isIphoneXFamily ? 50.scale : 5.scale),
                 self.customDatePicker.centerXAnchor.constraint(equalTo: self.datePickerContainer!.centerXAnchor),
                 self.customDatePicker.widthAnchor.constraint(equalTo: self.datePickerContainer!.widthAnchor, multiplier: 0.8.scale),
                 self.customDatePicker.heightAnchor.constraint(equalToConstant: 485.scale)
@@ -585,6 +585,7 @@ extension TicketEditCell: UICollectionViewDataSource, UICollectionViewDelegate, 
             // Return the size for the cell
             return CGSize(width:40.scale , height: 40.scale)
         } else {
+            
             let collectionViewWidth = collectionView.bounds.width
             let resWidth = collectionViewWidth - 40.scale - 6.scale - 2.scale
             print("resWiddth \(resWidth) \(indexPath)")
