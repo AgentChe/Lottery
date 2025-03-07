@@ -42,7 +42,6 @@ extension SessionManager: SessionManagerProtocol {
     }
     
     func hasActiveSubscriptions() -> Bool {
-        
         guard let paymentData = OtterScale.shared.getPaymentData() else {
             return false
         }
