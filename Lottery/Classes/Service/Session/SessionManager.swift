@@ -42,6 +42,7 @@ extension SessionManager: SessionManagerProtocol {
     }
     
     func hasActiveSubscriptions() -> Bool {
+        
         guard let paymentData = OtterScale.shared.getPaymentData() else {
             return false
         }
@@ -59,5 +60,5 @@ extension SessionManager: SessionManagerProtocol {
         let hasValidNonConsumable = nonConsumables.contains(where: { $0.valid })
 
         return hasValidSubscription || hasValidNonConsumable
-    }
+     }
 }

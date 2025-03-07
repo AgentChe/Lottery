@@ -1,6 +1,7 @@
 import UIKit
 import AVFoundation
 import Lottie
+import QuartzCore
 
 class DrawsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,PushNotificationsDelegate {
 
@@ -260,6 +261,7 @@ class DrawsViewController: UIViewController, UICollectionViewDataSource, UIColle
     }
     
     func navigateToPastDraws( completion: @escaping () -> Void) {
+        
         guard let navigationController = self.navigationController else {
             completion()
             return
@@ -429,9 +431,35 @@ extension DrawsViewController {
         menuButton.addTarget(self, action: #selector(handleMenuTap), for: .touchUpInside)
 
         changeStateButton = UIButton(type: .custom)
-        if let changeStateImage = UIImage(named: "changeState") {
-            changeStateButton.setImage(changeStateImage, for: .normal)
-        }
+        changeStateButton.layer.cornerRadius = 13.scale
+        changeStateButton.backgroundColor = UIColor(red: 229/255, green: 233/255, blue: 245/255, alpha: 0.2)
+
+        // Set title
+        changeStateButton.setTitle("STATE: AZ", for: .normal)
+
+        // Set font
+        changeStateButton.titleLabel?.font = Fonts.Inter.medium(size: 12.scale)
+
+        // Set title color
+        changeStateButton.setTitleColor(.white, for: .normal)
+
+        // Adjust text properties
+        changeStateButton.titleLabel?.textAlignment = .center
+        changeStateButton.titleLabel?.lineBreakMode = .byTruncatingTail
+
+        // If letter spacing is needed
+        let title = "STATE: AZ"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Fonts.Inter.medium(size: 12.scale), // Explicitly set font
+            .foregroundColor: UIColor.white, // Ensure text color remains white
+            .kern: 0 // Letter spacing
+        ]
+
+        let attributedString = NSAttributedString(string: title, attributes: attributes)
+        changeStateButton.setAttributedTitle(attributedString, for: .normal)
+
+
+        
         changeStateButton.translatesAutoresizingMaskIntoConstraints = false
         upperMenuView.addSubview(changeStateButton)
         changeStateButton.addTarget(self, action: #selector(changeStateButtonTapped), for: .touchUpInside)
@@ -819,13 +847,13 @@ extension DrawsViewController {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 204.scale
                             } else {
-                                cellHeight = 116.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) + 3.scale
+                                cellHeight = 116.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 6.scale
                             }
                         } else {
                             if myLuckyNumbers.isEmpty {
                                 cellHeight = 232.scale
                             } else {
-                                cellHeight = 144.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 5.scale
+                                cellHeight = 144.scale + 12.scale + 24.scale + 20.scale + 15.scale + 24.scale + 20.scale + CGFloat(max(0, winningNumbers.count)) * CGFloat(40.scale + 8.scale) + CGFloat(max(0, myLuckyNumbers.count)) * CGFloat(40.scale + 8.scale) - 8.scale
                             }
                         }
                     }
@@ -872,18 +900,22 @@ extension DrawsViewController {
                 }
             }
             cell.configure(game: game, lotteries: lotteries)
-            cell.layer.cornerRadius = 20.scale
+            cell.layer.cornerRadius = 16.scale
+            cell.layer.masksToBounds = true
             cell.setNeedsLayout()
             return cell
         } else {
+            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PastGameCell", for: indexPath) as! PastGameCell
             let game = pastDraws[indexPath.item]
             if let pattern: LotteryPattern = lotteryPatterns.filter({ $0.id == game.lotteryId }).first {
                 cell.bonusIdx = pattern.bonusIdx
             }
+            
             cell.configure(game: game, lotteries: lotteries)
-            cell.layer.cornerRadius = 20.scale
+            cell.layer.cornerRadius = 16.scale
             cell.layer.masksToBounds = true
+            
             if let myLuckyNumbers = game.myLuckyNumbers {
                 if myLuckyNumbers.isEmpty {
                     cell.dashedLineImageView.alpha = 0
@@ -894,6 +926,7 @@ extension DrawsViewController {
                 }
             }
             cell.setNeedsLayout()
+            
             return cell
         }
     }
@@ -949,6 +982,9 @@ private extension DrawsViewController {
                     if let stateId = profile.state {
                         self?.profile = profile
                         self?.fetchLotteries(for: stateId)
+                        
+                        self?.updateButtonTitle(for:stateId)
+                        
                     } else {
                         print("State ID is not available in profile")
                     }
@@ -1152,6 +1188,60 @@ private extension DrawsViewController {
             mainView.layoutIfNeeded()
         }
     }
+    func updateButtonTitle(for index: Int) {
+        let statesArray = [
+            "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+            "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+            "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+            "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+            "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+            "New Hampshire", "New Jersey", "New Mexico", "New York",
+            "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+            "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+            "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+            "West Virginia", "Wisconsin", "Wyoming"
+        ]
+        
+        let usStates: [String: String] = [
+            "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR",
+            "California": "CA", "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE",
+            "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+            "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS",
+            "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
+            "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
+            "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV",
+            "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
+            "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
+            "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC",
+            "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT",
+            "Vermont": "VT", "Virginia": "VA", "Washington": "WA", "West Virginia": "WV",
+            "Wisconsin": "WI", "Wyoming": "WY"
+        ]
+        
+        // Ensure the index is valid
+        guard index >= 1, index < statesArray.count + 1 else {
+            print("Invalid state index: \(index)")
+            return
+        }
+        
+        let stateName = statesArray[index - 1] // Get state name
+        if let abbreviation = usStates[stateName] {
+            let title = "STATE: \(abbreviation)"
+            
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: Fonts.Inter.medium(size: 12.scale),
+                .foregroundColor: UIColor.white,
+                .kern: 0
+            ]
+            
+            let attributedString = NSAttributedString(string: title, attributes: attributes)
+            changeStateButton.setAttributedTitle(attributedString, for: .normal)
+        } else {
+            print("State abbreviation not found for: \(stateName)")
+        }
+    }
+
+
 }
 
 private extension DrawsViewController {
@@ -1163,3 +1253,5 @@ private extension DrawsViewController {
 func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
+
+

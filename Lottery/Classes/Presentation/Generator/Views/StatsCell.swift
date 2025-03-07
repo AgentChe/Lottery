@@ -138,7 +138,7 @@ class StatsCell: UICollectionViewCell {
         )
         
         label.attributedText = attributedText
-        label.numberOfLines = 2
+        label.numberOfLines = 100
         return label
     }()
     
@@ -182,7 +182,7 @@ class StatsCell: UICollectionViewCell {
     private let skippedNumbersAnalyticsActualNumberDescriptionLabel: TopAlignedLabel = {
         let label = TopAlignedLabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 2
+        label.numberOfLines = 100
         
         // Set up the text and paragraph style
         let text = "76% of the numbers you selected have more missed draws"
@@ -264,7 +264,7 @@ class StatsCell: UICollectionViewCell {
         )
         
         label.attributedText = attributedText
-        label.numberOfLines = 2
+        label.numberOfLines = 100
         return label
     }()
     
@@ -366,7 +366,7 @@ class StatsCell: UICollectionViewCell {
         backgroundImageView.addSubview(whiteBackgroundView)
         NSLayoutConstraint.activate([
             whiteBackgroundView.widthAnchor.constraint(equalToConstant: 343.scale),
-            whiteBackgroundView.heightAnchor.constraint(equalToConstant: 456.scale),
+            whiteBackgroundView.heightAnchor.constraint(equalToConstant: self.frame.height - 40.scale),
             whiteBackgroundView.centerXAnchor.constraint(equalTo: backgroundImageView.centerXAnchor),
             whiteBackgroundView.bottomAnchor.constraint(equalTo: backgroundImageView.bottomAnchor),
         ])
@@ -405,7 +405,7 @@ class StatsCell: UICollectionViewCell {
             numbersFrequencyDescriptionLabel.topAnchor.constraint(equalTo: numbersFrequencyActualNumberLabel.bottomAnchor, constant: 0.scale),
             numbersFrequencyDescriptionLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             numbersFrequencyDescriptionLabel.trailingAnchor.constraint(equalTo: whiteBackgroundView.trailingAnchor, constant: -16.scale),
-            numbersFrequencyDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale),
+           // numbersFrequencyDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale),
             
             // Second Dashed Line
             secondDashedImageView.topAnchor.constraint(equalTo: numbersFrequencyDescriptionLabel.bottomAnchor, constant: 12.scale),
@@ -423,7 +423,7 @@ class StatsCell: UICollectionViewCell {
             skippedNumbersAnalyticsActualNumberDescriptionLabel.topAnchor.constraint(equalTo: skippedNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 0.scale),
             skippedNumbersAnalyticsActualNumberDescriptionLabel.leadingAnchor.constraint(equalTo: whiteBackgroundView.leadingAnchor, constant: 16.scale),
             skippedNumbersAnalyticsActualNumberDescriptionLabel.trailingAnchor.constraint(equalTo: whiteBackgroundView.trailingAnchor, constant: -16.scale),
-            skippedNumbersAnalyticsActualNumberDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale),
+            //skippedNumbersAnalyticsActualNumberDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale),
             
             // Third Dashed Line
             thirdDashedImageView.topAnchor.constraint(equalTo: skippedNumbersAnalyticsActualNumberDescriptionLabel.bottomAnchor, constant: 12.scale),
@@ -442,7 +442,7 @@ class StatsCell: UICollectionViewCell {
             analyticDescriptionLabel.topAnchor.constraint(equalTo: consecutiveNumbersAnalyticsActualNumberLabel.bottomAnchor, constant: 0.scale),
             analyticDescriptionLabel.centerXAnchor.constraint(equalTo: whiteBackgroundView.centerXAnchor),
             analyticDescriptionLabel.widthAnchor.constraint(equalToConstant: 311.scale),
-            analyticDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale)
+            //analyticDescriptionLabel.heightAnchor.constraint(equalToConstant: 44.scale)
         ])
         
         

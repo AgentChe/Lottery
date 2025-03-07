@@ -47,6 +47,14 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     static let reuseIdentifier = "TicketCell"
     weak var delegate: TicketCellDelegate?
     
+    private let winnerImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "FullTicket.Winner")
+        imageView.alpha = 0
+        return imageView
+    }()
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -136,6 +144,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         self.addSubview(numbersCollectionView)
         self.addSubview(dashedLineImageView) // Add dashed line image view
         self.addSubview(viewAllButton)
+        self.addSubview(winnerImageView)
     }
     
     private func setupConstraints() {
@@ -144,6 +153,11 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             ticketImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20.scale),
             ticketImageView.widthAnchor.constraint(equalToConstant: 150.scale),
             ticketImageView.heightAnchor.constraint(equalToConstant: 50.scale),
+            
+            winnerImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 16.scale),
+            winnerImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20.scale),
+            winnerImageView.widthAnchor.constraint(equalToConstant: 58.scale),
+            winnerImageView.heightAnchor.constraint(equalToConstant: 20.scale),
             
             dateLabel.topAnchor.constraint(equalTo: ticketImageView.bottomAnchor, constant: 10.scale),
             dateLabel.leadingAnchor.constraint(equalTo: ticketImageView.leadingAnchor, constant: 13.scale),
@@ -196,6 +210,11 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
             ticketImageView.image = nil
         }
         
+        if ticket.status == "Winners" {
+            winnerImageView.alpha = 1
+        } else {
+            winnerImageView.alpha = 0
+        }
         // Configure cell appearance based on draw date
         
         viewAllButton.isHidden = false
@@ -230,7 +249,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return numbers.count >= 2 ? 2 : 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -241,6 +260,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         cell.indexPath = indexPath
         cell.ticketNumbers = numbers
         cell.section = indexPath.item
+        print("@ numbers.count = \(numbers.count), section: \(cell.section)")
         cell.delegate = self
         
         cell.config()

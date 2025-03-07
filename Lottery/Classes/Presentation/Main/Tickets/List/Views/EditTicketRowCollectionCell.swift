@@ -104,7 +104,11 @@ extension EditTicketRowCollectionCell: UICollectionViewDataSource {
 extension EditTicketRowCollectionCell: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 40.scale, height: 40.scale)
+        if indexPath.item == 0 {
+            return CGSize(width: 30.scale, height: 40.scale)
+        } else {
+            return CGSize(width: 40.scale, height: 40.scale)
+        }
     }
     func numberCell(_ cell: EditNumberCell, didFinishEditingNumber number: String, at indexPath: IndexPath) {
         // Move to the next appropriate cell

@@ -326,7 +326,7 @@ private extension TicketLuckyNumbersEditCell {
 
                // CollectionView Constraints
                collectionView.topAnchor.constraint(equalTo: containerBackgroundView.bottomAnchor, constant: 10.scale),
-               collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.scale),
+               collectionView.leadingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor, constant: 0.scale),
                collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.scale),
                collectionViewHeightConstraint,
 

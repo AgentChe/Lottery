@@ -385,24 +385,29 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     @objc func allButtonTapped() {
         currentFilter = .all
+        noTicketsLabel.attributedText = cachedNoTicketsText(title: "No saved lottery tickets", subtitle: "Scan a ticket to track the game")
         applyCurrentFilter()
         updateButtonStyles(selectedButton: allButton)
     }
 
     @objc func upcomingButtonTapped() {
         currentFilter = .upcoming
+        noTicketsLabel.attributedText = cachedNoTicketsText(title: "No upcoming tickets", subtitle: "Scan a ticket to track the game")
+
         applyCurrentFilter()
         updateButtonStyles(selectedButton: upcomingButton)
     }
 
     @objc func winnersButtonTapped() {
         currentFilter = .winners
+        noTicketsLabel.attributedText = cachedNoTicketsText(title: "No winning tickets", subtitle: "Scan a ticket to track the game")
         applyCurrentFilter()
         updateButtonStyles(selectedButton: winnersButton)
     }
 
     @objc func nonWinnersButtonTapped() {
         currentFilter = .nonWinners
+        noTicketsLabel.attributedText = cachedNoTicketsText(title: "No non-winning tickets", subtitle: "Scan a ticket to track the game")
         applyCurrentFilter()
         updateButtonStyles(selectedButton: nonWinnersButton)
     }
@@ -686,8 +691,8 @@ class TicketsViewController: UIViewController, UICollectionViewDataSource, UICol
         buttonsStackView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor).isActive = true
         buttonsStackViewHeightConstraint = buttonsStackView.heightAnchor.constraint(equalToConstant: 40.scale)
         buttonsStackViewHeightConstraint?.isActive = true
-        buttonsStackView.leadingAnchor.constraint(greaterThanOrEqualTo: backgroundView.leadingAnchor, constant: 20.scale).isActive = true
-        buttonsStackView.trailingAnchor.constraint(lessThanOrEqualTo: backgroundView.trailingAnchor, constant: -20.scale).isActive = true
+        buttonsStackView.leadingAnchor.constraint(greaterThanOrEqualTo: backgroundView.leadingAnchor, constant: 10.scale).isActive = true
+        buttonsStackView.trailingAnchor.constraint(lessThanOrEqualTo: backgroundView.trailingAnchor, constant: -10.scale).isActive = true
         
         // Set constraints for buttons inside the stack view
         NSLayoutConstraint.activate([
@@ -1159,4 +1164,32 @@ extension TicketsViewController {
             ticketIDFromPush = nil
             pushDriven = false
         }
+}
+
+extension TicketsViewController {
+    private func cachedNoTicketsText(title: String, subtitle: String) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8.scale
+        paragraphStyle.alignment = .center
+
+        let text = NSMutableAttributedString(
+            string: "\(title)\n",
+            attributes: [
+                .font: Fonts.Inter.semiBold(size: 16.scale),
+                .foregroundColor: Appearance.mono200,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+        
+        text.append(NSAttributedString(
+            string: subtitle,
+            attributes: [
+                .font: Fonts.Inter.regular(size: 14.scale),
+                .foregroundColor: Appearance.mono200,
+                .paragraphStyle: paragraphStyle
+            ]
+        ))
+
+        return text
+    }
 }

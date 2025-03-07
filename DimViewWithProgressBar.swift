@@ -9,12 +9,14 @@ import UIKit
 
 class DimViewWithProgressBar: UIView {
     
-    private var backgroundLayer = CAShapeLayer()
-    private var progressLayer = CAShapeLayer()
-    
-    private var isCircleRotating = true
-    private var animateStart = false
-    private var animateEnd = true
+    private let progressImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "Scan.ProgressBg"))
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        // Explicitly set the anchor point to center (default is (0.5, 0.5))
+        imageView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        return imageView
+    }()
     
     private let progressMessages = [
         "Analyzing the ticket...",
@@ -38,7 +40,7 @@ class DimViewWithProgressBar: UIView {
     
     let dimView: UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor.black.withAlphaComponent(0.8) // Dimmed background
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -56,7 +58,6 @@ class DimViewWithProgressBar: UIView {
     }()
     
     @objc func cancel() {
-        
         if let pvc = parentViewController as? EditScanViewController {
             pvc.weDo = false
             pvc.touchDown.isEnabled = true
@@ -71,33 +72,34 @@ class DimViewWithProgressBar: UIView {
         }
         stopLoading()
     }
+    
     func stopTimer() {
-        timer?.invalidate()  // Stop the timer if it exists
-        timer = nil          // Set the timer to nil to ensure it's fully stopped
+        timer?.invalidate()
+        timer = nil
     }
+    
     func resetMessageIndex() {
         messageIndex = 0
         progressLabel.text = progressMessages[messageIndex]
     }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
         setupAnimations()
-       // startTextRotation()
+        // startTextRotation() // Uncomment if needed
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
         setupAnimations()
-        //startTextRotation()
+        // startTextRotation() // Uncomment if needed
     }
     
     private func setupView() {
         // Add the dim view
         addSubview(dimView)
-        
-        // Set constraints for dim view
         NSLayoutConstraint.activate([
             dimView.topAnchor.constraint(equalTo: self.topAnchor),
             dimView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
@@ -105,29 +107,20 @@ class DimViewWithProgressBar: UIView {
             dimView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         ])
         
-        // Set up the background circular layer
-        let circularPath = UIBezierPath(arcCenter: .zero, radius: 45.scale, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        backgroundLayer.path = circularPath.cgPath
-        backgroundLayer.fillColor = UIColor.clear.cgColor
-        backgroundLayer.strokeColor = UIColor.lightGray.cgColor
-        backgroundLayer.lineWidth = 5.scale
-        backgroundLayer.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 34.scale)
-        layer.addSublayer(backgroundLayer)
-        
-        // Set up the animated progress circular layer
-        progressLayer.path = circularPath.cgPath
-        progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.strokeColor = Appearance.mono100.cgColor
-        progressLayer.lineWidth = 5.scale
-        progressLayer.strokeEnd = 0
-        progressLayer.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 34.scale)
-        layer.addSublayer(progressLayer)
+        // Add the progress image view directly to the main view
+        addSubview(progressImageView)
+        NSLayoutConstraint.activate([
+            progressImageView.widthAnchor.constraint(equalToConstant: 100.scale),
+            progressImageView.heightAnchor.constraint(equalToConstant: 100.scale),
+            progressImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            progressImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -34.scale)
+        ])
         
         // Add the progress label
         addSubview(progressLabel)
         NSLayoutConstraint.activate([
             progressLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            progressLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 30.scale) // Beneath the circle
+            progressLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 30.scale)
         ])
         
         // Add the action button
@@ -141,49 +134,26 @@ class DimViewWithProgressBar: UIView {
     }
     
     private func setupAnimations() {
-        // Rotation animation
+        // Apply a continuous rotation animation to the progress image view
         let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
         rotationAnimation.fromValue = 0
         rotationAnimation.toValue = 2 * Double.pi
         rotationAnimation.duration = 0.5
         rotationAnimation.repeatCount = .infinity
-        progressLayer.add(rotationAnimation, forKey: "rotationAnimation")
-        
-        // Animation to simulate trim (start)
-        let startAnimation = CABasicAnimation(keyPath: "strokeStart")
-        startAnimation.fromValue = 1 / 3
-        startAnimation.toValue = 1 / 9
-        startAnimation.duration = 0.5
-        startAnimation.autoreverses = true
-        startAnimation.repeatCount = .infinity
-        startAnimation.timingFunction = CAMediaTimingFunction(name: .linear)
-        progressLayer.add(startAnimation, forKey: "startAnimation")
-        
-        // Animation to simulate trim (end)
-        let endAnimation = CABasicAnimation(keyPath: "strokeEnd")
-        endAnimation.fromValue = 2 / 5
-        endAnimation.toValue = 1
-        endAnimation.duration = 0.5
-        endAnimation.autoreverses = true
-        endAnimation.repeatCount = .infinity
-        endAnimation.timingFunction = CAMediaTimingFunction(name: .linear)
-        progressLayer.add(endAnimation, forKey: "endAnimation")
+        progressImageView.layer.add(rotationAnimation, forKey: "rotationAnimation")
     }
     
-    // Function to start the text rotation
     func startTextRotation() {
         timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateText), userInfo: nil, repeats: true)
     }
     
-    // Function to update the progress label's text
     @objc private func updateText() {
         if messageIndex < progressMessages.count - 1 {
             messageIndex += 1
             progressLabel.text = progressMessages[messageIndex]
         } else {
-            // When the final message is reached, stop the timer
             progressLabel.text = progressMessages[messageIndex]
-            timer?.invalidate() // Stop the timer
+            timer?.invalidate()
         }
     }
     
@@ -192,13 +162,14 @@ class DimViewWithProgressBar: UIView {
     }
     
     func stopLoading() {
-        progressLayer.removeAllAnimations()
-        timer?.invalidate() // Stop the timer
+        progressImageView.layer.removeAllAnimations()
+        timer?.invalidate()
         if let pvc = parentViewController as? EditScanViewController {
             pvc.continueButton.isUserInteractionEnabled = true
         }
         removeFromSuperview()
     }
+    
     deinit {
         timer?.invalidate()
         timer = nil
