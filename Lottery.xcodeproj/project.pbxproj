@@ -2153,7 +2153,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.9.2;
-				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -2191,7 +2191,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.9.2;
-				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
