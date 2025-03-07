@@ -91,9 +91,9 @@ class TicketNumbersRowCollectionViewCell: UICollectionViewCell, UICollectionView
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NumberTicketCell.reuseIdentifier, for: indexPath) as! NumberTicketCell
-        
+        print("@ ticketsNumbersWithLabels.count = \(ticketsNumbersWithLabels.count) \n")
         let label = ticketsNumbersWithLabels[section][indexPath.item]
-        print("label:", label)
+       // print("label:", label)
         // Determine if this is the last item in the section
         let isLastItemInSection = bonusIdx.contains(indexPath.item)
         cell.configure(with: label, isLastInSection: isLastItemInSection, indexPath: indexPath)

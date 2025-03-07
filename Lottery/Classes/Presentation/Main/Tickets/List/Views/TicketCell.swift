@@ -249,7 +249,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return numbers.count >= 2 ? 2 : 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -260,6 +260,7 @@ class TicketCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         cell.indexPath = indexPath
         cell.ticketNumbers = numbers
         cell.section = indexPath.item
+        print("@ numbers.count = \(numbers.count), section: \(cell.section)")
         cell.delegate = self
         
         cell.config()
