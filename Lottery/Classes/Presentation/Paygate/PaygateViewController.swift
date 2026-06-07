@@ -38,9 +38,6 @@ final class PaygateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        AmplitudeManager.shared
-            .logEvent(name: "Paygate Screen", parameters: [:])
-        
         viewModel.products
             .drive(Binder(self) { base, products in
                 base.mainView.leftOptionButton.info = products.first
@@ -50,7 +47,7 @@ final class PaygateViewController: UIViewController {
         
         Observable
             .merge(
-                mainView.termsOfServiceButton.rx.tap.map { GlobalDefinitions.termsOfUseUrl },
+                mainView.termsOfServiceButton.rx.tap.map { GlobalDefinitions.termsOfServiceUrl },
                 mainView.privacyPolicyButton.rx.tap.map { GlobalDefinitions.privacyPolicyUrl }
             )
             .bind(to: Binder(self) { base, url in

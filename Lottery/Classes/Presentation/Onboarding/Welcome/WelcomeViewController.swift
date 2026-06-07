@@ -23,9 +23,8 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupButton()
         
-        AmplitudeManager.shared.logEvent(name: "Welcome Screen")
+        setupButton()
     }
 }
 

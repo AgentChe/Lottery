@@ -29,8 +29,6 @@ final class SuggestNewGameViewController: UIViewController {
         setupButtonActions()
         suggestNewGameView.textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         updateSaveButtonState()
-        
-        AmplitudeManager.shared.logEvent(name: "Add Game Screen")
     }
 }
 

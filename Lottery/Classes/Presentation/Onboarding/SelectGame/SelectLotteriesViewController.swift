@@ -40,8 +40,6 @@ class SelectLotteriesViewController: UIViewController {
         
         setupButtons()
         fetchLotteries()
-        
-        AmplitudeManager.shared.logEvent(name: "Choose Game Screen")
     }
 }
 

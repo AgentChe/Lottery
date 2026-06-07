@@ -21,10 +21,9 @@ class SelectStateViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupButton()
         fetchStates()
-        
-        AmplitudeManager.shared.logEvent(name: "Choose State Screen")
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

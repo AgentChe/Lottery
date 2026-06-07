@@ -1,5 +1,4 @@
 PODS:
-  - Amplitude-iOS (4.10.0)
   - FBAEMKit (18.0.0):
     - FBSDKCoreKit_Basics (= 18.0.0)
   - FBSDKCoreKit (18.0.0):
@@ -124,7 +123,6 @@ PODS:
   - Toast-Swift (5.1.1)
 
 DEPENDENCIES:
-  - Amplitude-iOS
   - FBSDKCoreKit
   - Firebase/Analytics
   - Firebase/Messaging
@@ -139,7 +137,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - Amplitude-iOS
     - FBAEMKit
     - FBSDKCoreKit
     - FBSDKCoreKit_Basics
@@ -173,7 +170,6 @@ CHECKOUT OPTIONS:
     :git: https://github.com/AgentChe/OtterScaleiOS.git
 
 SPEC CHECKSUMS:
-  Amplitude-iOS: 7d8cdc3408ba35c2e68368fc7c692cd104606b94
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
   FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
   FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29
@@ -198,6 +194,6 @@ SPEC CHECKSUMS:
   SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
   Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
 
-PODFILE CHECKSUM: a2f39edcd70db072373f1f7838c831d7358e9395
+PODFILE CHECKSUM: 10f55fda81e475ffe856dcb7d891beaa89dde1df
 
 COCOAPODS: 1.16.2

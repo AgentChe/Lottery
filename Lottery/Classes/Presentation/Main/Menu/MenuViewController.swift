@@ -129,7 +129,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         case NSLocalizedString("Menu.State", comment: "State"):
             navigateToState()
         case NSLocalizedString("Menu.TermsOfUse", comment: "Terms of Use"):
-            navigateToWebView(with: GlobalDefinitions.termsOfUseUrl)
+            navigateToWebView(with: GlobalDefinitions.termsOfServiceUrl)
         case NSLocalizedString("Menu.PrivacyPolicy", comment: "Privacy Policy"):
             navigateToWebView(with: GlobalDefinitions.privacyPolicyUrl)
         case NSLocalizedString("Menu.Support", comment: "Support"):
