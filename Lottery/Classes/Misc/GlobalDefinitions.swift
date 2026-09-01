@@ -14,6 +14,7 @@ final class GlobalDefinitions {
     static let otterScaleHost = "https://api.korrekted.com"
     static let otterScaleApiKey = "3mpDyKfrgqTq0ceJ"
 
+    static let applicationTag = "LOTTERY"
     static let postHogHost = "https://posthog.korrekted.com"
     static let postHogApiKey = "phc_a29Kj3MGr3nLv9NN4WLZiRyHF5mluQZaPbVgcCbIqPa"
     
