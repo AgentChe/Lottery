@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		20250825497984D75D1DE025 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */; };
+		84F134F7B5E00ED54C2384CD /* PostHogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F062C5E1871DDF513287B2 /* PostHogManager.swift */; };
 		A30A95102CCC413800912E17 /* FullNumberTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */; };
 		A30A95142CD0302400912E17 /* EditTicketRowCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */; };
 		A30A95182CD09FEC00912E17 /* EditNumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A95172CD09FE800912E17 /* EditNumberCell.swift */; };
@@ -277,6 +278,7 @@
 
 /* Begin PBXFileReference section */
 		05A2021401F02E016C59A64C /* Pods-Lottery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.release.xcconfig"; path = "Target Support Files/Pods-Lottery/Pods-Lottery.release.xcconfig"; sourceTree = "<group>"; };
+		66F062C5E1871DDF513287B2 /* PostHogManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PostHogManager.swift; sourceTree = "<group>"; };
 		7318E5A2BE8EC2B74C2B8EBF /* Pods_Lottery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lottery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A30A950F2CCC412800912E17 /* FullNumberTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullNumberTicketCell.swift; sourceTree = "<group>"; };
 		A30A95132CD0301000912E17 /* EditTicketRowCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTicketRowCollectionCell.swift; sourceTree = "<group>"; };
@@ -1152,6 +1154,7 @@
 			children = (
 				DE42B11F2BFF3CB100FF61B0 /* FacebookManager.swift */,
 				DE42B1202BFF3CB100FF61B0 /* FirebaseManager.swift */,
+				66F062C5E1871DDF513287B2 /* PostHogManager.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -1988,6 +1991,7 @@
 				A32749752C29859400E9F79A /* CaptureSession+Flash.swift in Sources */,
 				DE42B1CA2BFF3CB200FF61B0 /* SplashView.swift in Sources */,
 				A32691362CA18B4500504DA3 /* LuckyNumbersRowCollecitonViewCell.swift in Sources */,
+				84F134F7B5E00ED54C2384CD /* PostHogManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2142,7 +2146,7 @@
 				CODE_SIGN_ENTITLEMENTS = Lottery/Lottery.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2157,7 +2161,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.9.4;
+				MARKETING_VERSION = 1.9.5;
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2181,7 +2185,7 @@
 				CODE_SIGN_ENTITLEMENTS = Lottery/Lottery.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2196,7 +2200,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.9.4;
+				MARKETING_VERSION = 1.9.5;
 				PRODUCT_BUNDLE_IDENTIFIER = app.iphone.tracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
