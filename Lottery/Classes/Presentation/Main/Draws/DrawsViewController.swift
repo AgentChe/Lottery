@@ -1020,6 +1020,7 @@ private extension DrawsViewController {
                     }
                     delay(0.05) {
                         self?.nextDrawsCollectionView.reloadData()
+                        self?.requestReviewIfNeeded()
                     }
                 case .failure(let error):
                     print("Failed to fetch next games: \(error)")
@@ -1049,12 +1050,29 @@ private extension DrawsViewController {
                     }
                     delay(0.09) {
                         self?.pastDrawsCollectionView.reloadData()
+                        self?.requestReviewIfNeeded()
                     }
                 case .failure(let error):
                     print("Failed to fetch past games: \(error)")
                 }
             }
         }
+    }
+
+    func requestReviewIfNeeded() {
+        guard let lotteries = profile?.lotteries, !lotteries.isEmpty else {
+            return
+        }
+
+        guard !nextDraws.isEmpty || !pastDraws.isEmpty else {
+            return
+        }
+
+        guard view.window != nil else {
+            return
+        }
+
+        RequestReview.requestOnce()
     }
 
     func fetchLotteries(for stateId: Int) {
