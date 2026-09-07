@@ -266,10 +266,11 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                     if self.weDo {
                         // Pass the ScratchOff data to the new view controller
                         let checkScratchoffViewController = CheckScratchOffTicketViewController(scratchOff: response)
-                        if self.navigationController?.topViewController != checkScratchoffViewController { 
+                        if self.navigationController?.topViewController != checkScratchoffViewController {
                             self.navigationController?.pushViewController(checkScratchoffViewController, animated: true)
+                            self.requestReviewAfterScan()
                         }
-                        
+
                         self.hideDimView()
                         self.touchDown.isEnabled = true
                         self.continueButton.isUserInteractionEnabled = true
@@ -396,8 +397,12 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
                 // Prevent multiple pushes
                 if self.navigationController?.topViewController != checkTicketViewController {
                     self.navigationController?.pushViewController(checkTicketViewController, animated: true)
+
+                    if uploadResponse != nil {
+                        self.requestReviewAfterScan()
+                    }
                 }
-                
+
             } else {
                 self.weDo = true
                 self.showDimView()
@@ -406,6 +411,13 @@ final class EditScanViewController: UIViewController, UIGestureRecognizerDelegat
             }
         }
     }
+    // Asks for the review right after the first successfully scanned ticket is shown.
+    func requestReviewAfterScan() {
+        delay(1.5) {
+            RequestReview.requestOnce()
+        }
+    }
+
     func showDimView() {
         dimView = DimViewWithProgressBar(frame: view.bounds)
         if let dimView = dimView {
